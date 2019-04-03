@@ -5,8 +5,7 @@ Responses may be sent in `JSON` or `MessagePack`, `JSON` is the default. To rece
 
 ## JSON Use Cases
 
-For many uses `JSON` is a simpler and completely valid option. It provides simplicity of use, and familiarity. If basic Key Value operations involving non CDTs are being used, and Bytes and GeoJSON are not being utilized,
-then `JSON` will work completely with the Aerospike data model.
+For many uses `JSON` is a simpler and completely valid option. It provides simplicity of use, and familiarity. If basic Key Value operations are being used, and neither Maps with non string keys, Bytes nor GeoJSON are required, then `JSON` will work completely with the Aerospike data model.
 
 ## Message Pack Use Cases
 
@@ -16,7 +15,7 @@ Message pack is provided as an option because JSON cannot fully represent certai
 * Aerospike maps may have keys which are not strings. e.g ``{1:2, 3.14: 159}``.
 * Aerospike stores a GeoJSON type. Which is returned as a `MessagePack` extension type.
 
-If you are not handling CDTs (lists or maps) or using bytes or GeoJSON, then JSON as an interchange format should work for the Rest Client.
+If you are not handling Maps with non string keys, and not using bytes nor GeoJSON, then JSON as an interchange format will work for the Rest Client.
 
 ## MessagePack Format
 

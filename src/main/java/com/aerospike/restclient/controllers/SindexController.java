@@ -49,7 +49,7 @@ import io.swagger.annotations.Example;
 import io.swagger.annotations.ExampleProperty;
 import springfox.documentation.annotations.ApiIgnore;
 
-@Api(tags="Secondary Index methods", description="Query and manipulate secondary indices.")
+@Api(tags="Secondary Index methods", description="Manage secondary indices.")
 @RestController
 @RequestMapping("/v1/index")
 class SindexController {
