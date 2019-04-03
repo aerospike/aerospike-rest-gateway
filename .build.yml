@@ -1,0 +1,22 @@
+name: aerospike-client-rest
+
+dependency:
+  - url: git@github.com:citrusleaf/aerospike-client-java
+    dir: client/java
+    ref: master
+
+container:
+  - base:
+      - docker.qe.aerospike.com/build/aerospike-client-java:openjdk-8
+
+build:
+  - name: build
+    script:
+      - cd client/java
+      - mvn install
+      - cd ../..
+      - export aerospikeUseLocal=1
+      - ./gradlew bootwar
+    artifact:
+      - build/libs/*.war
+

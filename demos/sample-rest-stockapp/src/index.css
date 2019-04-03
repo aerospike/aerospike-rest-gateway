@@ -1,0 +1,52 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: sans-serif;
+  background-color: "black";
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+#root:first-child {
+}
+
+/*
+See  https://webaim.org/techniques/css/invisiblecontent/#maincontent
+*/
+
+.sr-only {
+    position:absolute;
+    left:-10000px;
+    top:auto;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+}
+.move-enter {
+    opacity: 0.01;
+    transform: translate(-100%);
+  }
+  
+.move-enter.move-enter-active {
+    opacity: 1;
+    transition-property: opacity, transform;
+    transition-duration: 500ms;
+    transition-timing-function: ease-in-out;
+    transform: translate(0%);
+}
+  
+.move-exit {
+    opacity: 1;
+    transform: translate(0%);
+}
+  
+.api-move-exit.api-move-exit-active {
+    opacity: 0.01;
+    transition-property: opacity, transform;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+    transform: translate(100%);
+}

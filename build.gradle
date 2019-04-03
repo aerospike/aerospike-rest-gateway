@@ -1,0 +1,62 @@
+buildscript {
+	ext {
+		springBootVersion = '2.1.1.RELEASE'
+		springfoxVersion = '2.9.2'
+		aerospikeClientVersion = findProperty('aerospikeClientVersion') ?:'4.4.0'
+	}
+    if (findProperty("aerospikeUseLocal")) {
+    print("using Local repo")
+        repositories {
+            mavenLocal()
+        }
+    }
+    repositories{
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+if ( findProperty("aerospikeUseLocal")) {
+print("using Local repo")
+    repositories {
+        mavenLocal()
+    }
+}
+repositories{
+    mavenCentral()
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'war'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.aerospike'
+version = '1.0.0'
+sourceCompatibility = 1.8
+
+bootWar {
+	archiveName "as-rest-client##${version}.war"
+}
+test {
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+}
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile("com.aerospike:aerospike-client:${aerospikeClientVersion}")
+	compile('org.msgpack:jackson-dataformat-msgpack:0.8.16')
+	compile("io.springfox:springfox-swagger2:${springfoxVersion}")
+	compile("io.springfox:springfox-swagger-ui:${springfoxVersion}")
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+}

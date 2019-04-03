@@ -1,0 +1,97 @@
+/*
+ * Copyright 2019 Aerospike, Inc.
+ *
+ * Portions may be licensed to Aerospike, Inc. under one or more contributor
+ * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package com.aerospike.restclient.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.aerospike.client.policy.ClientPolicy;
+
+@Configuration
+public class ClientPolicyConfig {
+
+
+	/* Client policies */
+	@Value("${aerospike.restclient.clientpolicy.user:#{null}}") String username;
+	@Value("${aerospike.restclient.clientpolicy.password:#{null}}") String password;
+	@Value("${aerospike.restclient.clientpolicy.clusterName:#{null}}") String clusterName;
+
+	@Value("${aerospike.restclient.clientpolicy.connPoolsPerNode:#{null}}")Integer connPoolsPerNode;
+	@Value("${aerospike.restclient.clientpolicy.maxConnsPerNode:#{null}}")Integer maxConnsPerNode;
+	@Value("${aerospike.restclient.clientpolicy.maxSocketIdle:#{null}}")Integer maxSocketIdle;
+	@Value("${aerospike.restclient.clientpolicy.tendInterval:#{null}}")Integer tendInterval;
+	@Value("${aerospike.restclient.clientpolicy.timeout:#{null}}")Integer timeout;
+
+	@Value("${aerospike.restclient.clientpolicy.failIfNotConnected:#{null}}")Boolean failIfNotConnected;
+	@Value("${aerospike.restclient.clientpolicy.sharedThreadPool:#{null}}")Boolean sharedThreadPool;
+	@Value("${aerospike.restclient.clientpolicy.useServicesAlternate:#{null}}")Boolean useServicesAlternate;
+	@Value("${aerospike.restclient.clientpolicy.requestProleReplicas:#{null}}")Boolean requestProleReplicas;
+
+	/* Read policies */
+
+	@Bean
+	public ClientPolicy ConfigClientPolicy() {
+		ClientPolicy clientPolicy = new ClientPolicy();
+
+		if (username != null) {
+			clientPolicy.user = username;
+		}
+
+		if (password != null) {
+			clientPolicy.password = password;
+		}
+
+		if (clusterName != null) {
+			clientPolicy.clusterName = clusterName;
+		}
+
+		if (connPoolsPerNode != null) {
+			clientPolicy.connPoolsPerNode = connPoolsPerNode;
+		}
+
+		if (maxConnsPerNode != null) {
+			clientPolicy.maxConnsPerNode = maxConnsPerNode;
+		}
+
+		if (maxSocketIdle != null) {
+			clientPolicy.maxSocketIdle = maxSocketIdle;
+		}
+
+		if (tendInterval != null) {
+			clientPolicy.tendInterval = tendInterval;
+		}
+
+		if (timeout != null) {
+			clientPolicy.timeout = timeout;
+		}
+
+		if (failIfNotConnected != null) {
+			clientPolicy.failIfNotConnected = failIfNotConnected;
+		}
+
+		if (sharedThreadPool != null) {
+			clientPolicy.sharedThreadPool = sharedThreadPool;
+		}
+
+		if (useServicesAlternate != null) {
+			clientPolicy.useServicesAlternate = useServicesAlternate;
+		}
+
+		return clientPolicy;
+	}
+}
