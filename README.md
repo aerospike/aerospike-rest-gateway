@@ -8,6 +8,26 @@ It can be used as a bridge between applications written in languages without an 
 
 For instructions on installing the Rest Client from a `.war` file see [Installation and Configuration](./docs/installation-and-config.md) .
 
+## Building
+
+To build a `.war` file for the REST client, run
+
+```sh
+./gradlew bootWar
+```
+
+This will place the file in the `build/libs` directory.
+
+## Running Locally
+
+To run the REST Client locally during development:
+
+```sh
+./gradlew bootRun
+```
+
+See [Installation and Configuration](./docs/installation-and-config.md) for configuration directions.
+
 ## Data Formats and API
 
 ### Formats
