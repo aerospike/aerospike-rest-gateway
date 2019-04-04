@@ -38,7 +38,15 @@ import io.swagger.annotations.ApiImplicitParams;
 				value="${RestClient.Policy.keytype.notes}"),
 		@ApiImplicitParam(
 				name=AerospikeAPIConstants.RECORD_BINS, paramType="query", value="${RestClient.Policy.bins.notes}",
-				dataType="string", required=false, allowMultiple=true)
+				dataType="string", required=false, allowMultiple=true),
+		@ApiImplicitParam(
+				name=AerospikeAPIConstants.READ_MODE_SC, dataType="string",
+				paramType="query", allowableValues="ALLOW_REPLICA, ALLOW_UNAVAILABLE, LINEARIZE, SESSION",
+				value="${RestClient.Policy.readmodeAP.notes}", defaultValue="SESSION"),
+		@ApiImplicitParam(
+				name=AerospikeAPIConstants.READ_MODE_AP, dataType="string",
+				paramType="query", allowableValues="ALL, ONE",
+				value="${RestClient.Policy.readmodeAP.notes}", defaultValue="ONE"),
 })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ASRestClientPolicyQueryParams {}

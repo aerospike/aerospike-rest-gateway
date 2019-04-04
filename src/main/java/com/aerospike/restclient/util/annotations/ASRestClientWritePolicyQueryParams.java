@@ -67,7 +67,15 @@ import io.swagger.annotations.ApiImplicitParams;
 		@ApiImplicitParam(
 				value="How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
 				name=AerospikeAPIConstants.RECORD_EXISTS_ACTION, dataType="string",
-				paramType="query", allowableValues="UPDATE, UPDATE_ONLY, REPLACE, REPLACE_ONLY, CREATE_ONLY")
+				paramType="query", allowableValues="UPDATE, UPDATE_ONLY, REPLACE, REPLACE_ONLY, CREATE_ONLY"),
+		@ApiImplicitParam(
+				name=AerospikeAPIConstants.READ_MODE_SC, dataType="string",
+				paramType="query", allowableValues="ALLOW_REPLICA, ALLOW_UNAVAILABLE, LINEARIZE, SESSION",
+				value="${RestClient.Policy.readmodeAP.notes}", defaultValue="SESSION"),
+		@ApiImplicitParam(
+				name=AerospikeAPIConstants.READ_MODE_AP, dataType="string",
+				paramType="query", allowableValues="ALL, ONE",
+				value="${RestClient.Policy.readmodeAP.notes}", defaultValue="ONE"),
 })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ASRestClientWritePolicyQueryParams {}
