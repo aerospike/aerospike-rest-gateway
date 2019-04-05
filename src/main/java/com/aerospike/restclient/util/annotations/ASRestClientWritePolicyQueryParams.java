@@ -71,7 +71,7 @@ import io.swagger.annotations.ApiImplicitParams;
 		@ApiImplicitParam(
 				name=AerospikeAPIConstants.READ_MODE_SC, dataType="string",
 				paramType="query", allowableValues="ALLOW_REPLICA, ALLOW_UNAVAILABLE, LINEARIZE, SESSION",
-				value="${RestClient.Policy.readmodeAP.notes}", defaultValue="SESSION"),
+				value="${RestClient.Policy.readmodeSC.notes}", defaultValue="SESSION"),
 		@ApiImplicitParam(
 				name=AerospikeAPIConstants.READ_MODE_AP, dataType="string",
 				paramType="query", allowableValues="ALL, ONE",
