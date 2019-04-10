@@ -50,7 +50,7 @@ public class SwaggerConfig {
 
 	private ApiInfo apiInfo() {
 		ApiInfo info = new ApiInfoBuilder()
-				.version("1.0.1")
+				.version("1.0")
 				.title("Aerospike REST Client")
 				.description("REST Interface for Aerospike Database.")
 				.contact(new Contact("Aerospike, Inc.", "https://www.aerospike.com", ""))
