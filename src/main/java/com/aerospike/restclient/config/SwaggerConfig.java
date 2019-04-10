@@ -50,8 +50,9 @@ public class SwaggerConfig {
 
 	private ApiInfo apiInfo() {
 		ApiInfo info = new ApiInfoBuilder()
-				.title("Aerospike Rest Client")
-				.description("Rest Interface for Aerospike Database.")
+				.version("1.0")
+				.title("Aerospike REST Client")
+				.description("REST Interface for Aerospike Database.")
 				.contact(new Contact("Aerospike, Inc.", "https://www.aerospike.com", ""))
 				.build();
 		return info;
@@ -90,7 +91,7 @@ public class SwaggerConfig {
 				new ResponseMessageBuilder()
 				.code(500)
 				.responseModel(new ModelRef("RestClientError"))
-				.message("The Rest Client encountered an error processing the request")
+				.message("The REST Client encountered an error processing the request")
 				.build());
 	}
 }

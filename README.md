@@ -32,7 +32,7 @@ See [Installation and Configuration](./docs/installation-and-config.md) for conf
 
 ### Formats
 
-The Aerospike Rest client allows communication utilizing `JSON` and `MessagePack` formats. For more information about how to specify the format, and recommended usages of each, see [Data Formats](./data-formats.md)
+The Aerospike Rest client allows communication utilizing `JSON` and `MessagePack` formats. For more information about how to specify the format, and recommended usages of each, see [Data Formats](./docs/data-formats.md)
 
 ### Interactive UI and Swagger Specification
 
