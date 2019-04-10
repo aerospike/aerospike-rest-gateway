@@ -19,7 +19,7 @@ package com.aerospike.restclient.domain.swaggermodels;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(value="Node Information")
+@ApiModel(value="NodeInformation")
 public class RestClientNodeInfoResponse {
 
 	@ApiModelProperty(example="BB9DE9B1B270008")

@@ -77,7 +77,7 @@ public class InfoController {
 			examples= @Example(value = {@ExampleProperty(mediaType="Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))})
 	@RequestMapping(method=RequestMethod.POST, value="/{node}", consumes={"application/json", "application/msgpack"}, produces={"application/json", "application/msgpack"})
 	Map<String, String> infoNode(
-			@ApiParam(name="nodeName", value="The node ID for the node which will receive the info commands.", required=true) @PathVariable(value="node")String node,
+			@ApiParam(name="node", value="The node ID for the node which will receive the info commands.", required=true) @PathVariable(value="node")String node,
 			@ApiParam(
 					name="infoRequests",
 					required=true,
