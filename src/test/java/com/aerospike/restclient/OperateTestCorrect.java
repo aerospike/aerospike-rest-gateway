@@ -18,6 +18,7 @@ package com.aerospike.restclient;
 
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -336,5 +337,20 @@ public class OperateTestCorrect {
 
 		record = client.get(null, testKey);
 		Assert.assertEquals(oldGeneration + 1, record.generation);
+	}
+
+	@Test
+	public void testGetOpNonExistentRecord() throws Exception {
+		// Key that does not exist
+		String fakeEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit12345", "operate");
+		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
+		Map<String, Object> opMap = new HashMap<String, Object>();
+		Map<String, Object> opValues = new HashMap<String, Object>();
+		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_GET);
+		opMap.put(OPERATION_VALUES_FIELD, opValues);
+
+		opList.add(opMap);
+		String jsString = objectMapper.writeValueAsString(opList);
+		ASTestUtils.performOperationAndExpect(mockMVC, fakeEndpoint, jsString, status().isNotFound());
 	}
 }

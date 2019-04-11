@@ -35,11 +35,10 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.aerospike'
-version = '1.0.1'
 sourceCompatibility = 1.8
 
 bootWar {
-	archiveName "as-rest-client##${version}.war"
+	archiveName "${warBaseName}##${appVersion}.war"
 }
 test {
 	testLogging {
