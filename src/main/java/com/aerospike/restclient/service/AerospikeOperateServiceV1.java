@@ -25,12 +25,14 @@ import org.springframework.stereotype.Service;
 
 import com.aerospike.client.Key;
 import com.aerospike.client.Operation;
+import com.aerospike.client.Record;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.RestClientOperation;
 import com.aerospike.restclient.domain.RestClientRecord;
 import com.aerospike.restclient.handlers.OperateHandler;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.aerospike.restclient.util.KeyBuilder;
+import com.aerospike.restclient.util.RestClientErrors;
 import com.aerospike.restclient.util.converters.OperationsConverter;
 
 @Service
@@ -49,8 +51,11 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
 
 		Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMaps);
 		Key opKey = KeyBuilder.buildKey(namespace, set, key, keyType);
-
-		return new RestClientRecord(handler.operate(policy, opKey, operations));
+		Record fetchedRecord = handler.operate(policy, opKey, operations);
+		if (fetchedRecord == null) {
+			throw new RestClientErrors.RecordNotFoundError();
+		}
+		return new RestClientRecord(fetchedRecord);
 	}
 
 	@Override
@@ -60,7 +65,11 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
 
 		Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
 		Key opKey = KeyBuilder.buildKey(namespace, set, key, keyType);
-		return new RestClientRecord(handler.operate(policy, opKey, operations));
+		Record fetchedRecord = handler.operate(policy, opKey, operations);
+		if (fetchedRecord == null) {
+			throw new RestClientErrors.RecordNotFoundError();
+		}
+		return new RestClientRecord(fetchedRecord);
 
 	}
 }
