@@ -20,6 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import com.aerospike.restclient.util.AerospikeAPIConstants;
+import com.aerospike.restclient.util.QueryParamDescriptors;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -27,12 +28,18 @@ import io.swagger.annotations.ApiImplicitParams;
 /* Annotation which tells swagger to render all of the Batch Policy options as query parameters */
 @ApiImplicitParams(value= {
 		@ApiImplicitParam(
-				name=AerospikeAPIConstants.SEND_KEY, dataType="boolean", paramType="query",
-				value="${RestClient.Policy.sendKey.notes}", defaultValue="false"),
+				name=AerospikeAPIConstants.SEND_KEY,
+				dataType="boolean",
+				paramType="query",
+				value=QueryParamDescriptors.POLICY_SEND_KEY_NOTES,
+				defaultValue=QueryParamDescriptors.POLICY_SEND_KEY_DEFAULT),
 		@ApiImplicitParam(
-				name=AerospikeAPIConstants.REPLICA, dataType="string",
-				paramType="query", allowableValues="MASTER, MASTER_PROLES, SEQUENCE, RANDOM",
-				value="${RestClient.Policy.replica.notes}", defaultValue="SEQUENCE")
+				name=AerospikeAPIConstants.REPLICA,
+				dataType="string",
+				paramType="query",
+				allowableValues=QueryParamDescriptors.POLICY_REPLICA_ALLOWABLE_VALUES,
+				value=QueryParamDescriptors.POLICY_REPLICA_NOTES,
+				defaultValue=QueryParamDescriptors.POLICY_REPLICA_DEFAULT)
 })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ASRestClientBatchPolicyQueryParams {}

@@ -19,7 +19,10 @@ package com.aerospike.restclient.util.annotations;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import javax.management.Query;
+
 import com.aerospike.restclient.util.AerospikeAPIConstants;
+import com.aerospike.restclient.util.QueryParamDescriptors;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -30,52 +33,81 @@ import io.swagger.annotations.ApiImplicitParams;
 @ApiImplicitParams(value= {
 
 		@ApiImplicitParam(
-				name=AerospikeAPIConstants.SEND_KEY, dataType="boolean", paramType="query",
-				value="${RestClient.Policy.sendKey.notes}", defaultValue="false"),
-
+				name=AerospikeAPIConstants.SEND_KEY,
+				dataType="boolean",
+				paramType="query",
+				value=QueryParamDescriptors.POLICY_SEND_KEY_NOTES,
+				defaultValue=QueryParamDescriptors.POLICY_SEND_KEY_DEFAULT),
 		@ApiImplicitParam(
-				name=AerospikeAPIConstants.REPLICA, dataType="string",
-				paramType="query", allowableValues="MASTER, MASTER_PROLES, SEQUENCE, RANDOM",
-				value="${RestClient.Policy.replica.notes}", defaultValue="SEQUENCE"),
+				name=AerospikeAPIConstants.REPLICA,
+				dataType="string",
+				paramType="query",
+				allowableValues=QueryParamDescriptors.POLICY_REPLICA_ALLOWABLE_VALUES,
+				value=QueryParamDescriptors.POLICY_REPLICA_NOTES,
+				defaultValue=QueryParamDescriptors.POLICY_REPLICA_DEFAULT),
 		@ApiImplicitParam(
 				name=AerospikeAPIConstants.KEY_TYPE, dataType="string",
-				paramType="query", allowableValues="STRING, INTEGER, BYTES, DIGEST", defaultValue="STRING",
-				value="${RestClient.Policy.keytype.notes}"),
+				paramType="query",
+				allowableValues=QueryParamDescriptors.KEYTYPE_ALLOWABLE_VALUES,
+				defaultValue=QueryParamDescriptors.KEYTYPE_DEFAULT,
+				value=QueryParamDescriptors.KEYTYPE_NOTES),
 
 		/** Write Policy Values **/
 		@ApiImplicitParam(
-				name=AerospikeAPIConstants.EXPIRATION, dataType="int", paramType="query",
-				value="${RestClient.WritePolicy.expiration.notes}"),
+				name=AerospikeAPIConstants.EXPIRATION,
+				dataType="int",
+				paramType="query",
+				value=QueryParamDescriptors.WRITE_POLICY_EXPIRATION_NOTES),
 
 		@ApiImplicitParam(
-				name=AerospikeAPIConstants.GENERATION, dataType="int", paramType="query",
-				value="${RestClient.WritePolicy.generation.notes}"),
+				name=AerospikeAPIConstants.GENERATION,
+				dataType="int",
+				paramType="query",
+				value=QueryParamDescriptors.WRITE_POLICY_GEN_NOTES),
 
 		@ApiImplicitParam(
-				name=AerospikeAPIConstants.DURABLE_DELETE, dataType="boolean", paramType="query",
-				defaultValue="false", value="${RestClient.WritePolicy.durableDelete.notes}"),
+				name=AerospikeAPIConstants.DURABLE_DELETE,
+				dataType="boolean",
+				paramType="query",
+				defaultValue=QueryParamDescriptors.WRITE_POLICY_DURABLE_DELETE_DEFAULT,
+				value=QueryParamDescriptors.WRITE_POLICY_DURABLE_DELETE_NOTES),
 
 		@ApiImplicitParam(
-				name=AerospikeAPIConstants.COMMIT_LEVEL, dataType="string",
-				paramType="query", allowableValues="COMMIT_ALL, COMMIT_MASTER", defaultValue="COMMIT_ALL",
-				value="${RestClient.WritePolicy.commitLevel.notes}"),
+				name=AerospikeAPIConstants.COMMIT_LEVEL,
+				dataType="string",
+				paramType="query",
+				allowableValues=QueryParamDescriptors.WRITE_POLICY_COMMIT_LEVEL_ALLOWABLE_VALUES,
+				defaultValue=QueryParamDescriptors.WRITE_POLICY_COMMIT_LEVEL_DEFAULT,
+				value=QueryParamDescriptors.WRITE_POLICY_COMMIT_LEVEL_NOTES),
 
 		@ApiImplicitParam(
-				name=AerospikeAPIConstants.GENERATION_POLICY, dataType="string",
-				paramType="query", allowableValues="NONE, EXPECT_GEN_EQUAL, EXPECT_GEN_GT",
-				defaultValue="NONE", value="${RestClient.WritePolicy.generationPolicy.notes}"),
+				name=AerospikeAPIConstants.GENERATION_POLICY,
+				dataType="string",
+				paramType="query",
+				allowableValues=QueryParamDescriptors.WRITE_POLICY_GEN_POLICY_ALLOWABLE_VALUES,
+				defaultValue=QueryParamDescriptors.WRITE_POLICY_GEN_POLICY_DEFAULT,
+				value=QueryParamDescriptors.WRITE_POLICY_GEN_POLICY_NOTES),
 		@ApiImplicitParam(
-				value="How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
-				name=AerospikeAPIConstants.RECORD_EXISTS_ACTION, dataType="string",
-				paramType="query", allowableValues="UPDATE, UPDATE_ONLY, REPLACE, REPLACE_ONLY, CREATE_ONLY"),
+				value=QueryParamDescriptors.WRITE_POLICY_RECORD_EXISTS_NOTES,
+				name=AerospikeAPIConstants.RECORD_EXISTS_ACTION,
+				dataType="string",
+				paramType="query",
+				defaultValue=QueryParamDescriptors.WRITE_POLICY_RECORD_EXISTS_DEFAULT,
+				allowableValues=QueryParamDescriptors.WRITE_POLICY_RECORD_EXISTS_ALLOWABLE_VALUES),
 		@ApiImplicitParam(
-				name=AerospikeAPIConstants.READ_MODE_SC, dataType="string",
-				paramType="query", allowableValues="ALLOW_REPLICA, ALLOW_UNAVAILABLE, LINEARIZE, SESSION",
-				value="${RestClient.Policy.readmodeSC.notes}", defaultValue="SESSION"),
+				name=AerospikeAPIConstants.READ_MODE_SC,
+				dataType="string",
+				paramType="query",
+				allowableValues=QueryParamDescriptors.POLICY_READMODESC_ALLOWABLE_VALUES,
+				value=QueryParamDescriptors.POLICY_READMODESC_NOTES,
+				defaultValue=QueryParamDescriptors.POLICY_READMODESC_DEFAULT),
 		@ApiImplicitParam(
-				name=AerospikeAPIConstants.READ_MODE_AP, dataType="string",
-				paramType="query", allowableValues="ALL, ONE",
-				value="${RestClient.Policy.readmodeAP.notes}", defaultValue="ONE"),
+				name=AerospikeAPIConstants.READ_MODE_AP,
+				dataType="string",
+				paramType="query",
+				allowableValues=QueryParamDescriptors.POLICY_READMODEAP_ALLOWABLE_VALUES,
+				value=QueryParamDescriptors.POLICY_READMODEAP_NOTES,
+				defaultValue=QueryParamDescriptors.POLICY_READMODEAP_DEFAULT),
 })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ASRestClientWritePolicyQueryParams {}

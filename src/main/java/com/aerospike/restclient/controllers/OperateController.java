@@ -36,6 +36,7 @@ import com.aerospike.restclient.domain.RestClientOperation;
 import com.aerospike.restclient.domain.RestClientRecord;
 import com.aerospike.restclient.service.AerospikeOperateService;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
+import com.aerospike.restclient.util.APIParamDescriptors;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.annotations.ASRestClientWritePolicyQueryParams;
 import com.aerospike.restclient.util.deserializers.MsgPackOperationsParser;
@@ -54,6 +55,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("/v1/operate")
 public class OperateController {
 
+	public static final String OPERATE_NOTES = "Perform multiple operations atomically on the specified record.";
+	public static final String OPERATIONS_PARAM_NOTES = "An array of operation objects specifying the operations to perform on the record";
 	@Autowired private AerospikeOperateService service;
 
 
@@ -61,7 +64,7 @@ public class OperateController {
 			consumes="application/json",
 			produces={"application/json", "application/msgpack"}
 			)
-	@ApiOperation(value="${RestClient.Operate.operate.notes}", consumes ="application/json, application/msgpack", nickname="operateNamespaceSetKey")
+	@ApiOperation(value=OPERATE_NOTES, consumes ="application/json, application/msgpack", nickname="operateNamespaceSetKey")
 	@ASRestClientWritePolicyQueryParams
 	@ResponseStatus(HttpStatus.OK)
 	@ApiResponses(value= {
@@ -76,10 +79,10 @@ public class OperateController {
 
 	})
 	public RestClientRecord operateNamespaceSetKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}",required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.set.notes}", required=true) @PathVariable(value="set") String set,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
-			@ApiParam(value="An array of operation objects specifying the operations to perform on the record", required=true)
+			@ApiParam(value=APIParamDescriptors.NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=APIParamDescriptors.SET_NOTES, required=true) @PathVariable(value="set") String set,
+			@ApiParam(value=APIParamDescriptors.USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=OPERATIONS_PARAM_NOTES, required=true)
 			@RequestBody List<RestClientOperation> operations,
 			@ApiIgnore @RequestParam Map<String, String>requestParams) {
 
@@ -113,7 +116,7 @@ public class OperateController {
 	@RequestMapping(method=RequestMethod.POST, value="/{namespace}/{key}",
 			consumes="application/json",
 			produces={"application/json", "application/msgpack"})
-	@ApiOperation(value="${RestClient.Operate.operate.notes}", consumes = "application/json, application/msgpack", nickname="operateNamespaceKey")
+	@ApiOperation(value=OPERATE_NOTES, consumes = "application/json, application/msgpack", nickname="operateNamespaceKey")
 	@ASRestClientWritePolicyQueryParams
 	@ResponseStatus(HttpStatus.OK)
 	@ApiResponses(value= {
@@ -128,9 +131,9 @@ public class OperateController {
 
 	})
 	public RestClientRecord operateNamespaceKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
-			@ApiParam(value="An array of operation objects specifying the operations to perform on the record", required=true)
+			@ApiParam(value=APIParamDescriptors.NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=APIParamDescriptors.USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=OPERATIONS_PARAM_NOTES, required=true)
 			@RequestBody List<RestClientOperation> operations,
 			@ApiIgnore @RequestParam Map<String, String>requestParams) {
 

@@ -40,7 +40,9 @@ import io.swagger.annotations.ExampleProperty;
 @RestController
 @RequestMapping("/v1/truncate")
 public class TruncateController {
-
+	public static final String DATE_QUERY_PARAM_NOTES = "All records last updated before this date/time will be truncated. If not specified, all records will be truncated.\n "
+			+ "This is a string representation of a date time utilizing the ISO-8601 extended offset date-time format. example: 2019-12-03T10:15:30+01:00";
+	public static final String DATE_QUERY_PARAM_EXAMPLE = "2019-12-03T10:15:30+01:00";
 	@Autowired private AerospikeTruncateService truncateService;
 
 	@RequestMapping(method=RequestMethod.DELETE, value="/{namespace}", produces={"application/json", "application/msgpack"})
@@ -55,7 +57,7 @@ public class TruncateController {
 	})
 	public void truncateNamespace(
 			@ApiParam(value="The namespace whose records will be truncated.", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Truncate.dateQueryParam.notes}", required=false, example="2019-12-03T10:15:30+01:00") @RequestParam(value="date", required=false) String dateString) {
+			@ApiParam(value=DATE_QUERY_PARAM_NOTES, required=false, example=DATE_QUERY_PARAM_EXAMPLE) @RequestParam(value="date", required=false) String dateString) {
 		truncateService.truncate(namespace, null, dateString);
 	}
 
@@ -73,7 +75,7 @@ public class TruncateController {
 	public void truncateSet(
 			@ApiParam(value="The namespace whose records will be truncated", required=true) @PathVariable(value="namespace")String namespace,
 			@ApiParam(value="The set, in the specified namespace, whose records will be truncated", required=true)@PathVariable(value="set")String set,
-			@ApiParam(value="${RestClient.Truncate.dateQueryParam.notes}", required=false, example="2019-12-03T10:15:30+01:00") @RequestParam(value="date", required=false) String dateString) {
+			@ApiParam(value=DATE_QUERY_PARAM_NOTES, required=false, example=DATE_QUERY_PARAM_EXAMPLE) @RequestParam(value="date", required=false) String dateString) {
 		truncateService.truncate(namespace, set, dateString);
 	}
 
