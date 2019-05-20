@@ -19,8 +19,6 @@ package com.aerospike.restclient.util.annotations;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import javax.management.Query;
-
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.QueryParamDescriptors;
 

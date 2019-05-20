@@ -40,6 +40,7 @@ import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.RestClientRecord;
 import com.aerospike.restclient.service.AerospikeRecordService;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
+import com.aerospike.restclient.util.QueryParamDescriptors;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.annotations.ASRestClientPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.ASRestClientWritePolicyQueryParams;
@@ -514,7 +515,7 @@ public class KeyValueController {
 			@ApiParam(value=SET_NOTES, required=true) @PathVariable(value="set") String set,
 			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
 			@ApiIgnore HttpServletResponse res,
-			@ApiParam(name="keytype", value="${RestClient.Policy.keytype.notes}", required=false, defaultValue="STRING") @RequestParam(value="keytype", required=false)RecordKeyType keyType)
+			@ApiParam(name="keytype", value=QueryParamDescriptors.KEYTYPE_NOTES, required=false, defaultValue=QueryParamDescriptors.KEYTYPE_DEFAULT) @RequestParam(value="keytype", required=false)RecordKeyType keyType)
 	{
 
 		if (!service.recordExists(namespace, set, key, keyType)) {
@@ -541,7 +542,7 @@ public class KeyValueController {
 			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
 			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
 			@ApiIgnore HttpServletResponse res,
-			@ApiParam(name="keytype", value="${RestClient.Policy.keytype.notes}", required=false, defaultValue="STRING") @RequestParam(value="keytype", required=false)RecordKeyType keyType)
+			@ApiParam(name="keytype", value=QueryParamDescriptors.KEYTYPE_NOTES, required=false, defaultValue=QueryParamDescriptors.KEYTYPE_DEFAULT) @RequestParam(value="keytype", required=false)RecordKeyType keyType)
 	{
 
 		if (!service.recordExists(namespace, null, key, keyType)) {
