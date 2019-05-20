@@ -54,7 +54,7 @@ public class TLSPolicyBuilder  {
         if (!enabled) {
             return null;
         }
-    
+   
         TlsPolicy policy = new TlsPolicy();
         if (keystorePath != null || truststorePath != null) {
             addSSLContext(policy);
@@ -68,7 +68,7 @@ public class TLSPolicyBuilder  {
             policy.protocols = allowedProtocols.toArray(new String[] {});
         }
 
-         policy.forLoginOnly = forLoginOnly;
+        policy.forLoginOnly = forLoginOnly;
 
         return policy;
     }
@@ -97,7 +97,7 @@ public class TLSPolicyBuilder  {
 
     private void loadTrustStore(SSLContextBuilder ctxBuilder) {
         File tsFile = new File(truststorePath);
- 
+
         try {
             if (truststorePassword != null) {
                 ctxBuilder.loadTrustMaterial(tsFile, truststorePassword);
@@ -137,5 +137,5 @@ class ASTLSConfigException extends RuntimeException {
 	public ASTLSConfigException(String msg) {
 		super(msg);
 	}
-	
+
 }
