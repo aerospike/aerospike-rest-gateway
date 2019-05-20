@@ -64,6 +64,20 @@ The REST Client also allows authentication to an Aerospike Enterprise edition se
 * `aerospike_restclient_clientpolicy_user` This is the name of a user registered with the Aerospike database. This variable is only needed when the Aerospike cluster is running with security enabled.
 * `aerospike_restclient_clientpolicy_password` This is the password for the previously specified user. This variable is only needed when the Aerospike cluster is running with security enabled.
 
+### TLS Configuration
+
+Beginning with version `1.1.0` the Aerospike REST Client supports TLS communication between the client and the Aerospike Server. (This feature requires an Enterprise Edition Aerospike Server). The following environment variables allow configuration of this connection:
+
+* `aerospike_restclient_ssl_enabled` boolean, set to to `true` to enable a TLS connection with the Aerospike Server. If no other SSL environment variables are provided, the REST client will attempt to establish a secure connection utilizing the default Java SSL trust and keystore settings. Default: `false`
+* `aerospike_restclient_ssl_keystorepath` The path to a Java KeyStore to be used to interact with the Aerospike Server. If omitted the default Java KeyStore location and password will be used.
+* `aerospike_restclient_ssl_keystorepassword` The password to the keystore. If a keystore path is specified, this must be specified as well.
+* `aerospike_restclient_ssl_keypassword` The password for the key to be used when communicating with Aerospike. If omitted, and `aerospike_restclient_ssl_keystorepassword` is provided,  the value of `aerospike_restclient_ssl_keystorepassword` will be used as the key password.
+* `aerospike_restclient_ssl_truststorepath` The path to a Java TrustStore to be used to interact with the Aerospike Server. If omitted the default Java TrustStore location and password will be used.
+* `aerospike_restclient_ssl_truststorepassword` The password for the truststore. May be omitted if the TrustStore is not password protected.
+* `aerospike_restclient_ssl_forloginonly` Boolean indicating that SSL should only be used for the initial login connection to Aerospike. Default: `false`
+* `aerospike_restclient_ssl_allowedciphers` An optional comma separated list of ciphers that are permitted to be used in communication with Aerospike. Available cipher names can be obtained by `SSLSocket.getSupportedCipherSuites()`.
+* `aerospike_restclient_ssl_allowedprotocols` An optional comma separated list of protocols that are permitted to be used in communication with Aerospike. Available values can be aquired using `SSLSocket.getSupportedProtocols()`. By Default only `TLSv1.2` is allowed.
+
 ## Further Reading
 
 * For information about the data formats available to use with the REST Client see [Data Formats](./data-formats.md)
