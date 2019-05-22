@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.SSLContext;
-
 import org.mockito.ArgumentMatcher;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;

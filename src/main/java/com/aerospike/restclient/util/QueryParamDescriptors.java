@@ -8,7 +8,7 @@ public class QueryParamDescriptors {
 
 	public static final String POLICY_REPLICA_NOTES = "Replica algorithm used to determine the target node for a single record command.";
 	public static final String POLICY_REPLICA_ALLOWABLE_VALUES = "MASTER, MASTER_PROLES, SEQUENCE, RANDOM";
-	public static final String POLICY_REPLICA_DEFAULT = "false";
+	public static final String POLICY_REPLICA_DEFAULT = "SEQUENCE";
 
 	public static final String KEYTYPE_NOTES = "The Type of the userKey.";
 	public static final String KEYTYPE_ALLOWABLE_VALUES = "STRING, INTEGER, BYTES, DIGEST";
