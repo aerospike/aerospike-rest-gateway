@@ -56,7 +56,9 @@ import com.aerospike.client.ResultCode;
 import com.aerospike.client.admin.Role;
 import com.aerospike.client.admin.User;
 import com.aerospike.client.policy.ClientPolicy;
+import com.aerospike.client.policy.TlsPolicy;
 import com.aerospike.restclient.domain.RestClientUserModel;
+import com.aerospike.restclient.util.TLSPolicyBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -96,6 +98,11 @@ public class UserTestsCorrect {
 	@Autowired
 	private AerospikeClient client;
 
+	@Autowired
+	private TLSPolicyBuilder policyBuilder;
+
+	private static TlsPolicy tlsPolicy;
+
 	private String endpoint = "/v1/admin/user";
 
 	@BeforeClass
@@ -115,6 +122,10 @@ public class UserTestsCorrect {
 				throw e;
 			}
 		}
+		if (tlsPolicy == null) {
+			tlsPolicy = policyBuilder.build();
+		}
+
 		createdUsers.add(userName);
 		// Give some time for the creation to propagate to all nodes
 		Thread.sleep(2000);
@@ -159,7 +170,7 @@ public class UserTestsCorrect {
 		handler.createUser(mockMVC, endpoint, userModel);
 
 		Thread.sleep(1000);
-		ClientPolicy policy = new ClientPolicy();
+		ClientPolicy policy = ASTestUtils.getClientPolicy(tlsPolicy, newUser, newPass);
 		policy.user = newUser;
 		policy.password = newPass;
 
@@ -207,7 +218,7 @@ public class UserTestsCorrect {
 
 		Thread.sleep(1500);
 
-		ClientPolicy policy = new ClientPolicy();
+		ClientPolicy policy = ASTestUtils.getClientPolicy(tlsPolicy, userName, newPassword);
 		policy.user = userName;
 		// Object mapper writes these wrapped with quotes
 		policy.password = newPassword;

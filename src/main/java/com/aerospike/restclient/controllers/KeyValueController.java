@@ -40,6 +40,7 @@ import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.RestClientRecord;
 import com.aerospike.restclient.service.AerospikeRecordService;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
+import com.aerospike.restclient.util.QueryParamDescriptors;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.annotations.ASRestClientPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.ASRestClientWritePolicyQueryParams;
@@ -59,6 +60,19 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("/v1/kvs")
 public class KeyValueController {
 
+	public static final String NAMESPACE_NOTES = "Namespace for the record; equivalent to database name.";
+	public static final String SET_NOTES = "Set for the record; equivalent to database table.";
+	public static final String USERKEY_NOTES = "Userkey for the record.";
+	public static final String STORE_BINS_NOTES = "Bins to be stored in the record. This is a mapping from a string bin name to a value. "
+			+ "Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can "
+			+ "only be sent using MessagePack\n "
+			+ "example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}";
+	public static final String GET_RECORD_NOTES = "Return the metadata and bins for a record.";
+	public static final String UPDATE_RECORD_NOTES = "Merge the provided bins into the record.";
+	public static final String CREATE_RECORD_NOTES = "Create a new record with the provided bins into the record.";
+	public static final String REPLACE_RECORD_NOTES = "Replace the bins of the specified record.";
+	public static final String DELETE_RECORD_NOTES = "Delete the specified record.";
+
 	@Autowired private AerospikeRecordService service;
 
 	/*
@@ -68,7 +82,7 @@ public class KeyValueController {
 	 */
 	@RequestMapping(method=RequestMethod.GET, value="/{namespace}/{set}/{key}",
 			produces= {"application/json", "application/msgpack"})
-	@ApiOperation(value="${RestClient.KVS.GetRecord.notes}", nickname="getRecordNamespaceSetKey")
+	@ApiOperation(value=GET_RECORD_NOTES, nickname="getRecordNamespaceSetKey")
 	@ResponseStatus(HttpStatus.OK)
 	@ApiResponses(value= {
 			@ApiResponse(code=404, response=RestClientError.class, message = "Record not found.",
@@ -82,9 +96,9 @@ public class KeyValueController {
 	@ASRestClientPolicyQueryParams
 	public RestClientRecord
 	getRecordNamespaceSetKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.set.notes}", required=true) @PathVariable(value="set") String set,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=SET_NOTES, required=true) @PathVariable(value="set") String set,
+			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
 			@ApiIgnore @RequestParam MultiValueMap<String, String> requestParams) {
 
 
@@ -97,7 +111,7 @@ public class KeyValueController {
 
 	@RequestMapping(method=RequestMethod.GET, value="/{namespace}/{key}",
 			produces= {"application/json", "application/msgpack"})
-	@ApiOperation(value="${RestClient.KVS.GetRecord.notes}", nickname="getRecordNamespaceKey")
+	@ApiOperation(value=GET_RECORD_NOTES, nickname="getRecordNamespaceKey")
 	@ResponseStatus(HttpStatus.OK)
 	@ApiResponses(value= {
 			@ApiResponse(code=404, response=RestClientError.class, message = "Record not found.",
@@ -111,8 +125,8 @@ public class KeyValueController {
 	@ASRestClientPolicyQueryParams
 	public RestClientRecord
 	getRecordNamespaceKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
 			@ApiIgnore @RequestParam MultiValueMap<String, String> requestParams) {
 
 		String[] bins = RequestParamHandler.getBinsFromMap(requestParams);
@@ -129,7 +143,7 @@ public class KeyValueController {
 	 */
 	@RequestMapping(method=RequestMethod.DELETE, value="/{namespace}/{set}/{key}",
 			produces= {"application/json", "application/msgpack"})
-	@ApiOperation(value="${RestClient.KVS.DeleteRecord.notes}", nickname="deleteRecordNamespaceSetKey")
+	@ApiOperation(value=DELETE_RECORD_NOTES, nickname="deleteRecordNamespaceSetKey")
 	@ResponseStatus(value=HttpStatus.NO_CONTENT)
 	@ApiResponses(value= {
 			@ApiResponse(code=404, response=RestClientError.class, message = "Record not found.",
@@ -144,9 +158,9 @@ public class KeyValueController {
 	@ASRestClientWritePolicyQueryParams
 	public void
 	deleteRecordNamespaceSetKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.set.notes}", required=true) @PathVariable(value="set") String set,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=SET_NOTES, required=true) @PathVariable(value="set") String set,
+			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
 			@ApiIgnore @RequestParam Map<String, String>requestParams) {
 
 		RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -157,7 +171,7 @@ public class KeyValueController {
 
 	@RequestMapping(method=RequestMethod.DELETE, value="/{namespace}/{key}",
 			produces= {"application/json", "application/msgpack"})
-	@ApiOperation(value="${RestClient.KVS.DeleteRecord.notes}", nickname="deleteRecordNamespaceKey")
+	@ApiOperation(value=DELETE_RECORD_NOTES, nickname="deleteRecordNamespaceKey")
 	@ResponseStatus(value=HttpStatus.NO_CONTENT)
 	@ApiResponses(value= {
 			@ApiResponse(code=404, response=RestClientError.class, message = "Record not found.",
@@ -172,8 +186,8 @@ public class KeyValueController {
 	@ASRestClientWritePolicyQueryParams
 	public void
 	deleteRecordNamespaceKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
 			@ApiIgnore @RequestParam Map<String, String>requestParams) {
 
 		RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -189,7 +203,7 @@ public class KeyValueController {
 	 */
 	@RequestMapping(method=RequestMethod.PUT, value="/{namespace}/{set}/{key}",
 			consumes="application/json", produces= {"application/json", "application/msgpack"})
-	@ApiOperation(value="${RestClient.KVS.ReplaceRecord.notes}", consumes="application/json, application/msgpack", nickname="replaceRecordNamespaceSetKey")
+	@ApiOperation(value=REPLACE_RECORD_NOTES, consumes="application/json, application/msgpack", nickname="replaceRecordNamespaceSetKey")
 	@ResponseStatus(value=HttpStatus.NO_CONTENT)
 	@ApiResponses(value= {
 			@ApiResponse(code=404, response=RestClientError.class, message = "Record does not exist.",
@@ -204,10 +218,10 @@ public class KeyValueController {
 	@ASRestClientWritePolicyQueryParams
 	public void
 	replaceRecordNamespaceSetKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.set.notes}", required=true) @PathVariable(value="set") String set,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
-			@ApiParam(value="${RestClient.Record.bins.notes}", required=true) @RequestBody Map<String, Object>bins,
+			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=SET_NOTES, required=true) @PathVariable(value="set") String set,
+			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=STORE_BINS_NOTES, required=true) @RequestBody Map<String, Object>bins,
 			@ApiIgnore @RequestParam Map<String, String>requestParams) {
 
 		RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -238,7 +252,7 @@ public class KeyValueController {
 
 	@RequestMapping(method=RequestMethod.PUT, value="/{namespace}/{key}",
 			consumes="application/json", produces= {"application/json", "application/msgpack"})
-	@ApiOperation(value="${RestClient.KVS.ReplaceRecord.notes}", consumes="application/json, application/msgpack", nickname="replaceRecordNamespaceKey")
+	@ApiOperation(value=REPLACE_RECORD_NOTES, consumes="application/json, application/msgpack", nickname="replaceRecordNamespaceKey")
 	@ResponseStatus(value=HttpStatus.NO_CONTENT)
 	@ApiResponses(value= {
 			@ApiResponse(code=404, response=RestClientError.class, message = "Record does not exist.",
@@ -253,9 +267,9 @@ public class KeyValueController {
 	@ASRestClientWritePolicyQueryParams
 	public void
 	replaceRecordNamespaceKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
-			@ApiParam(value="${RestClient.Record.bins.notes}", required=true) @RequestBody Map<String, Object>bins,
+			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=STORE_BINS_NOTES, required=true) @RequestBody Map<String, Object>bins,
 			@ApiIgnore @RequestParam Map<String, String>requestParams) {
 
 		RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -291,7 +305,7 @@ public class KeyValueController {
 			consumes={"application/json"}, produces= {"application/json", "application/msgpack"})
 	/* A note on this consumes: We need to manually handle the input stream to get meaningful content out of a msgpack request,
 	 * But otherwise the endpoint is the same*/
-	@ApiOperation(value="${RestClient.KVS.CreateRecord.notes}", consumes="application/json, application/msgpack", nickname="createRecordNamespaceSetKey")
+	@ApiOperation(value=CREATE_RECORD_NOTES, consumes="application/json, application/msgpack", nickname="createRecordNamespaceSetKey")
 	@ResponseStatus(value=HttpStatus.CREATED)
 	@ApiResponses(value= {
 			@ApiResponse(code=404, response=RestClientError.class, message = "Namespace does not exist",
@@ -307,10 +321,10 @@ public class KeyValueController {
 	@ASRestClientWritePolicyQueryParams
 	public void
 	createRecordNamespaceSetKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.set.notes}", required=true) @PathVariable(value="set") String set,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
-			@ApiParam(value="${RestClient.Record.bins.notes}", required=true) @RequestBody Map<String, Object>bins,
+			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=SET_NOTES, required=true) @PathVariable(value="set") String set,
+			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=STORE_BINS_NOTES, required=true) @RequestBody Map<String, Object>bins,
 			@ApiIgnore @RequestParam Map<String, String>requestParams) {
 
 		RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -341,7 +355,7 @@ public class KeyValueController {
 
 	@RequestMapping(method=RequestMethod.POST, value="/{namespace}/{key}",
 			consumes={"application/json"}, produces= {"application/json", "application/msgpack"})
-	@ApiOperation(value="${RestClient.KVS.CreateRecord.notes}", consumes="application/json, application/msgpack", nickname="createRecordNamespaceKey")
+	@ApiOperation(value=CREATE_RECORD_NOTES, consumes="application/json, application/msgpack", nickname="createRecordNamespaceKey")
 	@ResponseStatus(value=HttpStatus.CREATED)
 	@ApiResponses(value= {
 			@ApiResponse(code=404, response=RestClientError.class, message = "Namespace does not exist",
@@ -357,9 +371,9 @@ public class KeyValueController {
 	@ASRestClientWritePolicyQueryParams
 	public void
 	createRecordNamespaceKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
-			@ApiParam(value="${RestClient.Record.bins.notes}", required=true) @RequestBody Map<String, Object>bins,
+			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=STORE_BINS_NOTES, required=true) @RequestBody Map<String, Object>bins,
 			@ApiIgnore @RequestParam Map<String, String>requestParams) {
 
 		RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -395,7 +409,7 @@ public class KeyValueController {
 	@RequestMapping(method=RequestMethod.PATCH, value="/{namespace}/{set}/{key}",
 			consumes={"application/json"}, produces= {"application/json", "application/msgpack"})
 	@ResponseStatus(value=HttpStatus.NO_CONTENT)
-	@ApiOperation(value="${RestClient.KVS.UpdateRecord.notes}", consumes="application/json, application/msgpack", nickname="updateRecordNamespaceSetKey")
+	@ApiOperation(value=UPDATE_RECORD_NOTES, consumes="application/json, application/msgpack", nickname="updateRecordNamespaceSetKey")
 	@ApiResponses(value= {
 			@ApiResponse(code=404, response=RestClientError.class, message = "Record does not exist.",
 					examples= @Example(value = {@ExampleProperty(mediaType="Example json", value = "{'inDoubt': false, 'message': 'A message' ")})),
@@ -409,10 +423,10 @@ public class KeyValueController {
 	@ASRestClientWritePolicyQueryParams
 	public void
 	updateRecordNamespaceSetKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.set.notes}", required=true) @PathVariable(value="set") String set,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
-			@ApiParam(value="${RestClient.Record.bins.notes}", required=true) @RequestBody Map<String, Object>bins,
+			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=SET_NOTES, required=true) @PathVariable(value="set") String set,
+			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=STORE_BINS_NOTES, required=true) @RequestBody Map<String, Object>bins,
 			@ApiIgnore @RequestParam Map<String, String>requestParams) {
 
 		RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -444,7 +458,7 @@ public class KeyValueController {
 	@RequestMapping(method=RequestMethod.PATCH, value="/{namespace}/{key}",
 			consumes="application/json", produces= {"application/json", "application/msgpack"})
 	@ResponseStatus(value=HttpStatus.NO_CONTENT)
-	@ApiOperation(value="${RestClient.KVS.UpdateRecord.notes}", consumes="application/json, application/msgpack", nickname="updateRecordNamespaceKey")
+	@ApiOperation(value=UPDATE_RECORD_NOTES, consumes="application/json, application/msgpack", nickname="updateRecordNamespaceKey")
 	@ApiResponses(value= {
 			@ApiResponse(code=404, response=RestClientError.class, message = "Record does not exist.",
 					examples= @Example(value = {@ExampleProperty(mediaType="Example json", value = "{'inDoubt': false, 'message': 'A message' ")})),
@@ -458,9 +472,9 @@ public class KeyValueController {
 	@ASRestClientWritePolicyQueryParams
 	public void
 	updateRecordNamespaceKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
-			@ApiParam(value="${RestClient.Record.bins.notes}", required=true) @RequestBody Map<String, Object>bins,
+			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=STORE_BINS_NOTES, required=true) @RequestBody Map<String, Object>bins,
 			@ApiIgnore @RequestParam Map<String, String>requestParams) {
 
 		RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -497,11 +511,11 @@ public class KeyValueController {
 	@ApiOperation(nickname="recordExistsNamespaceSetKey", value="Check if a record exists")
 	public void
 	recordExistsNamespaceSetKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.set.notes}", required=true) @PathVariable(value="set") String set,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=SET_NOTES, required=true) @PathVariable(value="set") String set,
+			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
 			@ApiIgnore HttpServletResponse res,
-			@ApiParam(name="keytype", value="${RestClient.Policy.keytype.notes}", required=false, defaultValue="STRING") @RequestParam(value="keytype", required=false)RecordKeyType keyType)
+			@ApiParam(name="keytype", value=QueryParamDescriptors.KEYTYPE_NOTES, required=false, defaultValue=QueryParamDescriptors.KEYTYPE_DEFAULT) @RequestParam(value="keytype", required=false)RecordKeyType keyType)
 	{
 
 		if (!service.recordExists(namespace, set, key, keyType)) {
@@ -525,10 +539,10 @@ public class KeyValueController {
 	@ApiOperation(value="Check if a record exists", nickname="recordExistsNamespaceKey")
 	public void
 	recordExistsNamespaceKey(
-			@ApiParam(value="${RestClient.Record.namespace.notes}", required=true) @PathVariable(value="namespace")String namespace,
-			@ApiParam(value="${RestClient.Record.userkey.notes}", required=true) @PathVariable(value="key")String key,
+			@ApiParam(value=NAMESPACE_NOTES, required=true) @PathVariable(value="namespace")String namespace,
+			@ApiParam(value=USERKEY_NOTES, required=true) @PathVariable(value="key")String key,
 			@ApiIgnore HttpServletResponse res,
-			@ApiParam(name="keytype", value="${RestClient.Policy.keytype.notes}", required=false, defaultValue="STRING") @RequestParam(value="keytype", required=false)RecordKeyType keyType)
+			@ApiParam(name="keytype", value=QueryParamDescriptors.KEYTYPE_NOTES, required=false, defaultValue=QueryParamDescriptors.KEYTYPE_DEFAULT) @RequestParam(value="keytype", required=false)RecordKeyType keyType)
 	{
 
 		if (!service.recordExists(namespace, null, key, keyType)) {

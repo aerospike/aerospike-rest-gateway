@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.SSLContext;
+
 import org.mockito.ArgumentMatcher;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,6 +41,8 @@ import com.aerospike.client.Record;
 import com.aerospike.client.ResultCode;
 import com.aerospike.client.Value;
 import com.aerospike.client.cluster.Node;
+import com.aerospike.client.policy.ClientPolicy;
+import com.aerospike.client.policy.TlsPolicy;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.RestClientOperation;
 
@@ -357,15 +361,15 @@ public class ASTestUtils {
 	public static Host getHost() {
 		String portStr = System.getenv("aerospike_restclient_port");
 		portStr = portStr != null ? portStr : "3000";
-		String hostname = System.getenv("aerospike_restclient_hostname");
 		Host host;
-		if (hostname == null) {
-			hostname = System.getenv("aerospike_restclient_hostlist");
+		if (System.getenv("aerospike_restclient_hostlist") != null) {
+			String hostlist = System.getenv("aerospike_restclient_hostlist");
+			host = Host.parseHosts(hostlist, Integer.parseInt(portStr))[0];
+		} else {
+			String hostname = System.getenv("aerospike_restclient_hostname");
 			if (hostname == null) {
 				hostname = "localhost";
 			}
-			host = Host.parseHosts(hostname, Integer.parseInt(portStr))[0];
-		} else {
 			host = new Host(hostname, Integer.parseInt(portStr));
 		}
 
@@ -399,6 +403,15 @@ public class ASTestUtils {
 		return true;
 	}
 
+	public static ClientPolicy getClientPolicy(TlsPolicy tlsPol, String user, String password) {
+		ClientPolicy policy = new ClientPolicy();
+		if (user != null && !user.isEmpty()) {
+			policy.user = user;
+			policy.password = password;
+		}
+		policy.tlsPolicy = tlsPol;
+		return policy;
+	}
 	/*
 	 *	Drop the index and wait for it to disappear from each node in the cluster
 	 */

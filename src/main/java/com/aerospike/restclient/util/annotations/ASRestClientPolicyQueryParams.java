@@ -20,6 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import com.aerospike.restclient.util.AerospikeAPIConstants;
+import com.aerospike.restclient.util.QueryParamDescriptors;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -27,26 +28,33 @@ import io.swagger.annotations.ApiImplicitParams;
 @ApiImplicitParams(value= {
 		@ApiImplicitParam(
 				name=AerospikeAPIConstants.SEND_KEY, dataType="boolean", paramType="query",
-				value="${RestClient.Policy.sendKey.notes}", defaultValue="false"),
+				value=QueryParamDescriptors.POLICY_SEND_KEY_NOTES, defaultValue=QueryParamDescriptors.POLICY_SEND_KEY_DEFAULT),
 		@ApiImplicitParam(
 				name=AerospikeAPIConstants.REPLICA, dataType="string",
-				paramType="query", allowableValues="MASTER, MASTER_PROLES, SEQUENCE, RANDOM",
-				value="${RestClient.Policy.replica.notes}", defaultValue="SEQUENCE"),
+				paramType="query", allowableValues=QueryParamDescriptors.POLICY_REPLICA_ALLOWABLE_VALUES,
+				value=QueryParamDescriptors.POLICY_REPLICA_NOTES, defaultValue=QueryParamDescriptors.POLICY_REPLICA_DEFAULT),
 		@ApiImplicitParam(
 				name=AerospikeAPIConstants.KEY_TYPE, dataType="string",
-				paramType="query", allowableValues="STRING, INTEGER, BYTES, DIGEST", defaultValue="STRING",
-				value="${RestClient.Policy.keytype.notes}"),
+				paramType="query",
+				allowableValues=QueryParamDescriptors.KEYTYPE_ALLOWABLE_VALUES,
+				defaultValue=QueryParamDescriptors.KEYTYPE_DEFAULT,
+				value=QueryParamDescriptors.KEYTYPE_NOTES),
 		@ApiImplicitParam(
-				name=AerospikeAPIConstants.RECORD_BINS, paramType="query", value="${RestClient.Policy.bins.notes}",
+				name=AerospikeAPIConstants.RECORD_BINS, paramType="query",
+				value=QueryParamDescriptors.BINS_NOTES,
 				dataType="string", required=false, allowMultiple=true),
 		@ApiImplicitParam(
 				name=AerospikeAPIConstants.READ_MODE_SC, dataType="string",
-				paramType="query", allowableValues="ALLOW_REPLICA, ALLOW_UNAVAILABLE, LINEARIZE, SESSION",
-				value="${RestClient.Policy.readmodeSC.notes}", defaultValue="SESSION"),
+				paramType="query",
+				allowableValues=QueryParamDescriptors.POLICY_READMODESC_ALLOWABLE_VALUES,
+				value=QueryParamDescriptors.POLICY_READMODESC_NOTES,
+				defaultValue=QueryParamDescriptors.POLICY_READMODESC_DEFAULT),
 		@ApiImplicitParam(
 				name=AerospikeAPIConstants.READ_MODE_AP, dataType="string",
-				paramType="query", allowableValues="ALL, ONE",
-				value="${RestClient.Policy.readmodeAP.notes}", defaultValue="ONE"),
+				paramType="query",
+				allowableValues=QueryParamDescriptors.POLICY_READMODEAP_ALLOWABLE_VALUES,
+				value=QueryParamDescriptors.POLICY_READMODEAP_NOTES,
+				defaultValue=QueryParamDescriptors.POLICY_READMODEAP_DEFAULT),
 })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ASRestClientPolicyQueryParams {}

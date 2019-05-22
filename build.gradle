@@ -2,7 +2,8 @@ buildscript {
 	ext {
 		springBootVersion = '2.1.1.RELEASE'
 		springfoxVersion = '2.9.2'
-		aerospikeClientVersion = findProperty('aerospikeClientVersion') ?:'4.4.0'
+		httpclientVersion = '4.5.8'
+		aerospikeClientVersion = findProperty('aerospikeClientVersion') ?:'4.4.1'
 	}
     if (findProperty("aerospikeUseLocal")) {
     print("using Local repo")
@@ -56,6 +57,7 @@ dependencies {
 	compile('org.msgpack:jackson-dataformat-msgpack:0.8.16')
 	compile("io.springfox:springfox-swagger2:${springfoxVersion}")
 	compile("io.springfox:springfox-swagger-ui:${springfoxVersion}")
+	implementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 }

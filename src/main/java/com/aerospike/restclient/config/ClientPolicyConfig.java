@@ -16,11 +16,13 @@
  */
 package com.aerospike.restclient.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.aerospike.client.policy.ClientPolicy;
+import com.aerospike.restclient.util.TLSPolicyBuilder;
 
 @Configuration
 public class ClientPolicyConfig {
@@ -45,7 +47,7 @@ public class ClientPolicyConfig {
 	/* Read policies */
 
 	@Bean
-	public ClientPolicy ConfigClientPolicy() {
+	public ClientPolicy ConfigClientPolicy(@Autowired TLSPolicyBuilder builder) {
 		ClientPolicy clientPolicy = new ClientPolicy();
 
 		if (username != null) {
@@ -91,6 +93,8 @@ public class ClientPolicyConfig {
 		if (useServicesAlternate != null) {
 			clientPolicy.useServicesAlternate = useServicesAlternate;
 		}
+
+		clientPolicy.tlsPolicy = builder.build();
 
 		return clientPolicy;
 	}
