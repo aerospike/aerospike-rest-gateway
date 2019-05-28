@@ -43,5 +43,5 @@ public class QueryParamDescriptors {
 	public static final String WRITE_POLICY_RECORD_EXISTS_NOTES = "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.";
 	public static final String WRITE_POLICY_RECORD_EXISTS_DEFAULT = "UPDATE";
 	public static final String WRITE_POLICY_RECORD_EXISTS_ALLOWABLE_VALUES = "UPDATE, UPDATE_ONLY, REPLACE, REPLACE_ONLY, CREATE_ONLY";
-	
+
 }
