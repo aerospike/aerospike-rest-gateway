@@ -48,6 +48,20 @@ public class OperationConverterErrors {
 		OperationConverter.convertMapToOperation(op);
 	}
 
+	/*
+	 * If the user accidentally provides an extra key at the top level, we should error out.
+	 */
+	@Test(expected=InvalidOperationError.class)
+	public void testAdditionalTopLevelValue() {
+		Map<String, Object>opValues = new HashMap<>();
+		Map<String, Object>op = new HashMap<>();
+		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeAPIConstants.OPERATION_READ);
+		op.put("An Extra", "Field");
+		opValues.put("bin", "binname");
+		op.put(AerospikeAPIConstants.OPERATION_VALUES_FIELD, opValues);
+		OperationConverter.convertMapToOperation(op);
+	}
+
 	@Test(expected=InvalidOperationError.class)
 	public void testMissingValueInOpvalue() {
 		/*

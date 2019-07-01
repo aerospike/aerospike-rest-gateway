@@ -8,7 +8,7 @@ public class QueryParamDescriptors {
 
 	public static final String POLICY_REPLICA_NOTES = "Replica algorithm used to determine the target node for a single record command.";
 	public static final String POLICY_REPLICA_ALLOWABLE_VALUES = "MASTER, MASTER_PROLES, SEQUENCE, RANDOM";
-	public static final String POLICY_REPLICA_DEFAULT = "false";
+	public static final String POLICY_REPLICA_DEFAULT = "SEQUENCE";
 
 	public static final String KEYTYPE_NOTES = "The Type of the userKey.";
 	public static final String KEYTYPE_ALLOWABLE_VALUES = "STRING, INTEGER, BYTES, DIGEST";
@@ -43,5 +43,5 @@ public class QueryParamDescriptors {
 	public static final String WRITE_POLICY_RECORD_EXISTS_NOTES = "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.";
 	public static final String WRITE_POLICY_RECORD_EXISTS_DEFAULT = "UPDATE";
 	public static final String WRITE_POLICY_RECORD_EXISTS_ALLOWABLE_VALUES = "UPDATE, UPDATE_ONLY, REPLACE, REPLACE_ONLY, CREATE_ONLY";
-	
+
 }

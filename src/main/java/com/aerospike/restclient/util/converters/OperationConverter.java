@@ -147,6 +147,10 @@ public class OperationConverter {
 
 	@SuppressWarnings("unchecked")
 	public static Operation convertMapToOperation(Map<String, Object>operationMap) {
+		/* Make sure that the user is not providing additional top level keys */
+		hasAllRequiredKeys(operationMap, OPERATION_FIELD_KEY, OP_VALUES_KEY);
+		onlyHasAllowedKeys(operationMap, OPERATION_FIELD_KEY, OP_VALUES_KEY);
+
 		String opName = (String) operationMap.get(OPERATION_FIELD_KEY);
 		if (opName == null) {
 			throw new InvalidOperationError("Operation must contain the \"operation\" field");

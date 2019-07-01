@@ -150,4 +150,20 @@ public class RestClientErrors {
 		}
 	}
 
+	public static class ClusterUnstableError extends AerospikeRestClientError {
+		private static final long serialVersionUID = 1L;
+		@Override
+		public HttpStatus getStatusCode() {
+			return HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+
+		public ClusterUnstableError() {
+			this("Unable to complete operation, cluster is unstable.");
+		}
+
+		public ClusterUnstableError(String message) {
+			super(message);
+		}
+	}
+
 }

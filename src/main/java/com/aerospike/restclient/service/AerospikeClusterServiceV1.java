@@ -28,6 +28,7 @@ import com.aerospike.client.ResultCode;
 import com.aerospike.restclient.handlers.ClusterHandler;
 import com.aerospike.restclient.handlers.InfoHandler;
 import com.aerospike.restclient.util.InfoResponseParser;
+import com.aerospike.restclient.util.RestClientErrors;
 
 @Service
 public class AerospikeClusterServiceV1 implements AerospikeClusterService {
@@ -123,6 +124,9 @@ public class AerospikeClusterServiceV1 implements AerospikeClusterService {
 				found = true;
 			}
 			objects += InfoResponseParser.getSetObjectCountFromResponse(response);
+		}
+		if (responses.size() == 0 || replFactor == 0) {
+			throw new RestClientErrors.ClusterUnstableError("Cluster unstable, unable to return cluster information");
 		}
 		if (found) {
 			return objects / Math.min(responses.size(), replFactor);
