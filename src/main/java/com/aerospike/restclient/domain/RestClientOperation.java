@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aerospike.restclient.util.AerospikeAPIConstants;
+import com.aerospike.restclient.util.AerospikeOperation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.annotations.ApiModel;
@@ -30,24 +31,24 @@ public class RestClientOperation {
 
 	public RestClientOperation() {}
 
-	public RestClientOperation(String operation, Map<String, Object>values) {
+	public RestClientOperation(AerospikeOperation operation, Map<String, Object>values) {
 		this.operation = operation;
 		this.opValues = values;
 	}
 
 	@SuppressWarnings("unchecked")
 	public RestClientOperation(Map<String, Object>opMap) {
-		this.operation = (String) opMap.get(AerospikeAPIConstants.OPERATION_FIELD);
+		this.operation = AerospikeOperation.valueOf((String) opMap.get(AerospikeAPIConstants.OPERATION_FIELD));
 		this.opValues = (Map<String, Object>) opMap.get(AerospikeAPIConstants.OPERATION_VALUES_FIELD);
 	}
 
-	@ApiModelProperty(required=true)
-	private String operation;
+	@ApiModelProperty(required=true, value="Aerospike operation to perform on the record", example="LIST_APPEND_ITEMS")
+	private AerospikeOperation operation;
 
-	@ApiModelProperty(required=true)
+	@ApiModelProperty(required=true, example="{\"bin\":\"listbin\",\"values\":[1,2,3]}")
 	private Map<String, Object> opValues;
 
-	public String getOperation() {
+	public AerospikeOperation getOperation() {
 		return this.operation;
 	}
 
@@ -55,7 +56,7 @@ public class RestClientOperation {
 		return this.opValues;
 	}
 
-	public void setOperation(String op) {
+	public void setOperation(AerospikeOperation op) {
 		this.operation = op;
 	}
 

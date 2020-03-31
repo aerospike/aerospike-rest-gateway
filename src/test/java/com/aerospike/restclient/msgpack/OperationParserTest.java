@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.aerospike.restclient.util.AerospikeOperation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.msgpack.core.MessageBufferPacker;
@@ -47,7 +48,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class OperationParserTest {
 
-	private static String testOpName = AerospikeAPIConstants.OPERATION_TOUCH;
+	private static String testOpName = AerospikeOperation.TOUCH.name();
 	@Test
 	public void testStringValue() throws IOException {
 		singleOperationParseTest("aerospike");
@@ -119,7 +120,7 @@ public class OperationParserTest {
 
 	private void singleOperationParseTest(Object value) throws IOException {
 		Map<String, Object>testOp = new HashMap<>();
-		testOp.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeAPIConstants.OPERATION_TOUCH);
+		testOp.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeOperation.TOUCH.name());
 		Map<String, Object>testOpVals = new HashMap<>();
 		testOpVals.put("value", value);
 		testOp.put(AerospikeAPIConstants.OPERATION_VALUES_FIELD, testOpVals);

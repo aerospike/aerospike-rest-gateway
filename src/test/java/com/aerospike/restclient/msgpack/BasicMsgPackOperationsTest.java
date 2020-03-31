@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.aerospike.restclient.util.AerospikeOperation;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -116,7 +117,7 @@ public class BasicMsgPackOperationsTest {
 		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
 		Map<String, Object> opMap = new HashMap<String, Object>();
 		Map<String, Object> opValues = new HashMap<String, Object>();
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_GET);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.GET);
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 
 		opList.add(opMap);
@@ -149,7 +150,7 @@ public class BasicMsgPackOperationsTest {
 		packer.packMapHeader(2);
 
 		packer.packString(OPERATION_FIELD);
-		packer.packString(AerospikeAPIConstants.OPERATION_PUT);
+		packer.packString(AerospikeOperation.PUT.name());
 
 		packer.packString(OPERATION_VALUES_FIELD);
 		packer.packMapHeader(2);
@@ -182,7 +183,7 @@ public class BasicMsgPackOperationsTest {
 
 		opValues.put("bin", "new");
 		opValues.put("value", new byte[] {1,2,3});
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_PUT);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.PUT.name());
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(opMap);
 
@@ -210,7 +211,7 @@ public class BasicMsgPackOperationsTest {
 		Map<String, Object> opMap = new HashMap<String, Object>();
 		Map<String, Object> opValues = new HashMap<String, Object>();
 
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_APPEND);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.APPEND.name());
 		opValues.put("value", new byte[] {4,5});
 		opValues.put("bin", "bytes");
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
@@ -234,7 +235,7 @@ public class BasicMsgPackOperationsTest {
 		Map<String, Object> opMap = new HashMap<String, Object>();
 		Map<String, Object> opValues = new HashMap<String, Object>();
 
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_PREPEND);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.PREPEND.name());
 		opValues.put("value", new byte[] {1,2});
 		opValues.put("bin", "bytes");
 		opMap.put(OPERATION_VALUES_FIELD, opValues);

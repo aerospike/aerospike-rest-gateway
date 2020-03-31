@@ -41,7 +41,7 @@ public class MsgPackOperationsParser extends MsgPackParser{
 		opsList = new ArrayList<RestClientOperation>();
 		try {
 			unpackOps();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new MalformedMsgPackError("Invalid msgpack representation");
 		}
 

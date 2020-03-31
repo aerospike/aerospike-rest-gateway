@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.aerospike.client.policy.ClientPolicy;
+import com.aerospike.client.policy.TlsPolicy;
 import org.mockito.ArgumentMatcher;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,8 +41,6 @@ import com.aerospike.client.Record;
 import com.aerospike.client.ResultCode;
 import com.aerospike.client.Value;
 import com.aerospike.client.cluster.Node;
-import com.aerospike.client.policy.ClientPolicy;
-import com.aerospike.client.policy.TlsPolicy;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.RestClientOperation;
 
@@ -410,6 +410,7 @@ public class ASTestUtils {
 		policy.tlsPolicy = tlsPol;
 		return policy;
 	}
+
 	/*
 	 *	Drop the index and wait for it to disappear from each node in the cluster
 	 */
@@ -442,7 +443,7 @@ public class ASTestUtils {
 		mockMVC.perform(post(endpoint)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(payload))
-		.andExpect(status().isOk());
+				.andExpect(status().isOk());
 	}
 
 	public static String performOperationAndReturn(MockMvc mockMVC, String endpoint, String payload) throws Exception {
@@ -459,7 +460,7 @@ public class ASTestUtils {
 		mockMVC.perform(post(endpoint)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(payload))
-		.andExpect(matcher);
+				.andExpect(matcher);
 	}
 	/* Perform Operation utilizing MsgPack for input and output */
 	public static void performOperation(MockMvc mockMVC, String endpoint, byte[] payload) throws Exception {
@@ -467,7 +468,7 @@ public class ASTestUtils {
 		mockMVC.perform(post(endpoint)
 				.contentType("application/msgpack")
 				.content(payload))
-		.andExpect(status().isOk());
+				.andExpect(status().isOk());
 	}
 
 	/* Perform Operation utilizing MsgPack for input and output. Also return Resulting record to caller as byte[] */
@@ -488,7 +489,7 @@ public class ASTestUtils {
 				.contentType("application/msgpack")
 				.content(payload)
 				.accept("application/msgpack"))
-		.andExpect(matcher);
+				.andExpect(matcher);
 	}
 
 	/* Check if the server is v 3.16.0.1 or newer */
@@ -575,10 +576,10 @@ public class ASTestUtils {
 
 	public static boolean compareRCOperations(RestClientOperation expected, RestClientOperation other) {
 
-		String otherOpString = other.getOperation();
+		String otherOpString = other.getOperation().name();
 		Map<String, Object> otherOpVals = other.getOpValues();
 
-		String expectedOpString = expected.getOperation();
+		String expectedOpString = expected.getOperation().name();
 		Map<String, Object> expectedOpVals = expected.getOpValues();
 
 		if (expectedOpString != null) {
