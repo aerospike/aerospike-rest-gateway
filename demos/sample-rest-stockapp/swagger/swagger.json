@@ -1,17 +1,21 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Api Documentation",
+        "description": "REST Interface for Aerospike Database.",
         "version": "1.0",
-        "title": "Api Documentation",
-        "termsOfService": "urn:tos",
-        "contact": {},
-        "license": { "name": "Apache 2.0", "url": "http://www.apache.org/licenses/LICENSE-2.0" }
+        "title": "Aerospike REST Client",
+        "contact": {
+            "name": "Aerospike, Inc.",
+            "url": "https://www.aerospike.com"
+        }
     },
     "host": "localhost:8080",
     "basePath": "/",
     "tags": [
-        { "name": "Admin Operations", "description": "Manage users and privileges." },
+        {
+            "name": "Admin Operations",
+            "description": "Manage users and privileges."
+        },
         {
             "name": "Batch Read Operations",
             "description": "Retrieve multiple records from the server."
@@ -34,68 +38,102 @@
         },
         {
             "name": "Secondary Index methods",
-            "description": "Query and manipulate secondary indices."
+            "description": "Manage secondary indices."
         },
-        { "name": "Truncate Operations", "description": "Remove multiple records from the server." }
+        {
+            "name": "Truncate Operations",
+            "description": "Remove multiple records from the server."
+        }
     ],
     "paths": {
         "/v1/admin/role": {
             "get": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Return a list of all roles registered with the Aerospike cluster.",
                 "operationId": "getRoles",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
-                            "items": { "$ref": "#/definitions/RestClientRole" }
+                            "items": {
+                                "$ref": "#/definitions/RestClientRole"
+                            }
                         }
                     },
                     "403": {
                         "description": "Not authorized to read role information",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "post": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Create a role on the Aerospike cluster.",
                 "operationId": "createRole",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "rcRole",
                         "description": "rcRole",
                         "required": true,
-                        "schema": { "$ref": "#/definitions/RestClientRole" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientRole"
+                        }
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "400": {
                         "description": "Invalid role creation parameters",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to create roles.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "Role already exists.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -103,10 +141,15 @@
         },
         "/v1/admin/role/{name}": {
             "get": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Get information about a specific role.",
                 "operationId": "getRole",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "name",
@@ -119,28 +162,41 @@
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": { "$ref": "#/definitions/RestClientRole" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientRole"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to read role information",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Specified role not found",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "delete": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Remove a specific role from the Aerospike cluster.",
                 "operationId": "dropRole",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "name",
@@ -151,18 +207,26 @@
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "403": {
                         "description": "Not authorized to remove roles",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Specified role not found",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -170,11 +234,19 @@
         },
         "/v1/admin/role/{name}/privilege": {
             "post": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Grant a list of privileges to a specific role.",
                 "operationId": "grantPrivileges",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "name",
@@ -190,27 +262,39 @@
                         "required": true,
                         "schema": {
                             "type": "array",
-                            "items": { "$ref": "#/definitions/Privilege" }
+                            "items": {
+                                "$ref": "#/definitions/Privilege"
+                            }
                         }
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "400": {
                         "description": "Invalid privilege parameters",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to modfiy roles.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Specified role not found",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -218,11 +302,19 @@
         },
         "/v1/admin/role/{name}/privilege/delete": {
             "patch": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Remove a list of privileges from a specific role.",
                 "operationId": "revokePrivileges",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "name",
@@ -238,27 +330,39 @@
                         "required": true,
                         "schema": {
                             "type": "array",
-                            "items": { "$ref": "#/definitions/Privilege" }
+                            "items": {
+                                "$ref": "#/definitions/Privilege"
+                            }
                         }
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "400": {
                         "description": "Invalid privilege parameters",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to modfiy roles.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Specified role not found",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -266,58 +370,92 @@
         },
         "/v1/admin/user": {
             "get": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Return a list of information about users.",
                 "operationId": "getUsers",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": { "type": "array", "items": { "$ref": "#/definitions/User" } }
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
                     },
                     "403": {
                         "description": "Not authorized to read user information",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "post": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Create a new user.",
                 "operationId": "createUser",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "userInfo",
                         "description": "userInfo",
                         "required": true,
-                        "schema": { "$ref": "#/definitions/RestClientUserModel" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientUserModel"
+                        }
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "400": {
                         "description": "Invalid user creation parameters",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to create users.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "User already exists.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -325,10 +463,15 @@
         },
         "/v1/admin/user/{user}": {
             "get": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Return information about a specific user.",
                 "operationId": "getUser",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "user",
@@ -339,27 +482,43 @@
                     }
                 ],
                 "responses": {
-                    "200": { "description": "OK", "schema": { "$ref": "#/definitions/User" } },
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
                     "403": {
                         "description": "Not authorized to read user information",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Specified user not found",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "delete": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Remove a user.",
                 "operationId": "dropUser",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "user",
@@ -370,35 +529,53 @@
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "403": {
                         "description": "Not authorized to delete users.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Specified user not found",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "patch": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Change the password of the specified user.",
                 "operationId": "changePassword",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "password",
                         "description": "password",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "user",
@@ -409,18 +586,26 @@
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "403": {
                         "description": "Not authorized to modify users.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Specified user not found",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -428,18 +613,31 @@
         },
         "/v1/admin/user/{user}/role": {
             "post": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Grant a set of roles to the specified user.",
                 "operationId": "grantRoles",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "roles",
                         "description": "roles",
                         "required": true,
-                        "schema": { "type": "array", "items": { "type": "string" } }
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
                     },
                     {
                         "name": "user",
@@ -450,22 +648,32 @@
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "400": {
                         "description": "Invalid role parameters",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to modify users.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Specified user not found",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -473,18 +681,31 @@
         },
         "/v1/admin/user/{user}/role/delete": {
             "patch": {
-                "tags": ["Admin Operations"],
+                "tags": [
+                    "Admin Operations"
+                ],
                 "summary": "Revoke a set of roles from the specified user.",
                 "operationId": "revokeRoles",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "roles",
                         "description": "A list of names to revoke from the user",
                         "required": true,
-                        "schema": { "type": "array", "items": { "type": "string" } }
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
                     },
                     {
                         "name": "user",
@@ -495,22 +716,32 @@
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "400": {
                         "description": "Invalid role parameters",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to modify users.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Specified user not found",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -518,11 +749,19 @@
         },
         "/v1/batch": {
             "post": {
-                "tags": ["Batch Read Operations"],
+                "tags": [
+                    "Batch Read Operations"
+                ],
                 "summary": "Return multiple records from the server in a single request.",
                 "operationId": "performBatchGet",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
@@ -531,26 +770,10 @@
                         "required": true,
                         "schema": {
                             "type": "array",
-                            "items": { "$ref": "#/definitions/BatchReadRequest" }
+                            "items": {
+                                "$ref": "#/definitions/BatchReadRequest"
+                            }
                         }
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
                     },
                     {
                         "name": "replica",
@@ -559,7 +782,12 @@
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -576,24 +804,34 @@
                         "description": "OK",
                         "schema": {
                             "type": "array",
-                            "items": { "$ref": "#/definitions/BatchRead" }
+                            "items": {
+                                "$ref": "#/definitions/BatchRead"
+                            }
                         }
                     },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Non existent namespace used in one or more key.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -601,18 +839,27 @@
         },
         "/v1/cluster": {
             "get": {
-                "tags": ["Cluster information operations"],
+                "tags": [
+                    "Cluster information operations"
+                ],
                 "summary": "Return an object containing information about the Aerospike cluster.",
                 "operationId": "getClusterInfo",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": { "$ref": "#/definitions/clusterInformation" }
+                        "schema": {
+                            "$ref": "#/definitions/clusterInformation"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -620,10 +867,15 @@
         },
         "/v1/index": {
             "get": {
-                "tags": ["Secondary Index methods"],
+                "tags": [
+                    "Secondary Index methods"
+                ],
                 "summary": "Return information about multiple secondary indices.",
                 "operationId": "indexInformation",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "namespace",
@@ -638,56 +890,84 @@
                         "description": "OK",
                         "schema": {
                             "type": "array",
-                            "items": { "$ref": "#/definitions/RestClientIndex" }
+                            "items": {
+                                "$ref": "#/definitions/RestClientIndex"
+                            }
                         }
                     },
                     "403": {
                         "description": "Not authorized to access the resource.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Specified namespace not found",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "post": {
-                "tags": ["Secondary Index methods"],
+                "tags": [
+                    "Secondary Index methods"
+                ],
                 "summary": "Create a secondary index.",
                 "operationId": "createIndex",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "indexModel",
                         "description": "indexModel",
                         "required": true,
-                        "schema": { "$ref": "#/definitions/RestClientIndex" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientIndex"
+                        }
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "400": {
                         "description": "Invalid index creation parameters.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "Index with the same name already exists, or equivalent index exists.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -695,10 +975,15 @@
         },
         "/v1/index/{namespace}/{name}": {
             "get": {
-                "tags": ["Secondary Index methods"],
+                "tags": [
+                    "Secondary Index methods"
+                ],
                 "summary": "Get Information about a single secondary index.",
                 "operationId": "getIndexStats",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "name",
@@ -718,28 +1003,44 @@
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": { "type": "object", "additionalProperties": { "type": "string" } }
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Specified Index does not exist.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "delete": {
-                "tags": ["Secondary Index methods"],
+                "tags": [
+                    "Secondary Index methods"
+                ],
                 "summary": "Remove a secondary Index",
                 "operationId": "dropIndex",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "name",
@@ -757,18 +1058,26 @@
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "403": {
                         "description": "Not authorized to access the resource.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Specified Index does not exist.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -776,33 +1085,57 @@
         },
         "/v1/info": {
             "post": {
-                "tags": ["Info Operations"],
+                "tags": [
+                    "Info Operations"
+                ],
                 "summary": "Send a list of info commands to a random node in the cluster",
                 "operationId": "infoAny",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "infoRequests",
                         "description": "An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.",
                         "required": true,
-                        "schema": { "type": "array", "items": { "type": "string" } },
-                        "x-examples": { "application/json": "['build', 'edition']" }
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "x-examples": {
+                            "application/json": "['build', 'edition']"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Commands sent succesfully.",
-                        "schema": { "type": "object", "additionalProperties": { "type": "string" } }
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
                     },
                     "403": {
                         "description": "Not authorized to perform the info command",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -810,22 +1143,37 @@
         },
         "/v1/info/{node}": {
             "post": {
-                "tags": ["Info Operations"],
+                "tags": [
+                    "Info Operations"
+                ],
                 "summary": "Send a list of info commands to a specific node in the cluster.",
                 "operationId": "infoNode",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "infoRequests",
                         "description": "An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.",
                         "required": true,
-                        "schema": { "type": "array", "items": { "type": "string" } },
-                        "x-examples": { "application/json": "[build, edition]" }
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "x-examples": {
+                            "application/json": "[build, edition]"
+                        }
                     },
                     {
-                        "name": "nodeName",
+                        "name": "node",
                         "in": "path",
                         "description": "The node ID for the node which will receive the info commands.",
                         "required": true,
@@ -835,19 +1183,30 @@
                 "responses": {
                     "200": {
                         "description": "Commands sent succesfully.",
-                        "schema": { "type": "object", "additionalProperties": { "type": "string" } }
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
                     },
                     "403": {
                         "description": "Not authorized to perform the info command",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "The specified Node does not exist.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -855,10 +1214,15 @@
         },
         "/v1/kvs/{namespace}/{key}": {
             "get": {
-                "tags": ["Key Value Operations"],
+                "tags": [
+                    "Key Value Operations"
+                ],
                 "summary": "Return the metadata and bins for a record.",
                 "operationId": "getRecordNamespaceKey",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "bins",
@@ -866,17 +1230,10 @@
                         "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
                         "required": false,
                         "type": "array",
-                        "items": { "type": "string" },
+                        "items": {
+                            "type": "string"
+                        },
                         "collectionFormat": "multi"
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
                     },
                     {
                         "name": "key",
@@ -892,16 +1249,12 @@
                         "required": false,
                         "type": "string",
                         "default": "STRING",
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -911,13 +1264,44 @@
                         "type": "string"
                     },
                     {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
                         "name": "replica",
                         "in": "query",
                         "description": "Replica algorithm used to determine the target node for a single record command.",
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -930,32 +1314,52 @@
                     }
                 ],
                 "responses": {
-                    "200": { "description": "OK", "schema": { "$ref": "#/definitions/Record" } },
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Record"
+                        }
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Record not found.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "head": {
-                "tags": ["Key Value Operations"],
+                "tags": [
+                    "Key Value Operations"
+                ],
                 "summary": "Check if a record exists",
                 "operationId": "recordExistsNamespaceKey",
-                "consumes": ["application/json"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "key",
@@ -972,7 +1376,12 @@
                         "type": "string",
                         "default": "STRING",
                         "allowEmptyValue": false,
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -983,28 +1392,44 @@
                     }
                 ],
                 "responses": {
-                    "200": { "description": "OK" },
-                    "404": { "description": "Record does not exist." },
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Record does not exist."
+                    },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "post": {
-                "tags": ["Key Value Operations"],
+                "tags": [
+                    "Key Value Operations"
+                ],
                 "summary": "Create a new record with the provided bins into the record.",
                 "operationId": "createRecordNamespaceKey",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "bins",
-                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\nexample: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
+                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
                         "required": true,
-                        "schema": { "type": "object" }
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "name": "commitLevel",
@@ -1013,16 +1438,10 @@
                         "required": false,
                         "type": "string",
                         "default": "COMMIT_ALL",
-                        "enum": ["COMMIT_ALL", "COMMIT_MASTER"]
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
+                        "enum": [
+                            "COMMIT_ALL",
+                            "COMMIT_MASTER"
+                        ]
                     },
                     {
                         "name": "durableDelete",
@@ -1056,7 +1475,11 @@
                         "required": false,
                         "type": "string",
                         "default": "NONE",
-                        "enum": ["NONE", "EXPECT_GEN_EQUAL", "EXPECT_GEN_GT"]
+                        "enum": [
+                            "NONE",
+                            "EXPECT_GEN_EQUAL",
+                            "EXPECT_GEN_GT"
+                        ]
                     },
                     {
                         "name": "key",
@@ -1072,16 +1495,12 @@
                         "required": false,
                         "type": "string",
                         "default": "STRING",
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -1091,12 +1510,45 @@
                         "type": "string"
                     },
                     {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
                         "name": "recordExistsAction",
                         "in": "query",
                         "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
                         "required": false,
                         "type": "string",
-                        "enum": ["UPDATE", "UPDATE_ONLY", "REPLACE", "REPLACE_ONLY", "CREATE_ONLY"]
+                        "default": "UPDATE",
+                        "enum": [
+                            "UPDATE",
+                            "UPDATE_ONLY",
+                            "REPLACE",
+                            "REPLACE_ONLY",
+                            "CREATE_ONLY"
+                        ]
                     },
                     {
                         "name": "replica",
@@ -1105,7 +1557,12 @@
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -1118,43 +1575,65 @@
                     }
                 ],
                 "responses": {
-                    "201": { "description": "Created" },
+                    "201": {
+                        "description": "Created"
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Namespace does not exist",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "Record Already exists",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "put": {
-                "tags": ["Key Value Operations"],
+                "tags": [
+                    "Key Value Operations"
+                ],
                 "summary": "Replace the bins of the specified record.",
                 "operationId": "replaceRecordNamespaceKey",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "bins",
-                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\nexample: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
+                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
                         "required": true,
-                        "schema": { "type": "object" }
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "name": "commitLevel",
@@ -1163,16 +1642,10 @@
                         "required": false,
                         "type": "string",
                         "default": "COMMIT_ALL",
-                        "enum": ["COMMIT_ALL", "COMMIT_MASTER"]
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
+                        "enum": [
+                            "COMMIT_ALL",
+                            "COMMIT_MASTER"
+                        ]
                     },
                     {
                         "name": "durableDelete",
@@ -1206,7 +1679,11 @@
                         "required": false,
                         "type": "string",
                         "default": "NONE",
-                        "enum": ["NONE", "EXPECT_GEN_EQUAL", "EXPECT_GEN_GT"]
+                        "enum": [
+                            "NONE",
+                            "EXPECT_GEN_EQUAL",
+                            "EXPECT_GEN_GT"
+                        ]
                     },
                     {
                         "name": "key",
@@ -1222,16 +1699,12 @@
                         "required": false,
                         "type": "string",
                         "default": "STRING",
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -1241,12 +1714,45 @@
                         "type": "string"
                     },
                     {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
                         "name": "recordExistsAction",
                         "in": "query",
                         "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
                         "required": false,
                         "type": "string",
-                        "enum": ["UPDATE", "UPDATE_ONLY", "REPLACE", "REPLACE_ONLY", "CREATE_ONLY"]
+                        "default": "UPDATE",
+                        "enum": [
+                            "UPDATE",
+                            "UPDATE_ONLY",
+                            "REPLACE",
+                            "REPLACE_ONLY",
+                            "CREATE_ONLY"
+                        ]
                     },
                     {
                         "name": "replica",
@@ -1255,7 +1761,12 @@
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -1268,35 +1779,52 @@
                     }
                 ],
                 "responses": {
-                    "204": { "description": "No Content" },
+                    "204": {
+                        "description": "No Content"
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Record does not exist.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "Generation mismatch for operation",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "delete": {
-                "tags": ["Key Value Operations"],
+                "tags": [
+                    "Key Value Operations"
+                ],
                 "summary": "Delete the specified record.",
                 "operationId": "deleteRecordNamespaceKey",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "commitLevel",
@@ -1305,16 +1833,10 @@
                         "required": false,
                         "type": "string",
                         "default": "COMMIT_ALL",
-                        "enum": ["COMMIT_ALL", "COMMIT_MASTER"]
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
+                        "enum": [
+                            "COMMIT_ALL",
+                            "COMMIT_MASTER"
+                        ]
                     },
                     {
                         "name": "durableDelete",
@@ -1348,7 +1870,11 @@
                         "required": false,
                         "type": "string",
                         "default": "NONE",
-                        "enum": ["NONE", "EXPECT_GEN_EQUAL", "EXPECT_GEN_GT"]
+                        "enum": [
+                            "NONE",
+                            "EXPECT_GEN_EQUAL",
+                            "EXPECT_GEN_GT"
+                        ]
                     },
                     {
                         "name": "key",
@@ -1364,16 +1890,12 @@
                         "required": false,
                         "type": "string",
                         "default": "STRING",
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -1383,12 +1905,45 @@
                         "type": "string"
                     },
                     {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
                         "name": "recordExistsAction",
                         "in": "query",
                         "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
                         "required": false,
                         "type": "string",
-                        "enum": ["UPDATE", "UPDATE_ONLY", "REPLACE", "REPLACE_ONLY", "CREATE_ONLY"]
+                        "default": "UPDATE",
+                        "enum": [
+                            "UPDATE",
+                            "UPDATE_ONLY",
+                            "REPLACE",
+                            "REPLACE_ONLY",
+                            "CREATE_ONLY"
+                        ]
                     },
                     {
                         "name": "replica",
@@ -1397,7 +1952,12 @@
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -1410,43 +1970,65 @@
                     }
                 ],
                 "responses": {
-                    "204": { "description": "No Content" },
+                    "204": {
+                        "description": "No Content"
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Record not found.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "Generation mismatch for operation",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "patch": {
-                "tags": ["Key Value Operations"],
+                "tags": [
+                    "Key Value Operations"
+                ],
                 "summary": "Merge the provided bins into the record.",
                 "operationId": "updateRecordNamespaceKey",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "bins",
-                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\nexample: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
+                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
                         "required": true,
-                        "schema": { "type": "object" }
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "name": "commitLevel",
@@ -1455,16 +2037,10 @@
                         "required": false,
                         "type": "string",
                         "default": "COMMIT_ALL",
-                        "enum": ["COMMIT_ALL", "COMMIT_MASTER"]
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
+                        "enum": [
+                            "COMMIT_ALL",
+                            "COMMIT_MASTER"
+                        ]
                     },
                     {
                         "name": "durableDelete",
@@ -1498,7 +2074,11 @@
                         "required": false,
                         "type": "string",
                         "default": "NONE",
-                        "enum": ["NONE", "EXPECT_GEN_EQUAL", "EXPECT_GEN_GT"]
+                        "enum": [
+                            "NONE",
+                            "EXPECT_GEN_EQUAL",
+                            "EXPECT_GEN_GT"
+                        ]
                     },
                     {
                         "name": "key",
@@ -1514,16 +2094,12 @@
                         "required": false,
                         "type": "string",
                         "default": "STRING",
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -1533,12 +2109,45 @@
                         "type": "string"
                     },
                     {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
                         "name": "recordExistsAction",
                         "in": "query",
                         "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
                         "required": false,
                         "type": "string",
-                        "enum": ["UPDATE", "UPDATE_ONLY", "REPLACE", "REPLACE_ONLY", "CREATE_ONLY"]
+                        "default": "UPDATE",
+                        "enum": [
+                            "UPDATE",
+                            "UPDATE_ONLY",
+                            "REPLACE",
+                            "REPLACE_ONLY",
+                            "CREATE_ONLY"
+                        ]
                     },
                     {
                         "name": "replica",
@@ -1547,7 +2156,12 @@
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -1560,26 +2174,38 @@
                     }
                 ],
                 "responses": {
-                    "204": { "description": "No Content" },
+                    "204": {
+                        "description": "No Content"
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Record does not exist.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "Generation mismatch for operation",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -1587,10 +2213,15 @@
         },
         "/v1/kvs/{namespace}/{set}/{key}": {
             "get": {
-                "tags": ["Key Value Operations"],
+                "tags": [
+                    "Key Value Operations"
+                ],
                 "summary": "Return the metadata and bins for a record.",
                 "operationId": "getRecordNamespaceSetKey",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "bins",
@@ -1598,17 +2229,10 @@
                         "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
                         "required": false,
                         "type": "array",
-                        "items": { "type": "string" },
+                        "items": {
+                            "type": "string"
+                        },
                         "collectionFormat": "multi"
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
                     },
                     {
                         "name": "key",
@@ -1624,16 +2248,12 @@
                         "required": false,
                         "type": "string",
                         "default": "STRING",
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -1643,13 +2263,44 @@
                         "type": "string"
                     },
                     {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
                         "name": "replica",
                         "in": "query",
                         "description": "Replica algorithm used to determine the target node for a single record command.",
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -1669,32 +2320,52 @@
                     }
                 ],
                 "responses": {
-                    "200": { "description": "OK", "schema": { "$ref": "#/definitions/Record" } },
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Record"
+                        }
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Record not found.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "head": {
-                "tags": ["Key Value Operations"],
+                "tags": [
+                    "Key Value Operations"
+                ],
                 "summary": "Check if a record exists",
                 "operationId": "recordExistsNamespaceSetKey",
-                "consumes": ["application/json"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "key",
@@ -1711,7 +2382,12 @@
                         "type": "string",
                         "default": "STRING",
                         "allowEmptyValue": false,
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -1729,28 +2405,44 @@
                     }
                 ],
                 "responses": {
-                    "200": { "description": "OK" },
-                    "404": { "description": "Record does not exist." },
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Record does not exist."
+                    },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "post": {
-                "tags": ["Key Value Operations"],
+                "tags": [
+                    "Key Value Operations"
+                ],
                 "summary": "Create a new record with the provided bins into the record.",
                 "operationId": "createRecordNamespaceSetKey",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "bins",
-                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\nexample: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
+                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
                         "required": true,
-                        "schema": { "type": "object" }
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "name": "commitLevel",
@@ -1759,16 +2451,10 @@
                         "required": false,
                         "type": "string",
                         "default": "COMMIT_ALL",
-                        "enum": ["COMMIT_ALL", "COMMIT_MASTER"]
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
+                        "enum": [
+                            "COMMIT_ALL",
+                            "COMMIT_MASTER"
+                        ]
                     },
                     {
                         "name": "durableDelete",
@@ -1802,7 +2488,11 @@
                         "required": false,
                         "type": "string",
                         "default": "NONE",
-                        "enum": ["NONE", "EXPECT_GEN_EQUAL", "EXPECT_GEN_GT"]
+                        "enum": [
+                            "NONE",
+                            "EXPECT_GEN_EQUAL",
+                            "EXPECT_GEN_GT"
+                        ]
                     },
                     {
                         "name": "key",
@@ -1818,16 +2508,12 @@
                         "required": false,
                         "type": "string",
                         "default": "STRING",
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -1837,12 +2523,45 @@
                         "type": "string"
                     },
                     {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
                         "name": "recordExistsAction",
                         "in": "query",
                         "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
                         "required": false,
                         "type": "string",
-                        "enum": ["UPDATE", "UPDATE_ONLY", "REPLACE", "REPLACE_ONLY", "CREATE_ONLY"]
+                        "default": "UPDATE",
+                        "enum": [
+                            "UPDATE",
+                            "UPDATE_ONLY",
+                            "REPLACE",
+                            "REPLACE_ONLY",
+                            "CREATE_ONLY"
+                        ]
                     },
                     {
                         "name": "replica",
@@ -1851,7 +2570,12 @@
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -1871,43 +2595,65 @@
                     }
                 ],
                 "responses": {
-                    "201": { "description": "Created" },
+                    "201": {
+                        "description": "Created"
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Namespace does not exist",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "Record Already exists",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "put": {
-                "tags": ["Key Value Operations"],
+                "tags": [
+                    "Key Value Operations"
+                ],
                 "summary": "Replace the bins of the specified record.",
                 "operationId": "replaceRecordNamespaceSetKey",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "bins",
-                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\nexample: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
+                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
                         "required": true,
-                        "schema": { "type": "object" }
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "name": "commitLevel",
@@ -1916,16 +2662,10 @@
                         "required": false,
                         "type": "string",
                         "default": "COMMIT_ALL",
-                        "enum": ["COMMIT_ALL", "COMMIT_MASTER"]
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
+                        "enum": [
+                            "COMMIT_ALL",
+                            "COMMIT_MASTER"
+                        ]
                     },
                     {
                         "name": "durableDelete",
@@ -1959,7 +2699,11 @@
                         "required": false,
                         "type": "string",
                         "default": "NONE",
-                        "enum": ["NONE", "EXPECT_GEN_EQUAL", "EXPECT_GEN_GT"]
+                        "enum": [
+                            "NONE",
+                            "EXPECT_GEN_EQUAL",
+                            "EXPECT_GEN_GT"
+                        ]
                     },
                     {
                         "name": "key",
@@ -1975,16 +2719,12 @@
                         "required": false,
                         "type": "string",
                         "default": "STRING",
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -1994,12 +2734,45 @@
                         "type": "string"
                     },
                     {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
                         "name": "recordExistsAction",
                         "in": "query",
                         "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
                         "required": false,
                         "type": "string",
-                        "enum": ["UPDATE", "UPDATE_ONLY", "REPLACE", "REPLACE_ONLY", "CREATE_ONLY"]
+                        "default": "UPDATE",
+                        "enum": [
+                            "UPDATE",
+                            "UPDATE_ONLY",
+                            "REPLACE",
+                            "REPLACE_ONLY",
+                            "CREATE_ONLY"
+                        ]
                     },
                     {
                         "name": "replica",
@@ -2008,7 +2781,12 @@
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -2028,35 +2806,52 @@
                     }
                 ],
                 "responses": {
-                    "204": { "description": "No Content" },
+                    "204": {
+                        "description": "No Content"
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Record does not exist.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "Generation mismatch for operation",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "delete": {
-                "tags": ["Key Value Operations"],
+                "tags": [
+                    "Key Value Operations"
+                ],
                 "summary": "Delete the specified record.",
                 "operationId": "deleteRecordNamespaceSetKey",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "commitLevel",
@@ -2065,16 +2860,10 @@
                         "required": false,
                         "type": "string",
                         "default": "COMMIT_ALL",
-                        "enum": ["COMMIT_ALL", "COMMIT_MASTER"]
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
+                        "enum": [
+                            "COMMIT_ALL",
+                            "COMMIT_MASTER"
+                        ]
                     },
                     {
                         "name": "durableDelete",
@@ -2108,7 +2897,11 @@
                         "required": false,
                         "type": "string",
                         "default": "NONE",
-                        "enum": ["NONE", "EXPECT_GEN_EQUAL", "EXPECT_GEN_GT"]
+                        "enum": [
+                            "NONE",
+                            "EXPECT_GEN_EQUAL",
+                            "EXPECT_GEN_GT"
+                        ]
                     },
                     {
                         "name": "key",
@@ -2124,16 +2917,12 @@
                         "required": false,
                         "type": "string",
                         "default": "STRING",
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -2143,12 +2932,45 @@
                         "type": "string"
                     },
                     {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
                         "name": "recordExistsAction",
                         "in": "query",
                         "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
                         "required": false,
                         "type": "string",
-                        "enum": ["UPDATE", "UPDATE_ONLY", "REPLACE", "REPLACE_ONLY", "CREATE_ONLY"]
+                        "default": "UPDATE",
+                        "enum": [
+                            "UPDATE",
+                            "UPDATE_ONLY",
+                            "REPLACE",
+                            "REPLACE_ONLY",
+                            "CREATE_ONLY"
+                        ]
                     },
                     {
                         "name": "replica",
@@ -2157,7 +2979,12 @@
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -2177,43 +3004,65 @@
                     }
                 ],
                 "responses": {
-                    "204": { "description": "No Content" },
+                    "204": {
+                        "description": "No Content"
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Record not found.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "Generation mismatch for operation",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
             },
             "patch": {
-                "tags": ["Key Value Operations"],
+                "tags": [
+                    "Key Value Operations"
+                ],
                 "summary": "Merge the provided bins into the record.",
                 "operationId": "updateRecordNamespaceSetKey",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "bins",
-                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\nexample: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
+                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
                         "required": true,
-                        "schema": { "type": "object" }
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "name": "commitLevel",
@@ -2222,16 +3071,10 @@
                         "required": false,
                         "type": "string",
                         "default": "COMMIT_ALL",
-                        "enum": ["COMMIT_ALL", "COMMIT_MASTER"]
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
+                        "enum": [
+                            "COMMIT_ALL",
+                            "COMMIT_MASTER"
+                        ]
                     },
                     {
                         "name": "durableDelete",
@@ -2265,7 +3108,11 @@
                         "required": false,
                         "type": "string",
                         "default": "NONE",
-                        "enum": ["NONE", "EXPECT_GEN_EQUAL", "EXPECT_GEN_GT"]
+                        "enum": [
+                            "NONE",
+                            "EXPECT_GEN_EQUAL",
+                            "EXPECT_GEN_GT"
+                        ]
                     },
                     {
                         "name": "key",
@@ -2281,16 +3128,12 @@
                         "required": false,
                         "type": "string",
                         "default": "STRING",
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -2300,12 +3143,45 @@
                         "type": "string"
                     },
                     {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
                         "name": "recordExistsAction",
                         "in": "query",
                         "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
                         "required": false,
                         "type": "string",
-                        "enum": ["UPDATE", "UPDATE_ONLY", "REPLACE", "REPLACE_ONLY", "CREATE_ONLY"]
+                        "default": "UPDATE",
+                        "enum": [
+                            "UPDATE",
+                            "UPDATE_ONLY",
+                            "REPLACE",
+                            "REPLACE_ONLY",
+                            "CREATE_ONLY"
+                        ]
                     },
                     {
                         "name": "replica",
@@ -2314,7 +3190,12 @@
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -2334,26 +3215,38 @@
                     }
                 ],
                 "responses": {
-                    "204": { "description": "No Content" },
+                    "204": {
+                        "description": "No Content"
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Record does not exist.",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "Generation mismatch for operation",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -2361,11 +3254,19 @@
         },
         "/v1/operate/{namespace}/{key}": {
             "post": {
-                "tags": ["Operate operations"],
+                "tags": [
+                    "Operate operations"
+                ],
                 "summary": "Perform multiple operations atomically on the specified record.",
                 "operationId": "operateNamespaceKey",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "commitLevel",
@@ -2374,16 +3275,10 @@
                         "required": false,
                         "type": "string",
                         "default": "COMMIT_ALL",
-                        "enum": ["COMMIT_ALL", "COMMIT_MASTER"]
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
+                        "enum": [
+                            "COMMIT_ALL",
+                            "COMMIT_MASTER"
+                        ]
                     },
                     {
                         "name": "durableDelete",
@@ -2417,7 +3312,11 @@
                         "required": false,
                         "type": "string",
                         "default": "NONE",
-                        "enum": ["NONE", "EXPECT_GEN_EQUAL", "EXPECT_GEN_GT"]
+                        "enum": [
+                            "NONE",
+                            "EXPECT_GEN_EQUAL",
+                            "EXPECT_GEN_GT"
+                        ]
                     },
                     {
                         "name": "key",
@@ -2433,16 +3332,12 @@
                         "required": false,
                         "type": "string",
                         "default": "STRING",
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -2458,8 +3353,36 @@
                         "required": true,
                         "schema": {
                             "type": "array",
-                            "items": { "$ref": "#/definitions/Operation" }
+                            "items": {
+                                "$ref": "#/definitions/Operation"
+                            }
                         }
+                    },
+                    {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
                     },
                     {
                         "name": "recordExistsAction",
@@ -2467,7 +3390,14 @@
                         "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
                         "required": false,
                         "type": "string",
-                        "enum": ["UPDATE", "UPDATE_ONLY", "REPLACE", "REPLACE_ONLY", "CREATE_ONLY"]
+                        "default": "UPDATE",
+                        "enum": [
+                            "UPDATE",
+                            "UPDATE_ONLY",
+                            "REPLACE",
+                            "REPLACE_ONLY",
+                            "CREATE_ONLY"
+                        ]
                     },
                     {
                         "name": "replica",
@@ -2476,7 +3406,12 @@
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -2489,26 +3424,41 @@
                     }
                 ],
                 "responses": {
-                    "200": { "description": "OK", "schema": { "$ref": "#/definitions/Record" } },
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Record"
+                        }
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Namespace or record does not exist",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "Generation conflict",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -2516,11 +3466,19 @@
         },
         "/v1/operate/{namespace}/{set}/{key}": {
             "post": {
-                "tags": ["Operate operations"],
+                "tags": [
+                    "Operate operations"
+                ],
                 "summary": "Perform multiple operations atomically on the specified record.",
                 "operationId": "operateNamespaceSetKey",
-                "consumes": ["application/json", "application/msgpack"],
-                "produces": ["application/json", "application/msgpack"],
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "commitLevel",
@@ -2529,16 +3487,10 @@
                         "required": false,
                         "type": "string",
                         "default": "COMMIT_ALL",
-                        "enum": ["COMMIT_ALL", "COMMIT_MASTER"]
-                    },
-                    {
-                        "name": "consistencyLevel",
-                        "in": "query",
-                        "description": "How replicas should be consulted in a read operation to provide the desired consistency guarantee.",
-                        "required": false,
-                        "type": "string",
-                        "default": "CONSISTENCY_ONE",
-                        "enum": ["CONSISTENCY_ONE", "CONSISTENCY_ALL"]
+                        "enum": [
+                            "COMMIT_ALL",
+                            "COMMIT_MASTER"
+                        ]
                     },
                     {
                         "name": "durableDelete",
@@ -2572,7 +3524,11 @@
                         "required": false,
                         "type": "string",
                         "default": "NONE",
-                        "enum": ["NONE", "EXPECT_GEN_EQUAL", "EXPECT_GEN_GT"]
+                        "enum": [
+                            "NONE",
+                            "EXPECT_GEN_EQUAL",
+                            "EXPECT_GEN_GT"
+                        ]
                     },
                     {
                         "name": "key",
@@ -2588,16 +3544,12 @@
                         "required": false,
                         "type": "string",
                         "default": "STRING",
-                        "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
-                    },
-                    {
-                        "name": "linearizeRead",
-                        "in": "query",
-                        "description": "Force reads to be linearized for server namespaces that support strong consistency mode.",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false,
-                        "x-example": false
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
                     },
                     {
                         "name": "namespace",
@@ -2613,8 +3565,36 @@
                         "required": true,
                         "schema": {
                             "type": "array",
-                            "items": { "$ref": "#/definitions/Operation" }
+                            "items": {
+                                "$ref": "#/definitions/Operation"
+                            }
                         }
+                    },
+                    {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
                     },
                     {
                         "name": "recordExistsAction",
@@ -2622,7 +3602,14 @@
                         "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
                         "required": false,
                         "type": "string",
-                        "enum": ["UPDATE", "UPDATE_ONLY", "REPLACE", "REPLACE_ONLY", "CREATE_ONLY"]
+                        "default": "UPDATE",
+                        "enum": [
+                            "UPDATE",
+                            "UPDATE_ONLY",
+                            "REPLACE",
+                            "REPLACE_ONLY",
+                            "CREATE_ONLY"
+                        ]
                     },
                     {
                         "name": "replica",
@@ -2631,7 +3618,12 @@
                         "required": false,
                         "type": "string",
                         "default": "SEQUENCE",
-                        "enum": ["MASTER", "MASTER_PROLES", "SEQUENCE", "RANDOM"]
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
                     },
                     {
                         "name": "sendKey",
@@ -2651,26 +3643,41 @@
                     }
                 ],
                 "responses": {
-                    "200": { "description": "OK", "schema": { "$ref": "#/definitions/Record" } },
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Record"
+                        }
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "404": {
                         "description": "Namespace or record does not exist",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "409": {
                         "description": "Generation conflict",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -2678,15 +3685,20 @@
         },
         "/v1/truncate/{namespace}": {
             "delete": {
-                "tags": ["Truncate Operations"],
+                "tags": [
+                    "Truncate Operations"
+                ],
                 "summary": "Truncate records in a specified namespace.",
                 "operationId": "truncateNamespace",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "date",
                         "in": "query",
-                        "description": "All records last updated before this date/time will be truncated. If not specified, all records will be truncated.\nThis is a string representation of a date time utilizing the ISO-8601 extended offset date-time format. example: 2019-12-03T10:15:30+01:00",
+                        "description": "All records last updated before this date/time will be truncated. If not specified, all records will be truncated.\n This is a string representation of a date time utilizing the ISO-8601 extended offset date-time format. example: 2019-12-03T10:15:30+01:00",
                         "required": false,
                         "type": "string",
                         "allowEmptyValue": false,
@@ -2701,18 +3713,26 @@
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -2720,15 +3740,20 @@
         },
         "/v1/truncate/{namespace}/{set}": {
             "delete": {
-                "tags": ["Truncate Operations"],
+                "tags": [
+                    "Truncate Operations"
+                ],
                 "summary": "Truncate records in a specified namespace and set.",
                 "operationId": "truncateSet",
-                "produces": ["application/json", "application/msgpack"],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
                 "parameters": [
                     {
                         "name": "date",
                         "in": "query",
-                        "description": "All records last updated before this date/time will be truncated. If not specified, all records will be truncated.\nThis is a string representation of a date time utilizing the ISO-8601 extended offset date-time format. example: 2019-12-03T10:15:30+01:00",
+                        "description": "All records last updated before this date/time will be truncated. If not specified, all records will be truncated.\n This is a string representation of a date time utilizing the ISO-8601 extended offset date-time format. example: 2019-12-03T10:15:30+01:00",
                         "required": false,
                         "type": "string",
                         "allowEmptyValue": false,
@@ -2750,18 +3775,26 @@
                     }
                 ],
                 "responses": {
-                    "202": { "description": "Accepted" },
+                    "202": {
+                        "description": "Accepted"
+                    },
                     "400": {
                         "description": "Invalid parameters or request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "403": {
                         "description": "Not authorized to access the resource",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     },
                     "500": {
-                        "description": "The Rest Client encountered an error processing the request",
-                        "schema": { "$ref": "#/definitions/RestClientError" }
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
                     }
                 },
                 "deprecated": false
@@ -2772,22 +3805,45 @@
         "BatchRead": {
             "type": "object",
             "properties": {
-                "binNames": { "type": "array", "items": { "type": "string" } },
-                "key": { "$ref": "#/definitions/Key" },
-                "readAllBins": { "type": "boolean" },
-                "record": { "$ref": "#/definitions/Record" }
+                "binNames": {
+                    "type": "array",
+                    "description": "List of bins to limit the record response to.",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "key": {
+                    "description": "Key to retrieve a record",
+                    "$ref": "#/definitions/Key"
+                },
+                "readAllBins": {
+                    "type": "boolean",
+                    "description": "Whether all bins should be returned with this record"
+                },
+                "record": {
+                    "description": "Record associated with the key. Null if the record was not found",
+                    "$ref": "#/definitions/Record"
+                }
             },
             "title": "BatchRead"
         },
         "BatchReadRequest": {
             "type": "object",
+            "required": [
+                "key"
+            ],
             "properties": {
                 "binNames": {
                     "type": "array",
                     "description": "List of bins to limit the record response to.",
-                    "items": { "type": "string" }
+                    "items": {
+                        "type": "string"
+                    }
                 },
-                "key": { "description": "Key to retrieve a record", "$ref": "#/definitions/Key" },
+                "key": {
+                    "description": "Key to retrieve a record",
+                    "$ref": "#/definitions/Key"
+                },
                 "readAllBins": {
                     "type": "boolean",
                     "description": "Whether all bins should be returned with this record"
@@ -2797,7 +3853,9 @@
         },
         "Key": {
             "type": "object",
-            "required": ["namespace"],
+            "required": [
+                "namespace"
+            ],
             "properties": {
                 "digest": {
                     "type": "string",
@@ -2808,10 +3866,21 @@
                     "type": "string",
                     "example": "STRING",
                     "description": "Enum describing the type of the userKey. This field is omitted in MessagePack responses.",
-                    "enum": ["STRING", "INTEGER", "BYTES", "DIGEST"]
+                    "enum": [
+                        "STRING",
+                        "INTEGER",
+                        "BYTES",
+                        "DIGEST"
+                    ]
                 },
-                "namespace": { "type": "string", "example": "testNS" },
-                "setName": { "type": "string", "example": "testSet" },
+                "namespace": {
+                    "type": "string",
+                    "example": "testNS"
+                },
+                "setName": {
+                    "type": "string",
+                    "example": "testSet"
+                },
                 "userKey": {
                     "type": "object",
                     "example": "userKey",
@@ -2823,28 +3892,127 @@
         "NamespaceInformation": {
             "type": "object",
             "properties": {
-                "name": { "type": "string", "example": "testNS" },
+                "name": {
+                    "type": "string",
+                    "example": "testNS"
+                },
                 "sets": {
                     "type": "array",
-                    "items": { "$ref": "#/definitions/RestClientSetInformation" }
+                    "items": {
+                        "$ref": "#/definitions/RestClientSetInformation"
+                    }
                 }
             },
             "title": "NamespaceInformation"
         },
-        "Node Information": {
+        "NodeInformation": {
             "type": "object",
-            "properties": { "name": { "type": "string", "example": "BB9DE9B1B270008" } },
-            "title": "Node Information"
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "BB9DE9B1B270008"
+                }
+            },
+            "title": "NodeInformation"
         },
         "Operation": {
             "type": "object",
-            "required": ["op_values", "operation"],
-            "properties": { "op_values": { "type": "object" }, "operation": { "type": "string" } },
+            "required": [
+                "opValues",
+                "operation"
+            ],
+            "properties": {
+                "opValues": {
+                    "type": "object",
+                    "example": {
+                        "bin": "listbin",
+                        "values": [
+                            1,
+                            2,
+                            3
+                        ]
+                    }
+                },
+                "operation": {
+                    "type": "string",
+                    "example": "LIST_APPEND_ITEMS",
+                    "description": "Aerospike operation to perform on the record",
+                    "enum": [
+                        "ADD",
+                        "APPEND",
+                        "GET",
+                        "PREPEND",
+                        "READ",
+                        "GET_HEADER",
+                        "TOUCH",
+                        "PUT",
+                        "LIST_APPEND",
+                        "LIST_APPEND_ITEMS",
+                        "LIST_CLEAR",
+                        "LIST_GET",
+                        "LIST_GET_BY_INDEX",
+                        "LIST_GET_BY_INDEX_RANGE",
+                        "LIST_GET_BY_RANK",
+                        "LIST_GET_BY_RANK_RANGE",
+                        "LIST_GET_BY_VALUE",
+                        "LIST_GET_BY_VALUE_RANGE",
+                        "LIST_GET_BY_VALUE_LIST",
+                        "LIST_GET_RANGE",
+                        "LIST_INCREMENT",
+                        "LIST_INSERT",
+                        "LIST_INSERT_ITEMS",
+                        "LIST_POP",
+                        "LIST_POP_RANGE",
+                        "LIST_REMOVE",
+                        "LIST_REMOVE_BY_INDEX",
+                        "LIST_REMOVE_BY_INDEX_RANGE",
+                        "LIST_REMOVE_BY_RANK",
+                        "LIST_REMOVE_BY_RANK_RANGE",
+                        "LIST_REMOVE_BY_VALUE",
+                        "LIST_REMOVE_BY_VALUE_RANGE",
+                        "LIST_REMOVE_BY_VALUE_LIST",
+                        "LIST_REMOVE_RANGE",
+                        "LIST_SET",
+                        "LIST_SET_ORDER",
+                        "LIST_SIZE",
+                        "LIST_SORT",
+                        "LIST_TRIM",
+                        "MAP_CLEAR",
+                        "MAP_DECREMENT",
+                        "MAP_GET_BY_INDEX",
+                        "MAP_GET_BY_INDEX_RANGE",
+                        "MAP_GET_BY_KEY",
+                        "MAP_GET_BY_KEY_LIST",
+                        "MAP_GET_BY_KEY_RANGE",
+                        "MAP_GET_BY_RANK",
+                        "MAP_GET_BY_RANK_RANGE",
+                        "MAP_GET_BY_VALUE",
+                        "MAP_GET_BY_VALUE_RANGE",
+                        "MAP_GET_BY_VALUE_LIST",
+                        "MAP_INCREMENT",
+                        "MAP_PUT",
+                        "MAP_PUT_ITEMS",
+                        "MAP_REMOVE_BY_INDEX",
+                        "MAP_REMOVE_BY_INDEX_RANGE",
+                        "MAP_REMOVE_BY_KEY",
+                        "MAP_REMOVE_BY_KEY_RANGE",
+                        "MAP_REMOVE_BY_RANK",
+                        "MAP_REMOVE_BY_RANK_RANGE",
+                        "MAP_REMOVE_BY_VALUE",
+                        "MAP_REMOVE_BY_VALUE_RANGE",
+                        "MAP_REMOVE_BY_VALUE_LIST",
+                        "MAP_SET_MAP_POLICY",
+                        "MAP_SIZE"
+                    ]
+                }
+            },
             "title": "Operation"
         },
         "Privilege": {
             "type": "object",
-            "required": ["code"],
+            "required": [
+                "code"
+            ],
             "properties": {
                 "code": {
                     "type": "string",
@@ -2854,7 +4022,8 @@
                         "data-admin",
                         "read",
                         "read-write",
-                        "read-write-udf"
+                        "read-write-udf",
+                        "write"
                     ]
                 },
                 "namespace": {
@@ -2862,7 +4031,11 @@
                     "example": "testNS",
                     "description": "Namespace Scope"
                 },
-                "set": { "type": "string", "example": "testSet", "description": "setName Scope" }
+                "set": {
+                    "type": "string",
+                    "example": "testSet",
+                    "description": "setName Scope"
+                }
             },
             "title": "Privilege"
         },
@@ -2871,7 +4044,10 @@
             "properties": {
                 "bins": {
                     "type": "object",
-                    "example": { "bin1": "val1", "pi": "3.14" },
+                    "example": {
+                        "bin1": "val1",
+                        "pi": "3.14"
+                    },
                     "description": "A mapping from binName to binValue"
                 },
                 "generation": {
@@ -2897,6 +4073,12 @@
                     "example": false,
                     "description": "A boolean specifying whether it was possible that the operation succeeded. This is only included if true."
                 },
+                "internalErrorCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": -3,
+                    "description": "An internal error code for diagnostic purposes. This may be null"
+                },
                 "message": {
                     "type": "string",
                     "example": "Error Message",
@@ -2916,49 +4098,98 @@
                 },
                 "collection_type": {
                     "type": "string",
-                    "enum": ["DEFAULT", "LIST", "MAPKEYS", "MAPVALUES"]
+                    "enum": [
+                        "DEFAULT",
+                        "LIST",
+                        "MAPKEYS",
+                        "MAPVALUES"
+                    ]
                 },
                 "name": {
                     "type": "string",
                     "example": "ageIndex",
                     "description": "The name of the index. This must be unique per set"
                 },
-                "namespace": { "type": "string", "example": "testNS" },
-                "set": { "type": "string", "example": "testSet" },
-                "type": { "type": "string", "enum": ["NUMERIC", "STRING", "GEO2DSPHERE"] }
+                "namespace": {
+                    "type": "string",
+                    "example": "testNS"
+                },
+                "set": {
+                    "type": "string",
+                    "example": "testSet"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "NUMERIC",
+                        "STRING",
+                        "GEO2DSPHERE"
+                    ]
+                }
             },
             "title": "RestClientIndex"
         },
         "RestClientRole": {
             "type": "object",
             "properties": {
-                "name": { "type": "string", "example": "customRole" },
-                "privileges": { "type": "array", "items": { "$ref": "#/definitions/Privilege" } }
+                "name": {
+                    "type": "string",
+                    "example": "customRole"
+                },
+                "privileges": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Privilege"
+                    }
+                }
             },
             "title": "RestClientRole"
         },
         "RestClientSetInformation": {
             "type": "object",
             "properties": {
-                "name": { "type": "string", "example": "demo" },
-                "objectCount": { "type": "integer", "format": "int32", "example": 100 }
+                "name": {
+                    "type": "string",
+                    "example": "demo"
+                },
+                "objectCount": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 100
+                }
             },
             "title": "RestClientSetInformation"
         },
         "RestClientUserModel": {
             "type": "object",
             "properties": {
-                "password": { "type": "string" },
-                "roles": { "type": "array", "items": { "type": "string" } },
-                "username": { "type": "string" }
+                "password": {
+                    "type": "string"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "username": {
+                    "type": "string"
+                }
             },
             "title": "RestClientUserModel"
         },
         "User": {
             "type": "object",
             "properties": {
-                "name": { "type": "string" },
-                "roles": { "type": "array", "items": { "type": "string" } }
+                "name": {
+                    "type": "string"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
             },
             "title": "User"
         },
@@ -2967,9 +4198,16 @@
             "properties": {
                 "namespaces": {
                     "type": "array",
-                    "items": { "$ref": "#/definitions/NamespaceInformation" }
+                    "items": {
+                        "$ref": "#/definitions/NamespaceInformation"
+                    }
                 },
-                "nodes": { "type": "array", "items": { "$ref": "#/definitions/Node Information" } }
+                "nodes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NodeInformation"
+                    }
+                }
             },
             "title": "clusterInformation"
         }
