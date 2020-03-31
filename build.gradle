@@ -31,15 +31,15 @@ repositories{
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'war'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.aerospike'
 sourceCompatibility = 1.8
 
-bootWar {
-	archiveName "${warBaseName}##${appVersion}.war"
+bootJar {
+	baseName "${jarBaseName}"
+	version "${appVersion}"
 }
 test {
 	testLogging {
@@ -50,7 +50,6 @@ repositories {
 	mavenCentral()
 }
 
-
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile("com.aerospike:aerospike-client:${aerospikeClientVersion}")
@@ -59,5 +58,4 @@ dependencies {
 	compile("io.springfox:springfox-swagger-ui:${springfoxVersion}")
 	implementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 }
