@@ -4,16 +4,16 @@ ARCHIVEDIR=aerospike-client-rest-$(VERSION)
 ARCHIVENAME=$(ARCHIVEDIR).tgz
 
 .PHONY: package
-package: clean war validatedocs
+package: clean build validatedocs
 	mkdir $(ARCHIVEDIR)
 	mkdir target
-	cp build/libs/*.war $(ARCHIVEDIR)
+	cp build/libs/*.jar $(ARCHIVEDIR)
 	cp docs/swagger.json $(ARCHIVEDIR)
 	tar -czvf target/$(ARCHIVENAME) $(ARCHIVEDIR)
 
-.PHONY: war
-war:
-	./gradlew bootWar
+.PHONY: build
+build:
+	./gradlew build
 
 .PHONY: clean
 clean:
