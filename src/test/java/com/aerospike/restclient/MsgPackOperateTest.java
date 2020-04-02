@@ -16,15 +16,14 @@
  */
 package com.aerospike.restclient;
 
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
-
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.Bin;
+import com.aerospike.client.Key;
+import com.aerospike.client.Record;
+import com.aerospike.client.Value.BytesValue;
+import com.aerospike.restclient.util.AerospikeOperation;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,14 +37,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.Bin;
-import com.aerospike.client.Key;
-import com.aerospike.client.Record;
-import com.aerospike.client.Value.BytesValue;
-import  com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.*;
+
+import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
+import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -91,7 +86,7 @@ public class MsgPackOperateTest {
 		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
 		Map<String, Object> opMap = new HashMap<String, Object>();
 		Map<String, Object> opValues = new HashMap<String, Object>();
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_GET);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.GET);
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 
 		opList.add(opMap);
@@ -113,7 +108,7 @@ public class MsgPackOperateTest {
 
 		opValues.put("bin", "int");
 		opValues.put("incr", 2);
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_ADD);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.ADD);
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(opMap);
 
@@ -135,7 +130,7 @@ public class MsgPackOperateTest {
 		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
 		Map<String, Object> opMap = new HashMap<String, Object>();
 		Map<String, Object> opValues = new HashMap<String, Object>();
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_READ);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.READ);
 		opValues.put("bin", "str");
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 
@@ -159,7 +154,7 @@ public class MsgPackOperateTest {
 
 		opValues.put("bin", "new");
 		opValues.put("value", "put");
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_PUT);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.PUT);
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(opMap);
 
@@ -183,7 +178,7 @@ public class MsgPackOperateTest {
 		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
 		Map<String, Object> opMap = new HashMap<String, Object>();
 		Map<String, Object> opValues = new HashMap<String, Object>();
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_APPEND);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.APPEND);
 		opValues.put("value", "ary");
 		opValues.put("bin", "str");
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
@@ -207,7 +202,7 @@ public class MsgPackOperateTest {
 		Map<String, Object> opMap = new HashMap<String, Object>();
 		Map<String, Object> opValues = new HashMap<String, Object>();
 
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_PREPEND);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.PREPEND);
 		opValues.put("value", "ro");
 		opValues.put("bin", "str");
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
@@ -234,7 +229,7 @@ public class MsgPackOperateTest {
 		Record record = client.get(null, testKey);
 		int oldGeneration = record.generation;
 
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_TOUCH);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.TOUCH);
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(opMap);
 
@@ -255,7 +250,7 @@ public class MsgPackOperateTest {
 		Record record = client.get(null, intKey);
 		int oldGeneration = record.generation;
 
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_TOUCH);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.TOUCH);
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(opMap);
 
@@ -279,7 +274,7 @@ public class MsgPackOperateTest {
 		Record record = client.get(null, bytesKey);
 		int oldGeneration = record.generation;
 
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_TOUCH);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.TOUCH);
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(opMap);
 
@@ -306,7 +301,7 @@ public class MsgPackOperateTest {
 		Record record = client.get(null, testKey);
 		int oldGeneration = record.generation;
 
-		opMap.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_TOUCH);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.TOUCH);
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(opMap);
 

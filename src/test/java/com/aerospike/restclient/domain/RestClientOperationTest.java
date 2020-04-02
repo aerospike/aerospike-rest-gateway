@@ -19,6 +19,7 @@ package com.aerospike.restclient.domain;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aerospike.restclient.util.AerospikeOperation;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class RestClientOperationTest {
 	@Test
 	public void testEmptyConstruction(){
 		RestClientOperation op = new RestClientOperation();
-		String operation = new String("Aerospike");
+		AerospikeOperation operation = AerospikeOperation.valueOf("ADD");
 		Map<String, Object>vals = new HashMap<>();
 
 		op.setOperation(operation);
@@ -44,7 +45,7 @@ public class RestClientOperationTest {
 	@Test
 	public void testToMap(){
 		RestClientOperation op = new RestClientOperation();
-		String operation = new String("Aerospike");
+		AerospikeOperation operation = AerospikeOperation.valueOf("ADD");
 		Map<String, Object>vals = new HashMap<>();
 
 		op.setOperation(operation);
@@ -59,7 +60,7 @@ public class RestClientOperationTest {
 	public void testObjectMapperInstantiation() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		TypeReference<RestClientOperation>rcoType = new TypeReference<RestClientOperation>(){};
-		String operation = new String("Aerospike");
+		AerospikeOperation operation = AerospikeOperation.valueOf("ADD");
 		Map<String, Object>vals = new HashMap<>();
 		Map<String, Object>opMap = new HashMap<>();
 
@@ -80,7 +81,7 @@ public class RestClientOperationTest {
 		RestClientOperation op = new RestClientOperation();
 
 		TypeReference<Map<String, Object>>somType = new TypeReference<Map<String, Object>>() {};
-		String operation = new String("Aerospike");
+		AerospikeOperation operation = AerospikeOperation.valueOf("ADD");
 		Map<String, Object>vals = new HashMap<>();
 
 		op.setOperation(operation);
@@ -90,7 +91,7 @@ public class RestClientOperationTest {
 
 		Map<String, Object>deserializedOp = mapper.readValue(jsonOp, somType);
 
-		Assert.assertEquals(deserializedOp.get(AerospikeAPIConstants.OPERATION_FIELD), operation);
+		Assert.assertEquals(deserializedOp.get(AerospikeAPIConstants.OPERATION_FIELD), operation.name());
 		Assert.assertEquals(deserializedOp.get(AerospikeAPIConstants.OPERATION_VALUES_FIELD), vals);
 	}
 

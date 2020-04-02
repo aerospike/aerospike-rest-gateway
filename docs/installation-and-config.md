@@ -7,24 +7,30 @@
 * The Rest Client requires Java 8.
 * The Rest Client requires an Aerospike Server to be installed and reachable. See [Configuration](#configuration) for details on specifying the location of this server.
 
-### Running on Tomcat
+### Run from Executable Jar
 
-* If not already installed, download and install [Tomcat](https://tomcat.apache.org) . We recommend the Core distribution of Tomcat 9, found under the Binary Distributions section.
+* Build
+```
+./gradlew build
+```
+* Execute
+```
+java -jar build/libs/aerospike-client-rest-<VERSION>.jar
+```
+The fully executable jar contains an extra script at the front of the file, which allows you to just symlink your Spring Boot jar to init.d or use a systemd script.  
+More information at the following links:
+* [Installation as an init.d service](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/htmlsingle/#deployment-service)
+* [Installation as a systemd service](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/htmlsingle/#deployment-systemd-service)
 
-This will create a root installation folder which looks something like
-
-    ./bin/
-    ./conf/
-    ./logs/
-    ./webapps/
-
-* Place the REST Client `.war` file in your tomcat installation's `webapps` folder.
-* For more detailed server configurations, refer to the Documentation for the version of Tomcat which you are using. For Tomcat 9 these are located at: <https://tomcat.apache.org/tomcat-9.0-doc/introduction.html>
-* Start tomcat. One way to do this is by running `bin/catalina.sh run` or `bin/catalina.sh start` from the root folder of your Tomcat installation.
+### Run with Docker
+* Build the docker image
+```
+docker build -t aerospike-client-rest .
+```
 
 ### Verifying installation
 
-**Note:** The following steps assume Tomcat's root is at `http://localhost:8080`  and the REST Client's base path is `http://localhost:8080/as-rest-client` if this is not the case, the provided URLs will need to be modified accordingly.
+**Note:** The following steps assume REST Client's base path is `http://localhost:8080/as-rest-client` if this is not the case, the provided URLs will need to be modified accordingly.
 
 To test that the rest client is up and running, and connected to the Aerospike database you can run:
 

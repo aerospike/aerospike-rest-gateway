@@ -84,7 +84,7 @@ public class InfoController {
 					examples=@Example(value =
 				{ @ExampleProperty(mediaType="application/json", value = "[build, edition]") }),
 					value="An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.") @RequestBody String[] requests,
-			@ApiIgnore Map<String, String>infoMap) {
+			@ApiIgnore @RequestParam Map<String, String>infoMap) {
 
 		InfoPolicy policy = InfoPolicyConverter.policyFromMap(infoMap);
 

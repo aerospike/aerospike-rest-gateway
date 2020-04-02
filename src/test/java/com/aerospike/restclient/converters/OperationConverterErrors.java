@@ -19,6 +19,7 @@ package com.aerospike.restclient.converters;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aerospike.restclient.util.AerospikeOperation;
 import org.junit.Test;
 
 import com.aerospike.restclient.util.AerospikeAPIConstants;
@@ -44,7 +45,7 @@ public class OperationConverterErrors {
 	@Test(expected=InvalidOperationError.class)
 	public void testMissingOpValues() {
 		Map<String, Object>op = new HashMap<>();
-		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeAPIConstants.OPERATION_READ);
+		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeOperation.READ);
 		OperationConverter.convertMapToOperation(op);
 	}
 
@@ -55,7 +56,7 @@ public class OperationConverterErrors {
 	public void testAdditionalTopLevelValue() {
 		Map<String, Object>opValues = new HashMap<>();
 		Map<String, Object>op = new HashMap<>();
-		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeAPIConstants.OPERATION_READ);
+		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeOperation.READ);
 		op.put("An Extra", "Field");
 		opValues.put("bin", "binname");
 		op.put(AerospikeAPIConstants.OPERATION_VALUES_FIELD, opValues);
@@ -73,7 +74,7 @@ public class OperationConverterErrors {
 		 * "We omit the "bin" entry
 		 */
 		Map<String, Object>op = new HashMap<>();
-		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeAPIConstants.OPERATION_READ);
+		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeOperation.READ);
 		Map<String, Object>op_values = new HashMap<>();
 		op.put(AerospikeAPIConstants.OPERATION_VALUES_FIELD, op_values);
 		OperationConverter.convertMapToOperation(op);
@@ -90,7 +91,7 @@ public class OperationConverterErrors {
 		 * "We omit the "bin" entry
 		 */
 		Map<String, Object>op = new HashMap<>();
-		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeAPIConstants.OPERATION_READ);
+		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeOperation.READ);
 		Map<String, Object>op_values = new HashMap<>();
 		op_values.put("bin", "binname");
 		op_values.put("extra_val", "arbitrary");
@@ -109,7 +110,7 @@ public class OperationConverterErrors {
 		 * "We omit the "bin" entry
 		 */
 		Map<String, Object>op = new HashMap<>();
-		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeAPIConstants.OPERATION_READ);
+		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeOperation.READ);
 		Map<String, Object>op_values = new HashMap<>();
 		op_values.put("bin", 3.14);
 		op.put(AerospikeAPIConstants.OPERATION_VALUES_FIELD, op_values);
@@ -128,7 +129,7 @@ public class OperationConverterErrors {
 		 * "We omit the "bin" entry
 		 */
 		Map<String, Object>op = new HashMap<>();
-		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeAPIConstants.OPERATION_LIST_GET);
+		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeOperation.LIST_GET);
 		Map<String, Object>op_values = new HashMap<>();
 		op_values.put("bin", "list_bin");
 		op_values.put("index", "notanumber");

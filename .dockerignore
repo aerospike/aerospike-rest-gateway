@@ -1,0 +1,11 @@
+.git
+.cache
+.travis
+build
+
+.idea
+.vscode
+
+*.md
+!README*.md
+README-secret.md

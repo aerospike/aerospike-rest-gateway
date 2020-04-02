@@ -4,7 +4,7 @@ This package contains the following files
 
 * `swagger.json` The swagger specification for the Rest API.
 * `api-doc.html` Generated HTML documentation for the API.
-* `as-rest-client##<VERSION>.war` A `.war` file to be deployed in Tomcat, or another server accepting `.war` files.
+* `as-rest-client##<VERSION>.jar` A `.jar` file to be deployed.
 * `stocks/` A directory containing our demo application.
 
 ## Installing and starting the Rest Client

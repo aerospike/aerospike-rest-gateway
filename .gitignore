@@ -9,3 +9,4 @@ gradlew.bat
 .classpath
 /.gradle/
 .vscode/
+.idea/

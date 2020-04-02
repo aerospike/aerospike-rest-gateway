@@ -16,23 +16,13 @@
  */
 package com.aerospike.restclient;
 
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.Bin;
+import com.aerospike.client.Key;
+import com.aerospike.client.cdt.*;
+import com.aerospike.restclient.util.AerospikeOperation;
+import com.aerospike.restclient.util.converters.OperationConverter;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -44,16 +34,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.Bin;
-import com.aerospike.client.Key;
-import com.aerospike.client.cdt.MapOperation;
-import com.aerospike.client.cdt.MapOrder;
-import com.aerospike.client.cdt.MapPolicy;
-import com.aerospike.client.cdt.MapWriteFlags;
-import com.aerospike.client.cdt.MapWriteMode;
-import com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.aerospike.restclient.util.converters.OperationConverter;
+import java.util.*;
+
+import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
+import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(Parameterized.class)
 @SpringBootTest
@@ -146,7 +131,7 @@ public class OperateMapTestsCorrect {
 		Map<String, Object>opValues = new HashMap<String, Object>();
 
 		opValues.put("bin", mapBinName);
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_CLEAR);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_CLEAR);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -169,7 +154,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinName);
 		opValues.put("key", "ten");
 		opValues.put("decr", 3);
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_DECREMENT);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_DECREMENT);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -193,7 +178,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinName);
 		opValues.put("key", "ten");
 		opValues.put("incr", 3);
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_INCREMENT);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_INCREMENT);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -213,7 +198,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinName);
 		opValues.put("index", 0);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_INDEX);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_INDEX);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -232,7 +217,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("index", 1);
 		opValues.put("count", 3);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_INDEX_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_INDEX_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -252,7 +237,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinName);
 		opValues.put("index", 1);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_INDEX_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_INDEX_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -271,7 +256,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinName);
 		opValues.put("key", "three");
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_KEY);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_KEY);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -290,7 +275,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinName);
 		opValues.put("keys", Arrays.asList("aero", "two", "three"));
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_KEY_LIST);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_KEY_LIST);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -312,7 +297,7 @@ public class OperateMapTestsCorrect {
 		// A value after "ten"
 		opValues.put(OperationConverter.MAP_KEY_END_KEY, "threez");
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_KEY_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_KEY_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -333,7 +318,7 @@ public class OperateMapTestsCorrect {
 		// A value after "ten"
 		opValues.put(OperationConverter.MAP_KEY_END_KEY, "threez");
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_KEY_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_KEY_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -354,7 +339,7 @@ public class OperateMapTestsCorrect {
 		opValues.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
 		// A value after "ten"
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_KEY_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_KEY_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -374,7 +359,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("rank", 4);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_RANK);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_RANK);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -393,7 +378,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("rank", 1);
 		opValues.put("count", 3);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_RANK_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_RANK_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -414,7 +399,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("rank", 1);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_RANK_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_RANK_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -441,7 +426,7 @@ public class OperateMapTestsCorrect {
 		Bin newBin = new Bin(mapBinName, objectMap);
 		client.put(null, testKey, newBin);
 
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_VALUE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_VALUE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -462,7 +447,7 @@ public class OperateMapTestsCorrect {
 		opValues.put(OperationConverter.VALUE_END_KEY, 4);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
 
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_VALUE_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_VALUE_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -483,7 +468,7 @@ public class OperateMapTestsCorrect {
 		opValues.put(OperationConverter.VALUE_END_KEY, 4);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
 
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_VALUE_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_VALUE_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -504,7 +489,7 @@ public class OperateMapTestsCorrect {
 		opValues.put(OperationConverter.VALUE_BEGIN_KEY, 1);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
 
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_VALUE_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_VALUE_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -525,7 +510,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("values", Arrays.asList(0, 2, 10));
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
 
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_GET_BY_VALUE_LIST);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_VALUE_LIST);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -546,7 +531,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinName);
 		opValues.put("key", "five");
 		opValues.put("value", 5);
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_PUT);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -579,7 +564,7 @@ public class OperateMapTestsCorrect {
 		opValues.put(OperationConverter.MAP_POLICY_KEY, policy);
 		opValues.put("bin", mapBinName);
 
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_PUT_ITEMS);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT_ITEMS);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -599,7 +584,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinName);
 		opValues.put("index", 0);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_INDEX);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_INDEX);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -622,7 +607,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("index", 0);
 		opValues.put("count", 3);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_INDEX_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_INDEX_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -648,7 +633,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinName);
 		opValues.put("index", 0);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_INDEX_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_INDEX_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -672,7 +657,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinName);
 		opValues.put("key", "two");
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_KEY);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_KEY);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -697,7 +682,7 @@ public class OperateMapTestsCorrect {
 		// A value after "three"
 		opValues.put(OperationConverter.MAP_KEY_END_KEY, "threez");
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_KEY_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_KEY_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -724,7 +709,7 @@ public class OperateMapTestsCorrect {
 		// A value after "three"
 		opValues.put(OperationConverter.MAP_KEY_END_KEY, "threez");
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_KEY_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_KEY_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -751,7 +736,7 @@ public class OperateMapTestsCorrect {
 		opValues.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
 		// A value after "three"
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_KEY_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_KEY_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -778,7 +763,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("rank", 2);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_RANK);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_RANK);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -803,7 +788,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("rank", 1);
 		opValues.put("count", 3);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_RANK_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_RANK_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -834,7 +819,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("rank", 1);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_RANK_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_RANK_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -869,7 +854,7 @@ public class OperateMapTestsCorrect {
 		Bin newBin = new Bin(mapBinName, objectMap);
 		client.put(null, testKey, newBin);
 
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_VALUE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_VALUE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -897,7 +882,7 @@ public class OperateMapTestsCorrect {
 		opValues.put(OperationConverter.VALUE_END_KEY, 4);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
 
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_VALUE_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_VALUE_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -925,7 +910,7 @@ public class OperateMapTestsCorrect {
 		opValues.put(OperationConverter.VALUE_END_KEY, 4);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
 
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_VALUE_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_VALUE_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -954,7 +939,7 @@ public class OperateMapTestsCorrect {
 		opValues.put(OperationConverter.VALUE_BEGIN_KEY, 1);
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
 
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_VALUE_RANGE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_VALUE_RANGE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -983,7 +968,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("values", Arrays.asList(1, 2, 3));
 		opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
 
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_VALUE_LIST);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_VALUE_LIST);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -1019,7 +1004,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("key", newKey);
 		opValues.put("value", newVal);
 		opValues.put(OperationConverter.MAP_POLICY_KEY, policyMap);
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_PUT);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 
 		opList.add(operation);
@@ -1053,7 +1038,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("key", newKey);
 		opValues.put("value", newVal);
 		opValues.put(OperationConverter.MAP_POLICY_KEY, policyMap);
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_PUT);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 
 		opList.add(operation);
@@ -1080,7 +1065,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("key", existingKey);
 		opValues.put("value", newVal);
 		opValues.put(OperationConverter.MAP_POLICY_KEY, policyMap);
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_PUT);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 
 		opList.add(operation);
@@ -1119,7 +1104,7 @@ public class OperateMapTestsCorrect {
 		putValues.put(newKey, newVal);
 		opValues.put("map", putValues);
 
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_PUT_ITEMS);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT_ITEMS);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 
 		opList.add(operation);
@@ -1138,7 +1123,7 @@ public class OperateMapTestsCorrect {
 		Map<String, Object>opValues = new HashMap<String, Object>();
 
 		opValues.put("bin", mapBinName);
-		operation.put(OPERATION_FIELD, AerospikeAPIConstants.OPERATION_MAP_SIZE);
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_SIZE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);
 
@@ -1151,28 +1136,28 @@ public class OperateMapTestsCorrect {
 		String orderString;
 		String writeModeString;
 		switch (order) {
-		case KEY_VALUE_ORDERED:
-			orderString = "KEY_VALUE_ORDERED";
-			break;
-		case KEY_ORDERED:
-			orderString = "KEY_ORDERED";
-			break;
-		case UNORDERED:
-		default:
-			orderString = "UNORDERED";
+			case KEY_VALUE_ORDERED:
+				orderString = "KEY_VALUE_ORDERED";
+				break;
+			case KEY_ORDERED:
+				orderString = "KEY_ORDERED";
+				break;
+			case UNORDERED:
+			default:
+				orderString = "UNORDERED";
 		}
 
 		switch (writeMode) {
-		case CREATE_ONLY:
-			writeModeString = "CREATE_ONLY";
-			break;
-		case UPDATE_ONLY:
-			writeModeString = "UPDATE_ONLY";
-			break;
+			case CREATE_ONLY:
+				writeModeString = "CREATE_ONLY";
+				break;
+			case UPDATE_ONLY:
+				writeModeString = "UPDATE_ONLY";
+				break;
 
-		case UPDATE:
-		default:
-			writeModeString = "UPDATE";
+			case UPDATE:
+			default:
+				writeModeString = "UPDATE";
 		}
 		policyMap.put("order", orderString);
 		policyMap.put(OperationConverter.WRITE_MODE_KEY, writeModeString);
@@ -1184,15 +1169,15 @@ public class OperateMapTestsCorrect {
 		String orderString;
 		List<String> writeFlags = new ArrayList<>();
 		switch (order) {
-		case KEY_VALUE_ORDERED:
-			orderString = "KEY_VALUE_ORDERED";
-			break;
-		case KEY_ORDERED:
-			orderString = "KEY_ORDERED";
-			break;
-		case UNORDERED:
-		default:
-			orderString = "UNORDERED";
+			case KEY_VALUE_ORDERED:
+				orderString = "KEY_VALUE_ORDERED";
+				break;
+			case KEY_ORDERED:
+				orderString = "KEY_ORDERED";
+				break;
+			case UNORDERED:
+			default:
+				orderString = "UNORDERED";
 		}
 
 		if ((flags & MapWriteFlags.CREATE_ONLY) != 0) {

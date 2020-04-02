@@ -16,96 +16,14 @@
  */
 package com.aerospike.restclient.util.converters;
 
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_ADD;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_APPEND;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_GET;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_GET_HEADER;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_APPEND;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_APPEND_ITEMS;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_CLEAR;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_GET;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_GET_BY_INDEX;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_GET_BY_INDEX_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_GET_BY_RANK;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_GET_BY_RANK_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_GET_BY_VALUE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_GET_BY_VALUE_LIST;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_GET_BY_VALUE_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_GET_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_INCREMENT;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_INSERT;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_INSERT_ITEMS;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_POP;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_POP_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_REMOVE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_REMOVE_BY_INDEX;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_REMOVE_BY_INDEX_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_REMOVE_BY_RANK;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_REMOVE_BY_RANK_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_REMOVE_BY_VALUE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_REMOVE_BY_VALUE_LIST;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_REMOVE_BY_VALUE_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_REMOVE_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_SET;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_SET_ORDER;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_SIZE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_SORT;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_LIST_TRIM;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_CLEAR;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_DECREMENT;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_GET_BY_INDEX;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_GET_BY_INDEX_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_GET_BY_KEY;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_GET_BY_KEY_LIST;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_GET_BY_KEY_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_GET_BY_RANK;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_GET_BY_RANK_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_GET_BY_VALUE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_GET_BY_VALUE_LIST;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_GET_BY_VALUE_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_INCREMENT;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_PUT;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_PUT_ITEMS;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_INDEX;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_INDEX_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_KEY;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_KEY_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_RANK;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_RANK_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_VALUE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_VALUE_LIST;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_REMOVE_BY_VALUE_RANGE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_SET_MAP_POLICY;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_MAP_SIZE;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_PREPEND;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_PUT;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_READ;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_TOUCH;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.aerospike.client.Bin;
 import com.aerospike.client.Operation;
 import com.aerospike.client.Value;
-import com.aerospike.client.cdt.ListOperation;
-import com.aerospike.client.cdt.ListOrder;
-import com.aerospike.client.cdt.ListPolicy;
-import com.aerospike.client.cdt.ListReturnType;
-import com.aerospike.client.cdt.ListSortFlags;
-import com.aerospike.client.cdt.ListWriteFlags;
-import com.aerospike.client.cdt.MapOperation;
-import com.aerospike.client.cdt.MapOrder;
-import com.aerospike.client.cdt.MapPolicy;
-import com.aerospike.client.cdt.MapReturnType;
-import com.aerospike.client.cdt.MapWriteFlags;
-import com.aerospike.client.cdt.MapWriteMode;
+import com.aerospike.client.cdt.*;
+import com.aerospike.restclient.util.AerospikeOperation;
 import com.aerospike.restclient.util.RestClientErrors.InvalidOperationError;
+
+import java.util.*;
 
 /*
  * Class containing static methods used for converting Java Maps to Aerospike Operations.
@@ -151,7 +69,7 @@ public class OperationConverter {
 		hasAllRequiredKeys(operationMap, OPERATION_FIELD_KEY, OP_VALUES_KEY);
 		onlyHasAllowedKeys(operationMap, OPERATION_FIELD_KEY, OP_VALUES_KEY);
 
-		String opName = (String) operationMap.get(OPERATION_FIELD_KEY);
+		AerospikeOperation opName = (AerospikeOperation) operationMap.get(OPERATION_FIELD_KEY);
 		if (opName == null) {
 			throw new InvalidOperationError("Operation must contain the \"operation\" field");
 		}
@@ -160,206 +78,206 @@ public class OperationConverter {
 			throw new InvalidOperationError("Operation must contain the \"opValues\" field");
 		}
 		switch(opName) {
-		/* Basic Operations */
-		case OPERATION_ADD:
-			return mapToAddOp(opValues);
+			/* Basic Operations */
+			case ADD:
+				return mapToAddOp(opValues);
 
-		case OPERATION_APPEND:
-			return mapToAppendOp(opValues);
+			case APPEND:
+				return mapToAppendOp(opValues);
 
-		case OPERATION_GET:
-			return mapToGetOp(opValues);
+			case GET:
+				return mapToGetOp(opValues);
 
-		case OPERATION_PREPEND:
-			return mapToPrependOp(opValues);
+			case PREPEND:
+				return mapToPrependOp(opValues);
 
-		case OPERATION_READ:
-			return mapToReadOp(opValues);
+			case READ:
+				return mapToReadOp(opValues);
 
-		case OPERATION_GET_HEADER:
-			return mapToGetHeaderOp(opValues);
+			case GET_HEADER:
+				return mapToGetHeaderOp(opValues);
 
-		case OPERATION_TOUCH:
-			return mapToTouchOp(opValues);
+			case TOUCH:
+				return mapToTouchOp(opValues);
 
-		case OPERATION_PUT:
-			return mapToPutOp(opValues);
+			case PUT:
+				return mapToPutOp(opValues);
 			/* List Operations */
 
-		case OPERATION_LIST_APPEND:
-			return mapToListAppendOp(opValues);
+			case LIST_APPEND:
+				return mapToListAppendOp(opValues);
 
-		case OPERATION_LIST_APPEND_ITEMS:
-			return mapToListAppendItemsOp(opValues);
+			case LIST_APPEND_ITEMS:
+				return mapToListAppendItemsOp(opValues);
 
-		case OPERATION_LIST_CLEAR:
-			return mapToListClearOp(opValues);
+			case LIST_CLEAR:
+				return mapToListClearOp(opValues);
 
-		case OPERATION_LIST_GET:
-			return mapToListGetOp(opValues);
+			case LIST_GET:
+				return mapToListGetOp(opValues);
 
-		case OPERATION_LIST_GET_BY_INDEX:
-			return mapToListGetByIndexOp(opValues);
+			case LIST_GET_BY_INDEX:
+				return mapToListGetByIndexOp(opValues);
 
-		case OPERATION_LIST_GET_BY_INDEX_RANGE:
-			return mapToListGetByIndexRangeOp(opValues);
+			case LIST_GET_BY_INDEX_RANGE:
+				return mapToListGetByIndexRangeOp(opValues);
 
-		case OPERATION_LIST_GET_BY_RANK:
-			return mapToListGetByRankOp(opValues);
+			case LIST_GET_BY_RANK:
+				return mapToListGetByRankOp(opValues);
 
-		case OPERATION_LIST_GET_BY_RANK_RANGE:
-			return mapToListGetByRankRangeOp(opValues);
+			case LIST_GET_BY_RANK_RANGE:
+				return mapToListGetByRankRangeOp(opValues);
 
-		case OPERATION_LIST_GET_BY_VALUE:
-			return mapToListGetByValueOp(opValues);
+			case LIST_GET_BY_VALUE:
+				return mapToListGetByValueOp(opValues);
 
-		case OPERATION_LIST_GET_BY_VALUE_RANGE:
-			return mapToListGetByValueRangeOp(opValues);
+			case LIST_GET_BY_VALUE_RANGE:
+				return mapToListGetByValueRangeOp(opValues);
 
-		case OPERATION_LIST_GET_BY_VALUE_LIST:
-			return mapToListGetByValueListOp(opValues);
+			case LIST_GET_BY_VALUE_LIST:
+				return mapToListGetByValueListOp(opValues);
 
-		case OPERATION_LIST_GET_RANGE:
-			return mapToListGetRangeOp(opValues);
+			case LIST_GET_RANGE:
+				return mapToListGetRangeOp(opValues);
 
-		case OPERATION_LIST_INCREMENT:
-			return mapToListIncrementOp(opValues);
+			case LIST_INCREMENT:
+				return mapToListIncrementOp(opValues);
 
-		case OPERATION_LIST_INSERT:
-			return mapToListInsertOp(opValues);
+			case LIST_INSERT:
+				return mapToListInsertOp(opValues);
 
-		case OPERATION_LIST_INSERT_ITEMS:
-			return mapToListInsertItemsOp(opValues);
+			case LIST_INSERT_ITEMS:
+				return mapToListInsertItemsOp(opValues);
 
-		case OPERATION_LIST_POP:
-			return mapToListPopOp(opValues);
+			case LIST_POP:
+				return mapToListPopOp(opValues);
 
-		case OPERATION_LIST_POP_RANGE:
-			return mapToListPopRangeOp(opValues);
+			case LIST_POP_RANGE:
+				return mapToListPopRangeOp(opValues);
 
-		case OPERATION_LIST_REMOVE:
-			return mapToListRemoveOp(opValues);
+			case LIST_REMOVE:
+				return mapToListRemoveOp(opValues);
 
-		case OPERATION_LIST_REMOVE_BY_INDEX:
-			return mapToListRemoveByIndexOp(opValues);
+			case LIST_REMOVE_BY_INDEX:
+				return mapToListRemoveByIndexOp(opValues);
 
-		case OPERATION_LIST_REMOVE_BY_INDEX_RANGE:
-			return mapToListRemoveByIndexRangeOp(opValues);
+			case LIST_REMOVE_BY_INDEX_RANGE:
+				return mapToListRemoveByIndexRangeOp(opValues);
 
-		case OPERATION_LIST_REMOVE_BY_RANK:
-			return mapToListRemoveByRankOp(opValues);
+			case LIST_REMOVE_BY_RANK:
+				return mapToListRemoveByRankOp(opValues);
 
-		case OPERATION_LIST_REMOVE_BY_RANK_RANGE:
-			return mapToListRemoveByRankRangeOp(opValues);
+			case LIST_REMOVE_BY_RANK_RANGE:
+				return mapToListRemoveByRankRangeOp(opValues);
 
-		case OPERATION_LIST_REMOVE_BY_VALUE:
-			return mapToListRemoveByValueOp(opValues);
+			case LIST_REMOVE_BY_VALUE:
+				return mapToListRemoveByValueOp(opValues);
 
-		case OPERATION_LIST_REMOVE_BY_VALUE_RANGE:
-			return mapToListRemoveByValueRangeOp(opValues);
+			case LIST_REMOVE_BY_VALUE_RANGE:
+				return mapToListRemoveByValueRangeOp(opValues);
 
-		case OPERATION_LIST_REMOVE_BY_VALUE_LIST:
-			return mapToListRemoveByValueListOp(opValues);
+			case LIST_REMOVE_BY_VALUE_LIST:
+				return mapToListRemoveByValueListOp(opValues);
 
-		case OPERATION_LIST_REMOVE_RANGE:
-			return mapToListRemoveRangeOp(opValues);
+			case LIST_REMOVE_RANGE:
+				return mapToListRemoveRangeOp(opValues);
 
-		case OPERATION_LIST_SET:
-			return mapToListSetOp(opValues);
+			case LIST_SET:
+				return mapToListSetOp(opValues);
 
-		case OPERATION_LIST_SET_ORDER:
-			return mapToListSetOrderOp(opValues);
+			case LIST_SET_ORDER:
+				return mapToListSetOrderOp(opValues);
 
-		case OPERATION_LIST_SIZE:
-			return mapToListSizeOp(opValues);
+			case LIST_SIZE:
+				return mapToListSizeOp(opValues);
 
-		case OPERATION_LIST_SORT:
-			return mapToListSortOp(opValues);
+			case LIST_SORT:
+				return mapToListSortOp(opValues);
 
-		case OPERATION_LIST_TRIM:
-			return mapToListTrimOp(opValues);
+			case LIST_TRIM:
+				return mapToListTrimOp(opValues);
 			/* Map Operations*/
 
-		case OPERATION_MAP_CLEAR:
-			return mapToMapClearOp(opValues);
+			case MAP_CLEAR:
+				return mapToMapClearOp(opValues);
 
-		case OPERATION_MAP_DECREMENT:
-			return mapToMapDecrementOp(opValues);
+			case MAP_DECREMENT:
+				return mapToMapDecrementOp(opValues);
 
-		case OPERATION_MAP_GET_BY_INDEX:
-			return mapToMapGetByIndexOp(opValues);
+			case MAP_GET_BY_INDEX:
+				return mapToMapGetByIndexOp(opValues);
 
-		case OPERATION_MAP_GET_BY_INDEX_RANGE:
-			return mapToMapGetByIndexRangeOp(opValues);
+			case MAP_GET_BY_INDEX_RANGE:
+				return mapToMapGetByIndexRangeOp(opValues);
 
-		case OPERATION_MAP_GET_BY_KEY:
-			return mapToMapGetByKeyOp(opValues);
+			case MAP_GET_BY_KEY:
+				return mapToMapGetByKeyOp(opValues);
 
-		case OPERATION_MAP_GET_BY_KEY_LIST:
-			return mapToMapGetByKeyListOp(opValues);
+			case MAP_GET_BY_KEY_LIST:
+				return mapToMapGetByKeyListOp(opValues);
 
-		case OPERATION_MAP_GET_BY_KEY_RANGE:
-			return mapToMapGetByKeyRangeOp(opValues);
+			case MAP_GET_BY_KEY_RANGE:
+				return mapToMapGetByKeyRangeOp(opValues);
 
-		case OPERATION_MAP_GET_BY_RANK:
-			return mapToMapGetByRankOp(opValues);
+			case MAP_GET_BY_RANK:
+				return mapToMapGetByRankOp(opValues);
 
-		case OPERATION_MAP_GET_BY_RANK_RANGE:
-			return mapToMapGetByRankRangeOp(opValues);
+			case MAP_GET_BY_RANK_RANGE:
+				return mapToMapGetByRankRangeOp(opValues);
 
-		case OPERATION_MAP_GET_BY_VALUE:
-			return mapToMapGetByValueOp(opValues);
+			case MAP_GET_BY_VALUE:
+				return mapToMapGetByValueOp(opValues);
 
-		case OPERATION_MAP_GET_BY_VALUE_RANGE:
-			return mapToMapGetByValueRangeOp(opValues);
+			case MAP_GET_BY_VALUE_RANGE:
+				return mapToMapGetByValueRangeOp(opValues);
 
-		case OPERATION_MAP_GET_BY_VALUE_LIST:
-			return mapToMapGetByValueListOp(opValues);
+			case MAP_GET_BY_VALUE_LIST:
+				return mapToMapGetByValueListOp(opValues);
 
-		case OPERATION_MAP_INCREMENT:
-			return mapToMapIncrementOp(opValues);
+			case MAP_INCREMENT:
+				return mapToMapIncrementOp(opValues);
 
-		case OPERATION_MAP_PUT:
-			return mapToMapPutOp(opValues);
+			case MAP_PUT:
+				return mapToMapPutOp(opValues);
 
-		case OPERATION_MAP_PUT_ITEMS:
-			return mapToMapPutItemsOp(opValues);
+			case MAP_PUT_ITEMS:
+				return mapToMapPutItemsOp(opValues);
 
-		case OPERATION_MAP_REMOVE_BY_INDEX:
-			return mapToMapRemoveByIndexOp(opValues);
+			case MAP_REMOVE_BY_INDEX:
+				return mapToMapRemoveByIndexOp(opValues);
 
-		case OPERATION_MAP_REMOVE_BY_INDEX_RANGE:
-			return mapToMapRemoveByIndexRangeOp(opValues);
+			case MAP_REMOVE_BY_INDEX_RANGE:
+				return mapToMapRemoveByIndexRangeOp(opValues);
 
-		case OPERATION_MAP_REMOVE_BY_KEY:
-			return mapToMapRemoveByKeyOp(opValues);
+			case MAP_REMOVE_BY_KEY:
+				return mapToMapRemoveByKeyOp(opValues);
 
-		case OPERATION_MAP_REMOVE_BY_KEY_RANGE:
-			return mapToMapRemoveByKeyRangeOp(opValues);
+			case MAP_REMOVE_BY_KEY_RANGE:
+				return mapToMapRemoveByKeyRangeOp(opValues);
 
-		case OPERATION_MAP_REMOVE_BY_RANK:
-			return mapToMapRemoveByRankOp(opValues);
+			case MAP_REMOVE_BY_RANK:
+				return mapToMapRemoveByRankOp(opValues);
 
-		case OPERATION_MAP_REMOVE_BY_RANK_RANGE:
-			return mapToMapRemoveByRankRangeOp(opValues);
+			case MAP_REMOVE_BY_RANK_RANGE:
+				return mapToMapRemoveByRankRangeOp(opValues);
 
-		case OPERATION_MAP_REMOVE_BY_VALUE:
-			return mapToMapRemoveByValueOp(opValues);
+			case MAP_REMOVE_BY_VALUE:
+				return mapToMapRemoveByValueOp(opValues);
 
-		case OPERATION_MAP_REMOVE_BY_VALUE_RANGE:
-			return mapToMapRemoveByValueRangeOp(opValues);
+			case MAP_REMOVE_BY_VALUE_RANGE:
+				return mapToMapRemoveByValueRangeOp(opValues);
 
-		case OPERATION_MAP_REMOVE_BY_VALUE_LIST:
-			return mapToMapRemoveByValueListOp(opValues);
+			case MAP_REMOVE_BY_VALUE_LIST:
+				return mapToMapRemoveByValueListOp(opValues);
 
-		case OPERATION_MAP_SET_MAP_POLICY:
-			return mapToMapSetMapPolicyOp(opValues);
+			case MAP_SET_MAP_POLICY:
+				return mapToMapSetMapPolicyOp(opValues);
 
-		case OPERATION_MAP_SIZE:
-			return mapToMapSizeOp(opValues);
+			case MAP_SIZE:
+				return mapToMapSizeOp(opValues);
 
-		default:
-			throw new InvalidOperationError("Invalid operation: " + opName);
+			default:
+				throw new InvalidOperationError("Invalid operation: " + opName);
 		}
 	}
 
@@ -1317,22 +1235,22 @@ public class OperationConverter {
 		}
 
 		switch(returnTypeString) {
-		case "COUNT":
-			return ListReturnType.COUNT | inverted;
-		case "INDEX":
-			return ListReturnType.INDEX | inverted;
-		case "NONE":
-			return ListReturnType.NONE | inverted;
-		case "RANK":
-			return ListReturnType.RANK | inverted;
-		case "REVERSE_INDEX":
-			return ListReturnType.REVERSE_INDEX | inverted;
-		case "REVERSE_RANK":
-			return ListReturnType.REVERSE_RANK | inverted;
-		case "VALUE":
-			return ListReturnType.VALUE | inverted;
-		default:
-			throw new InvalidOperationError("Invalid listReturnType: "+ returnTypeString);
+			case "COUNT":
+				return ListReturnType.COUNT | inverted;
+			case "INDEX":
+				return ListReturnType.INDEX | inverted;
+			case "NONE":
+				return ListReturnType.NONE | inverted;
+			case "RANK":
+				return ListReturnType.RANK | inverted;
+			case "REVERSE_INDEX":
+				return ListReturnType.REVERSE_INDEX | inverted;
+			case "REVERSE_RANK":
+				return ListReturnType.REVERSE_RANK | inverted;
+			case "VALUE":
+				return ListReturnType.VALUE | inverted;
+			default:
+				throw new InvalidOperationError("Invalid listReturnType: "+ returnTypeString);
 		}
 	}
 
@@ -1350,26 +1268,26 @@ public class OperationConverter {
 		}
 
 		switch(returnTypeString) {
-		case "COUNT":
-			return MapReturnType.COUNT | inverted;
-		case "INDEX":
-			return MapReturnType.INDEX | inverted;
-		case "KEY":
-			return MapReturnType.KEY | inverted;
-		case "KEY_VALUE":
-			return MapReturnType.KEY_VALUE | inverted;
-		case "NONE":
-			return MapReturnType.NONE | inverted;
-		case "RANK":
-			return MapReturnType.RANK | inverted;
-		case "REVERSE_INDEX":
-			return MapReturnType.REVERSE_INDEX | inverted;
-		case "REVERSE_RANK":
-			return MapReturnType.REVERSE_RANK | inverted;
-		case "VALUE":
-			return MapReturnType.VALUE | inverted;
-		default:
-			throw new InvalidOperationError("Invalid mapReturnType: "+ returnTypeString);
+			case "COUNT":
+				return MapReturnType.COUNT | inverted;
+			case "INDEX":
+				return MapReturnType.INDEX | inverted;
+			case "KEY":
+				return MapReturnType.KEY | inverted;
+			case "KEY_VALUE":
+				return MapReturnType.KEY_VALUE | inverted;
+			case "NONE":
+				return MapReturnType.NONE | inverted;
+			case "RANK":
+				return MapReturnType.RANK | inverted;
+			case "REVERSE_INDEX":
+				return MapReturnType.REVERSE_INDEX | inverted;
+			case "REVERSE_RANK":
+				return MapReturnType.REVERSE_RANK | inverted;
+			case "VALUE":
+				return MapReturnType.VALUE | inverted;
+			default:
+				throw new InvalidOperationError("Invalid mapReturnType: "+ returnTypeString);
 		}
 	}
 
@@ -1502,23 +1420,23 @@ public class OperationConverter {
 			List<String> writeFlags = (List<String>)mapPolicy.get(WRITE_FLAGS_KEY);
 			for (String flagName: writeFlags) {
 				switch(flagName) {
-				case "CREATE_ONLY":
-					flags |= MapWriteFlags.CREATE_ONLY;
-					break;
-				case "UPDATE_ONLY":
-					flags |= MapWriteFlags.UPDATE_ONLY;
-					break;
-				case "NO_FAIL":
-					flags |= MapWriteFlags.NO_FAIL;
-					break;
-				case "PARTIAL":
-					flags |= MapWriteFlags.PARTIAL;
-					break;
-				case "DEFAULT":
-					flags |= MapWriteFlags.DEFAULT;
-					break;
-				default:
-					throw new InvalidOperationError(String.format("Unknown mapWriteFlags: %s",  flagName));
+					case "CREATE_ONLY":
+						flags |= MapWriteFlags.CREATE_ONLY;
+						break;
+					case "UPDATE_ONLY":
+						flags |= MapWriteFlags.UPDATE_ONLY;
+						break;
+					case "NO_FAIL":
+						flags |= MapWriteFlags.NO_FAIL;
+						break;
+					case "PARTIAL":
+						flags |= MapWriteFlags.PARTIAL;
+						break;
+					case "DEFAULT":
+						flags |= MapWriteFlags.DEFAULT;
+						break;
+					default:
+						throw new InvalidOperationError(String.format("Unknown mapWriteFlags: %s",  flagName));
 				}
 			}
 			return flags;
