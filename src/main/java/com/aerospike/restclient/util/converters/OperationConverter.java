@@ -128,6 +128,9 @@ public class OperationConverter {
 			case LIST_GET_BY_RANK_RANGE:
 				return mapToListGetByRankRangeOp(opValues);
 
+			case LIST_GET_BY_VALUE_REL_RANK_RANGE:
+				return mapToListGetByValueRelRankRangeOp(opValues);
+
 			case LIST_GET_BY_VALUE:
 				return mapToListGetByValueOp(opValues);
 
@@ -169,6 +172,9 @@ public class OperationConverter {
 
 			case LIST_REMOVE_BY_RANK_RANGE:
 				return mapToListRemoveByRankRangeOp(opValues);
+
+			case LIST_REMOVE_BY_VALUE_REL_RANK_RANGE:
+				return mapToListRemoveByValueRelRankRangeOp(opValues);
 
 			case LIST_REMOVE_BY_VALUE:
 				return mapToListRemoveByValueOp(opValues);
@@ -234,6 +240,12 @@ public class OperationConverter {
 			case MAP_GET_BY_VALUE_LIST:
 				return mapToMapGetByValueListOp(opValues);
 
+			case MAP_GET_BY_KEY_REL_INDEX_RANGE:
+				return mapToMapGetByKeyRelIndexRangeOp(opValues);
+
+			case MAP_GET_BY_VALUE_REL_RANK_RANGE:
+				return mapToMapGetByValueRelRankRangeOp(opValues);
+
 			case MAP_INCREMENT:
 				return mapToMapIncrementOp(opValues);
 
@@ -260,6 +272,12 @@ public class OperationConverter {
 
 			case MAP_REMOVE_BY_RANK_RANGE:
 				return mapToMapRemoveByRankRangeOp(opValues);
+
+			case MAP_REMOVE_BY_KEY_REL_INDEX_RANGE:
+				return mapToMapRemoveByKeyRelIndexRangeOp(opValues);
+
+			case MAP_REMOVE_BY_VALUE_REL_RANK_RANGE:
+				return mapToMapRemoveByValueRelRankRangeOp(opValues);
 
 			case MAP_REMOVE_BY_VALUE:
 				return mapToMapRemoveByValueOp(opValues);
@@ -450,6 +468,23 @@ public class OperationConverter {
 			return ListOperation.getByRankRange(binName, rank, count, returnType);
 		} else {
 			return ListOperation.getByRankRange(binName, rank, returnType);
+		}
+	}
+
+	private static Operation mapToListGetByValueRelRankRangeOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, RANK_KEY, VALUE_KEY, LIST_RETURN_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, RANK_KEY, VALUE_KEY, LIST_RETURN_KEY, COUNT_KEY);
+
+		String binName = getBinName(opValues);
+		Value value = getValue(opValues);
+		int rank = getRank(opValues);
+		Integer count = getCount(opValues);
+		int returnType = getListReturnType(opValues);
+
+		if (count != null) {
+			return ListOperation.getByValueRelativeRankRange(binName, value, rank, count, returnType);
+		} else {
+			return ListOperation.getByValueRelativeRankRange(binName, value, rank, returnType);
 		}
 	}
 
@@ -646,7 +681,23 @@ public class OperationConverter {
 		return ListOperation.removeByRankRange(binName, rank, returnType);
 	}
 
-	private static Operation mapToListRemoveByValueOp(Map<String, Object> opValues) {
+	private static Operation mapToListRemoveByValueRelRankRangeOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, RANK_KEY, VALUE_KEY, LIST_RETURN_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, RANK_KEY, VALUE_KEY, LIST_RETURN_KEY, COUNT_KEY);
+
+		String binName = getBinName(opValues);
+		Value value = getValue(opValues);
+		int rank = getRank(opValues);
+		int returnType = getListReturnType(opValues);
+		Integer count = getCount(opValues);
+
+		if (count != null) {
+			return ListOperation.removeByValueRelativeRankRange(binName, value, rank, count, returnType);
+		}
+		return ListOperation.removeByValueRelativeRankRange(binName, value, rank, returnType);
+	}
+
+		private static Operation mapToListRemoveByValueOp(Map<String, Object> opValues) {
 		hasAllRequiredKeys(opValues, BIN_KEY, VALUE_KEY, LIST_RETURN_KEY);
 		onlyHasAllowedKeys(opValues, BIN_KEY, VALUE_KEY, LIST_RETURN_KEY);
 
@@ -889,7 +940,39 @@ public class OperationConverter {
 		return MapOperation.getByValueList(binName, values, returnType);
 	}
 
-	private static Operation mapToMapIncrementOp(Map<String, Object> opValues) {
+	private static Operation mapToMapGetByKeyRelIndexRangeOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, INDEX_KEY, VALUE_KEY, MAP_RETURN_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, INDEX_KEY, VALUE_KEY, MAP_RETURN_KEY, COUNT_KEY);
+
+		String binName = getBinName(opValues);
+		Value value = getValue(opValues);
+		int returnType = getMapReturnType(opValues);
+		int index = getIndex(opValues);
+		Integer count = getCount(opValues);
+
+		if (count == null) {
+			return MapOperation.getByKeyRelativeIndexRange(binName, value, index, returnType);
+		}
+		return MapOperation.getByKeyRelativeIndexRange(binName, value, index, count, returnType);
+	}
+
+	private static Operation mapToMapGetByValueRelRankRangeOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, RANK_KEY, VALUE_KEY, MAP_RETURN_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, RANK_KEY, VALUE_KEY, COUNT_KEY, MAP_RETURN_KEY);
+
+		String binName = getBinName(opValues);
+		Value value = getValue(opValues);
+		int rank = getRank(opValues);
+		Integer count = getCount(opValues);
+		int returnType = getMapReturnType(opValues);
+
+		if (count != null) {
+			return MapOperation.getByValueRelativeRankRange(binName, value, rank, count, returnType);
+		}
+		return MapOperation.getByValueRelativeRankRange(binName, value, rank, returnType);
+	}
+
+		private static Operation mapToMapIncrementOp(Map<String, Object> opValues) {
 		hasAllRequiredKeys(opValues, BIN_KEY, INCR_KEY, MAP_KEY_KEY);
 		onlyHasAllowedKeys(opValues, BIN_KEY, INCR_KEY, MAP_POLICY_KEY, MAP_KEY_KEY);
 
@@ -999,7 +1082,39 @@ public class OperationConverter {
 		return MapOperation.removeByRankRange(binName, rank, returnType);
 	}
 
-	private static Operation mapToMapRemoveByValueOp(Map<String, Object> opValues) {
+	private static Operation mapToMapRemoveByKeyRelIndexRangeOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, INDEX_KEY, VALUE_KEY, MAP_RETURN_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, INDEX_KEY, VALUE_KEY, COUNT_KEY, MAP_RETURN_KEY);
+
+		String binName = getBinName(opValues);
+		Value value = getValue(opValues);
+		int returnType = getMapReturnType(opValues);
+		int index = getIndex(opValues);
+		Integer count = getCount(opValues);
+
+		if (count != null) {
+			return MapOperation.removeByKeyRelativeIndexRange(binName, value, index, count, returnType);
+		}
+		return MapOperation.removeByKeyRelativeIndexRange(binName, value, index, returnType);
+	}
+
+	private static Operation mapToMapRemoveByValueRelRankRangeOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, RANK_KEY, VALUE_KEY, MAP_RETURN_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, RANK_KEY, VALUE_KEY, COUNT_KEY, MAP_RETURN_KEY);
+
+		String binName = getBinName(opValues);
+		Value value = getValue(opValues);
+		int rank = getRank(opValues);
+		Integer count = getCount(opValues);
+		int returnType = getMapReturnType(opValues);
+
+		if (count != null ) {
+			return MapOperation.removeByValueRelativeRankRange(binName, value, rank, count, returnType);
+		}
+		return MapOperation.removeByValueRelativeRankRange(binName, value, rank, returnType);
+	}
+
+		private static Operation mapToMapRemoveByValueOp(Map<String, Object> opValues) {
 		hasAllRequiredKeys(opValues, BIN_KEY, VALUE_KEY, MAP_RETURN_KEY);
 		onlyHasAllowedKeys(opValues, BIN_KEY, VALUE_KEY, MAP_RETURN_KEY);
 
