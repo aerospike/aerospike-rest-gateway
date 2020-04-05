@@ -10,3 +10,4 @@ gradlew.bat
 /.gradle/
 .vscode/
 .idea/
+target/
