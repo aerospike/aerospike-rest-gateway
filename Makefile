@@ -4,7 +4,7 @@ ARCHIVEDIR=aerospike-client-rest-$(VERSION)
 ARCHIVENAME=$(ARCHIVEDIR).tgz
 
 .PHONY: package
-package: clean build validatedocs
+package: clean build
 	mkdir $(ARCHIVEDIR)
 	mkdir target
 	cp build/libs/*.jar $(ARCHIVEDIR)
@@ -13,7 +13,7 @@ package: clean build validatedocs
 
 .PHONY: build
 build:
-	./gradlew build
+	./gradlew build -x test
 
 .PHONY: clean
 clean:
