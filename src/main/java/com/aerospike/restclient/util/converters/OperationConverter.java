@@ -24,6 +24,8 @@ import com.aerospike.restclient.util.AerospikeOperation;
 import com.aerospike.restclient.util.RestClientErrors.InvalidOperationError;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
  * Class containing static methods used for converting Java Maps to Aerospike Operations.
@@ -62,6 +64,23 @@ public class OperationConverter {
 	public static final String WRITE_FLAGS_KEY = "writeFlags";
 	public static final String WRITE_MODE_KEY = "writeMode";
 
+	public static final String CTX_LIST_INDEX_KEY = "listIndex";
+	public static final String CTX_LIST_RANK_KEY = "listRank";
+	public static final String CTX_LIST_VALUE_KEY = "listValue";
+	public static final String CTX_MAP_INDEX_KEY = "mapIndex";
+	public static final String CTX_MAP_RANK_KEY = "mapRank";
+	public static final String CTX_MAP_KEY_KEY = "mapKey";
+	public static final String CTX_MAP_VALUE_KEY = "mapValue";
+
+	private static final List<String> CTX_KEYS = Arrays.asList(
+			CTX_LIST_INDEX_KEY,
+			CTX_LIST_RANK_KEY,
+			CTX_LIST_VALUE_KEY,
+			CTX_MAP_INDEX_KEY,
+			CTX_MAP_RANK_KEY,
+			CTX_MAP_KEY_KEY,
+			CTX_MAP_VALUE_KEY
+	);
 
 	@SuppressWarnings("unchecked")
 	public static Operation convertMapToOperation(Map<String, Object>operationMap) {
@@ -389,7 +408,7 @@ public class OperationConverter {
 		String binName = getBinName(opValues);
 		Value value = getValue(opValues);
 
-		return ListOperation.append(binName, value);
+		return ListOperation.append(binName, value, extractCTX(opValues));
 	}
 
 	private static Operation mapToListAppendItemsOp(Map<String, Object> opValues) {
@@ -401,9 +420,9 @@ public class OperationConverter {
 		ListPolicy policy = getListPolicy(opValues);
 
 		if (policy != null) {
-			return ListOperation.appendItems(policy, binName, valueList);
+			return ListOperation.appendItems(policy, binName, valueList, extractCTX(opValues));
 		} else {
-			return ListOperation.appendItems(binName, valueList);
+			return ListOperation.appendItems(binName, valueList, extractCTX(opValues));
 		}
 	}
 
@@ -413,7 +432,7 @@ public class OperationConverter {
 
 		String binName = getBinName(opValues);
 
-		return ListOperation.clear(binName);
+		return ListOperation.clear(binName, extractCTX(opValues));
 	}
 
 	private static Operation mapToListGetOp(Map<String, Object> opValues) {
@@ -423,7 +442,7 @@ public class OperationConverter {
 		String binName = getBinName(opValues);
 		int index = getIndex(opValues);
 
-		return ListOperation.get(binName, index);
+		return ListOperation.get(binName, index, extractCTX(opValues));
 	}
 
 	private static Operation mapToListGetByIndexOp(Map<String, Object> opValues) {
@@ -434,7 +453,7 @@ public class OperationConverter {
 		int index = getIndex(opValues);
 		int returnType = getListReturnType(opValues);
 
-		return ListOperation.getByIndex(binName, index, returnType);
+		return ListOperation.getByIndex(binName, index, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToListGetByIndexRangeOp(Map<String, Object> opValues) {
@@ -447,9 +466,9 @@ public class OperationConverter {
 		int returnType = getListReturnType(opValues);
 
 		if (count != null) {
-			return ListOperation.getByIndexRange(binName, index, count, returnType);
+			return ListOperation.getByIndexRange(binName, index, count, returnType, extractCTX(opValues));
 		} else {
-			return ListOperation.getByIndexRange(binName, index, returnType);
+			return ListOperation.getByIndexRange(binName, index, returnType, extractCTX(opValues));
 		}
 	}
 
@@ -461,7 +480,7 @@ public class OperationConverter {
 		int rank = getRank(opValues);
 		int returnType = getListReturnType(opValues);
 
-		return ListOperation.getByRank(binName, rank, returnType);
+		return ListOperation.getByRank(binName, rank, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToListGetByRankRangeOp(Map<String, Object> opValues) {
@@ -474,9 +493,9 @@ public class OperationConverter {
 		int returnType = getListReturnType(opValues);
 
 		if (count != null) {
-			return ListOperation.getByRankRange(binName, rank, count, returnType);
+			return ListOperation.getByRankRange(binName, rank, count, returnType, extractCTX(opValues));
 		} else {
-			return ListOperation.getByRankRange(binName, rank, returnType);
+			return ListOperation.getByRankRange(binName, rank, returnType, extractCTX(opValues));
 		}
 	}
 
@@ -491,9 +510,9 @@ public class OperationConverter {
 		int returnType = getListReturnType(opValues);
 
 		if (count != null) {
-			return ListOperation.getByValueRelativeRankRange(binName, value, rank, count, returnType);
+			return ListOperation.getByValueRelativeRankRange(binName, value, rank, count, returnType, extractCTX(opValues));
 		} else {
-			return ListOperation.getByValueRelativeRankRange(binName, value, rank, returnType);
+			return ListOperation.getByValueRelativeRankRange(binName, value, rank, returnType, extractCTX(opValues));
 		}
 	}
 
@@ -505,7 +524,7 @@ public class OperationConverter {
 		Value value = getValue(opValues);
 		int returnType = getListReturnType(opValues);
 
-		return ListOperation.getByValue(binName, value, returnType);
+		return ListOperation.getByValue(binName, value, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToListGetByValueRangeOp(Map<String, Object> opValues) {
@@ -517,8 +536,7 @@ public class OperationConverter {
 		Value valueEnd = getValueEnd(opValues);
 		int returnType = getListReturnType(opValues);
 
-		return ListOperation.getByValueRange(binName, valueBegin, valueEnd, returnType);
-
+		return ListOperation.getByValueRange(binName, valueBegin, valueEnd, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToListGetByValueListOp(Map<String, Object> opValues) {
@@ -529,7 +547,7 @@ public class OperationConverter {
 		List<Value>values = getValueList(opValues);
 		int returnType = getListReturnType(opValues);
 
-		return ListOperation.getByValueList(binName, values, returnType);
+		return ListOperation.getByValueList(binName, values, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToListGetRangeOp(Map<String, Object> opValues) {
@@ -541,9 +559,9 @@ public class OperationConverter {
 		Integer count = getCount(opValues);
 
 		if (count != null) {
-			return ListOperation.getRange(binName, index, count);
+			return ListOperation.getRange(binName, index, count, extractCTX(opValues));
 		} else {
-			return ListOperation.getRange(binName, index);
+			return ListOperation.getRange(binName, index, extractCTX(opValues));
 		}
 	}
 
@@ -558,15 +576,15 @@ public class OperationConverter {
 
 		if (policy != null) {
 			if (incr != null) {
-				return ListOperation.increment(policy, binName, index, incr);
+				return ListOperation.increment(policy, binName, index, incr, extractCTX(opValues));
 			} else {
-				return ListOperation.increment(policy, binName, index);
+				return ListOperation.increment(policy, binName, index, extractCTX(opValues));
 			}
 		} else {
 			if (incr != null) {
-				return ListOperation.increment(binName, index, incr);
+				return ListOperation.increment(binName, index, incr, extractCTX(opValues));
 			} else {
-				return ListOperation.increment(binName, index);
+				return ListOperation.increment(binName, index, extractCTX(opValues));
 			}
 		}
 	}
@@ -581,9 +599,9 @@ public class OperationConverter {
 		ListPolicy policy = getListPolicy(opValues);
 
 		if (policy == null) {
-			return ListOperation.insert(binName, index, value);
+			return ListOperation.insert(binName, index, value, extractCTX(opValues));
 		} else {
-			return ListOperation.insert(policy, binName, index, value);
+			return ListOperation.insert(policy, binName, index, value, extractCTX(opValues));
 		}
 	}
 
@@ -597,9 +615,9 @@ public class OperationConverter {
 		ListPolicy policy = getListPolicy(opValues);
 
 		if (policy == null) {
-			return ListOperation.insertItems(binName, index, values);
+			return ListOperation.insertItems(binName, index, values, extractCTX(opValues));
 		} else {
-			return ListOperation.insertItems(policy, binName, index, values);
+			return ListOperation.insertItems(policy, binName, index, values, extractCTX(opValues));
 		}
 	}
 
@@ -610,7 +628,7 @@ public class OperationConverter {
 		String binName = getBinName(opValues);
 		int index = getIndex(opValues);
 
-		return ListOperation.pop(binName, index);
+		return ListOperation.pop(binName, index, extractCTX(opValues));
 	}
 
 	private static Operation mapToListPopRangeOp(Map<String, Object> opValues) {
@@ -622,9 +640,9 @@ public class OperationConverter {
 		Integer count = getCount(opValues);
 
 		if (count != null) {
-			return ListOperation.popRange(binName, index, count);
+			return ListOperation.popRange(binName, index, count, extractCTX(opValues));
 		} else {
-			return ListOperation.popRange(binName, index);
+			return ListOperation.popRange(binName, index, extractCTX(opValues));
 		}
 	}
 
@@ -635,7 +653,7 @@ public class OperationConverter {
 		String binName = getBinName(opValues);
 		int index = getIndex(opValues);
 
-		return ListOperation.remove(binName, index);
+		return ListOperation.remove(binName, index, extractCTX(opValues));
 	}
 
 	private static Operation mapToListRemoveByIndexOp(Map<String, Object> opValues) {
@@ -646,7 +664,7 @@ public class OperationConverter {
 		int index = getIndex(opValues);
 		int returnType = getListReturnType(opValues);
 
-		return ListOperation.removeByIndex(binName, index, returnType);
+		return ListOperation.removeByIndex(binName, index, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToListRemoveByIndexRangeOp(Map<String, Object> opValues) {
@@ -659,9 +677,9 @@ public class OperationConverter {
 		int returnType = getListReturnType(opValues);
 
 		if (count != null) {
-			return ListOperation.removeByIndexRange(binName, index, count, returnType);
+			return ListOperation.removeByIndexRange(binName, index, count, returnType, extractCTX(opValues));
 		}
-		return ListOperation.removeByIndexRange(binName, index, returnType);
+		return ListOperation.removeByIndexRange(binName, index, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToListRemoveByRankOp(Map<String, Object> opValues) {
@@ -672,7 +690,7 @@ public class OperationConverter {
 		int rank = getRank(opValues);
 		int returnType = getListReturnType(opValues);
 
-		return ListOperation.removeByRank(binName, rank, returnType);
+		return ListOperation.removeByRank(binName, rank, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToListRemoveByRankRangeOp(Map<String, Object> opValues) {
@@ -685,9 +703,9 @@ public class OperationConverter {
 		Integer count = getCount(opValues);
 
 		if (count != null) {
-			return ListOperation.removeByRankRange(binName, rank, count, returnType);
+			return ListOperation.removeByRankRange(binName, rank, count, returnType, extractCTX(opValues));
 		}
-		return ListOperation.removeByRankRange(binName, rank, returnType);
+		return ListOperation.removeByRankRange(binName, rank, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToListRemoveByValueRelRankRangeOp(Map<String, Object> opValues) {
@@ -701,9 +719,9 @@ public class OperationConverter {
 		Integer count = getCount(opValues);
 
 		if (count != null) {
-			return ListOperation.removeByValueRelativeRankRange(binName, value, rank, count, returnType);
+			return ListOperation.removeByValueRelativeRankRange(binName, value, rank, count, returnType, extractCTX(opValues));
 		}
-		return ListOperation.removeByValueRelativeRankRange(binName, value, rank, returnType);
+		return ListOperation.removeByValueRelativeRankRange(binName, value, rank, returnType, extractCTX(opValues));
 	}
 
 		private static Operation mapToListRemoveByValueOp(Map<String, Object> opValues) {
@@ -714,7 +732,7 @@ public class OperationConverter {
 		Value value = getValue(opValues);
 		int returnType = getListReturnType(opValues);
 
-		return ListOperation.removeByValue(binName, value, returnType);
+		return ListOperation.removeByValue(binName, value, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToListRemoveByValueRangeOp(Map<String, Object> opValues) {
@@ -726,7 +744,7 @@ public class OperationConverter {
 		Value valueEnd = getValueEnd(opValues);
 		int returnType = getListReturnType(opValues);
 
-		return ListOperation.removeByValueRange(binName, valueBegin, valueEnd, returnType);
+		return ListOperation.removeByValueRange(binName, valueBegin, valueEnd, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToListRemoveByValueListOp(Map<String, Object> opValues) {
@@ -737,7 +755,7 @@ public class OperationConverter {
 		List<Value> values = getValueList(opValues);
 		int returnType = getListReturnType(opValues);
 
-		return ListOperation.removeByValueList(binName, values, returnType);
+		return ListOperation.removeByValueList(binName, values, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToListRemoveRangeOp(Map<String, Object> opValues) {
@@ -749,9 +767,9 @@ public class OperationConverter {
 		Integer count = getCount(opValues);
 
 		if (count != null) {
-			return ListOperation.removeRange(binName, index, count);
+			return ListOperation.removeRange(binName, index, count, extractCTX(opValues));
 		}
-		return ListOperation.removeRange(binName, index);
+		return ListOperation.removeRange(binName, index, extractCTX(opValues));
 	}
 
 	private static Operation mapToListSetOp(Map<String, Object> opValues) {
@@ -764,9 +782,9 @@ public class OperationConverter {
 		int index = getIndex(opValues);
 
 		if (policy != null) {
-			return ListOperation.set(policy, binName, index, value);
+			return ListOperation.set(policy, binName, index, value, extractCTX(opValues));
 		}
-		return ListOperation.set(binName, index, value);
+		return ListOperation.set(binName, index, value, extractCTX(opValues));
 	}
 
 	private static Operation mapToListSetOrderOp(Map<String, Object> opValues) {
@@ -785,7 +803,7 @@ public class OperationConverter {
 
 		String binName = getBinName(opValues);
 
-		return ListOperation.size(binName);
+		return ListOperation.size(binName, extractCTX(opValues));
 	}
 
 	private static Operation mapToListSortOp(Map<String, Object> opValues) {
@@ -795,7 +813,7 @@ public class OperationConverter {
 		String binName = getBinName(opValues);
 		int sortFlags = getSortFlags(opValues);
 
-		return ListOperation.sort(binName, sortFlags);
+		return ListOperation.sort(binName, sortFlags, extractCTX(opValues));
 	}
 
 	private static Operation mapToListTrimOp(Map<String, Object> opValues) {
@@ -806,7 +824,7 @@ public class OperationConverter {
 		int index = getIndex(opValues);
 		int count = getCount(opValues);
 
-		return ListOperation.trim(binName, index, count);
+		return ListOperation.trim(binName, index, count, extractCTX(opValues));
 	}
 
 	/* MAP OPERATIONS */
@@ -817,7 +835,7 @@ public class OperationConverter {
 
 		String binName = getBinName(opValues);
 
-		return MapOperation.clear(binName);
+		return MapOperation.clear(binName, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapDecrementOp(Map<String, Object> opValues) {
@@ -829,7 +847,7 @@ public class OperationConverter {
 		Value decr = getDecr(opValues);
 		Value key = getMapKey(opValues);
 
-		return MapOperation.decrement(policy, binName, key, Value.get(decr));
+		return MapOperation.decrement(policy, binName, key, Value.get(decr), extractCTX(opValues));
 	}
 
 	private static Operation mapToMapGetByIndexOp(Map<String, Object> opValues) {
@@ -840,7 +858,7 @@ public class OperationConverter {
 		int returnType = getMapReturnType(opValues);
 		int index = getIndex(opValues);
 
-		return MapOperation.getByIndex(binName, index, returnType);
+		return MapOperation.getByIndex(binName, index, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapGetByIndexRangeOp(Map<String, Object> opValues) {
@@ -852,9 +870,9 @@ public class OperationConverter {
 		int index = getIndex(opValues);
 		Integer count = getCount(opValues);
 		if (count == null) {
-			return MapOperation.getByIndexRange(binName, index, returnType);
+			return MapOperation.getByIndexRange(binName, index, returnType, extractCTX(opValues));
 		}
-		return MapOperation.getByIndexRange(binName, index, count, returnType);
+		return MapOperation.getByIndexRange(binName, index, count, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapGetByKeyOp(Map<String, Object> opValues) {
@@ -865,7 +883,7 @@ public class OperationConverter {
 		int returnType = getMapReturnType(opValues);
 		Value key = getMapKey(opValues);
 
-		return MapOperation.getByKey(binName, key, returnType);
+		return MapOperation.getByKey(binName, key, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapGetByKeyListOp(Map<String, Object> opValues) {
@@ -876,7 +894,7 @@ public class OperationConverter {
 		int returnType = getMapReturnType(opValues);
 		List<Value> keys = getMapKeys(opValues);
 
-		return MapOperation.getByKeyList(binName, keys, returnType);
+		return MapOperation.getByKeyList(binName, keys, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapGetByKeyRangeOp(Map<String, Object> opValues) {
@@ -888,7 +906,7 @@ public class OperationConverter {
 		Value keyBegin = getMapKeyBegin(opValues);
 		Value keyEnd = getMapKeyEnd(opValues);
 
-		return MapOperation.getByKeyRange(binName, keyBegin, keyEnd, returnType);
+		return MapOperation.getByKeyRange(binName, keyBegin, keyEnd, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapGetByRankOp(Map<String, Object> opValues) {
@@ -898,7 +916,7 @@ public class OperationConverter {
 		String binName = getBinName(opValues);
 		int rank = getRank(opValues);
 		int returnType = getMapReturnType(opValues);
-		return MapOperation.getByRank(binName, rank, returnType);
+		return MapOperation.getByRank(binName, rank, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapGetByRankRangeOp(Map<String, Object> opValues) {
@@ -911,9 +929,9 @@ public class OperationConverter {
 		int returnType = getMapReturnType(opValues);
 
 		if (count != null) {
-			return MapOperation.getByRankRange(binName, rank, count, returnType);
+			return MapOperation.getByRankRange(binName, rank, count, returnType, extractCTX(opValues));
 		}
-		return MapOperation.getByRankRange(binName, rank, returnType);
+		return MapOperation.getByRankRange(binName, rank, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapGetByValueOp(Map<String, Object> opValues) {
@@ -923,7 +941,7 @@ public class OperationConverter {
 		String binName = getBinName(opValues);
 		Value value = getValue(opValues);
 		int returnType = getMapReturnType(opValues);
-		return MapOperation.getByValue(binName, value, returnType);
+		return MapOperation.getByValue(binName, value, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapGetByValueRangeOp(Map<String, Object> opValues) {
@@ -935,7 +953,7 @@ public class OperationConverter {
 		Value valueEnd = getValueEnd(opValues);
 		int returnType = getMapReturnType(opValues);
 
-		return MapOperation.getByValueRange(binName, valueBegin, valueEnd, returnType);
+		return MapOperation.getByValueRange(binName, valueBegin, valueEnd, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapGetByValueListOp(Map<String, Object> opValues) {
@@ -946,7 +964,7 @@ public class OperationConverter {
 		List<Value> values = getValueList(opValues);
 		int returnType = getMapReturnType(opValues);
 
-		return MapOperation.getByValueList(binName, values, returnType);
+		return MapOperation.getByValueList(binName, values, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapGetByKeyRelIndexRangeOp(Map<String, Object> opValues) {
@@ -960,9 +978,9 @@ public class OperationConverter {
 		Integer count = getCount(opValues);
 
 		if (count == null) {
-			return MapOperation.getByKeyRelativeIndexRange(binName, value, index, returnType);
+			return MapOperation.getByKeyRelativeIndexRange(binName, value, index, returnType, extractCTX(opValues));
 		}
-		return MapOperation.getByKeyRelativeIndexRange(binName, value, index, count, returnType);
+		return MapOperation.getByKeyRelativeIndexRange(binName, value, index, count, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapGetByValueRelRankRangeOp(Map<String, Object> opValues) {
@@ -976,12 +994,12 @@ public class OperationConverter {
 		int returnType = getMapReturnType(opValues);
 
 		if (count != null) {
-			return MapOperation.getByValueRelativeRankRange(binName, value, rank, count, returnType);
+			return MapOperation.getByValueRelativeRankRange(binName, value, rank, count, returnType, extractCTX(opValues));
 		}
-		return MapOperation.getByValueRelativeRankRange(binName, value, rank, returnType);
+		return MapOperation.getByValueRelativeRankRange(binName, value, rank, returnType, extractCTX(opValues));
 	}
 
-		private static Operation mapToMapIncrementOp(Map<String, Object> opValues) {
+	private static Operation mapToMapIncrementOp(Map<String, Object> opValues) {
 		hasAllRequiredKeys(opValues, BIN_KEY, INCR_KEY, MAP_KEY_KEY);
 		onlyHasAllowedKeys(opValues, BIN_KEY, INCR_KEY, MAP_POLICY_KEY, MAP_KEY_KEY);
 
@@ -990,7 +1008,7 @@ public class OperationConverter {
 		Value incr = getIncr(opValues);
 		Value key = getMapKey(opValues);
 
-		return MapOperation.increment(policy, binName, key, incr);
+		return MapOperation.increment(policy, binName, key, incr, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapPutOp(Map<String, Object> opValues) {
@@ -1002,7 +1020,7 @@ public class OperationConverter {
 		Value value = getValue(opValues);
 		Value key = getMapKey(opValues);
 
-		return MapOperation.put(policy, binName, key, value);
+		return MapOperation.put(policy, binName, key, value, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapPutItemsOp(Map<String, Object> opValues) {
@@ -1013,7 +1031,7 @@ public class OperationConverter {
 		MapPolicy policy = getMapPolicy(opValues);
 		Map<Value, Value>putItems = getMapValues(opValues);
 
-		return MapOperation.putItems(policy, binName, putItems);
+		return MapOperation.putItems(policy, binName, putItems, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapRemoveByIndexOp(Map<String, Object> opValues) {
@@ -1024,7 +1042,7 @@ public class OperationConverter {
 		int returnType = getMapReturnType(opValues);
 		int index = getIndex(opValues);
 
-		return MapOperation.removeByIndex(binName, index, returnType);
+		return MapOperation.removeByIndex(binName, index, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapRemoveByIndexRangeOp(Map<String, Object> opValues) {
@@ -1037,9 +1055,9 @@ public class OperationConverter {
 		Integer count = getCount(opValues);
 
 		if (count != null) {
-			return MapOperation.removeByIndexRange(binName, index, count, returnType);
+			return MapOperation.removeByIndexRange(binName, index, count, returnType, extractCTX(opValues));
 		}
-		return MapOperation.removeByIndexRange(binName, index, returnType);
+		return MapOperation.removeByIndexRange(binName, index, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapRemoveByKeyOp(Map<String, Object> opValues) {
@@ -1050,7 +1068,7 @@ public class OperationConverter {
 		int returnType = getMapReturnType(opValues);
 		Value key = getMapKey(opValues);
 
-		return MapOperation.removeByKey(binName, key, returnType);
+		return MapOperation.removeByKey(binName, key, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapRemoveByKeyRangeOp(Map<String, Object> opValues) {
@@ -1062,7 +1080,7 @@ public class OperationConverter {
 		Value keyBegin = getMapKeyBegin(opValues);
 		Value keyEnd = getMapKeyEnd(opValues);
 
-		return MapOperation.removeByKeyRange(binName, keyBegin, keyEnd, returnType);
+		return MapOperation.removeByKeyRange(binName, keyBegin, keyEnd, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapRemoveByRankOp(Map<String, Object> opValues) {
@@ -1073,7 +1091,7 @@ public class OperationConverter {
 		int rank = getRank(opValues);
 		int returnType = getMapReturnType(opValues);
 
-		return MapOperation.removeByRank(binName, rank, returnType);
+		return MapOperation.removeByRank(binName, rank, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapRemoveByRankRangeOp(Map<String, Object> opValues) {
@@ -1086,9 +1104,9 @@ public class OperationConverter {
 		int returnType = getMapReturnType(opValues);
 
 		if (count != null ) {
-			return MapOperation.removeByRankRange(binName, rank, count, returnType);
+			return MapOperation.removeByRankRange(binName, rank, count, returnType, extractCTX(opValues));
 		}
-		return MapOperation.removeByRankRange(binName, rank, returnType);
+		return MapOperation.removeByRankRange(binName, rank, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapRemoveByKeyRelIndexRangeOp(Map<String, Object> opValues) {
@@ -1102,9 +1120,9 @@ public class OperationConverter {
 		Integer count = getCount(opValues);
 
 		if (count != null) {
-			return MapOperation.removeByKeyRelativeIndexRange(binName, value, index, count, returnType);
+			return MapOperation.removeByKeyRelativeIndexRange(binName, value, index, count, returnType, extractCTX(opValues));
 		}
-		return MapOperation.removeByKeyRelativeIndexRange(binName, value, index, returnType);
+		return MapOperation.removeByKeyRelativeIndexRange(binName, value, index, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapRemoveByValueRelRankRangeOp(Map<String, Object> opValues) {
@@ -1118,19 +1136,19 @@ public class OperationConverter {
 		int returnType = getMapReturnType(opValues);
 
 		if (count != null ) {
-			return MapOperation.removeByValueRelativeRankRange(binName, value, rank, count, returnType);
+			return MapOperation.removeByValueRelativeRankRange(binName, value, rank, count, returnType, extractCTX(opValues));
 		}
-		return MapOperation.removeByValueRelativeRankRange(binName, value, rank, returnType);
+		return MapOperation.removeByValueRelativeRankRange(binName, value, rank, returnType, extractCTX(opValues));
 	}
 
-		private static Operation mapToMapRemoveByValueOp(Map<String, Object> opValues) {
+	private static Operation mapToMapRemoveByValueOp(Map<String, Object> opValues) {
 		hasAllRequiredKeys(opValues, BIN_KEY, VALUE_KEY, MAP_RETURN_KEY);
 		onlyHasAllowedKeys(opValues, BIN_KEY, VALUE_KEY, MAP_RETURN_KEY);
 
 		String binName = getBinName(opValues);
 		Value value = getValue(opValues);
 		int returnType = getMapReturnType(opValues);
-		return MapOperation.removeByValue(binName, value, returnType);
+		return MapOperation.removeByValue(binName, value, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapRemoveByValueRangeOp(Map<String, Object> opValues) {
@@ -1142,7 +1160,7 @@ public class OperationConverter {
 		Value valueEnd = getValueEnd(opValues);
 		int returnType = getMapReturnType(opValues);
 
-		return MapOperation.removeByValueRange(binName, valueBegin, valueEnd, returnType);
+		return MapOperation.removeByValueRange(binName, valueBegin, valueEnd, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapRemoveByValueListOp(Map<String, Object> opValues) {
@@ -1153,7 +1171,7 @@ public class OperationConverter {
 		List<Value> values = getValueList(opValues);
 		int returnType = getMapReturnType(opValues);
 
-		return MapOperation.removeByValueList(binName, values, returnType);
+		return MapOperation.removeByValueList(binName, values, returnType, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapSetMapPolicyOp(Map<String, Object> opValues) {
@@ -1163,7 +1181,7 @@ public class OperationConverter {
 		String binName = getBinName(opValues);
 		MapPolicy policy = getMapPolicy(opValues);
 
-		return MapOperation.setMapPolicy(policy, binName);
+		return MapOperation.setMapPolicy(policy, binName, extractCTX(opValues));
 	}
 
 	private static Operation mapToMapSizeOp(Map<String, Object> opValues) {
@@ -1172,7 +1190,7 @@ public class OperationConverter {
 
 		String binName = getBinName(opValues);
 
-		return MapOperation.size(binName);
+		return MapOperation.size(binName, extractCTX(opValues));
 	}
 
 	/*
@@ -1193,7 +1211,8 @@ public class OperationConverter {
 	 * Ensure that opValues does not contain any keys not contained in allowedKeys.
 	 */
 	private static void onlyHasAllowedKeys(Map<String, Object> opValues, String ...allowedKeys) {
-		Set<String> allowedKeySet = new HashSet<String>(Arrays.asList(allowedKeys));
+		Set<String> allowedKeySet = Stream.concat(Arrays.stream(allowedKeys), CTX_KEYS.stream())
+				.collect(Collectors.toSet());
 
 		for (String providedKey: opValues.keySet()) {
 			if (!allowedKeySet.contains(providedKey)) {
@@ -1568,6 +1587,7 @@ public class OperationConverter {
 			throw new InvalidOperationError("writeFlags must be a list of strings");
 		}
 	}
+
 	private static int getIntValue(Map<String, Object>map, String key) {
 		Object nVal = map.get(key);
 		try {
@@ -1579,5 +1599,37 @@ public class OperationConverter {
 				throw new InvalidOperationError(String.format("%s is too large", key));
 			}
 		}
+	}
+
+	private static CTX[] extractCTX(Map<String, Object> opValues) {
+		List<CTX> rt = new ArrayList<>();
+		for(String key : CTX_KEYS) {
+			if (opValues.containsKey(key)) {
+				switch (key) {
+					case CTX_LIST_INDEX_KEY:
+						rt.add(CTX.listIndex(getIntValue(opValues, key)));
+						break;
+					case CTX_LIST_RANK_KEY:
+						rt.add(CTX.listRank(getIntValue(opValues, key)));
+						break;
+					case CTX_LIST_VALUE_KEY:
+						rt.add(CTX.listValue(Value.get(opValues.get(key))));
+						break;
+					case CTX_MAP_INDEX_KEY:
+						rt.add(CTX.mapIndex(getIntValue(opValues, key)));
+						break;
+					case CTX_MAP_KEY_KEY:
+						rt.add(CTX.mapKey(Value.get(opValues.get(key))));
+						break;
+					case CTX_MAP_RANK_KEY:
+						rt.add(CTX.mapRank(getIntValue(opValues, key)));
+						break;
+					case CTX_MAP_VALUE_KEY:
+						rt.add(CTX.mapValue(Value.get(opValues.get(key))));
+						break;
+				}
+			}
+		}
+		return rt.isEmpty() ? null : rt.toArray(new CTX[0]);
 	}
 }
