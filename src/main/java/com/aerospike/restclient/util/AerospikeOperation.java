@@ -11,6 +11,7 @@ public enum AerospikeOperation {
     GET_HEADER,
     TOUCH,
     PUT,
+    DELETE,
 
     // List Operation Constants
     LIST_APPEND,

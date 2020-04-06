@@ -102,6 +102,9 @@ public class OperationConverter {
 
 			case PUT:
 				return mapToPutOp(opValues);
+
+			case DELETE:
+				return mapToDeleteOp(opValues);
 			/* List Operations */
 
 			case LIST_APPEND:
@@ -369,6 +372,12 @@ public class OperationConverter {
 		Bin bin = new Bin(binName, value);
 
 		return Operation.put(bin);
+	}
+
+	private static Operation mapToDeleteOp(Map<String, Object> opValues) {
+		validateNoKeys(opValues);
+
+		return Operation.delete();
 	}
 
 	/* LIST OPERATIONS */

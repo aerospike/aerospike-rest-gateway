@@ -349,4 +349,22 @@ public class OperateTestCorrect {
 		String jsString = objectMapper.writeValueAsString(opList);
 		ASTestUtils.performOperationAndExpect(mockMVC, fakeEndpoint, jsString, status().isNotFound());
 	}
+
+	@Test
+	public void testDeleteOp() throws Exception {
+		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
+		Map<String, Object> opMap = new HashMap<String, Object>();
+		Map<String, Object> opValues = new HashMap<String, Object>();
+
+		opMap.put(OPERATION_FIELD, AerospikeOperation.DELETE);
+		opMap.put(OPERATION_VALUES_FIELD, opValues);
+		opList.add(opMap);
+
+		String jsString = objectMapper.writeValueAsString(opList);
+
+		ASTestUtils.performOperation(mockMVC, testEndpoint, jsString);
+
+		Record record = client.get(null, testKey);
+		Assert.assertNull(record);
+	}
 }
