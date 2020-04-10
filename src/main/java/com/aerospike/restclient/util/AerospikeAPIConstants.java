@@ -54,7 +54,6 @@ public final class AerospikeAPIConstants {
 	public static final String LIST_INDEX = "list";
 
 	//POLICY KEYS
-
 	public static final String TOTAL_TIMEOUT = "totalTimeout";
 	public static final String SOCKET_TIMEOUT = "socketTimeout";
 	public static final String SLEEP_BETWEEN_RETRIES = "sleepBetweenRetries";
@@ -66,6 +65,7 @@ public final class AerospikeAPIConstants {
 	public static final String CONSISTENCY_LEVEL = "consistencyLevel";
 	public static final String READ_MODE_AP = "readModeAP";
 	public static final String READ_MODE_SC = "readModeSC";
+	public static final String PRED_EXP = "predexp";
 
 	//WRITE POLICY KEYS
 	public static final String COMMIT_LEVEL = "commitLevel";
