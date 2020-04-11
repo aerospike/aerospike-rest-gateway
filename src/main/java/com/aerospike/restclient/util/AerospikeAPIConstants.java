@@ -66,6 +66,7 @@ public final class AerospikeAPIConstants {
 	public static final String READ_MODE_AP = "readModeAP";
 	public static final String READ_MODE_SC = "readModeSC";
 	public static final String PRED_EXP = "predexp";
+	public static final String COMPRESS = "compress";
 
 	//WRITE POLICY KEYS
 	public static final String COMMIT_LEVEL = "commitLevel";

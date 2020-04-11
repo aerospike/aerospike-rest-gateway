@@ -47,6 +47,10 @@ public class PolicyValueConverter {
         }
     }
 
+    public static boolean getCompress(String compress) {
+        return getBoolValue(compress);
+    }
+
     public static Priority getPriority(String priority) {
         try {
             return Priority.valueOf(priority);
