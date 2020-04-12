@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Aerospike, Inc.
+ *
+ * Portions may be licensed to Aerospike, Inc. under one or more contributor
+ * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.aerospike.restclient.util;
 
 public enum AerospikeOperation {
@@ -78,5 +94,25 @@ public enum AerospikeOperation {
     MAP_REMOVE_BY_VALUE_RANGE,
     MAP_REMOVE_BY_VALUE_LIST,
     MAP_SET_MAP_POLICY,
-    MAP_SIZE
+    MAP_SIZE,
+
+    // Bit Operation Constants
+    BIT_RESIZE,
+    BIT_INSERT,
+    BIT_REMOVE,
+    BIT_SET,
+    BIT_OR,
+    BIT_XOR,
+    BIT_AND,
+    BIT_NOT,
+    BIT_LSHIFT,
+    BIT_RSHIFT,
+    BIT_ADD,
+    BIT_SUBTRACT,
+    BIT_SET_INT,
+    BIT_GET,
+    BIT_COUNT,
+    BIT_LSCAN,
+    BIT_RSCAN,
+    BIT_GET_INT
 }

@@ -20,6 +20,9 @@ import com.aerospike.client.Bin;
 import com.aerospike.client.Operation;
 import com.aerospike.client.Value;
 import com.aerospike.client.cdt.*;
+import com.aerospike.client.operation.BitOperation;
+import com.aerospike.client.operation.BitOverflowAction;
+import com.aerospike.client.operation.BitPolicy;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.aerospike.restclient.util.RestClientErrors.InvalidOperationError;
 
@@ -47,6 +50,7 @@ public class OperationConverter {
 	public static final String COUNT_KEY = "count";
 	public static final String LIST_POLICY_KEY = "listPolicy";
 	public static final String RANK_KEY = "rank";
+	public static final String SIGNED_KEY = "signed";
 	public static final String VALUE_BEGIN_KEY = "valueBegin";
 	public static final String VALUE_END_KEY = "valueEnd";
 	public static final String MAP_KEY_KEY = "key";
@@ -63,6 +67,14 @@ public class OperationConverter {
 	public static final String OPERATION_FIELD_KEY = "operation";
 	public static final String WRITE_FLAGS_KEY = "writeFlags";
 	public static final String WRITE_MODE_KEY = "writeMode";
+
+	public static final String BYTE_SIZE_KEY = "byteSize";
+	public static final String BIT_SIZE_KEY = "bitSize";
+	public static final String BIT_RESIZE_FLAGS_KEY = "resizeFlags";
+	public static final String BYTE_OFFSET_KEY = "byteOffset";
+	public static final String BIT_OFFSET_KEY = "bitOffset";
+	public static final String BIT_SHIFT_KEY = "shift";
+	public static final String BIT_OVERFLOW_ACTION_KEY = "bitOverflowAction";
 
 	public static final String CTX_LIST_INDEX_KEY = "listIndex";
 	public static final String CTX_LIST_RANK_KEY = "listRank";
@@ -124,8 +136,8 @@ public class OperationConverter {
 
 			case DELETE:
 				return mapToDeleteOp(opValues);
-			/* List Operations */
 
+			/* List Operations */
 			case LIST_APPEND:
 				return mapToListAppendOp(opValues);
 
@@ -224,8 +236,8 @@ public class OperationConverter {
 
 			case LIST_TRIM:
 				return mapToListTrimOp(opValues);
-			/* Map Operations*/
 
+			/* Map Operations*/
 			case MAP_CLEAR:
 				return mapToMapClearOp(opValues);
 
@@ -315,6 +327,61 @@ public class OperationConverter {
 
 			case MAP_SIZE:
 				return mapToMapSizeOp(opValues);
+
+			/* Bit Operations*/
+			case BIT_RESIZE:
+				return mapToBitResizeOp(opValues);
+
+			case BIT_INSERT:
+				return mapToBitInsertOp(opValues);
+
+			case BIT_REMOVE:
+				return mapToBitRemoveOp(opValues);
+
+			case BIT_SET:
+				return mapToBitSetOp(opValues);
+
+			case BIT_OR:
+				return mapToBitOrOp(opValues);
+
+			case BIT_XOR:
+				return mapToBitXorOp(opValues);
+
+			case BIT_AND:
+				return mapToBitAndOp(opValues);
+
+			case BIT_NOT:
+				return mapToBitNotOp(opValues);
+
+			case BIT_LSHIFT:
+				return mapToBitLshiftOp(opValues);
+
+			case BIT_RSHIFT:
+				return mapToBitRshiftOp(opValues);
+
+			case BIT_ADD:
+				return mapToBitAddOp(opValues);
+
+			case BIT_SUBTRACT:
+				return mapToBitSubtractOp(opValues);
+
+			case BIT_SET_INT:
+				return mapToBitSetIntOp(opValues);
+
+			case BIT_GET:
+				return mapToBitGetOp(opValues);
+
+			case BIT_COUNT:
+				return mapToBitCountOp(opValues);
+
+			case BIT_LSCAN:
+				return mapToBitLscanOp(opValues);
+
+			case BIT_RSCAN:
+				return mapToBitRscanOp(opValues);
+
+			case BIT_GET_INT:
+				return mapToBitGetIntOp(opValues);
 
 			default:
 				throw new InvalidOperationError("Invalid operation: " + opName);
@@ -1193,6 +1260,224 @@ public class OperationConverter {
 		return MapOperation.size(binName, extractCTX(opValues));
 	}
 
+	/* BIT OPERATIONS */
+
+	private static Operation mapToBitResizeOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BYTE_SIZE_KEY, BIT_RESIZE_FLAGS_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BYTE_SIZE_KEY, BIT_RESIZE_FLAGS_KEY);
+
+		String binName = getBinName(opValues);
+		int byteSize = getIntValue(opValues, BYTE_SIZE_KEY);
+		int resizeFlags = getIntValue(opValues, BIT_RESIZE_FLAGS_KEY);
+
+		return BitOperation.resize(BitPolicy.Default, binName, byteSize, resizeFlags);
+	}
+
+	private static Operation mapToBitInsertOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BYTE_OFFSET_KEY, VALUE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BYTE_OFFSET_KEY, VALUE_KEY);
+
+		String binName = getBinName(opValues);
+		int byteOffset = getIntValue(opValues, BYTE_OFFSET_KEY);
+		byte[] value = getBitValue(opValues);
+
+		return BitOperation.insert(BitPolicy.Default, binName, byteOffset, value);
+	}
+
+	private static Operation mapToBitRemoveOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BYTE_OFFSET_KEY, BYTE_SIZE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BYTE_OFFSET_KEY, BYTE_SIZE_KEY);
+
+		String binName = getBinName(opValues);
+		int byteOffset = getIntValue(opValues, BYTE_OFFSET_KEY);
+		int byteSize = getIntValue(opValues, BYTE_SIZE_KEY);
+
+		return BitOperation.remove(BitPolicy.Default, binName, byteOffset, byteSize);
+	}
+
+	private static Operation mapToBitSetOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+		byte[] value = getBitValue(opValues);
+
+		return BitOperation.set(BitPolicy.Default, binName, bitOffset, bitSize, value);
+	}
+
+	private static Operation mapToBitOrOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+		byte[] value = getBitValue(opValues);
+
+		return BitOperation.or(BitPolicy.Default, binName, bitOffset, bitSize, value);
+	}
+
+	private static Operation mapToBitXorOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+		byte[] value = getBitValue(opValues);
+
+		return BitOperation.xor(BitPolicy.Default, binName, bitOffset, bitSize, value);
+	}
+
+	private static Operation mapToBitAndOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+		byte[] value = getBitValue(opValues);
+
+		return BitOperation.and(BitPolicy.Default, binName, bitOffset, bitSize, value);
+	}
+
+	private static Operation mapToBitNotOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+
+		return BitOperation.not(BitPolicy.Default, binName, bitOffset, bitSize);
+	}
+
+	private static Operation mapToBitLshiftOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, BIT_SHIFT_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, BIT_SHIFT_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+		int shift = getIntValue(opValues, BIT_SHIFT_KEY);
+
+		return BitOperation.lshift(BitPolicy.Default, binName, bitOffset, bitSize, shift);
+	}
+
+	private static Operation mapToBitRshiftOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, BIT_SHIFT_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, BIT_SHIFT_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+		int shift = getIntValue(opValues, BIT_SHIFT_KEY);
+
+		return BitOperation.rshift(BitPolicy.Default, binName, bitOffset, bitSize, shift);
+	}
+
+	private static Operation mapToBitAddOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY, SIGNED_KEY,
+				BIT_OVERFLOW_ACTION_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+		long value = getLongValue(opValues, VALUE_KEY);
+		boolean signed = getBoolValue(opValues, SIGNED_KEY);
+		BitOverflowAction action = getBitOverflowAction(opValues);
+
+		return BitOperation.add(BitPolicy.Default, binName, bitOffset, bitSize, value, signed, action);
+	}
+
+	private static Operation mapToBitSubtractOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY, SIGNED_KEY,
+				BIT_OVERFLOW_ACTION_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+		long value = getLongValue(opValues, VALUE_KEY);
+		boolean signed = getBoolValue(opValues, SIGNED_KEY);
+		BitOverflowAction action = getBitOverflowAction(opValues);
+
+		return BitOperation.subtract(BitPolicy.Default, binName, bitOffset, bitSize, value, signed, action);
+	}
+
+	private static Operation mapToBitSetIntOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+		long value = getLongValue(opValues, VALUE_KEY);
+
+		return BitOperation.setInt(BitPolicy.Default, binName, bitOffset, bitSize, value);
+	}
+
+	private static Operation mapToBitGetOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+
+		return BitOperation.get(binName, bitOffset, bitSize);
+	}
+
+	private static Operation mapToBitCountOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+
+		return BitOperation.count(binName, bitOffset, bitSize);
+	}
+
+	private static Operation mapToBitLscanOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+		boolean value = getBoolValue(opValues, VALUE_KEY);
+
+		return BitOperation.lscan(binName, bitOffset, bitSize, value);
+	}
+
+	private static Operation mapToBitRscanOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, VALUE_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+		boolean value = getBoolValue(opValues, VALUE_KEY);
+
+		return BitOperation.rscan(binName, bitOffset, bitSize, value);
+	}
+
+	private static Operation mapToBitGetIntOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, BIT_OFFSET_KEY, BIT_SIZE_KEY, SIGNED_KEY);
+
+		String binName = getBinName(opValues);
+		int bitOffset = getIntValue(opValues, BIT_OFFSET_KEY);
+		int bitSize = getIntValue(opValues, BIT_SIZE_KEY);
+		boolean signed = getBoolValue(opValues, SIGNED_KEY);
+
+		return BitOperation.getInt(binName, bitOffset, bitSize, signed);
+	}
+
 	/*
 	 * Ensure that opValues contains an entry for each of the specified keys
 	 */
@@ -1254,7 +1539,57 @@ public class OperationConverter {
 			}
 		}
 		return new ListPolicy(order, flags);
+	}
 
+	private static byte[] getBitValue(Map<String, Object> map) {
+		if (map.containsKey(VALUE_KEY)) {
+			return Base64.getDecoder().decode((String) map.get(VALUE_KEY));
+		} else {
+			return null;
+		}
+	}
+
+	static boolean getBoolValue(Map<String, Object> map, String key) {
+		if (map.containsKey(key)) {
+			try {
+				return (boolean) map.get(key);
+			} catch (ClassCastException e) {
+				return Boolean.parseBoolean((String) map.get(key));
+			}
+		} else {
+			return false;
+		}
+	}
+
+	static long getLongValue(Map<String, Object> map, String key) {
+		try {
+			return (long) map.get(key);
+		} catch (ClassCastException e) {
+			try {
+				return (int) map.get(key);
+			} catch (ClassCastException cce) {
+				try {
+					return Long.parseLong((String) map.get(key));
+				} catch (NumberFormatException nfe) {
+					throw new InvalidOperationError(String.format("%s is not numeric", key));
+				}
+			}
+		}
+	}
+
+	private static BitOverflowAction getBitOverflowAction(Map<String, Object> map) {
+		if (map.containsKey(BIT_OVERFLOW_ACTION_KEY)) {
+			switch (((String) map.get(BIT_OVERFLOW_ACTION_KEY)).toUpperCase()) {
+				case "SATURATE":
+					return BitOverflowAction.SATURATE;
+				case "WRAP":
+					return BitOverflowAction.WRAP;
+				default:
+					return BitOverflowAction.FAIL;
+			}
+		} else {
+			return BitOverflowAction.FAIL;
+		}
 	}
 
 	static Value getValue(Map<String, Object>map) {
@@ -1459,7 +1794,6 @@ public class OperationConverter {
 		} catch (IllegalArgumentException e) {
 			throw new InvalidOperationError("Invalid List order: "+ orderString);
 		}
-
 	}
 
 	@SuppressWarnings("unchecked")
