@@ -63,6 +63,7 @@ public enum AerospikeOperation {
     LIST_SIZE,
     LIST_SORT,
     LIST_TRIM,
+    LIST_CREATE,
 
     // Map Operation Constants
     MAP_CLEAR,
@@ -95,6 +96,7 @@ public enum AerospikeOperation {
     MAP_REMOVE_BY_VALUE_LIST,
     MAP_SET_MAP_POLICY,
     MAP_SIZE,
+    MAP_CREATE,
 
     // Bit Operation Constants
     BIT_RESIZE,

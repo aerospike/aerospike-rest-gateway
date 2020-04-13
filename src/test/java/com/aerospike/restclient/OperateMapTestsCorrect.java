@@ -267,6 +267,26 @@ public class OperateMapTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
+	public void testMapCreate() {
+		Map<String, Object> operation = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
+
+		opValues.put("bin", mapBinName);
+		opValues.put("mapOrder", "UNORDERED");
+		opValues.put("mapKeyCreate", "key1");
+		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_CREATE);
+		operation.put(OPERATION_VALUES_FIELD, opValues);
+		opList.add(operation);
+
+		opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+
+		Map<String, Object> bins = client.get(null, testKey).bins;
+		Map<Object, Object> mapBin = (Map<Object, Object>) bins.get(mapBinName);
+		Assert.assertNotNull(mapBin.get("key1"));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
 	public void testMapGetByKeyList() throws Exception {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 		Map<String, Object>operation = new HashMap<String, Object>();

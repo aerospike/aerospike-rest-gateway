@@ -1400,6 +1400,27 @@ public class OperateListTestsCorrect {
 		Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(2, 0, 3)));
 	}
 
+	@Test
+	public void testListCreate() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
+
+		opValues.put("bin", "list");
+		opValues.put("listOrder", "UNORDERED");
+		opValues.put("pad", true);
+		opValues.put("listIndexCreate", 7);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_CREATE);
+		opMap.put(OPERATION_VALUES_FIELD, opValues);
+		opList.add(opMap);
+
+		opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+
+		@SuppressWarnings("unchecked")
+		List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+		Assert.assertTrue(((List)retItems.get(7)).isEmpty());
+	}
+
 	private Map<String,Object> buildListPolicyMap(ListOrder order, int flags) {
 		Map<String, Object> policyMap = new HashMap<String, Object>();
 		List<Object> flagStrings = new ArrayList<Object>();

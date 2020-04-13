@@ -48,6 +48,7 @@ public class OperationConverter {
 	public static final String VALUES_KEY = "values";
 	public static final String ORDER_KEY = "order";
 	public static final String COUNT_KEY = "count";
+	public static final String PAD_KEY = "pad";
 	public static final String LIST_POLICY_KEY = "listPolicy";
 	public static final String RANK_KEY = "rank";
 	public static final String SIGNED_KEY = "signed";
@@ -77,20 +78,24 @@ public class OperationConverter {
 	public static final String BIT_OVERFLOW_ACTION_KEY = "bitOverflowAction";
 
 	public static final String CTX_LIST_INDEX_KEY = "listIndex";
+	public static final String CTX_LIST_INDEX_CREATE_KEY = "listIndexCreate";
 	public static final String CTX_LIST_RANK_KEY = "listRank";
 	public static final String CTX_LIST_VALUE_KEY = "listValue";
 	public static final String CTX_MAP_INDEX_KEY = "mapIndex";
 	public static final String CTX_MAP_RANK_KEY = "mapRank";
 	public static final String CTX_MAP_KEY_KEY = "mapKey";
+	public static final String CTX_MAP_KEY_CREATE_KEY = "mapKeyCreate";
 	public static final String CTX_MAP_VALUE_KEY = "mapValue";
 
 	private static final List<String> CTX_KEYS = Arrays.asList(
 			CTX_LIST_INDEX_KEY,
+			CTX_LIST_INDEX_CREATE_KEY,
 			CTX_LIST_RANK_KEY,
 			CTX_LIST_VALUE_KEY,
 			CTX_MAP_INDEX_KEY,
 			CTX_MAP_RANK_KEY,
 			CTX_MAP_KEY_KEY,
+			CTX_MAP_KEY_CREATE_KEY,
 			CTX_MAP_VALUE_KEY
 	);
 
@@ -237,6 +242,9 @@ public class OperationConverter {
 			case LIST_TRIM:
 				return mapToListTrimOp(opValues);
 
+			case LIST_CREATE:
+				return mapToListCreateOp(opValues);
+
 			/* Map Operations*/
 			case MAP_CLEAR:
 				return mapToMapClearOp(opValues);
@@ -327,6 +335,9 @@ public class OperationConverter {
 
 			case MAP_SIZE:
 				return mapToMapSizeOp(opValues);
+
+			case MAP_CREATE:
+				return mapToMapCreateOp(opValues);
 
 			/* Bit Operations*/
 			case BIT_RESIZE:
@@ -894,6 +905,17 @@ public class OperationConverter {
 		return ListOperation.trim(binName, index, count, extractCTX(opValues));
 	}
 
+	private static Operation mapToListCreateOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, LIST_ORDER_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, LIST_ORDER_KEY, PAD_KEY);
+
+		String binName = getBinName(opValues);
+		ListOrder order = getListOrder(opValues);
+		boolean pad = getBoolValue(opValues, PAD_KEY);
+
+		return ListOperation.create(binName, order, pad, extractCTX(opValues));
+	}
+
 	/* MAP OPERATIONS */
 
 	private static Operation mapToMapClearOp(Map<String, Object> opValues) {
@@ -1260,6 +1282,16 @@ public class OperationConverter {
 		return MapOperation.size(binName, extractCTX(opValues));
 	}
 
+	private static Operation mapToMapCreateOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, MAP_ORDER_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, MAP_ORDER_KEY);
+
+		String binName = getBinName(opValues);
+		MapOrder order = getMapOrder(opValues);
+
+		return MapOperation.create(binName, order, extractCTX(opValues));
+	}
+
 	/* BIT OPERATIONS */
 
 	private static Operation mapToBitResizeOp(Map<String, Object> opValues) {
@@ -1509,7 +1541,6 @@ public class OperationConverter {
 	/*
 	 * Convenience function for operation converters which allow no args.
 	 */
-
 	private static void validateNoKeys(Map<String, Object> opValues) {
 		onlyHasAllowedKeys(opValues);
 	}
@@ -1783,7 +1814,7 @@ public class OperationConverter {
 	}
 
 	static ListOrder getListOrder(Map<String, Object>map) {
-		String orderString = null;
+		String orderString;
 		try {
 			orderString = (String)map.get(LIST_ORDER_KEY);
 		} catch (ClassCastException cce) {
@@ -1792,7 +1823,21 @@ public class OperationConverter {
 		try {
 			return ListOrder.valueOf(orderString);
 		} catch (IllegalArgumentException e) {
-			throw new InvalidOperationError("Invalid List order: "+ orderString);
+			throw new InvalidOperationError("Invalid List order: " + orderString);
+		}
+	}
+
+	static MapOrder getMapOrder(Map<String, Object>map) {
+		String orderString;
+		try {
+			orderString = (String)map.get(MAP_ORDER_KEY);
+		} catch (ClassCastException cce) {
+			throw new InvalidOperationError("mapOrder must be a string");
+		}
+		try {
+			return MapOrder.valueOf(orderString);
+		} catch (IllegalArgumentException e) {
+			throw new InvalidOperationError("Invalid Map order: " + orderString);
 		}
 	}
 
@@ -1943,6 +1988,11 @@ public class OperationConverter {
 					case CTX_LIST_INDEX_KEY:
 						rt.add(CTX.listIndex(getIntValue(opValues, key)));
 						break;
+					case CTX_LIST_INDEX_CREATE_KEY:
+						ListOrder listOrder = getListOrder(opValues);
+						rt.add(CTX.listIndexCreate(getIntValue(opValues, key),
+								listOrder, getBoolValue(opValues, PAD_KEY)));
+						break;
 					case CTX_LIST_RANK_KEY:
 						rt.add(CTX.listRank(getIntValue(opValues, key)));
 						break;
@@ -1954,6 +2004,10 @@ public class OperationConverter {
 						break;
 					case CTX_MAP_KEY_KEY:
 						rt.add(CTX.mapKey(Value.get(opValues.get(key))));
+						break;
+					case CTX_MAP_KEY_CREATE_KEY:
+						MapOrder mapOrder = getMapOrder(opValues);
+						rt.add(CTX.mapKeyCreate(Value.get(opValues.get(key)), mapOrder));
 						break;
 					case CTX_MAP_RANK_KEY:
 						rt.add(CTX.mapRank(getIntValue(opValues, key)));
