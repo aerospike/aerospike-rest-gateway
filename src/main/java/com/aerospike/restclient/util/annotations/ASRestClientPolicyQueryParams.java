@@ -94,6 +94,7 @@ import java.lang.annotation.Target;
                 name = AerospikeAPIConstants.PRED_EXP,
                 dataType = "string",
                 paramType = "query",
+                allowableValues = QueryParamDescriptors.POLICY_PRED_EXP_ALLOWABLE_VALUES,
                 value = QueryParamDescriptors.POLICY_PRED_EXP_NOTES,
                 defaultValue = QueryParamDescriptors.POLICY_PRED_EXP_DEFAULT),
         @ApiImplicitParam(

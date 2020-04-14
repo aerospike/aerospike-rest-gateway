@@ -41,6 +41,7 @@ public class QueryParamDescriptors {
 	public static final String POLICY_PRED_EXP_NOTES = "Optional predicate expression filter in postfix notation. If the predicate " +
 			"expression exists and evaluates to false, the transaction is ignored.";
 	public static final String POLICY_PRED_EXP_DEFAULT = "null";
+	public static final String POLICY_PRED_EXP_ALLOWABLE_VALUES = "Base64 encoded expression string (e.g., (not(int_bin < 1) and LAST_UPDATE(>=, 1577880000)) or DIGEST_MODULO(3, ==, 1) or not VOID_TIME(!=, 1577880000)).";
 
 	public static final String POLICY_COMPRESS_NOTES = "Use zlib compression on command buffers sent to the server and responses received " +
 			"from the server when the buffer size is greater than 128 bytes.";
