@@ -20,9 +20,7 @@ import com.aerospike.client.Bin;
 import com.aerospike.client.Operation;
 import com.aerospike.client.Value;
 import com.aerospike.client.cdt.*;
-import com.aerospike.client.operation.BitOperation;
-import com.aerospike.client.operation.BitOverflowAction;
-import com.aerospike.client.operation.BitPolicy;
+import com.aerospike.client.operation.*;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.aerospike.restclient.util.RestClientErrors.InvalidOperationError;
 
@@ -76,6 +74,9 @@ public class OperationConverter {
 	public static final String BIT_OFFSET_KEY = "bitOffset";
 	public static final String BIT_SHIFT_KEY = "shift";
 	public static final String BIT_OVERFLOW_ACTION_KEY = "bitOverflowAction";
+
+	public static final String HLL_INDEX_BIT_COUNT_KEY = "indexBitCount";
+	public static final String HLL_MIN_HASH_BIT_COUNT_KEY = "minHashBitCount";
 
 	public static final String CTX_LIST_INDEX_KEY = "listIndex";
 	public static final String CTX_LIST_INDEX_CREATE_KEY = "listIndexCreate";
@@ -245,7 +246,7 @@ public class OperationConverter {
 			case LIST_CREATE:
 				return mapToListCreateOp(opValues);
 
-			/* Map Operations*/
+			/* Map Operations */
 			case MAP_CLEAR:
 				return mapToMapClearOp(opValues);
 
@@ -339,7 +340,7 @@ public class OperationConverter {
 			case MAP_CREATE:
 				return mapToMapCreateOp(opValues);
 
-			/* Bit Operations*/
+			/* Bit Operations */
 			case BIT_RESIZE:
 				return mapToBitResizeOp(opValues);
 
@@ -393,6 +394,40 @@ public class OperationConverter {
 
 			case BIT_GET_INT:
 				return mapToBitGetIntOp(opValues);
+
+			/* HLL Operations */
+			case HLL_INIT:
+				return mapToHLLInitOp(opValues);
+
+			case HLL_ADD:
+				return mapToHLLAddOp(opValues);
+
+			case HLL_SET_UNION:
+				return mapToHLLSetUnionOp(opValues);
+
+			case HLL_SET_COUNT:
+				return mapToHLLRefreshCountOp(opValues);
+
+			case HLL_FOLD:
+				return mapToHLLFoldOp(opValues);
+
+			case HLL_COUNT:
+				return mapToHLLGetCountOp(opValues);
+
+			case HLL_UNION:
+				return mapToHLLGetUnionOp(opValues);
+
+			case HLL_UNION_COUNT:
+				return mapToHLLGetUnionCountOp(opValues);
+
+			case HLL_INTERSECT_COUNT:
+				return mapToHLLGetIntersectCountOp(opValues);
+
+			case HLL_SIMILARITY:
+				return mapToHLLGetSimilarityOp(opValues);
+
+			case HLL_DESCRIBE:
+				return mapToHLLDescribeOp(opValues);
 
 			default:
 				throw new InvalidOperationError("Invalid operation: " + opName);
@@ -1510,6 +1545,127 @@ public class OperationConverter {
 		return BitOperation.getInt(binName, bitOffset, bitSize, signed);
 	}
 
+	/* HLL OPERATIONS */
+
+	private static Operation mapToHLLInitOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, HLL_INDEX_BIT_COUNT_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, HLL_INDEX_BIT_COUNT_KEY, HLL_MIN_HASH_BIT_COUNT_KEY);
+
+		String binName = getBinName(opValues);
+		int indexBitCount = getIntValue(opValues, HLL_INDEX_BIT_COUNT_KEY);
+		int minHashBitCount = -1;
+		if (opValues.containsKey(HLL_MIN_HASH_BIT_COUNT_KEY)) {
+			minHashBitCount = getIntValue(opValues, HLL_MIN_HASH_BIT_COUNT_KEY);
+		}
+
+		return HLLOperation.init(HLLPolicy.Default, binName, indexBitCount, minHashBitCount);
+	}
+
+	private static Operation mapToHLLAddOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, VALUES_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, VALUES_KEY, HLL_INDEX_BIT_COUNT_KEY, HLL_MIN_HASH_BIT_COUNT_KEY);
+
+		String binName = getBinName(opValues);
+		int indexBitCount = -1;
+		int minHashBitCount = -1;
+		if (opValues.containsKey(HLL_INDEX_BIT_COUNT_KEY)) {
+			indexBitCount = getIntValue(opValues, HLL_INDEX_BIT_COUNT_KEY);
+		}
+		if (opValues.containsKey(HLL_MIN_HASH_BIT_COUNT_KEY)) {
+			minHashBitCount = getIntValue(opValues, HLL_MIN_HASH_BIT_COUNT_KEY);
+		}
+		List<Value> list = getValueList(opValues);
+
+		return HLLOperation.add(HLLPolicy.Default, binName, list, indexBitCount, minHashBitCount);
+	}
+
+	private static Operation mapToHLLSetUnionOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, VALUES_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, VALUES_KEY);
+
+		String binName = getBinName(opValues);
+		List<Value.HLLValue> list = getHLLValueList(opValues);
+
+		return HLLOperation.setUnion(HLLPolicy.Default, binName, list);
+	}
+
+	private static Operation mapToHLLRefreshCountOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY);
+
+		String binName = getBinName(opValues);
+
+		return HLLOperation.refreshCount(binName);
+	}
+
+	private static Operation mapToHLLFoldOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, HLL_INDEX_BIT_COUNT_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, HLL_INDEX_BIT_COUNT_KEY);
+
+		String binName = getBinName(opValues);
+		int indexBitCount = getIntValue(opValues, HLL_INDEX_BIT_COUNT_KEY);
+
+		return HLLOperation.fold(binName, indexBitCount);
+	}
+
+	private static Operation mapToHLLGetCountOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY);
+
+		String binName = getBinName(opValues);
+
+		return HLLOperation.getCount(binName);
+	}
+
+	private static Operation mapToHLLGetUnionOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, VALUES_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, VALUES_KEY);
+
+		String binName = getBinName(opValues);
+		List<Value.HLLValue> list = getHLLValueList(opValues);
+
+		return HLLOperation.getUnion(binName, list);
+	}
+
+	private static Operation mapToHLLGetUnionCountOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, VALUES_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, VALUES_KEY);
+
+		String binName = getBinName(opValues);
+		List<Value.HLLValue> list = getHLLValueList(opValues);
+
+		return HLLOperation.getUnionCount(binName, list);
+	}
+
+	private static Operation mapToHLLGetIntersectCountOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, VALUES_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, VALUES_KEY);
+
+		String binName = getBinName(opValues);
+		List<Value.HLLValue> list = getHLLValueList(opValues);
+
+		return HLLOperation.getIntersectCount(binName, list);
+	}
+
+	private static Operation mapToHLLGetSimilarityOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY, VALUES_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY, VALUES_KEY);
+
+		String binName = getBinName(opValues);
+		List<Value.HLLValue> list = getHLLValueList(opValues);
+
+		return HLLOperation.getSimilarity(binName, list);
+	}
+
+	private static Operation mapToHLLDescribeOp(Map<String, Object> opValues) {
+		hasAllRequiredKeys(opValues, BIN_KEY);
+		onlyHasAllowedKeys(opValues, BIN_KEY);
+
+		String binName = getBinName(opValues);
+
+		return HLLOperation.describe(binName);
+	}
+
 	/*
 	 * Ensure that opValues contains an entry for each of the specified keys
 	 */
@@ -1645,16 +1801,31 @@ public class OperationConverter {
 	}
 
 	@SuppressWarnings("unchecked")
-	static List<Value> getValueList(Map<String, Object>map) {
-		List<Object>values = null;
+	static List<Value> getValueList(Map<String, Object> map) {
+		List<Object> values;
 		try {
 			values = (List<Object>) map.get(VALUES_KEY);
 		} catch (ClassCastException cce) {
 			throw new InvalidOperationError("values must be a list");
 		}
-		List<Value>valueList = new ArrayList<Value>();
+		List<Value> valueList = new ArrayList<>();
 		for (Object value : values) {
 			valueList.add(Value.get(value));
+		}
+		return valueList;
+	}
+
+	@SuppressWarnings("unchecked")
+	static List<Value.HLLValue> getHLLValueList(Map<String, Object> map) {
+		List<String> values;
+		try {
+			values = (List<String>) map.get(VALUES_KEY);
+		} catch (ClassCastException cce) {
+			throw new InvalidOperationError("values must be a list");
+		}
+		List<Value.HLLValue> valueList = new ArrayList<>();
+		for (String value : values) {
+			valueList.add(new Value.HLLValue(Base64.getDecoder().decode(value)));
 		}
 		return valueList;
 	}

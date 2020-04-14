@@ -116,5 +116,18 @@ public enum AerospikeOperation {
     BIT_COUNT,
     BIT_LSCAN,
     BIT_RSCAN,
-    BIT_GET_INT
+    BIT_GET_INT,
+
+    // HyperLogLog Operation Constants
+    HLL_INIT,
+    HLL_ADD,
+    HLL_SET_UNION,
+    HLL_SET_COUNT,
+    HLL_FOLD,
+    HLL_COUNT,
+    HLL_UNION,
+    HLL_UNION_COUNT,
+    HLL_INTERSECT_COUNT,
+    HLL_SIMILARITY,
+    HLL_DESCRIBE
 }
