@@ -764,6 +764,14 @@
                 ],
                 "parameters": [
                     {
+                        "name": "allowInline",
+                        "in": "query",
+                        "description": "Allow batch to be processed immediately in the server's receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": true
+                    },
+                    {
                         "in": "body",
                         "name": "batchKeys",
                         "description": "batchKeys",
@@ -774,6 +782,100 @@
                                 "$ref": "#/definitions/BatchReadRequest"
                             }
                         }
+                    },
+                    {
+                        "name": "bins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "keytype",
+                        "in": "query",
+                        "description": "The Type of the userKey.",
+                        "required": false,
+                        "type": "string",
+                        "default": "STRING",
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
+                    },
+                    {
+                        "name": "maxConcurrentThreads",
+                        "in": "query",
+                        "description": "Maximum number of concurrent synchronous batch request threads to server nodes at any point in time. If there are 16 node/namespace combinations requested and maxConcurrentThreads is 8, then batch requests will be made for 8 node/namespace combinations in parallel threads. When a request completes, a new request will be issued until all 16 requests are complete.",
+                        "required": false,
+                        "type": "integer",
+                        "default": 1,
+                        "format": "int32"
+                    },
+                    {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
+                    },
+                    {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
                     },
                     {
                         "name": "replica",
@@ -797,6 +899,42 @@
                         "type": "boolean",
                         "default": false,
                         "x-example": false
+                    },
+                    {
+                        "name": "sendSetName",
+                        "in": "query",
+                        "description": "Send set name field to server for every key in the batch for batch index protocol.\nThis is only necessary when authentication is enabled and security roles are defined on a per set basis.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -1236,6 +1374,15 @@
                         "collectionFormat": "multi"
                     },
                     {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
                         "name": "key",
                         "in": "path",
                         "description": "Userkey for the record.",
@@ -1257,11 +1404,36 @@
                         ]
                     },
                     {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
                         "name": "namespace",
                         "in": "path",
                         "description": "Namespace for the record; equivalent to database name.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
                     },
                     {
                         "name": "readModeAP",
@@ -1311,6 +1483,33 @@
                         "type": "boolean",
                         "default": false,
                         "x-example": false
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -1423,13 +1622,15 @@
                 ],
                 "parameters": [
                     {
-                        "in": "body",
                         "name": "bins",
-                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
-                        "required": true,
-                        "schema": {
-                            "type": "object"
-                        }
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "commitLevel",
@@ -1442,6 +1643,15 @@
                             "COMMIT_ALL",
                             "COMMIT_MASTER"
                         ]
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
                     },
                     {
                         "name": "durableDelete",
@@ -1503,11 +1713,36 @@
                         ]
                     },
                     {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
                         "name": "namespace",
                         "in": "path",
                         "description": "Namespace for the record; equivalent to database name.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
                     },
                     {
                         "name": "readModeAP",
@@ -1565,6 +1800,15 @@
                         ]
                     },
                     {
+                        "name": "respondAllOps",
+                        "in": "query",
+                        "description": "For client operate(), return a result for every operation.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
                         "name": "sendKey",
                         "in": "query",
                         "description": "Send user defined key in addition to hash digest on both reads and writes.",
@@ -1572,6 +1816,33 @@
                         "type": "boolean",
                         "default": false,
                         "x-example": false
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -1627,13 +1898,15 @@
                 ],
                 "parameters": [
                     {
-                        "in": "body",
                         "name": "bins",
-                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
-                        "required": true,
-                        "schema": {
-                            "type": "object"
-                        }
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "commitLevel",
@@ -1646,6 +1919,15 @@
                             "COMMIT_ALL",
                             "COMMIT_MASTER"
                         ]
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
                     },
                     {
                         "name": "durableDelete",
@@ -1707,11 +1989,36 @@
                         ]
                     },
                     {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
                         "name": "namespace",
                         "in": "path",
                         "description": "Namespace for the record; equivalent to database name.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
                     },
                     {
                         "name": "readModeAP",
@@ -1769,6 +2076,15 @@
                         ]
                     },
                     {
+                        "name": "respondAllOps",
+                        "in": "query",
+                        "description": "For client operate(), return a result for every operation.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
                         "name": "sendKey",
                         "in": "query",
                         "description": "Send user defined key in addition to hash digest on both reads and writes.",
@@ -1776,6 +2092,33 @@
                         "type": "boolean",
                         "default": false,
                         "x-example": false
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -1827,6 +2170,17 @@
                 ],
                 "parameters": [
                     {
+                        "name": "bins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
                         "name": "commitLevel",
                         "in": "query",
                         "description": "Desired consistency guarantee when committing a transaction on the server.",
@@ -1837,6 +2191,15 @@
                             "COMMIT_ALL",
                             "COMMIT_MASTER"
                         ]
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
                     },
                     {
                         "name": "durableDelete",
@@ -1898,11 +2261,36 @@
                         ]
                     },
                     {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
                         "name": "namespace",
                         "in": "path",
                         "description": "Namespace for the record; equivalent to database name.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
                     },
                     {
                         "name": "readModeAP",
@@ -1960,6 +2348,15 @@
                         ]
                     },
                     {
+                        "name": "respondAllOps",
+                        "in": "query",
+                        "description": "For client operate(), return a result for every operation.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
                         "name": "sendKey",
                         "in": "query",
                         "description": "Send user defined key in addition to hash digest on both reads and writes.",
@@ -1967,6 +2364,33 @@
                         "type": "boolean",
                         "default": false,
                         "x-example": false
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -2022,13 +2446,15 @@
                 ],
                 "parameters": [
                     {
-                        "in": "body",
                         "name": "bins",
-                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
-                        "required": true,
-                        "schema": {
-                            "type": "object"
-                        }
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "commitLevel",
@@ -2041,6 +2467,15 @@
                             "COMMIT_ALL",
                             "COMMIT_MASTER"
                         ]
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
                     },
                     {
                         "name": "durableDelete",
@@ -2102,11 +2537,36 @@
                         ]
                     },
                     {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
                         "name": "namespace",
                         "in": "path",
                         "description": "Namespace for the record; equivalent to database name.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
                     },
                     {
                         "name": "readModeAP",
@@ -2164,6 +2624,15 @@
                         ]
                     },
                     {
+                        "name": "respondAllOps",
+                        "in": "query",
+                        "description": "For client operate(), return a result for every operation.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
                         "name": "sendKey",
                         "in": "query",
                         "description": "Send user defined key in addition to hash digest on both reads and writes.",
@@ -2171,6 +2640,33 @@
                         "type": "boolean",
                         "default": false,
                         "x-example": false
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -2235,6 +2731,15 @@
                         "collectionFormat": "multi"
                     },
                     {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
                         "name": "key",
                         "in": "path",
                         "description": "Userkey for the record.",
@@ -2256,11 +2761,36 @@
                         ]
                     },
                     {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
                         "name": "namespace",
                         "in": "path",
                         "description": "Namespace for the record; equivalent to database name.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
                     },
                     {
                         "name": "readModeAP",
@@ -2317,6 +2847,33 @@
                         "description": "Set for the record; equivalent to database table.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -2436,13 +2993,15 @@
                 ],
                 "parameters": [
                     {
-                        "in": "body",
                         "name": "bins",
-                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
-                        "required": true,
-                        "schema": {
-                            "type": "object"
-                        }
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "commitLevel",
@@ -2455,6 +3014,15 @@
                             "COMMIT_ALL",
                             "COMMIT_MASTER"
                         ]
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
                     },
                     {
                         "name": "durableDelete",
@@ -2516,11 +3084,36 @@
                         ]
                     },
                     {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
                         "name": "namespace",
                         "in": "path",
                         "description": "Namespace for the record; equivalent to database name.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
                     },
                     {
                         "name": "readModeAP",
@@ -2578,6 +3171,15 @@
                         ]
                     },
                     {
+                        "name": "respondAllOps",
+                        "in": "query",
+                        "description": "For client operate(), return a result for every operation.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
                         "name": "sendKey",
                         "in": "query",
                         "description": "Send user defined key in addition to hash digest on both reads and writes.",
@@ -2592,6 +3194,33 @@
                         "description": "Set for the record; equivalent to database table.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -2647,13 +3276,15 @@
                 ],
                 "parameters": [
                     {
-                        "in": "body",
                         "name": "bins",
-                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
-                        "required": true,
-                        "schema": {
-                            "type": "object"
-                        }
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "commitLevel",
@@ -2666,6 +3297,15 @@
                             "COMMIT_ALL",
                             "COMMIT_MASTER"
                         ]
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
                     },
                     {
                         "name": "durableDelete",
@@ -2727,11 +3367,36 @@
                         ]
                     },
                     {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
                         "name": "namespace",
                         "in": "path",
                         "description": "Namespace for the record; equivalent to database name.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
                     },
                     {
                         "name": "readModeAP",
@@ -2789,6 +3454,15 @@
                         ]
                     },
                     {
+                        "name": "respondAllOps",
+                        "in": "query",
+                        "description": "For client operate(), return a result for every operation.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
                         "name": "sendKey",
                         "in": "query",
                         "description": "Send user defined key in addition to hash digest on both reads and writes.",
@@ -2803,6 +3477,33 @@
                         "description": "Set for the record; equivalent to database table.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -2854,6 +3555,17 @@
                 ],
                 "parameters": [
                     {
+                        "name": "bins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
                         "name": "commitLevel",
                         "in": "query",
                         "description": "Desired consistency guarantee when committing a transaction on the server.",
@@ -2864,6 +3576,15 @@
                             "COMMIT_ALL",
                             "COMMIT_MASTER"
                         ]
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
                     },
                     {
                         "name": "durableDelete",
@@ -2925,11 +3646,36 @@
                         ]
                     },
                     {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
                         "name": "namespace",
                         "in": "path",
                         "description": "Namespace for the record; equivalent to database name.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
                     },
                     {
                         "name": "readModeAP",
@@ -2987,6 +3733,15 @@
                         ]
                     },
                     {
+                        "name": "respondAllOps",
+                        "in": "query",
+                        "description": "For client operate(), return a result for every operation.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
                         "name": "sendKey",
                         "in": "query",
                         "description": "Send user defined key in addition to hash digest on both reads and writes.",
@@ -3001,6 +3756,33 @@
                         "description": "Set for the record; equivalent to database table.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -3056,13 +3838,15 @@
                 ],
                 "parameters": [
                     {
-                        "in": "body",
                         "name": "bins",
-                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
-                        "required": true,
-                        "schema": {
-                            "type": "object"
-                        }
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "commitLevel",
@@ -3075,6 +3859,15 @@
                             "COMMIT_ALL",
                             "COMMIT_MASTER"
                         ]
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
                     },
                     {
                         "name": "durableDelete",
@@ -3136,11 +3929,36 @@
                         ]
                     },
                     {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
                         "name": "namespace",
                         "in": "path",
                         "description": "Namespace for the record; equivalent to database name.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
                     },
                     {
                         "name": "readModeAP",
@@ -3198,6 +4016,15 @@
                         ]
                     },
                     {
+                        "name": "respondAllOps",
+                        "in": "query",
+                        "description": "For client operate(), return a result for every operation.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
                         "name": "sendKey",
                         "in": "query",
                         "description": "Send user defined key in addition to hash digest on both reads and writes.",
@@ -3212,6 +4039,33 @@
                         "description": "Set for the record; equivalent to database table.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -3269,6 +4123,17 @@
                 ],
                 "parameters": [
                     {
+                        "name": "bins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
                         "name": "commitLevel",
                         "in": "query",
                         "description": "Desired consistency guarantee when committing a transaction on the server.",
@@ -3279,6 +4144,15 @@
                             "COMMIT_ALL",
                             "COMMIT_MASTER"
                         ]
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
                     },
                     {
                         "name": "durableDelete",
@@ -3340,6 +4214,15 @@
                         ]
                     },
                     {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
                         "name": "namespace",
                         "in": "path",
                         "description": "Namespace for the record; equivalent to database name.",
@@ -3357,6 +4240,22 @@
                                 "$ref": "#/definitions/Operation"
                             }
                         }
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
                     },
                     {
                         "name": "readModeAP",
@@ -3414,6 +4313,15 @@
                         ]
                     },
                     {
+                        "name": "respondAllOps",
+                        "in": "query",
+                        "description": "For client operate(), return a result for every operation.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
                         "name": "sendKey",
                         "in": "query",
                         "description": "Send user defined key in addition to hash digest on both reads and writes.",
@@ -3421,6 +4329,33 @@
                         "type": "boolean",
                         "default": false,
                         "x-example": false
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -3481,6 +4416,17 @@
                 ],
                 "parameters": [
                     {
+                        "name": "bins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
                         "name": "commitLevel",
                         "in": "query",
                         "description": "Desired consistency guarantee when committing a transaction on the server.",
@@ -3491,6 +4437,15 @@
                             "COMMIT_ALL",
                             "COMMIT_MASTER"
                         ]
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
                     },
                     {
                         "name": "durableDelete",
@@ -3552,6 +4507,15 @@
                         ]
                     },
                     {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
                         "name": "namespace",
                         "in": "path",
                         "description": "Namespace for the record; equivalent to database name.",
@@ -3569,6 +4533,22 @@
                                 "$ref": "#/definitions/Operation"
                             }
                         }
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
                     },
                     {
                         "name": "readModeAP",
@@ -3626,6 +4606,15 @@
                         ]
                     },
                     {
+                        "name": "respondAllOps",
+                        "in": "query",
+                        "description": "For client operate(), return a result for every operation.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
                         "name": "sendKey",
                         "in": "query",
                         "description": "Send user defined key in addition to hash digest on both reads and writes.",
@@ -3640,6 +4629,33 @@
                         "description": "Set for the record; equivalent to database table.",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
                     }
                 ],
                 "responses": {
@@ -3946,6 +4962,7 @@
                         "GET_HEADER",
                         "TOUCH",
                         "PUT",
+                        "DELETE",
                         "LIST_APPEND",
                         "LIST_APPEND_ITEMS",
                         "LIST_CLEAR",
@@ -3954,6 +4971,7 @@
                         "LIST_GET_BY_INDEX_RANGE",
                         "LIST_GET_BY_RANK",
                         "LIST_GET_BY_RANK_RANGE",
+                        "LIST_GET_BY_VALUE_REL_RANK_RANGE",
                         "LIST_GET_BY_VALUE",
                         "LIST_GET_BY_VALUE_RANGE",
                         "LIST_GET_BY_VALUE_LIST",
@@ -3968,6 +4986,7 @@
                         "LIST_REMOVE_BY_INDEX_RANGE",
                         "LIST_REMOVE_BY_RANK",
                         "LIST_REMOVE_BY_RANK_RANGE",
+                        "LIST_REMOVE_BY_VALUE_REL_RANK_RANGE",
                         "LIST_REMOVE_BY_VALUE",
                         "LIST_REMOVE_BY_VALUE_RANGE",
                         "LIST_REMOVE_BY_VALUE_LIST",
@@ -3977,6 +4996,7 @@
                         "LIST_SIZE",
                         "LIST_SORT",
                         "LIST_TRIM",
+                        "LIST_CREATE",
                         "MAP_CLEAR",
                         "MAP_DECREMENT",
                         "MAP_GET_BY_INDEX",
@@ -3989,6 +5009,8 @@
                         "MAP_GET_BY_VALUE",
                         "MAP_GET_BY_VALUE_RANGE",
                         "MAP_GET_BY_VALUE_LIST",
+                        "MAP_GET_BY_KEY_REL_INDEX_RANGE",
+                        "MAP_GET_BY_VALUE_REL_RANK_RANGE",
                         "MAP_INCREMENT",
                         "MAP_PUT",
                         "MAP_PUT_ITEMS",
@@ -3998,11 +5020,43 @@
                         "MAP_REMOVE_BY_KEY_RANGE",
                         "MAP_REMOVE_BY_RANK",
                         "MAP_REMOVE_BY_RANK_RANGE",
+                        "MAP_REMOVE_BY_KEY_REL_INDEX_RANGE",
+                        "MAP_REMOVE_BY_VALUE_REL_RANK_RANGE",
                         "MAP_REMOVE_BY_VALUE",
                         "MAP_REMOVE_BY_VALUE_RANGE",
                         "MAP_REMOVE_BY_VALUE_LIST",
                         "MAP_SET_MAP_POLICY",
-                        "MAP_SIZE"
+                        "MAP_SIZE",
+                        "MAP_CREATE",
+                        "BIT_RESIZE",
+                        "BIT_INSERT",
+                        "BIT_REMOVE",
+                        "BIT_SET",
+                        "BIT_OR",
+                        "BIT_XOR",
+                        "BIT_AND",
+                        "BIT_NOT",
+                        "BIT_LSHIFT",
+                        "BIT_RSHIFT",
+                        "BIT_ADD",
+                        "BIT_SUBTRACT",
+                        "BIT_SET_INT",
+                        "BIT_GET",
+                        "BIT_COUNT",
+                        "BIT_LSCAN",
+                        "BIT_RSCAN",
+                        "BIT_GET_INT",
+                        "HLL_INIT",
+                        "HLL_ADD",
+                        "HLL_SET_UNION",
+                        "HLL_SET_COUNT",
+                        "HLL_FOLD",
+                        "HLL_COUNT",
+                        "HLL_UNION",
+                        "HLL_UNION_COUNT",
+                        "HLL_INTERSECT_COUNT",
+                        "HLL_SIMILARITY",
+                        "HLL_DESCRIBE"
                     ]
                 }
             },
