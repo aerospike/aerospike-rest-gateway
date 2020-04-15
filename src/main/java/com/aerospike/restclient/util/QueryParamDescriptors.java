@@ -25,12 +25,37 @@ public class QueryParamDescriptors {
 	public static final String POLICY_READMODEAP_ALLOWABLE_VALUES="ALL, ONE";
 	public static final String POLICY_READMODEAP_DEFAULT="ONE";
 
+	public static final String POLICY_TOTAL_TIMEOUT_NOTES = "Total transaction timeout in milliseconds.";
+	public static final String POLICY_TOTAL_TIMEOUT_DEFAULT = "0 (no time limit)";
+
+	public static final String POLICY_SOCKET_TIMEOUT_NOTES = "Socket idle timeout in milliseconds when processing a database command.";
+	public static final String POLICY_SOCKET_TIMEOUT_DEFAULT = "30000ms";
+
+	public static final String POLICY_SLEEP_BETWEEN_RETRIES_NOTES = "Milliseconds to sleep between retries.";
+	public static final String POLICY_SLEEP_BETWEEN_RETRIES_DEFAULT = "0 (do not sleep between retries)";
+
+	public static final String POLICY_MAX_RETRIES_NOTES = "Maximum number of retries before aborting the current transaction.\n" +
+			"The initial attempt is not counted as a retry.";
+	public static final String POLICY_MAX_RETRIES_DEFAULT = "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)";
+
+	public static final String POLICY_PRED_EXP_NOTES = "Optional predicate expression filter in postfix notation. If the predicate " +
+			"expression exists and evaluates to false, the transaction is ignored.";
+	public static final String POLICY_PRED_EXP_DEFAULT = "null";
+	public static final String POLICY_PRED_EXP_ALLOWABLE_VALUES = "Base64 encoded expression string (e.g., (not(int_bin < 1) and LAST_UPDATE(>=, 1577880000)) or DIGEST_MODULO(3, ==, 1) or not VOID_TIME(!=, 1577880000)).";
+
+	public static final String POLICY_COMPRESS_NOTES = "Use zlib compression on command buffers sent to the server and responses received " +
+			"from the server when the buffer size is greater than 128 bytes.";
+	public static final String POLICY_COMPRESS_DEFAULT = "false";
+
 	// Write Operation Policies
 	public static final String WRITE_POLICY_EXPIRATION_NOTES = "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.";
 	public static final String WRITE_POLICY_GEN_NOTES = "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.";
 
 	public static final String WRITE_POLICY_DURABLE_DELETE_NOTES = "If the transaction results in a record deletion, leave a tombstone for the record.";
 	public static final String WRITE_POLICY_DURABLE_DELETE_DEFAULT = "false";
+
+	public static final String WRITE_POLICY_RESPOND_ALL_OPS_NOTES = "For client operate(), return a result for every operation.";
+	public static final String WRITE_POLICY_RESPOND_ALL_OPS_DEFAULT = "false";
 
 	public static final String WRITE_POLICY_COMMIT_LEVEL_NOTES = "Desired consistency guarantee when committing a transaction on the server.";
 	public static final String WRITE_POLICY_COMMIT_LEVEL_DEFAULT = "COMMIT_ALL";
@@ -44,4 +69,20 @@ public class QueryParamDescriptors {
 	public static final String WRITE_POLICY_RECORD_EXISTS_DEFAULT = "UPDATE";
 	public static final String WRITE_POLICY_RECORD_EXISTS_ALLOWABLE_VALUES = "UPDATE, UPDATE_ONLY, REPLACE, REPLACE_ONLY, CREATE_ONLY";
 
+	// Batch Operation Policies
+	public static final String BATCH_POLICY_ALLOW_INLINE_NOTES = "Allow batch to be processed immediately in the server's receiving thread when the server " +
+			"deems it to be appropriate.  If false, the batch will always be processed in separate " +
+			"transaction threads.  This field is only relevant for the new batch index protocol.";
+	public static final String BATCH_POLICY_ALLOW_INLINE_DEFAULT = "true";
+
+	public static final String BATCH_POLICY_MAX_CONCURRENT_THREADS_NOTES = "Maximum number of concurrent synchronous batch request threads to server nodes at any point in time. " +
+			"If there are 16 node/namespace combinations requested and maxConcurrentThreads is 8, " +
+			"then batch requests will be made for 8 node/namespace combinations in parallel threads. " +
+			"When a request completes, a new request will be issued until all 16 requests are complete.";
+	public static final String BATCH_POLICY_MAX_CONCURRENT_THREADS_DEFAULT = "1";
+
+	public static final String BATCH_POLICY_SEND_SET_NAME_NOTES = "Send set name field to server for every key in the batch for batch index protocol.\n" +
+			"This is only necessary when authentication is enabled and security roles are defined " +
+			"on a per set basis.";
+	public static final String BATCH_POLICY_SEND_SET_NAME_DEFAULT = "false";
 }

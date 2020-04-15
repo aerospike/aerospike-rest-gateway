@@ -16,81 +16,90 @@
  */
 package com.aerospike.restclient.util.converters;
 
-import com.aerospike.client.policy.CommitLevel;
-import com.aerospike.client.policy.GenerationPolicy;
-import com.aerospike.client.policy.Priority;
-import com.aerospike.client.policy.ReadModeAP;
-import com.aerospike.client.policy.ReadModeSC;
-import com.aerospike.client.policy.RecordExistsAction;
-import com.aerospike.client.policy.Replica;
+import com.aerospike.client.policy.*;
+import com.aerospike.client.query.PredExp;
 import com.aerospike.restclient.util.RestClientErrors;
+import com.aerospike.restclient.util.converters.predexp.PredExpParser;
 
 public class PolicyValueConverter {
 
-	public static ReadModeAP getReadModeAP(String readModeAP) {
-		try {
-			return ReadModeAP.valueOf(readModeAP);
-		} catch(IllegalArgumentException e) {
-			throw new RestClientErrors.InvalidPolicyValueError("Invalid AP Read Mode: " + readModeAP);
-		}
-	}
-	public static ReadModeSC getReadModeSC(String readModeSC) {
-		try {
-			return ReadModeSC.valueOf(readModeSC);
-		} catch(IllegalArgumentException e) {
-			throw new RestClientErrors.InvalidPolicyValueError("Invalid SC Read Mode: " + readModeSC);
-		}
-	}
+    public static ReadModeAP getReadModeAP(String readModeAP) {
+        try {
+            return ReadModeAP.valueOf(readModeAP);
+        } catch (IllegalArgumentException e) {
+            throw new RestClientErrors.InvalidPolicyValueError("Invalid AP Read Mode: " + readModeAP);
+        }
+    }
 
-	public static Priority getPriority(String priority) {
-		try {
-			return Priority.valueOf(priority);
-		} catch(IllegalArgumentException e) {
-			throw new RestClientErrors.InvalidPolicyValueError("Invalid priority: " + priority);
-		}
-	}
+    public static ReadModeSC getReadModeSC(String readModeSC) {
+        try {
+            return ReadModeSC.valueOf(readModeSC);
+        } catch (IllegalArgumentException e) {
+            throw new RestClientErrors.InvalidPolicyValueError("Invalid SC Read Mode: " + readModeSC);
+        }
+    }
 
-	public static Replica getReplica(String replica) {
-		try {
-			return Replica.valueOf(replica);
-		} catch (IllegalArgumentException e) {
-			throw new RestClientErrors.InvalidPolicyValueError("Invalid replica: " + replica);
-		}
-	}
+    public static PredExp[] getPredExp(String predExp) {
+        try {
+            return PredExpParser.parse(predExp);
+        } catch (Exception e) {
+            throw new RestClientErrors.InvalidPolicyValueError("Invalid PredExp: " + predExp);
+        }
+    }
 
-	public static CommitLevel getCommitLevel(String commitLevel) {
-		try {
-			return CommitLevel.valueOf(commitLevel);
-		} catch(IllegalArgumentException e) {
-			throw new RestClientErrors.InvalidPolicyValueError("Invalid CommitLevel: " + commitLevel);
-		}
-	}
+    public static boolean getCompress(String compress) {
+        return getBoolValue(compress);
+    }
 
-	public static GenerationPolicy getGenerationPolicy(String generationPolicy) {
-		try {
-			return GenerationPolicy.valueOf(generationPolicy);
-		} catch(IllegalArgumentException e) {
-			throw new RestClientErrors.InvalidPolicyValueError("Invalid GenerationPolicy: " + generationPolicy);
-		}
-	}
+    public static Priority getPriority(String priority) {
+        try {
+            return Priority.valueOf(priority);
+        } catch (IllegalArgumentException e) {
+            throw new RestClientErrors.InvalidPolicyValueError("Invalid priority: " + priority);
+        }
+    }
 
-	public static RecordExistsAction getRecordExistsAction(String recordExistsAction) {
-		try {
-			return RecordExistsAction.valueOf(recordExistsAction);
-		} catch(IllegalArgumentException e) {
-			throw new RestClientErrors.InvalidPolicyValueError("Invalid recordExistsAction: " + recordExistsAction);
-		}
-	}
+    public static Replica getReplica(String replica) {
+        try {
+            return Replica.valueOf(replica);
+        } catch (IllegalArgumentException e) {
+            throw new RestClientErrors.InvalidPolicyValueError("Invalid replica: " + replica);
+        }
+    }
 
-	public static boolean getBoolValue(String testValue) {
-		return testValue.toLowerCase().equals("true");
-	}
+    public static CommitLevel getCommitLevel(String commitLevel) {
+        try {
+            return CommitLevel.valueOf(commitLevel);
+        } catch (IllegalArgumentException e) {
+            throw new RestClientErrors.InvalidPolicyValueError("Invalid CommitLevel: " + commitLevel);
+        }
+    }
 
-	public static int getIntValue(String intString) {
-		try {
-			return Integer.parseInt(intString, 10);
-		} catch (NumberFormatException nfe) {
-			throw new RestClientErrors.InvalidPolicyValueError(String.format("Invalid integer value: %s", intString));
-		}
-	}
+    public static GenerationPolicy getGenerationPolicy(String generationPolicy) {
+        try {
+            return GenerationPolicy.valueOf(generationPolicy);
+        } catch (IllegalArgumentException e) {
+            throw new RestClientErrors.InvalidPolicyValueError("Invalid GenerationPolicy: " + generationPolicy);
+        }
+    }
+
+    public static RecordExistsAction getRecordExistsAction(String recordExistsAction) {
+        try {
+            return RecordExistsAction.valueOf(recordExistsAction);
+        } catch (IllegalArgumentException e) {
+            throw new RestClientErrors.InvalidPolicyValueError("Invalid recordExistsAction: " + recordExistsAction);
+        }
+    }
+
+    public static boolean getBoolValue(String testValue) {
+        return testValue.toLowerCase().equals("true");
+    }
+
+    public static int getIntValue(String intString) {
+        try {
+            return Integer.parseInt(intString, 10);
+        } catch (NumberFormatException nfe) {
+            throw new RestClientErrors.InvalidPolicyValueError(String.format("Invalid integer value: %s", intString));
+        }
+    }
 }

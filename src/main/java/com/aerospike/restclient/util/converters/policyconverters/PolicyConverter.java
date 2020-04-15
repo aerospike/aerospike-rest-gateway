@@ -16,15 +16,15 @@
  */
 package com.aerospike.restclient.util.converters.policyconverters;
 
-import java.util.Map;
-
 import com.aerospike.client.policy.Policy;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.converters.PolicyValueConverter;
 
+import java.util.Map;
+
 public class PolicyConverter {
 
-	public static Policy policyFromMap(Map<String, String>policyMap) {
+	public static Policy policyFromMap(Map<String, String> policyMap) {
 		Policy policy = new Policy();
 
 		if (policyMap.containsKey(AerospikeAPIConstants.TOTAL_TIMEOUT)) {
@@ -62,6 +62,14 @@ public class PolicyConverter {
 		if (policyMap.containsKey(AerospikeAPIConstants.READ_MODE_SC)) {
 			policy.readModeSC = PolicyValueConverter.getReadModeSC(
 					policyMap.get(AerospikeAPIConstants.READ_MODE_SC));
+		}
+		if (policyMap.containsKey(AerospikeAPIConstants.PRED_EXP)) {
+			policy.predExp = PolicyValueConverter.getPredExp(
+					policyMap.get(AerospikeAPIConstants.PRED_EXP));
+		}
+		if (policyMap.containsKey(AerospikeAPIConstants.COMPRESS)) {
+			policy.compress = PolicyValueConverter.getCompress(
+					policyMap.get(AerospikeAPIConstants.COMPRESS));
 		}
 		return policy;
 	}

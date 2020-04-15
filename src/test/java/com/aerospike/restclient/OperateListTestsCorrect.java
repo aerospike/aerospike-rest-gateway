@@ -394,6 +394,61 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
+	public void testListGetByValueRelRankRange() throws Exception {
+		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
+
+		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
+		Map<String, Object> opMap = new HashMap<String, Object>();
+		Map<String, Object> opValues = new HashMap<String, Object>();
+
+		opValues.put("bin", "list");
+		opValues.put("rank", 1);
+		opValues.put("value", 2);
+		opValues.put("count", 2);
+		opValues.put("listReturnType", "VALUE");
+		opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_GET_BY_VALUE_REL_RANK_RANGE);
+		opMap.put(OPERATION_VALUES_FIELD, opValues);
+
+		opList.add(opMap);
+
+		Map<String, Object>binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+
+		@SuppressWarnings("unchecked")
+		List<Object> retItems = (List<Object>) binsObject.get("list");
+
+		Set<Object> retItemSet = new HashSet<Object>(retItems);
+		Set<Object>expectedSet = new HashSet<Object>(Arrays.asList(3, 4));
+		Assert.assertTrue(retItemSet.equals(expectedSet));
+	}
+
+	@Test
+	public void testListGetByValueRelRankRangeNoCount() throws Exception {
+		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
+
+		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
+		Map<String, Object> opMap = new HashMap<String, Object>();
+		Map<String, Object> opValues = new HashMap<String, Object>();
+
+		opValues.put("bin", "list");
+		opValues.put("rank", 2);
+		opValues.put("value", 0);
+		opValues.put("listReturnType", "VALUE");
+		opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_GET_BY_VALUE_REL_RANK_RANGE);
+		opMap.put(OPERATION_VALUES_FIELD, opValues);
+
+		opList.add(opMap);
+
+		Map<String, Object>binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+
+		@SuppressWarnings("unchecked")
+		List<Object> retItems = (List<Object>) binsObject.get("list");
+
+		Set<Object> retItemSet = new HashSet<Object>(retItems);
+		Set<Object>expectedSet = new HashSet<Object>(Arrays.asList(2, 3, 4));
+		Assert.assertTrue(retItemSet.equals(expectedSet));
+	}
+
+	@Test
 	public void testListGetByValueIndex() throws Exception {
 		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
 		Map<String, Object> opMap = new HashMap<String, Object>();
@@ -989,6 +1044,53 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
+	public void testListRemoveByValueRelRankRange() throws Exception {
+		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
+
+		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
+		Map<String, Object> opMap = new HashMap<String, Object>();
+		Map<String, Object> opValues = new HashMap<String, Object>();
+
+		opValues.put("bin", "list");
+		opValues.put("value", 1);
+		opValues.put("rank", 1);
+		opValues.put("count", 2);
+		opValues.put("listReturnType", "VALUE");
+		opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_REMOVE_BY_VALUE_REL_RANK_RANGE);
+		opMap.put(OPERATION_VALUES_FIELD, opValues);
+		opList.add(opMap);
+
+		opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+
+		@SuppressWarnings("unchecked")
+		List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+		Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(1, 0, 4)));
+	}
+
+	@Test
+	public void testListRemoveByValueRelRankRangeNoCount() throws Exception {
+		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
+
+		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
+		Map<String, Object> opMap = new HashMap<String, Object>();
+		Map<String, Object> opValues = new HashMap<String, Object>();
+
+		opValues.put("bin", "list");
+		opValues.put("value", 1);
+		opValues.put("rank", 1);
+		opValues.put("listReturnType", "VALUE");
+		opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_REMOVE_BY_VALUE_REL_RANK_RANGE);
+		opMap.put(OPERATION_VALUES_FIELD, opValues);
+		opList.add(opMap);
+
+		opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+
+		@SuppressWarnings("unchecked")
+		List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+		Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(1, 0)));
+	}
+
+	@Test
 	public void testListRemoveByValue() throws Exception {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
@@ -1296,6 +1398,27 @@ public class OperateListTestsCorrect {
 		@SuppressWarnings("unchecked")
 		List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
 		Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(2, 0, 3)));
+	}
+
+	@Test
+	public void testListCreate() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
+
+		opValues.put("bin", "list");
+		opValues.put("listOrder", "UNORDERED");
+		opValues.put("pad", true);
+		opValues.put("listIndexCreate", 7);
+		opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_CREATE);
+		opMap.put(OPERATION_VALUES_FIELD, opValues);
+		opList.add(opMap);
+
+		opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+
+		@SuppressWarnings("unchecked")
+		List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+		Assert.assertTrue(((List)retItems.get(7)).isEmpty());
 	}
 
 	private Map<String,Object> buildListPolicyMap(ListOrder order, int flags) {
