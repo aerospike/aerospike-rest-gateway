@@ -16,27 +16,18 @@
  */
 package com.aerospike.restclient.util;
 
+import com.aerospike.client.policy.*;
+import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
+import com.aerospike.restclient.util.converters.policyconverters.*;
+import org.springframework.util.MultiValueMap;
+
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.util.MultiValueMap;
-
-import com.aerospike.client.policy.BatchPolicy;
-import com.aerospike.client.policy.InfoPolicy;
-import com.aerospike.client.policy.Policy;
-import com.aerospike.client.policy.RecordExistsAction;
-import com.aerospike.client.policy.WritePolicy;
-import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
-import com.aerospike.restclient.util.converters.policyconverters.BatchPolicyConverter;
-import com.aerospike.restclient.util.converters.policyconverters.InfoPolicyConverter;
-import com.aerospike.restclient.util.converters.policyconverters.PolicyConverter;
-import com.aerospike.restclient.util.converters.policyconverters.WritePolicyConverter;
-
 public class RequestParamHandler {
 
-
 	public static String[] getBinsFromMap(MultiValueMap<String, String>requestParams) {
-		List<String>binStr = requestParams.get("bins");
+		List<String>binStr = requestParams.get(AerospikeAPIConstants.RECORD_BINS);
 		if (binStr == null) {
 			return new String[0];
 		}
@@ -79,13 +70,16 @@ public class RequestParamHandler {
 		return WritePolicyConverter.writePolicyFromMap(requestParams);
 	}
 
-
 	public static WritePolicy getWritePolicy(Map<String, String>requestParams, RecordExistsAction existsAction) {
 		return WritePolicyConverter.writePolicyWithRecordExistsAction(requestParams, existsAction);
 	}
 
 	public static BatchPolicy getBatchPolicy(Map<String, String>requestParams) {
 		return BatchPolicyConverter.batchPolicyFromMap(requestParams);
+	}
+
+	public static ScanPolicy getScanPolicy(Map<String, String>requestParams) {
+		return ScanPolicyConverter.scanPolicyFromMap(requestParams);
 	}
 
 	public static InfoPolicy getInfoPolicy(Map<String, String>requestParams) {
