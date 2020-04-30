@@ -22,7 +22,7 @@ public final class AerospikeAPIConstants {
 
 	//Entries in the JSON representation of a record;
 	public static final String RECORD_KEY = "key";
-	public static final String RECORD_BINS = "bins";
+	public static final String RECORD_BINS = "recordBins";
 	public static final String RECORD_GENERATION = "generation";
 	public static final String RECORD_EXPIRATION = "expiration";
 	public static final String RECORD_TTL = "ttl";
