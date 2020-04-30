@@ -188,7 +188,7 @@ public final class PredExpFactory {
      * record's key digest modulo it's argument.
      * <p>
      * Example, the following instruction
-     * DIGEST_MODULO(3, 1)
+     * DIGEST_MODULO(3, ==, 1)
      * selects records that have digest(key) % 3 == 1):
      * <pre>
      * PredExp.recDigestModulo(3)
@@ -359,7 +359,7 @@ public final class PredExpFactory {
      * Create map predicate where expression matches for any map value.
      * <pre>
      * // Find records where any map value v > 100 in map bin m.
-     * // MAPVAL_ITERATE_OR(m, ==, 7) will be translated to
+     * // MAPVAL_ITERATE_OR(m, >, 100) will be translated to
      * PredExp.integerVar("v")
      * PredExp.integerValue(100)
      * PredExp.integerGreater()
