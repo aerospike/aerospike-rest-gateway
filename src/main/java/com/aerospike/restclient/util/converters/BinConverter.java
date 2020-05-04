@@ -16,24 +16,55 @@
  */
 package com.aerospike.restclient.util.converters;
 
-import java.util.Map;
-
 import com.aerospike.client.Bin;
+import com.aerospike.client.Value;
+import gnu.crypto.util.Base64;
+
+import java.util.Map;
+import java.util.Optional;
 
 public class BinConverter {
-	public static Bin[] binsFromMap(Map<String,Object>binMap) {
 
-		int index = 0;
-		Bin[] binArray = new Bin[binMap.size()];
-		for (Map.Entry<String, Object> entry : binMap.entrySet()) {
-			/* Let the user pass null, to delete a bin */
-			if (entry.getValue() == null) {
-				binArray[index] = (Bin.asNull(entry.getKey()));
-			} else {
-				binArray[index] = (new Bin(entry.getKey(), entry.getValue()));
-			}
-			index++;
-		}
-		return binArray;
-	}
+    @SuppressWarnings("unchecked")
+    public static Bin[] binsFromMap(Map<String, Object> binMap) {
+        int index = 0;
+        Bin[] binArray = new Bin[binMap.size()];
+        for (Map.Entry<String, Object> entry : binMap.entrySet()) {
+            /* Let the user pass null, to delete a bin */
+            if (entry.getValue() == null) {
+                binArray[index] = (Bin.asNull(entry.getKey()));
+            } else if (entry.getValue() instanceof Map) {
+                Optional<Value> spec = optSpecified((Map<String, Object>) entry.getValue());
+                binArray[index] = spec.map(value -> new Bin(entry.getKey(), value))
+                        .orElseGet(() -> new Bin(entry.getKey(), entry.getValue()));
+            } else {
+                binArray[index] = new Bin(entry.getKey(), entry.getValue());
+            }
+            index++;
+        }
+        return binArray;
+    }
+
+    private static final String specifiedTypeKey = "type";
+    private static final String specifiedValueKey = "value";
+
+    private static Optional<Value> optSpecified(Map<String, Object> value) {
+        if (value.size() == 2)
+            try {
+                SpecifiedType type = SpecifiedType.valueOf((String) value.get(specifiedTypeKey));
+                byte[] byteArr = Base64.decode((String) value.get(specifiedValueKey));
+                switch (type) {
+                    case BYTE_ARRAY:
+                        return Optional.of(Value.get(byteArr));
+                    case GEO_JSON:
+                        return Optional.of(Value.getAsGeoJSON(new String(byteArr)));
+                }
+            } catch (Exception e) {
+            }
+        return Optional.empty();
+    }
+}
+
+enum SpecifiedType {
+    BYTE_ARRAY, GEO_JSON
 }
