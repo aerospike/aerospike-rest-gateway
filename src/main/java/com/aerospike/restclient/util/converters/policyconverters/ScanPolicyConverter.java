@@ -27,7 +27,7 @@ public class ScanPolicyConverter {
 
     public static ScanPolicy scanPolicyFromMap(Map<String, String> policyMap) {
         Policy basePolicy = PolicyConverter.policyFromMap(policyMap);
-        ScanPolicy scanPolicy = new ScanPolicy();
+        ScanPolicy scanPolicy = new ScanPolicy(basePolicy);
 
         if (policyMap.containsKey(AerospikeAPIConstants.MAX_RECORDS)) {
             scanPolicy.maxRecords = PolicyValueConverter.getLongValue(
