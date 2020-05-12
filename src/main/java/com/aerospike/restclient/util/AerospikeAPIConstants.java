@@ -22,7 +22,7 @@ public final class AerospikeAPIConstants {
 
 	//Entries in the JSON representation of a record;
 	public static final String RECORD_KEY = "key";
-	public static final String RECORD_BINS = "bins";
+	public static final String RECORD_BINS = "recordBins";
 	public static final String RECORD_GENERATION = "generation";
 	public static final String RECORD_EXPIRATION = "expiration";
 	public static final String RECORD_TTL = "ttl";
@@ -82,6 +82,17 @@ public final class AerospikeAPIConstants {
 	public static final String MAX_CONCURRENT_THREADS = "maxConcurrentThreads";
 	public static final String SEND_SET_NAME = "sendSetName";
 	public static final String USE_BATCH_DIRECT = "useBatchDirect";
+
+	//SCAN POLICY KEYS
+	public static final String MAX_RECORDS = "maxRecords";
+	public static final String SCAN_PERCENT = "scanPercent";
+	public static final String RECORDS_PER_SECOND = "recordsPerSecond";
+	public static final String MAX_CONCURRENT_NODES = "maxConcurrentNodes";
+	public static final String CONCURRENT_NODES = "concurrentNodes";
+	public static final String INCLUDE_BIN_DATA = "includeBinData";
+	public static final String FAIL_ON_CLUSTER_CHANGE = "failOnClusterChange";
+
+	public static final String FROM_TOKEN = "from";
 
 	//INFO POLICY KEYS
 	public static final String TIMEOUT = "timeout";

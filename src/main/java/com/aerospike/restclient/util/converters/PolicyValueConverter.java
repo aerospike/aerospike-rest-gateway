@@ -102,4 +102,12 @@ public class PolicyValueConverter {
             throw new RestClientErrors.InvalidPolicyValueError(String.format("Invalid integer value: %s", intString));
         }
     }
+
+    public static long getLongValue(String intString) {
+        try {
+            return Long.parseLong(intString, 10);
+        } catch (NumberFormatException nfe) {
+            throw new RestClientErrors.InvalidPolicyValueError(String.format("Invalid long value: %s", intString));
+        }
+    }
 }

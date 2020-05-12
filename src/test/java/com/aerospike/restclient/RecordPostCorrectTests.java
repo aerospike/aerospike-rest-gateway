@@ -16,21 +16,11 @@
  */
 package com.aerospike.restclient;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import com.aerospike.client.*;
+import com.aerospike.client.Value.BytesValue;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -44,13 +34,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.AerospikeException;
-import com.aerospike.client.Key;
-import com.aerospike.client.Record;
-import com.aerospike.client.Value.BytesValue;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.*;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(Parameterized.class)
 @SpringBootTest
@@ -260,6 +247,38 @@ public class RecordPostCorrectTests {
 
 		Record record = client.get(null, this.testKey);
 		Assert.assertEquals(record.bins.get("integer"), 12345L);
+	}
+
+	@Test
+	public void PostByteArray() throws Exception {
+		Map<String, Object> binMap = new HashMap<>();
+		Map<String, String> byteArray = new HashMap<>();
+		byte[] arr = new byte[]{1, 101};
+		byteArray.put("type", "BYTE_ARRAY");
+		byteArray.put("value", Base64.getEncoder().encodeToString(arr));
+
+		binMap.put("byte_array", byteArray);
+
+		postPerformer.perform(mockMVC, testEndpoint, binMap);
+
+		Record record = client.get(null, this.testKey);
+		Assert.assertArrayEquals((byte[]) record.bins.get("byte_array"), arr);
+	}
+
+	@Test
+	public void PostGeoJson() throws Exception {
+		Map<String, Object> binMap = new HashMap<>();
+		Map<String, String> geoJson = new HashMap<>();
+		String geoStr = "{\"type\": \"Point\", \"coordinates\": [-80.604333, 28.608389]}";
+		geoJson.put("type", "GEO_JSON");
+		geoJson.put("value", Base64.getEncoder().encodeToString(geoStr.getBytes()));
+
+		binMap.put("geo_json", geoJson);
+
+		postPerformer.perform(mockMVC, testEndpoint, binMap);
+
+		Record record = client.get(null, this.testKey);
+		Assert.assertEquals(((Value.GeoJSONValue) record.bins.get("geo_json")).getObject(), geoStr);
 	}
 }
 

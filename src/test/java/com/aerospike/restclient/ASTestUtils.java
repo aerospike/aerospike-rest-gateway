@@ -26,6 +26,7 @@ import java.util.Map;
 
 import com.aerospike.client.policy.ClientPolicy;
 import com.aerospike.client.policy.TlsPolicy;
+import com.aerospike.restclient.util.AerospikeAPIConstants;
 import org.mockito.ArgumentMatcher;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -295,10 +296,10 @@ public class ASTestUtils {
 	public static String buildEndpoint(String prefix, String namespace, String set, String key, String[] bins) {
 		StringBuilder endpointBuilder = new StringBuilder("/v1/" + prefix + "/" + namespace + "/" + set + "/" + key);
 		if (bins.length > 0) {
-			endpointBuilder.append("?bins=" + bins[0] );
+			endpointBuilder.append("?" + AerospikeAPIConstants.RECORD_BINS + "=" + bins[0] );
 			for (int i = 1; i < bins.length; i++) {
 				String bin = bins[i];
-				endpointBuilder.append("&bins=" + bin);
+				endpointBuilder.append("&" + AerospikeAPIConstants.RECORD_BINS + "=" + bin);
 			}
 		}
 		return endpointBuilder.toString();
@@ -308,10 +309,10 @@ public class ASTestUtils {
 	public static String addFilterBins(String endpoint, String[] bins) {
 		StringBuilder endpointBuilder = new StringBuilder(endpoint);
 		if (bins.length > 0) {
-			endpointBuilder.append("?bins=" + bins[0] );
+			endpointBuilder.append("?" + AerospikeAPIConstants.RECORD_BINS + "=" + bins[0] );
 			for (int i = 1; i < bins.length; i++) {
 				String bin = bins[i];
-				endpointBuilder.append("&bins=" + bin);
+				endpointBuilder.append("&" + AerospikeAPIConstants.RECORD_BINS + "=" + bin);
 			}
 		}
 		return endpointBuilder.toString();
@@ -327,7 +328,7 @@ public class ASTestUtils {
 			}
 		} if(bins != null && bins.length > 0) {
 			for (String bin : bins) {
-				endpointBuilder.append("&bins=" + bin);
+				endpointBuilder.append("&" + AerospikeAPIConstants.RECORD_BINS + "=" + bin);
 			}
 		}
 		return endpointBuilder.toString();
