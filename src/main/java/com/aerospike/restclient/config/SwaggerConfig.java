@@ -16,19 +16,14 @@
  */
 package com.aerospike.restclient.config;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import com.aerospike.restclient.domain.RestClientError;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Predicates;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.info.BuildProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -42,18 +37,25 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
 
 	@Autowired private TypeResolver typeResolver;
 
+	@Autowired private BuildProperties buildProperties;
+
 	private ApiInfo apiInfo() {
 		ApiInfo info = new ApiInfoBuilder()
-				.version("1.0")
+				.version(buildProperties.getVersion())
 				.title("Aerospike REST Client")
 				.description("REST Interface for Aerospike Database.")
-				.contact(new Contact("Aerospike, Inc.", "https://www.aerospike.com", ""))
+				.contact(new Contact("Aerospike, Inc.",
+						"https://www.aerospike.com", ""))
 				.build();
 		return info;
 	}

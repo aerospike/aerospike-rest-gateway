@@ -36,6 +36,7 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'com.aerospike'
 sourceCompatibility = 1.8
+version = appVersion
 
 bootJar {
 	baseName "${jarBaseName}"
@@ -46,8 +47,8 @@ test {
 		events "passed", "skipped", "failed"
 	}
 }
-repositories {
-	mavenCentral()
+springBoot {
+	buildInfo()
 }
 
 dependencies {
