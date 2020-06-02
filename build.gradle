@@ -3,7 +3,7 @@ buildscript {
 		springBootVersion = '2.2.6.RELEASE'
 		springfoxVersion = '2.9.2'
 		httpclientVersion = '4.5.12'
-		aerospikeClientVersion = findProperty('aerospikeClientVersion') ?:'4.4.11'
+		aerospikeClientVersion = findProperty('aerospikeClientVersion') ?:'4.4.12'
 	}
     if (findProperty("aerospikeUseLocal")) {
     print("using Local repo")
@@ -36,6 +36,7 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'com.aerospike'
 sourceCompatibility = 1.8
+version = appVersion
 
 bootJar {
 	baseName "${jarBaseName}"
@@ -46,8 +47,8 @@ test {
 		events "passed", "skipped", "failed"
 	}
 }
-repositories {
-	mavenCentral()
+springBoot {
+	buildInfo()
 }
 
 dependencies {

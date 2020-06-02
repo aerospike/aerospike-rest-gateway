@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "REST Interface for Aerospike Database.",
-        "version": "1.0",
+        "version": "1.5.0",
         "title": "Aerospike REST Client",
         "contact": {
             "name": "Aerospike, Inc.",
@@ -25,6 +25,10 @@
             "description": "Retrieve basic information about the Aerospike cluster."
         },
         {
+            "name": "Execute Operations",
+            "description": "Execute operations in background scan/query."
+        },
+        {
             "name": "Info Operations",
             "description": "Send info commands to nodes in the Aerospike cluster."
         },
@@ -35,6 +39,10 @@
         {
             "name": "Operate operations",
             "description": "Perform multiple operations atomically on a single record."
+        },
+        {
+            "name": "Scan Operations",
+            "description": "Read records in specified namespace, set."
         },
         {
             "name": "Secondary Index methods",
@@ -784,17 +792,6 @@
                         }
                     },
                     {
-                        "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
-                    },
-                    {
                         "name": "compress",
                         "in": "query",
                         "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
@@ -876,6 +873,17 @@
                             "LINEARIZE",
                             "SESSION"
                         ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "replica",
@@ -991,6 +999,634 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/clusterInformation"
+                        }
+                    },
+                    "500": {
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/v1/execute/scan/status/{taskId}": {
+            "get": {
+                "tags": [
+                    "Execute Operations"
+                ],
+                "summary": "Get status of background scan by task id.",
+                "operationId": "executeScanStatus",
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "parameters": [
+                    {
+                        "name": "taskId",
+                        "in": "path",
+                        "description": "Background scan task id.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientExecuteTaskStatus"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters or request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "403": {
+                        "description": "Not authorized to access the resource",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "500": {
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/v1/execute/scan/{namespace}": {
+            "post": {
+                "tags": [
+                    "Execute Operations"
+                ],
+                "summary": "Perform multiple operations in background scan/query.",
+                "operationId": "executeScanNamespace",
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "parameters": [
+                    {
+                        "name": "commitLevel",
+                        "in": "query",
+                        "description": "Desired consistency guarantee when committing a transaction on the server.",
+                        "required": false,
+                        "type": "string",
+                        "default": "COMMIT_ALL",
+                        "enum": [
+                            "COMMIT_ALL",
+                            "COMMIT_MASTER"
+                        ]
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "durableDelete",
+                        "in": "query",
+                        "description": "If the transaction results in a record deletion, leave a tombstone for the record.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "expiration",
+                        "in": "query",
+                        "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "generation",
+                        "in": "query",
+                        "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "generationPolicy",
+                        "in": "query",
+                        "description": "Qualify how to handle record writes based on record generation.",
+                        "required": false,
+                        "type": "string",
+                        "default": "NONE",
+                        "enum": [
+                            "NONE",
+                            "EXPECT_GEN_EQUAL",
+                            "EXPECT_GEN_GT"
+                        ]
+                    },
+                    {
+                        "name": "keytype",
+                        "in": "query",
+                        "description": "The Type of the userKey.",
+                        "required": false,
+                        "type": "string",
+                        "default": "STRING",
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
+                    },
+                    {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "namespace",
+                        "in": "path",
+                        "description": "Namespace for the record; equivalent to database name.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "operations",
+                        "description": "An array of operation objects specifying the operations to perform on the record.",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Operation"
+                            }
+                        }
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
+                    },
+                    {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "recordExistsAction",
+                        "in": "query",
+                        "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
+                        "required": false,
+                        "type": "string",
+                        "default": "UPDATE",
+                        "enum": [
+                            "UPDATE",
+                            "UPDATE_ONLY",
+                            "REPLACE",
+                            "REPLACE_ONLY",
+                            "CREATE_ONLY"
+                        ]
+                    },
+                    {
+                        "name": "replica",
+                        "in": "query",
+                        "description": "Replica algorithm used to determine the target node for a single record command.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SEQUENCE",
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
+                    },
+                    {
+                        "name": "respondAllOps",
+                        "in": "query",
+                        "description": "For client operate(), return a result for every operation.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "sendKey",
+                        "in": "query",
+                        "description": "Send user defined key in addition to hash digest on both reads and writes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientExecuteTask"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters or request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "403": {
+                        "description": "Not authorized to access the resource",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "404": {
+                        "description": "Namespace does not exist",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "409": {
+                        "description": "Generation conflict",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "500": {
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/v1/execute/scan/{namespace}/{set}": {
+            "post": {
+                "tags": [
+                    "Execute Operations"
+                ],
+                "summary": "Perform multiple operations in background scan/query.",
+                "operationId": "executeScanNamespaceSet",
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "parameters": [
+                    {
+                        "name": "commitLevel",
+                        "in": "query",
+                        "description": "Desired consistency guarantee when committing a transaction on the server.",
+                        "required": false,
+                        "type": "string",
+                        "default": "COMMIT_ALL",
+                        "enum": [
+                            "COMMIT_ALL",
+                            "COMMIT_MASTER"
+                        ]
+                    },
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "durableDelete",
+                        "in": "query",
+                        "description": "If the transaction results in a record deletion, leave a tombstone for the record.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "expiration",
+                        "in": "query",
+                        "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "generation",
+                        "in": "query",
+                        "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "generationPolicy",
+                        "in": "query",
+                        "description": "Qualify how to handle record writes based on record generation.",
+                        "required": false,
+                        "type": "string",
+                        "default": "NONE",
+                        "enum": [
+                            "NONE",
+                            "EXPECT_GEN_EQUAL",
+                            "EXPECT_GEN_GT"
+                        ]
+                    },
+                    {
+                        "name": "keytype",
+                        "in": "query",
+                        "description": "The Type of the userKey.",
+                        "required": false,
+                        "type": "string",
+                        "default": "STRING",
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
+                    },
+                    {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "namespace",
+                        "in": "path",
+                        "description": "Namespace for the record; equivalent to database name.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "operations",
+                        "description": "An array of operation objects specifying the operations to perform on the record.",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Operation"
+                            }
+                        }
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
+                    },
+                    {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "recordExistsAction",
+                        "in": "query",
+                        "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
+                        "required": false,
+                        "type": "string",
+                        "default": "UPDATE",
+                        "enum": [
+                            "UPDATE",
+                            "UPDATE_ONLY",
+                            "REPLACE",
+                            "REPLACE_ONLY",
+                            "CREATE_ONLY"
+                        ]
+                    },
+                    {
+                        "name": "replica",
+                        "in": "query",
+                        "description": "Replica algorithm used to determine the target node for a single record command.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SEQUENCE",
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
+                    },
+                    {
+                        "name": "respondAllOps",
+                        "in": "query",
+                        "description": "For client operate(), return a result for every operation.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "sendKey",
+                        "in": "query",
+                        "description": "Send user defined key in addition to hash digest on both reads and writes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "set",
+                        "in": "path",
+                        "description": "Set for the record; equivalent to database table.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientExecuteTask"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters or request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "403": {
+                        "description": "Not authorized to access the resource",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "404": {
+                        "description": "Namespace or set does not exist",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "409": {
+                        "description": "Generation conflict",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
                         }
                     },
                     "500": {
@@ -1363,17 +1999,6 @@
                 ],
                 "parameters": [
                     {
-                        "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
-                    },
-                    {
                         "name": "compress",
                         "in": "query",
                         "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
@@ -1460,6 +2085,17 @@
                             "LINEARIZE",
                             "SESSION"
                         ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "replica",
@@ -1622,15 +2258,13 @@
                 ],
                 "parameters": [
                     {
+                        "in": "body",
                         "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
+                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "name": "commitLevel",
@@ -1769,6 +2403,17 @@
                             "LINEARIZE",
                             "SESSION"
                         ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "recordExistsAction",
@@ -1898,15 +2543,13 @@
                 ],
                 "parameters": [
                     {
+                        "in": "body",
                         "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
+                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "name": "commitLevel",
@@ -2045,6 +2688,17 @@
                             "LINEARIZE",
                             "SESSION"
                         ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "recordExistsAction",
@@ -2170,17 +2824,6 @@
                 ],
                 "parameters": [
                     {
-                        "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
-                    },
-                    {
                         "name": "commitLevel",
                         "in": "query",
                         "description": "Desired consistency guarantee when committing a transaction on the server.",
@@ -2317,6 +2960,17 @@
                             "LINEARIZE",
                             "SESSION"
                         ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "recordExistsAction",
@@ -2446,15 +3100,13 @@
                 ],
                 "parameters": [
                     {
+                        "in": "body",
                         "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
+                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "name": "commitLevel",
@@ -2595,6 +3247,17 @@
                         ]
                     },
                     {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
                         "name": "recordExistsAction",
                         "in": "query",
                         "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
@@ -2720,17 +3383,6 @@
                 ],
                 "parameters": [
                     {
-                        "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
-                    },
-                    {
                         "name": "compress",
                         "in": "query",
                         "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
@@ -2817,6 +3469,17 @@
                             "LINEARIZE",
                             "SESSION"
                         ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "replica",
@@ -2993,15 +3656,13 @@
                 ],
                 "parameters": [
                     {
+                        "in": "body",
                         "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
+                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "name": "commitLevel",
@@ -3140,6 +3801,17 @@
                             "LINEARIZE",
                             "SESSION"
                         ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "recordExistsAction",
@@ -3276,15 +3948,13 @@
                 ],
                 "parameters": [
                     {
+                        "in": "body",
                         "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
+                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "name": "commitLevel",
@@ -3423,6 +4093,17 @@
                             "LINEARIZE",
                             "SESSION"
                         ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "recordExistsAction",
@@ -3555,17 +4236,6 @@
                 ],
                 "parameters": [
                     {
-                        "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
-                    },
-                    {
                         "name": "commitLevel",
                         "in": "query",
                         "description": "Desired consistency guarantee when committing a transaction on the server.",
@@ -3702,6 +4372,17 @@
                             "LINEARIZE",
                             "SESSION"
                         ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "recordExistsAction",
@@ -3838,15 +4519,13 @@
                 ],
                 "parameters": [
                     {
+                        "in": "body",
                         "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
+                        "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "name": "commitLevel",
@@ -3985,6 +4664,17 @@
                             "LINEARIZE",
                             "SESSION"
                         ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "recordExistsAction",
@@ -4123,17 +4813,6 @@
                 ],
                 "parameters": [
                     {
-                        "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
-                    },
-                    {
                         "name": "commitLevel",
                         "in": "query",
                         "description": "Desired consistency guarantee when committing a transaction on the server.",
@@ -4282,6 +4961,17 @@
                             "LINEARIZE",
                             "SESSION"
                         ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "recordExistsAction",
@@ -4416,17 +5106,6 @@
                 ],
                 "parameters": [
                     {
-                        "name": "bins",
-                        "in": "query",
-                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
-                        "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi"
-                    },
-                    {
                         "name": "commitLevel",
                         "in": "query",
                         "description": "Desired consistency guarantee when committing a transaction on the server.",
@@ -4577,6 +5256,17 @@
                         ]
                     },
                     {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
                         "name": "recordExistsAction",
                         "in": "query",
                         "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
@@ -4685,6 +5375,547 @@
                     },
                     "409": {
                         "description": "Generation conflict",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "500": {
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/v1/scan/{namespace}": {
+            "get": {
+                "tags": [
+                    "Scan Operations"
+                ],
+                "summary": "Return multiple records from the server in a scan request.",
+                "operationId": "performScan_1",
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "parameters": [
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "concurrentNodes",
+                        "in": "query",
+                        "description": "Should scan requests be issued in parallel.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": true
+                    },
+                    {
+                        "name": "failOnClusterChange",
+                        "in": "query",
+                        "description": "Terminate scan if cluster in migration state. Only used for server versions < 4.9.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Next page token parameter.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null"
+                    },
+                    {
+                        "name": "includeBinData",
+                        "in": "query",
+                        "description": "Should bin data be retrieved. If false, only record digests (and user keys if stored on the server) are retrieved.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": true
+                    },
+                    {
+                        "name": "keytype",
+                        "in": "query",
+                        "description": "The Type of the userKey.",
+                        "required": false,
+                        "type": "string",
+                        "default": "STRING",
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
+                    },
+                    {
+                        "name": "maxConcurrentNodes",
+                        "in": "query",
+                        "description": "Maximum number of concurrent requests to server nodes at any point in time. If there are 16 nodes in the cluster and maxConcurrentNodes is 8, then scan requests will be made to 8 nodes in parallel.  When a scan completes, a new scan request will be issued until all 16 nodes have been scanned.\nThis field is only relevant when concurrentNodes is true.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (issue requests to all server nodes in parallel)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "maxRecords",
+                        "in": "query",
+                        "description": "Number of records to return.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not limit record count)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "namespace",
+                        "in": "path",
+                        "description": "Namespace for the record; equivalent to database name.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
+                    },
+                    {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Comma separated list of bins to retrieve.",
+                        "required": false,
+                        "type": "string",
+                        "default": "All bins"
+                    },
+                    {
+                        "name": "recordsPerSecond",
+                        "in": "query",
+                        "description": "Limit returned records per second (rps) rate for each server.\nDo not apply rps limit if recordsPerSecond is zero.",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0,
+                        "format": "int32"
+                    },
+                    {
+                        "name": "replica",
+                        "in": "query",
+                        "description": "Replica algorithm used to determine the target node for a single record command.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SEQUENCE",
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
+                    },
+                    {
+                        "name": "scanPercent",
+                        "in": "query",
+                        "description": "Percent of data to scan. Valid integer range is 1 to 100.\nThis field is supported on server versions < 4.9.\nFor server versions >= 4.9, use maxRecords.",
+                        "required": false,
+                        "type": "integer",
+                        "default": 100,
+                        "format": "int32"
+                    },
+                    {
+                        "name": "sendKey",
+                        "in": "query",
+                        "description": "Send user defined key in addition to hash digest on both reads and writes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientScanResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters or request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "403": {
+                        "description": "Not authorized to access the resource",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "404": {
+                        "description": "Namespace does not exist",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "500": {
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/v1/scan/{namespace}/{set}": {
+            "get": {
+                "tags": [
+                    "Scan Operations"
+                ],
+                "summary": "Return multiple records from the server in a scan request.",
+                "operationId": "performScan",
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "parameters": [
+                    {
+                        "name": "compress",
+                        "in": "query",
+                        "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "concurrentNodes",
+                        "in": "query",
+                        "description": "Should scan requests be issued in parallel.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": true
+                    },
+                    {
+                        "name": "failOnClusterChange",
+                        "in": "query",
+                        "description": "Terminate scan if cluster in migration state. Only used for server versions < 4.9.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Next page token parameter.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null"
+                    },
+                    {
+                        "name": "includeBinData",
+                        "in": "query",
+                        "description": "Should bin data be retrieved. If false, only record digests (and user keys if stored on the server) are retrieved.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": true
+                    },
+                    {
+                        "name": "keytype",
+                        "in": "query",
+                        "description": "The Type of the userKey.",
+                        "required": false,
+                        "type": "string",
+                        "default": "STRING",
+                        "enum": [
+                            "STRING",
+                            "INTEGER",
+                            "BYTES",
+                            "DIGEST"
+                        ]
+                    },
+                    {
+                        "name": "maxConcurrentNodes",
+                        "in": "query",
+                        "description": "Maximum number of concurrent requests to server nodes at any point in time. If there are 16 nodes in the cluster and maxConcurrentNodes is 8, then scan requests will be made to 8 nodes in parallel.  When a scan completes, a new scan request will be issued until all 16 nodes have been scanned.\nThis field is only relevant when concurrentNodes is true.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (issue requests to all server nodes in parallel)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "maxRecords",
+                        "in": "query",
+                        "description": "Number of records to return.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not limit record count)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "maxRetries",
+                        "in": "query",
+                        "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "for read: 2 (initial attempt + 2 retries = 3 attempts), for write: 0 (no retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "namespace",
+                        "in": "path",
+                        "description": "Namespace for the record; equivalent to database name.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "predexp",
+                        "in": "query",
+                        "description": "Optional predicate expression filter in postfix notation. If the predicate expression exists and evaluates to false, the transaction is ignored.",
+                        "required": false,
+                        "type": "string",
+                        "default": "null",
+                        "enum": [
+                            "Base64 encoded expression string (e.g.",
+                            "(not(int_bin < 1) and LAST_UPDATE(>=",
+                            "1577880000)) or DIGEST_MODULO(3",
+                            "==",
+                            "1) or not VOID_TIME(!=",
+                            "1577880000))."
+                        ]
+                    },
+                    {
+                        "name": "readModeAP",
+                        "in": "query",
+                        "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+                        "required": false,
+                        "type": "string",
+                        "default": "ONE",
+                        "enum": [
+                            "ALL",
+                            "ONE"
+                        ]
+                    },
+                    {
+                        "name": "readModeSC",
+                        "in": "query",
+                        "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SESSION",
+                        "enum": [
+                            "ALLOW_REPLICA",
+                            "ALLOW_UNAVAILABLE",
+                            "LINEARIZE",
+                            "SESSION"
+                        ]
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "recordBins",
+                        "in": "query",
+                        "description": "Comma separated list of bins to retrieve.",
+                        "required": false,
+                        "type": "string",
+                        "default": "All bins"
+                    },
+                    {
+                        "name": "recordsPerSecond",
+                        "in": "query",
+                        "description": "Limit returned records per second (rps) rate for each server.\nDo not apply rps limit if recordsPerSecond is zero.",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0,
+                        "format": "int32"
+                    },
+                    {
+                        "name": "replica",
+                        "in": "query",
+                        "description": "Replica algorithm used to determine the target node for a single record command.",
+                        "required": false,
+                        "type": "string",
+                        "default": "SEQUENCE",
+                        "enum": [
+                            "MASTER",
+                            "MASTER_PROLES",
+                            "SEQUENCE",
+                            "RANDOM"
+                        ]
+                    },
+                    {
+                        "name": "scanPercent",
+                        "in": "query",
+                        "description": "Percent of data to scan. Valid integer range is 1 to 100.\nThis field is supported on server versions < 4.9.\nFor server versions >= 4.9, use maxRecords.",
+                        "required": false,
+                        "type": "integer",
+                        "default": 100,
+                        "format": "int32"
+                    },
+                    {
+                        "name": "sendKey",
+                        "in": "query",
+                        "description": "Send user defined key in addition to hash digest on both reads and writes.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false,
+                        "x-example": false
+                    },
+                    {
+                        "name": "set",
+                        "in": "path",
+                        "description": "Set for the record; equivalent to database table.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "sleepBetweenRetries",
+                        "in": "query",
+                        "description": "Milliseconds to sleep between retries.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (do not sleep between retries)",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "socketTimeout",
+                        "in": "query",
+                        "description": "Socket idle timeout in milliseconds when processing a database command.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "30000ms",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "totalTimeout",
+                        "in": "query",
+                        "description": "Total transaction timeout in milliseconds.",
+                        "required": false,
+                        "type": "integer",
+                        "default": "0 (no time limit)",
+                        "format": "int32"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientScanResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters or request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "403": {
+                        "description": "Not authorized to access the resource",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "404": {
+                        "description": "Namespace or set does not exist",
                         "schema": {
                             "$ref": "#/definitions/RestClientError"
                         }
@@ -5062,6 +6293,21 @@
             },
             "title": "Operation"
         },
+        "Pagination": {
+            "type": "object",
+            "properties": {
+                "nextToken": {
+                    "type": "string",
+                    "description": "The next page token."
+                },
+                "totalRecords": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The total number of records in page."
+                }
+            },
+            "title": "Pagination"
+        },
         "Privilege": {
             "type": "object",
             "required": [
@@ -5142,6 +6388,35 @@
             "title": "RestClientError",
             "description": "Error object returned from unsuccesful operations."
         },
+        "RestClientExecuteTask": {
+            "type": "object",
+            "properties": {
+                "scan": {
+                    "type": "boolean",
+                    "description": "The scan indicator."
+                },
+                "taskId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The task ID value."
+                }
+            },
+            "title": "RestClientExecuteTask"
+        },
+        "RestClientExecuteTaskStatus": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "description": "The ExecuteTask status."
+                },
+                "task": {
+                    "description": "The ExecuteTask object.",
+                    "$ref": "#/definitions/RestClientExecuteTask"
+                }
+            },
+            "title": "RestClientExecuteTaskStatus"
+        },
         "RestClientIndex": {
             "type": "object",
             "properties": {
@@ -5198,6 +6473,23 @@
                 }
             },
             "title": "RestClientRole"
+        },
+        "RestClientScanResponse": {
+            "type": "object",
+            "properties": {
+                "pagination": {
+                    "description": "Pagination details.",
+                    "$ref": "#/definitions/Pagination"
+                },
+                "records": {
+                    "type": "array",
+                    "description": "List of records for current page.",
+                    "items": {
+                        "$ref": "#/definitions/Record"
+                    }
+                }
+            },
+            "title": "RestClientScanResponse"
         },
         "RestClientSetInformation": {
             "type": "object",
