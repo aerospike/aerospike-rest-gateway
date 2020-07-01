@@ -73,24 +73,19 @@ public class ScanTest {
     @Parameterized.Parameters
     public static Object[][] getParams() {
         return new Object[][]{
-                {new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString(), true},
-                {new MsgPackResponseDeserializer(), "application/msgpack", true},
-                {new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString(), false},
-                {new MsgPackResponseDeserializer(), "application/msgpack", false}
+                {new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString()},
+                {new MsgPackResponseDeserializer(), "application/msgpack"}
         };
     }
 
-    public ScanTest(ResponseDeserializer deserializer, String mt, boolean useSet) {
+    public ScanTest(ResponseDeserializer deserializer, String mt) {
         this.responseDeserializer = deserializer;
         this.namespace = "test";
         this.currentMediaType = mt;
         this.testKeys = new Key[numberOfRecords];
-        if (useSet) {
-            this.setName = "scanSet";
-            testEndpoint = "/v1/scan/" + namespace + "/" + setName;
-        } else {
-            testEndpoint = "/v1/scan/" + namespace;
-        }
+        this.setName = "scanSet";
+        testEndpoint = "/v1/scan/" + namespace + "/" + setName;
+
         for (int i = 0; i < numberOfRecords; i++) {
             testKeys[i] = new Key(namespace, setName, "key_" + i);
         }
