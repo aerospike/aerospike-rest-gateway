@@ -16,42 +16,52 @@
  */
 package com.aerospike.restclient.config;
 
+import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.AerospikeException;
+import com.aerospike.client.Host;
+import com.aerospike.client.policy.ClientPolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.Host;
-import com.aerospike.client.policy.ClientPolicy;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 
 @Configuration
 public class AerospikeClientConfig {
-	@Value("${aerospike.restclient.hostname:localhost}")
-	String hostname;
+    private static final Logger logger = LoggerFactory.getLogger(AerospikeClientConfig.class);
 
-	@Value("${aerospike.restclient.port:3000}")
-	int port;
+    @Value("${aerospike.restclient.hostname:localhost}")
+    String hostname;
 
-	@Value("${aerospike.restclient.hostlist:#{null}}") String hostList;
+    @Value("${aerospike.restclient.port:3000}")
+    int port;
 
-	@Autowired
-	ClientPolicy policy;
+    @Value("${aerospike.restclient.hostlist:#{null}}")
+    String hostList;
 
-	@Bean
-	public AerospikeClient ConfigAerospikeClient() {
-		AerospikeClient client;
+    @Autowired
+    ClientPolicy policy;
 
-		/* A list of hosts was provided, parse it into host array*/
-		if (hostList != null) {
-			client = new AerospikeClient(policy, Host.parseHosts(hostList, port));
+    @Bean
+    @Retryable(
+            value = {AerospikeException.class},
+            backoff = @Backoff(delay = 2000, multiplier = 2))
+    public AerospikeClient ConfigAerospikeClient() {
+        AerospikeClient client;
 
-		} else {
-			/* No list of hosts provided, try with a single host name */
-			client = new AerospikeClient(policy, hostname, port);
-		}
+        logger.info("Init the AerospikeClient");
+        /* A list of hosts was provided, parse it into host array*/
+        if (hostList != null) {
+            client = new AerospikeClient(policy, Host.parseHosts(hostList, port));
 
-		return client;
-	}
+        } else {
+            /* No list of hosts provided, try with a single host name */
+            client = new AerospikeClient(policy, hostname, port);
+        }
+
+        return client;
+    }
 }
-
