@@ -38,7 +38,6 @@ public class ExceptionHTTPCodesTest {
 			{ResultCode.KEY_NOT_FOUND_ERROR, HttpStatus.NOT_FOUND},
 			{ResultCode.INDEX_NOTFOUND, HttpStatus.NOT_FOUND},
 			{ResultCode.INVALID_ROLE, HttpStatus.NOT_FOUND},
-			{ResultCode.INVALID_USER, HttpStatus.NOT_FOUND},
 
 			{ResultCode.GENERATION_ERROR, HttpStatus.CONFLICT},
 			{ResultCode.ROLE_ALREADY_EXISTS, HttpStatus.CONFLICT},
@@ -55,6 +54,14 @@ public class ExceptionHTTPCodesTest {
 			{ResultCode.INVALID_PRIVILEGE, HttpStatus.BAD_REQUEST},
 
 			{ResultCode.ROLE_VIOLATION, HttpStatus.FORBIDDEN},
+
+			{ResultCode.INVALID_USER, HttpStatus.UNAUTHORIZED},
+			{ResultCode.INVALID_PASSWORD, HttpStatus.UNAUTHORIZED},
+			{ResultCode.EXPIRED_PASSWORD, HttpStatus.UNAUTHORIZED},
+			{ResultCode.FORBIDDEN_PASSWORD, HttpStatus.UNAUTHORIZED},
+			{ResultCode.INVALID_CREDENTIAL, HttpStatus.UNAUTHORIZED},
+			{ResultCode.SECURITY_NOT_SUPPORTED, HttpStatus.UNAUTHORIZED},
+			{ResultCode.SECURITY_NOT_ENABLED, HttpStatus.UNAUTHORIZED},
 
 			{ResultCode.INVALID_NODE_ERROR, HttpStatus.INTERNAL_SERVER_ERROR},
 			{ResultCode.INVALID_NAMESPACE, HttpStatus.INTERNAL_SERVER_ERROR}
