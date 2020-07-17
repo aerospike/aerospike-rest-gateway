@@ -20,14 +20,16 @@ import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.RestClientExecuteTask;
 import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
 import com.aerospike.restclient.domain.RestClientOperation;
+import com.aerospike.restclient.domain.auth.AuthDetails;
 
 import java.util.List;
 import java.util.Map;
 
 public interface AerospikeExecuteService {
 
-    public RestClientExecuteTask executeScan(String namespace, String set, List<RestClientOperation> opsList,
-                                             WritePolicy policy, Map<String, String> requestParams);
+    public RestClientExecuteTask executeScan(AuthDetails authDetails, String namespace, String set,
+                                             List<RestClientOperation> opsList, WritePolicy policy,
+                                             Map<String, String> requestParams);
 
-    public RestClientExecuteTaskStatus queryScanStatus(String taskId);
+    public RestClientExecuteTaskStatus queryScanStatus(AuthDetails authDetails, String taskId);
 }

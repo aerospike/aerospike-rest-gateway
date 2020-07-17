@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,20 +16,25 @@
  */
 package com.aerospike.restclient.handlers;
 
-import java.util.List;
-
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.BatchRead;
 import com.aerospike.client.policy.BatchPolicy;
 
+import java.util.List;
+
 public class BatchHandler {
-	private AerospikeClient client;
 
-	public BatchHandler(AerospikeClient client) {
-		this.client = client;
-	}
+    private final AerospikeClient client;
 
-	public void batchRead(BatchPolicy policy, List<BatchRead>records) {
-		client.get(policy, records);
-	}
+    public BatchHandler(AerospikeClient client) {
+        this.client = client;
+    }
+
+    public void batchRead(BatchPolicy policy, List<BatchRead> records) {
+        client.get(policy, records);
+    }
+
+    public static BatchHandler create(AerospikeClient client) {
+        return new BatchHandler(client);
+    }
 }

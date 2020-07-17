@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,33 +16,33 @@
  */
 package com.aerospike.restclient.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.aerospike.client.BatchRead;
 import com.aerospike.client.policy.BatchPolicy;
 import com.aerospike.restclient.domain.RestClientBatchReadBody;
 import com.aerospike.restclient.domain.RestClientBatchReadResponse;
+import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.handlers.BatchHandler;
+import com.aerospike.restclient.util.AerospikeClientPool;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AerospikeBatchServiceV1 implements AerospikeBatchService {
-	private BatchHandler handler;
 
-	@Autowired
-	public AerospikeBatchServiceV1(BatchHandler handler) {
-		this.handler = handler;
-	}
+    @Autowired
+    private AerospikeClientPool clientPool;
 
-	@Override
-	public List<RestClientBatchReadResponse> batchGet(List<RestClientBatchReadBody> batchKeys, BatchPolicy policy) {
-		List<BatchRead> batchReads = batchKeys.stream().map(bk -> bk.toBatchRead()).collect(Collectors.toList());
-		handler.batchRead(policy, batchReads);
+    @Override
+    public List<RestClientBatchReadResponse> batchGet(AuthDetails authDetails, List<RestClientBatchReadBody> batchKeys,
+                                                      BatchPolicy policy) {
+        List<BatchRead> batchReads = batchKeys.stream().map(RestClientBatchReadBody::toBatchRead)
+                .collect(Collectors.toList());
+        BatchHandler.create(clientPool.getClient(authDetails)).batchRead(policy, batchReads);
 
-		return batchReads.stream().map(br -> new RestClientBatchReadResponse(br)).collect(Collectors.toList());
-	}
+        return batchReads.stream().map(RestClientBatchReadResponse::new).collect(Collectors.toList());
+    }
 
 }

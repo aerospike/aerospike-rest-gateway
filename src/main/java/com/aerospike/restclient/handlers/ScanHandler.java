@@ -25,17 +25,12 @@ import com.aerospike.client.policy.ScanPolicy;
 import com.aerospike.client.query.PartitionFilter;
 import com.aerospike.restclient.domain.RestClientRecord;
 import com.aerospike.restclient.domain.scanmodels.RestClientScanResponse;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@Component
 public class ScanHandler {
 
-    private AerospikeClient client;
+    private final AerospikeClient client;
 
     private RestClientScanResponse result;
 
@@ -84,10 +79,14 @@ public class ScanHandler {
             result.getPagination().setNextToken(Base64.getEncoder().encodeToString(lastKey.digest));
     }
 
-    private ScanCallback callback = ((key, record) -> {
+    private final ScanCallback callback = ((key, record) -> {
         lastKey = key;
         RestClientRecord rec = new RestClientRecord(record);
         result.addRecord(rec);
     });
+
+    public static ScanHandler create(AerospikeClient client) {
+        return new ScanHandler(client);
+    }
 
 }

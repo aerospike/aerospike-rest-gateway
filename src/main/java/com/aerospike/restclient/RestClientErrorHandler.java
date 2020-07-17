@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,6 +16,11 @@
  */
 package com.aerospike.restclient;
 
+import com.aerospike.client.AerospikeException;
+import com.aerospike.client.ResultCode;
+import com.aerospike.restclient.domain.RestClientError;
+import com.aerospike.restclient.util.RestClientErrors;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,69 +30,76 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.aerospike.client.AerospikeException;
-import com.aerospike.client.ResultCode;
-import com.aerospike.restclient.domain.RestClientError;
-import com.aerospike.restclient.util.RestClientErrors;
-import com.fasterxml.jackson.databind.JsonMappingException;
 @ControllerAdvice
 public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler({AerospikeException.class})
-	public ResponseEntity<Object> handleAsError(AerospikeException ex) {
-		return new ResponseEntity<Object>(new RestClientError(ex), getStatusCodeFromException(ex));
-	}
+    @ExceptionHandler({AerospikeException.class})
+    public ResponseEntity<Object> handleAsError(AerospikeException ex) {
+        return new ResponseEntity<>(new RestClientError(ex), getStatusCodeFromException(ex));
+    }
 
-	@Override
-	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-		logger.warn(ex.getMessage());
-		return new ResponseEntity<Object>(new RestClientError(ex.getMostSpecificCause().getMessage()), HttpStatus.BAD_REQUEST);
-	}
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  WebRequest request) {
+        logger.warn(ex.getMessage());
+        return new ResponseEntity<>(new RestClientError(ex.getMostSpecificCause().getMessage()), HttpStatus.BAD_REQUEST);
+    }
 
-	@ExceptionHandler({RestClientErrors.AerospikeRestClientError.class})
-	public ResponseEntity<Object> handleAPIError(RestClientErrors.AerospikeRestClientError ex) {
-		return new ResponseEntity<Object>(new RestClientError(ex), ex.getStatusCode());
-	}
+    @ExceptionHandler({RestClientErrors.AerospikeRestClientError.class})
+    public ResponseEntity<Object> handleAPIError(RestClientErrors.AerospikeRestClientError ex) {
+        return new ResponseEntity<>(new RestClientError(ex), ex.getStatusCode());
+    }
 
-	@ExceptionHandler({JsonMappingException.class})
-	public ResponseEntity<Object> handleJSONMappingException(JsonMappingException jme) {
-		return new ResponseEntity<Object>(new RestClientError(jme.getMessage()), HttpStatus.BAD_REQUEST);
-	}
+    @ExceptionHandler({JsonMappingException.class})
+    public ResponseEntity<Object> handleJSONMappingException(JsonMappingException jme) {
+        return new ResponseEntity<>(new RestClientError(jme.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 
-	private HttpStatus getStatusCodeFromException(AerospikeException ex) {
-		switch(ex.getResultCode()) {
+    private HttpStatus getStatusCodeFromException(AerospikeException ex) {
+        switch (ex.getResultCode()) {
 
-		case ResultCode.KEY_NOT_FOUND_ERROR:
-		case ResultCode.INDEX_NOTFOUND:
-		case ResultCode.INVALID_USER:
-		case ResultCode.INVALID_ROLE:
-			return HttpStatus.NOT_FOUND;
+            case ResultCode.KEY_NOT_FOUND_ERROR:
+            case ResultCode.INDEX_NOTFOUND:
+            case ResultCode.INVALID_ROLE:
+                return HttpStatus.NOT_FOUND;
 
-		case ResultCode.KEY_EXISTS_ERROR:
-		case ResultCode.GENERATION_ERROR:
-		case ResultCode.USER_ALREADY_EXISTS:
-		case ResultCode.INDEX_ALREADY_EXISTS:
-		case ResultCode.ROLE_ALREADY_EXISTS:
-			return HttpStatus.CONFLICT;
+            case ResultCode.KEY_EXISTS_ERROR:
+            case ResultCode.GENERATION_ERROR:
+            case ResultCode.USER_ALREADY_EXISTS:
+            case ResultCode.INDEX_ALREADY_EXISTS:
+            case ResultCode.ROLE_ALREADY_EXISTS:
+                return HttpStatus.CONFLICT;
 
-		case ResultCode.BIN_NAME_TOO_LONG:
-		case ResultCode.INDEX_NAME_MAXLEN:
-		case ResultCode.INVALID_COMMAND:
-		case ResultCode.INVALID_FIELD:
-		case ResultCode.BIN_TYPE_ERROR:
-		case ResultCode.PARAMETER_ERROR:
-		case ResultCode.INVALID_PRIVILEGE:
-			return HttpStatus.BAD_REQUEST;
+            case ResultCode.BIN_NAME_TOO_LONG:
+            case ResultCode.INDEX_NAME_MAXLEN:
+            case ResultCode.INVALID_COMMAND:
+            case ResultCode.INVALID_FIELD:
+            case ResultCode.BIN_TYPE_ERROR:
+            case ResultCode.PARAMETER_ERROR:
+            case ResultCode.INVALID_PRIVILEGE:
+                return HttpStatus.BAD_REQUEST;
 
-		case ResultCode.ROLE_VIOLATION:
-			return HttpStatus.FORBIDDEN;
+            case ResultCode.ROLE_VIOLATION:
+            case ResultCode.ALWAYS_FORBIDDEN:
+            case ResultCode.FAIL_FORBIDDEN:
+                return HttpStatus.FORBIDDEN;
 
-		case ResultCode.INVALID_NODE_ERROR:
-		case ResultCode.INVALID_NAMESPACE:
-			return HttpStatus.INTERNAL_SERVER_ERROR;
+            case ResultCode.INVALID_USER:
+            case ResultCode.INVALID_PASSWORD:
+            case ResultCode.EXPIRED_PASSWORD:
+            case ResultCode.FORBIDDEN_PASSWORD:
+            case ResultCode.INVALID_CREDENTIAL:
+            case ResultCode.SECURITY_NOT_SUPPORTED:
+            case ResultCode.SECURITY_NOT_ENABLED:
+                return HttpStatus.UNAUTHORIZED;
 
-		default:
-			return HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-	}
+            case ResultCode.INVALID_NODE_ERROR:
+            case ResultCode.INVALID_NAMESPACE:
+                return HttpStatus.INTERNAL_SERVER_ERROR;
+
+            default:
+                return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
 }

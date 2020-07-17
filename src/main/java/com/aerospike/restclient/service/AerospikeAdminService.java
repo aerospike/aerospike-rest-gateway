@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,44 +16,44 @@
  */
 package com.aerospike.restclient.service;
 
-import java.util.List;
-
 import com.aerospike.client.admin.User;
 import com.aerospike.restclient.domain.RestClientPrivilege;
 import com.aerospike.restclient.domain.RestClientRole;
 import com.aerospike.restclient.domain.RestClientUserModel;
+import com.aerospike.restclient.domain.auth.AuthDetails;
+
+import java.util.List;
 
 public interface AerospikeAdminService {
 
-	/* Users Methods*/
+    /* Users Methods*/
+    public User[] getUsers(AuthDetails authDetails);
 
-	public User[] getUsers();
+    public void createUser(AuthDetails authDetails, RestClientUserModel userInfo);
 
-	public void createUser(RestClientUserModel userInfo);
+    public User getUser(AuthDetails authDetails, String username);
 
-	public User getUser(String username);
+    public void dropUser(AuthDetails authDetails, String userName);
 
-	public void dropUser(String userName);
+    public void changePassword(AuthDetails authDetails, String username, String password);
 
-	public void changePassword(String username, String password);
+    public void grantRoles(AuthDetails authDetails, String username, List<String> roles);
 
-	public void grantRoles(String username, List<String>roles);
+    public void revokeRoles(AuthDetails authDetails, String username, List<String> roles);
 
-	public void revokeRoles(String username, List<String>roles);
+    /* Roles Methods */
+    public int getRoleCount(AuthDetails authDetails);
 
-	/* Roles Methods */
-	public int getRoleCount();
+    public List<RestClientRole> getRoles(AuthDetails authDetails);
 
-	public List<RestClientRole> getRoles();
+    public void createRole(AuthDetails authDetails, RestClientRole rcRole);
 
-	public void createRole(RestClientRole rcRole);
+    public RestClientRole getRole(AuthDetails authDetails, String roleName);
 
-	public RestClientRole getRole(String roleName);
+    public void dropRole(AuthDetails authDetails, String roleName);
 
-	public void dropRole(String roleName);
+    public void grantPrivileges(AuthDetails authDetails, String roleName, List<RestClientPrivilege> rcPrivileges);
 
-	public void grantPrivileges(String roleName, List<RestClientPrivilege> rcPrivileges);
-
-	public void revokePrivileges(String roleName, List<RestClientPrivilege> rcPrivileges);
+    public void revokePrivileges(AuthDetails authDetails, String roleName, List<RestClientPrivilege> rcPrivileges);
 
 }

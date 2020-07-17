@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,114 +16,111 @@
  */
 package com.aerospike.restclient.service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.aerospike.client.admin.Privilege;
 import com.aerospike.client.admin.Role;
 import com.aerospike.client.admin.User;
 import com.aerospike.restclient.domain.RestClientPrivilege;
 import com.aerospike.restclient.domain.RestClientRole;
 import com.aerospike.restclient.domain.RestClientUserModel;
+import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.handlers.AdminHandler;
+import com.aerospike.restclient.util.AerospikeClientPool;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-class AerospikeAdminServiceV1 implements AerospikeAdminService{
+class AerospikeAdminServiceV1 implements AerospikeAdminService {
 
-	private AdminHandler handler;
+    @Autowired
+    private AerospikeClientPool clientPool;
 
-	@Autowired
-	public AerospikeAdminServiceV1(AdminHandler handler) {
-		this.handler = handler;
-	}
-	/* UserController Methods */
+    /* UserController Methods */
+    @Override
+    public User[] getUsers(AuthDetails authDetails) {
+        List<User> userList = AdminHandler.create(clientPool.getClient(authDetails)).getUsers(null);
+        return userList.toArray(new User[0]);
+    }
 
-	@Override
-	public User[] getUsers() {
-		List<User> userList = handler.getUsers(null);
-		User[] usrAry = userList.toArray(new User[0]);
-		return usrAry;
-	}
+    @Override
+    public User getUser(AuthDetails authDetails, String username) {
+        return AdminHandler.create(clientPool.getClient(authDetails)).getUser(null, username);
+    }
 
-	@Override
-	public User getUser(String username) {
-		User user = handler.getUser(null, username);
-		return user;
-	}
+    @Override
+    public void dropUser(AuthDetails authDetails, String userName) {
+        AdminHandler.create(clientPool.getClient(authDetails)).deleteUser(null, userName);
+    }
 
-	@Override
-	public void dropUser(String userName) {
-		handler.deleteUser(null, userName);
-	}
+    @Override
+    public void createUser(AuthDetails authDetails, RestClientUserModel userInfo) {
+        String username = userInfo.getUsername();
+        String password = userInfo.getPassword();
+        String[] rolesAry = userInfo.getRoles();
+        AdminHandler.create(clientPool.getClient(authDetails))
+                .createUser(null, username, password, Arrays.asList(rolesAry));
+    }
 
-	@Override
-	public void createUser(RestClientUserModel userInfo) {
-		String username = userInfo.getUsername();
-		String password = userInfo.getPassword();
-		String[] rolesAry = userInfo.getRoles();
-		handler.createUser(null, username, password, Arrays.asList(rolesAry));
-	}
+    @Override
+    public void changePassword(AuthDetails authDetails, String user, String password) {
+        AdminHandler.create(clientPool.getClient(authDetails)).changePassword(null, user, password);
+    }
 
-	@Override
-	public void changePassword(String user, String password) {
-		handler.changePassword(null, user, password);
-	}
+    @Override
+    public void grantRoles(AuthDetails authDetails, String username, List<String> roles) {
+        AdminHandler.create(clientPool.getClient(authDetails)).grantRoles(null, username, roles);
+    }
 
-	@Override
-	public void grantRoles(String username, List<String>roles) {
-		handler.grantRoles(null, username, roles);
-	}
+    @Override
+    public void revokeRoles(AuthDetails authDetails, String username, List<String> roles) {
+        AdminHandler.create(clientPool.getClient(authDetails)).revokeRoles(null, username, roles);
+    }
 
-	@Override
-	public void revokeRoles(String username, List<String>roles) {
-		handler.revokeRoles(null, username, roles);
-	}
+    /* RoleController Methods */
+    @Override
+    public int getRoleCount(AuthDetails authDetails) {
+        return AdminHandler.create(clientPool.getClient(authDetails)).getRoles(null).size();
+    }
 
-	/* RoleController Methods */
+    @Override
+    public List<RestClientRole> getRoles(AuthDetails authDetails) {
+        List<Role> roleList = AdminHandler.create(clientPool.getClient(authDetails)).getRoles(null);
+        return roleList.stream().map(RestClientRole::new).collect(Collectors.toList());
+    }
 
-	@Override
-	public int getRoleCount() {
-		return handler.getRoles(null).size();
-	}
+    @Override
+    public void createRole(AuthDetails authDetails, RestClientRole rcRole) {
+        Role asRole = rcRole.toRole();
+        AdminHandler.create(clientPool.getClient(authDetails)).createRole(null, asRole.name, asRole.privileges);
+    }
 
-	@Override
-	public List<RestClientRole> getRoles() {
-		List<Role> roleList = handler.getRoles(null);
-		return roleList.stream().map(elt -> new RestClientRole(elt)).collect(Collectors.toList());
-	}
+    @Override
+    public RestClientRole getRole(AuthDetails authDetails, String roleName) {
+        Role role = AdminHandler.create(clientPool.getClient(authDetails)).getRole(null, roleName);
+        return new RestClientRole(role);
+    }
 
-	@Override
-	public void createRole(RestClientRole rcRole) {
-		Role asRole = rcRole.toRole();
-		handler.createRole(null, asRole.name, asRole.privileges);
-	}
+    @Override
+    public void dropRole(AuthDetails authDetails, String roleName) {
+        AdminHandler.create(clientPool.getClient(authDetails)).deleteRole(null, roleName);
+    }
 
-	@Override
-	public RestClientRole getRole(String roleName) {
-		Role role = handler.getRole(null, roleName);
-		return new RestClientRole(role);
-	}
+    @Override
+    public void grantPrivileges(AuthDetails authDetails, String roleName, List<RestClientPrivilege> rcPrivileges) {
+        List<Privilege> privileges = rcPrivileges.stream().map(RestClientPrivilege::toPrivilege)
+                .collect(Collectors.toList());
+        AdminHandler.create(clientPool.getClient(authDetails)).grantPrivileges(null, roleName, privileges);
+    }
 
-	@Override
-	public void dropRole(String roleName) {
-		handler.deleteRole(null, roleName);
-	}
+    @Override
+    public void revokePrivileges(AuthDetails authDetails, String roleName, List<RestClientPrivilege> rcPrivileges) {
+        List<Privilege> privileges = rcPrivileges.stream().map(RestClientPrivilege::toPrivilege)
+                .collect(Collectors.toList());
 
-	@Override
-	public void grantPrivileges(String roleName, List<RestClientPrivilege> rcPrivileges) {
-		List<Privilege>privileges = rcPrivileges.stream().map(elt -> elt.toPrivilege()).collect(Collectors.toList());
-		handler.grantPrivileges(null, roleName, privileges);
-	}
-
-	@Override
-	public void revokePrivileges(String roleName, List<RestClientPrivilege> rcPrivileges) {
-		List<Privilege>privileges = rcPrivileges.stream().map(elt -> elt.toPrivilege()).collect(Collectors.toList());
-
-		handler.revokePrivileges(null, roleName, privileges);
-	}
+        AdminHandler.create(clientPool.getClient(authDetails)).revokePrivileges(null, roleName, privileges);
+    }
 
 }

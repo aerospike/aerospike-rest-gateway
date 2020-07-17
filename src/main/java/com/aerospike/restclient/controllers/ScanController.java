@@ -18,9 +18,11 @@ package com.aerospike.restclient.controllers;
 
 import com.aerospike.client.policy.ScanPolicy;
 import com.aerospike.restclient.domain.RestClientError;
+import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.domain.scanmodels.RestClientScanResponse;
 import com.aerospike.restclient.service.AerospikeScanService;
 import com.aerospike.restclient.util.APIParamDescriptors;
+import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.annotations.ASRestClientScanPolicyQueryParams;
 import io.swagger.annotations.*;
@@ -56,11 +58,13 @@ public class ScanController {
     public RestClientScanResponse performScan(
             @ApiParam(value = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @ApiParam(value = APIParamDescriptors.SET_NOTES, required = true) @PathVariable(value = "set") String set,
-            @ApiIgnore @RequestParam Map<String, String> requestParams) {
+            @ApiIgnore @RequestParam Map<String, String> requestParams,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         ScanPolicy policy = RequestParamHandler.getScanPolicy(requestParams);
+        AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.scan(requestParams, policy, namespace, set);
+        return service.scan(authDetails, requestParams, policy, namespace, set);
     }
 
     @ApiOperation(value = "Return multiple records from the server in a scan request.", nickname = "performScan")
@@ -79,10 +83,12 @@ public class ScanController {
     @ASRestClientScanPolicyQueryParams
     public RestClientScanResponse performScan(
             @ApiParam(value = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @ApiIgnore @RequestParam Map<String, String> requestParams) {
+            @ApiIgnore @RequestParam Map<String, String> requestParams,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         ScanPolicy policy = RequestParamHandler.getScanPolicy(requestParams);
+        AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.scan(requestParams, policy, namespace, null);
+        return service.scan(authDetails, requestParams, policy, namespace, null);
     }
 }

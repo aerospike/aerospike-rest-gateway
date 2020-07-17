@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,30 +16,33 @@
  */
 package com.aerospike.restclient.controllers;
 
-import java.util.Map;
-
+import com.aerospike.restclient.domain.auth.AuthDetails;
+import com.aerospike.restclient.domain.swaggermodels.RestClientClusterInfoResponse;
+import com.aerospike.restclient.service.AerospikeClusterService;
+import com.aerospike.restclient.util.HeaderHandler;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aerospike.restclient.domain.swaggermodels.RestClientClusterInfoResponse;
-import com.aerospike.restclient.service.AerospikeClusterService;
+import java.util.Map;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-
-@Api(tags="Cluster information operations", description="Retrieve basic information about the Aerospike cluster.")
+@Api(tags = "Cluster information operations", description = "Retrieve basic information about the Aerospike cluster.")
 @RestController
 @RequestMapping("/v1/cluster")
 class ClusterController {
-	@Autowired
-	private AerospikeClusterService service;
+    @Autowired
+    private AerospikeClusterService service;
 
-	@ApiOperation(value="Return an object containing information about the Aerospike cluster.",
-			response=RestClientClusterInfoResponse.class, nickname="getClusterInfo")
-	@RequestMapping(method=RequestMethod.GET, produces={"application/json", "application/msgpack"})
-	public Map<String, Object>getClusterInfo() {
-		return service.getClusterInfo();
-	}
+    @ApiOperation(value = "Return an object containing information about the Aerospike cluster.",
+            response = RestClientClusterInfoResponse.class, nickname = "getClusterInfo")
+    @RequestMapping(method = RequestMethod.GET, produces = {"application/json", "application/msgpack"})
+    public Map<String, Object> getClusterInfo(@RequestHeader(value = "Authorization", required = false) String basicAuth) {
+
+        AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
+        return service.getClusterInfo(authDetails);
+    }
 }

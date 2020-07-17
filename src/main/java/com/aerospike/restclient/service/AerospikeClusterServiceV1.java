@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,171 +16,48 @@
  */
 package com.aerospike.restclient.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.stereotype.Service;
-
-import com.aerospike.client.AerospikeException;
-import com.aerospike.client.ResultCode;
+import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.handlers.ClusterHandler;
 import com.aerospike.restclient.handlers.InfoHandler;
-import com.aerospike.restclient.util.InfoResponseParser;
-import com.aerospike.restclient.util.RestClientErrors;
+import com.aerospike.restclient.util.AerospikeClientPool;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AerospikeClusterServiceV1 implements AerospikeClusterService {
 
-	private static final String nsNotFound = "ns_type=unknown";
+    @Autowired
+    private AerospikeClientPool clientPool;
 
-	private InfoHandler infoHandler;
-	private ClusterHandler clusterHandler;
+    /*
+     * Returns an object showing clusterinformation
+     * {
+     *  "nodes": [
+     *  		{"name": "node1"},
+     *  		{"name": "node2"}
+     *  ],
+     *  "namespaces" : [
+     *  		{
+     *  			"name" : "ns1",
+     *  			"sets" : [
+     *  				{"name" :"set1", "objectCount": #},
+     *  			]
+     *  		}, ...
+     *  ]
+     *
+     * }
+     */
+    @Override
+    public Map<String, Object> getClusterInfo(AuthDetails authDetails) {
+        Map<String, Object> clusterInfo = new HashMap<>();
 
-	public AerospikeClusterServiceV1(InfoHandler infoHandler, ClusterHandler clusterHandler) {
-		this.infoHandler = infoHandler;
-		this.clusterHandler = clusterHandler;
-	}
+        clusterInfo.put("nodes", ClusterHandler.create(clientPool.getClient(authDetails)).getNodeMaps());
+        clusterInfo.put("namespaces", InfoHandler.create(clientPool.getClient(authDetails)).getNamespaceInfoMaps());
 
+        return clusterInfo;
+    }
 
-
-	/*
-	 * Returns an object showing clusterinformation
-	 * {
-	 *  "nodes": [
-	 *  		{"name": "node1"},
-	 *  		{"name": "node2"}
-	 *  ],
-	 *  "namespaces" : [
-	 *  		{
-	 *  			"name" : "ns1",
-	 *  			"sets" : [
-	 *  				{"name" :"set1", "objectCount": #},
-	 *  			]
-	 *  		}, ...
-	 *  ]
-	 *
-	 * }
-	 */
-	@Override
-	public Map<String, Object> getClusterInfo() {
-		Map<String, Object>clusterInfo = new HashMap<String, Object>();
-
-		clusterInfo.put("nodes", getNodeMaps());
-		clusterInfo.put("namespaces", getNamespaceInfoMaps());
-
-		return clusterInfo;
-	}
-
-
-	/*
-	 * Returns an array containing all sets in the given namespace:
-	 * ["set1", "set2", ...]
-	 */
-	private String[] getSets(String namespace) {
-		String request = "sets/" + namespace;
-
-		String response = infoHandler.singleInfoRequest(null, request);
-
-		if (response.equals(nsNotFound)) {
-			throw new AerospikeException(ResultCode.INVALID_NAMESPACE, String.format("Namespace: %s not found.", namespace));
-		}
-		return InfoResponseParser.getSetsFromResponse(response);
-	}
-
-	/*
-	 * Returns an array ["namespace1", "namespace2",...]
-	 */
-	private String[] getNamespaces() {
-		String response = infoHandler.singleInfoRequest(null, "namespaces");
-		return InfoResponseParser.getNamespacesFromResponse(response);
-	}
-
-	/*
-	 * Extracts the replication factor from a namespace;
-	 */
-	private int getReplicationFactor(String namespace) {
-		String request = "namespace/" + namespace;
-		String response = infoHandler.singleInfoRequest(null, request);
-		return InfoResponseParser.getReplicationFactor(response, namespace);
-	}
-
-
-	/*
-	 * Returns the number of objects in a specific Namespace/set
-	 */
-	private long getSetRecordCount(String namespace, String set) {
-		int replFactor = getReplicationFactor(namespace);
-
-		long objects = 0;
-		boolean found = false;
-
-		String setInfoRequest = "sets/" + namespace + "/" + set;
-		List<String>responses = infoHandler.infoRequestAll(null, setInfoRequest);
-
-		for (String response: responses) {
-			if (!response.trim().equals("")) {
-				found = true;
-			}
-			objects += InfoResponseParser.getSetObjectCountFromResponse(response);
-		}
-		if (responses.size() == 0 || replFactor == 0) {
-			throw new RestClientErrors.ClusterUnstableError("Cluster unstable, unable to return cluster information");
-		}
-		if (found) {
-			return objects / Math.min(responses.size(), replFactor);
-		}
-		throw new AerospikeException(ResultCode.INVALID_NAMESPACE, String.format("Namspace/Set: %s/%s not found", namespace, set));
-	}
-
-	/*
-	 * Return list [{"name": "nodeName1"}, {"name":"nodeName2"}]
-	 */
-	private List<Map<String, Object>>getNodeMaps(){
-		List<Map<String, Object>>nodeList = new ArrayList<Map<String, Object>>();
-		for (String nodeName : clusterHandler.nodeNames()) {
-			Map<String, Object>nodeMap = new HashMap<String, Object>();
-			nodeMap.put("name", nodeName);
-			nodeList.add(nodeMap);
-		}
-		return nodeList;
-	}
-
-	private List<Map<String, Object>>getNamespaceInfoMaps() {
-		List<Map<String, Object>>namespaceList = new ArrayList<Map<String, Object>>();
-		for (String ns : getNamespaces()) {
-			namespaceList.add(getNamespaceInfoMap(ns));
-		}
-		return namespaceList;
-	}
-
-	private Map<String, Object>getNamespaceInfoMap(String ns) {
-		Map<String, Object>nsMap = new HashMap<String, Object>();
-		nsMap.put("name", ns);
-		nsMap.put("sets", getSetInfoMaps(ns));
-		return nsMap;
-	}
-
-	/*
-	 * returns a list [{"name": "setName", "objectCount": #}, {"name": "setName2", "objectCount": #}..]
-	 */
-	private List<Map<String, Object>>getSetInfoMaps(String ns) {
-		List<Map<String, Object>>setList = new ArrayList<Map<String, Object>>();
-		for (String set : getSets(ns)) {
-			setList.add(getSetInfo(ns, set));
-		}
-		return setList;
-	}
-
-	/*
-	 * returns a map {"name": "setName", "objectCount": #}
-	 *
-	 */
-	private Map<String, Object>getSetInfo(String ns, String set) {
-		Map<String, Object>setMap = new HashMap<String, Object>();
-		setMap.put("objectCount", getSetRecordCount(ns, set));
-		setMap.put("name", set);
-		return setMap;
-	}
 }

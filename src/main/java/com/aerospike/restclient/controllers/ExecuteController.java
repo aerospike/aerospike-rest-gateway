@@ -21,8 +21,10 @@ import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.RestClientExecuteTask;
 import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
 import com.aerospike.restclient.domain.RestClientOperation;
+import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeExecuteService;
 import com.aerospike.restclient.util.APIParamDescriptors;
+import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.annotations.ASRestClientWritePolicyQueryParams;
 import io.swagger.annotations.*;
@@ -70,11 +72,13 @@ public class ExecuteController {
             @ApiParam(value = APIParamDescriptors.SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @ApiParam(value = OPERATIONS_PARAM_NOTES, required = true)
             @RequestBody List<RestClientOperation> operations,
-            @ApiIgnore @RequestParam Map<String, String> requestParams) {
+            @ApiIgnore @RequestParam Map<String, String> requestParams,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
+        AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.executeScan(namespace, set, operations, policy, requestParams);
+        return service.executeScan(authDetails, namespace, set, operations, policy, requestParams);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/scan/{namespace}",
@@ -99,11 +103,13 @@ public class ExecuteController {
             @ApiParam(value = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @ApiParam(value = OPERATIONS_PARAM_NOTES, required = true)
             @RequestBody List<RestClientOperation> operations,
-            @ApiIgnore @RequestParam Map<String, String> requestParams) {
+            @ApiIgnore @RequestParam Map<String, String> requestParams,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
+        AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.executeScan(namespace, null, operations, policy, requestParams);
+        return service.executeScan(authDetails, namespace, null, operations, policy, requestParams);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/scan/status/{taskId}",
@@ -118,8 +124,10 @@ public class ExecuteController {
 
     })
     public RestClientExecuteTaskStatus executeScanStatus(
-            @ApiParam(value = TASK_ID_NOTES, required = true) @PathVariable(value = "taskId") String taskId) {
+            @ApiParam(value = TASK_ID_NOTES, required = true) @PathVariable(value = "taskId") String taskId,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
-        return service.queryScanStatus(taskId);
+        AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
+        return service.queryScanStatus(authDetails, taskId);
     }
 }

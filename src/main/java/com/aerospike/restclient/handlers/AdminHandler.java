@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,75 +16,77 @@
  */
 package com.aerospike.restclient.handlers;
 
-import java.util.List;
-
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.admin.Privilege;
 import com.aerospike.client.admin.Role;
 import com.aerospike.client.admin.User;
 import com.aerospike.client.policy.AdminPolicy;
 
+import java.util.List;
+
 public class AdminHandler {
 
-	private AerospikeClient client;
+    private final AerospikeClient client;
 
-	public AdminHandler(AerospikeClient client) {
-		this.client = client;
-	}
+    public AdminHandler(AerospikeClient client) {
+        this.client = client;
+    }
 
-	/* User methods */
-	public List<User>getUsers(AdminPolicy policy) {
-		return client.queryUsers(policy);
-	}
+    /* User methods */
+    public List<User> getUsers(AdminPolicy policy) {
+        return client.queryUsers(policy);
+    }
 
-	public User getUser(AdminPolicy policy, String user) {
-		return client.queryUser(policy, user);
-	}
+    public User getUser(AdminPolicy policy, String user) {
+        return client.queryUser(policy, user);
+    }
 
-	public void deleteUser(AdminPolicy policy, String user) {
-		client.dropUser(policy, user);
-	}
+    public void deleteUser(AdminPolicy policy, String user) {
+        client.dropUser(policy, user);
+    }
 
-	public void createUser(AdminPolicy policy, String user, String password, List<String> roles) {
-		client.createUser(policy, user, password, roles);
-	}
+    public void createUser(AdminPolicy policy, String user, String password, List<String> roles) {
+        client.createUser(policy, user, password, roles);
+    }
 
-	public void changePassword(AdminPolicy policy, String user, String newPassword) {
-		client.changePassword(policy, user, newPassword);
-	}
+    public void changePassword(AdminPolicy policy, String user, String newPassword) {
+        client.changePassword(policy, user, newPassword);
+    }
 
-	public void grantRoles(AdminPolicy policy, String user, List<String> roles) {
-		client.grantRoles(policy, user, roles);
-	}
+    public void grantRoles(AdminPolicy policy, String user, List<String> roles) {
+        client.grantRoles(policy, user, roles);
+    }
 
-	public void revokeRoles(AdminPolicy policy, String user, List<String> roles) {
-		client.revokeRoles(policy, user, roles);
-	}
+    public void revokeRoles(AdminPolicy policy, String user, List<String> roles) {
+        client.revokeRoles(policy, user, roles);
+    }
 
-	/* Role Methods */
+    /* Role Methods */
+    public List<Role> getRoles(AdminPolicy policy) {
+        return client.queryRoles(policy);
+    }
 
-	public List<Role> getRoles(AdminPolicy policy) {
-		return client.queryRoles(policy);
-	}
+    public Role getRole(AdminPolicy policy, String roleName) {
+        return client.queryRole(policy, roleName);
+    }
 
-	public Role getRole(AdminPolicy policy, String roleName) {
-		return client.queryRole(policy, roleName);
-	}
+    public void createRole(AdminPolicy policy, String roleName, List<Privilege> privileges) {
+        client.createRole(policy, roleName, privileges);
+    }
 
-	public void createRole(AdminPolicy policy, String roleName, List<Privilege> privileges) {
-		client.createRole(policy, roleName, privileges);
-	}
+    public void deleteRole(AdminPolicy policy, String roleName) {
+        client.dropRole(policy, roleName);
+    }
 
-	public void deleteRole(AdminPolicy policy, String roleName) {
-		client.dropRole(policy, roleName);
-	}
+    public void grantPrivileges(AdminPolicy policy, String roleName, List<Privilege> privileges) {
+        client.grantPrivileges(policy, roleName, privileges);
+    }
 
-	public void grantPrivileges(AdminPolicy policy, String roleName, List<Privilege> privileges) {
-		client.grantPrivileges(policy, roleName, privileges);
-	}
+    public void revokePrivileges(AdminPolicy policy, String roleName, List<Privilege> privileges) {
+        client.revokePrivileges(policy, roleName, privileges);
+    }
 
-	public void revokePrivileges(AdminPolicy policy, String roleName, List<Privilege> privileges) {
-		client.revokePrivileges(policy, roleName, privileges);
-	}
-
+    public static AdminHandler create(AerospikeClient client) {
+        return new AdminHandler(client);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,8 +16,10 @@
  */
 package com.aerospike.restclient.service;
 
+import com.aerospike.restclient.domain.auth.AuthDetails;
+
 public interface AerospikeTruncateService {
 
-	public void truncate(String namespace, String set, String dateString);
+    public void truncate(AuthDetails authDetails, String namespace, String set, String dateString);
 
 }

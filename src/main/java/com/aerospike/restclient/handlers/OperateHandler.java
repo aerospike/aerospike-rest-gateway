@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -24,13 +24,17 @@ import com.aerospike.client.policy.WritePolicy;
 
 public class OperateHandler {
 
-	private AerospikeClient client;
+    private final AerospikeClient client;
 
-	public OperateHandler(AerospikeClient client) {
-		this.client = client;
-	}
+    public OperateHandler(AerospikeClient client) {
+        this.client = client;
+    }
 
-	public Record operate(WritePolicy policy, Key key, Operation[] operations) {
-		return client.operate(policy, key, operations);
-	}
+    public Record operate(WritePolicy policy, Key key, Operation[] operations) {
+        return client.operate(policy, key, operations);
+    }
+
+    public static OperateHandler create(AerospikeClient client) {
+        return new OperateHandler(client);
+    }
 }

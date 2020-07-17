@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -24,66 +24,73 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 import java.util.Map;
 
-public class RequestParamHandler {
+public final class RequestParamHandler {
 
-	public static String[] getBinsFromMap(MultiValueMap<String, String>requestParams) {
-		List<String>binStr = requestParams.get(AerospikeAPIConstants.RECORD_BINS);
-		if (binStr == null) {
-			return new String[0];
-		}
-		return binStr.toArray(new String[0]);
-	}
+    private RequestParamHandler() {
+    }
 
-	public static RecordKeyType getKeyTypeFromMap(MultiValueMap<String, String>requestParams) {
-		String keyTypeStr = requestParams.getFirst(AerospikeAPIConstants.KEY_TYPE);
-		if (keyTypeStr == null) {
-			return null;
-		}
-		try {
-			return RecordKeyType.valueOf(keyTypeStr);
-		} catch (IllegalArgumentException e) {
-			throw new RestClientErrors.InvalidPolicyValueError(String.format("Invalid keytype: %s , valid choices are STRING, INTEGER, BYTES, DIGEST", keyTypeStr));
-		}
-	}
+    public static String[] getBinsFromMap(MultiValueMap<String, String> requestParams) {
+        List<String> binStr = requestParams.get(AerospikeAPIConstants.RECORD_BINS);
+        if (binStr == null) {
+            return new String[0];
+        }
+        return binStr.toArray(new String[0]);
+    }
 
-	public static RecordKeyType getKeyTypeFromMap(Map<String, String>requestParams) {
-		String keyTypeStr = requestParams.get(AerospikeAPIConstants.KEY_TYPE);
-		if (keyTypeStr == null) {
-			return null;
-		}
-		try {
-			return RecordKeyType.valueOf(keyTypeStr);
-		} catch (IllegalArgumentException e) {
-			throw new RestClientErrors.InvalidPolicyValueError(String.format("Invalid keytype: %s , valid choices are STRING, INTEGER, BYTES, DIGEST", keyTypeStr));
-		}
-	}
+    public static RecordKeyType getKeyTypeFromMap(MultiValueMap<String, String> requestParams) {
+        String keyTypeStr = requestParams.getFirst(AerospikeAPIConstants.KEY_TYPE);
+        if (keyTypeStr == null) {
+            return null;
+        }
+        try {
+            return RecordKeyType.valueOf(keyTypeStr);
+        } catch (IllegalArgumentException e) {
+            throw new RestClientErrors.InvalidPolicyValueError(
+                    String.format("Invalid keytype: %s , valid choices are STRING, INTEGER, BYTES, DIGEST", keyTypeStr)
+            );
+        }
+    }
 
-	public static Policy getPolicy(Map<String, String>requestParams) {
-		return PolicyConverter.policyFromMap(requestParams);
-	}
+    public static RecordKeyType getKeyTypeFromMap(Map<String, String> requestParams) {
+        String keyTypeStr = requestParams.get(AerospikeAPIConstants.KEY_TYPE);
+        if (keyTypeStr == null) {
+            return null;
+        }
+        try {
+            return RecordKeyType.valueOf(keyTypeStr);
+        } catch (IllegalArgumentException e) {
+            throw new RestClientErrors.InvalidPolicyValueError(
+                    String.format("Invalid keytype: %s , valid choices are STRING, INTEGER, BYTES, DIGEST", keyTypeStr)
+            );
+        }
+    }
 
-	public static Policy getPolicy(MultiValueMap<String, String>requestParams) {
-		return PolicyConverter.policyFromMap(requestParams.toSingleValueMap());
-	}
+    public static Policy getPolicy(Map<String, String> requestParams) {
+        return PolicyConverter.policyFromMap(requestParams);
+    }
 
-	public static WritePolicy getWritePolicy(Map<String, String>requestParams) {
-		return WritePolicyConverter.writePolicyFromMap(requestParams);
-	}
+    public static Policy getPolicy(MultiValueMap<String, String> requestParams) {
+        return PolicyConverter.policyFromMap(requestParams.toSingleValueMap());
+    }
 
-	public static WritePolicy getWritePolicy(Map<String, String>requestParams, RecordExistsAction existsAction) {
-		return WritePolicyConverter.writePolicyWithRecordExistsAction(requestParams, existsAction);
-	}
+    public static WritePolicy getWritePolicy(Map<String, String> requestParams) {
+        return WritePolicyConverter.writePolicyFromMap(requestParams);
+    }
 
-	public static BatchPolicy getBatchPolicy(Map<String, String>requestParams) {
-		return BatchPolicyConverter.batchPolicyFromMap(requestParams);
-	}
+    public static WritePolicy getWritePolicy(Map<String, String> requestParams, RecordExistsAction existsAction) {
+        return WritePolicyConverter.writePolicyWithRecordExistsAction(requestParams, existsAction);
+    }
 
-	public static ScanPolicy getScanPolicy(Map<String, String>requestParams) {
-		return ScanPolicyConverter.scanPolicyFromMap(requestParams);
-	}
+    public static BatchPolicy getBatchPolicy(Map<String, String> requestParams) {
+        return BatchPolicyConverter.batchPolicyFromMap(requestParams);
+    }
 
-	public static InfoPolicy getInfoPolicy(Map<String, String>requestParams) {
-		return InfoPolicyConverter.policyFromMap(requestParams);
-	}
+    public static ScanPolicy getScanPolicy(Map<String, String> requestParams) {
+        return ScanPolicyConverter.scanPolicyFromMap(requestParams);
+    }
+
+    public static InfoPolicy getInfoPolicy(Map<String, String> requestParams) {
+        return InfoPolicyConverter.policyFromMap(requestParams);
+    }
 
 }
