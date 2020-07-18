@@ -4,7 +4,7 @@ ARCHIVEDIR=aerospike-client-rest-$(VERSION)
 ARCHIVENAME=$(ARCHIVEDIR).tgz
 
 .PHONY: package
-package: clean build
+package: clean build validatedocs
 	mkdir $(ARCHIVEDIR)
 	mkdir target
 	cp build/libs/*.jar $(ARCHIVEDIR)
@@ -25,7 +25,4 @@ clean:
 
 .PHONY: validatedocs
 validatedocs:
-	ls -lat /root/.nvm/versions/node/v10.15.3/bin/swagger-tools
-	env
-	swagger-tools validate docs/swagger.json
 	swagger-cli validate docs/swagger.json
