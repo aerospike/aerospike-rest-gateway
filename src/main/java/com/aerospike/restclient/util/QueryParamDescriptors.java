@@ -136,7 +136,4 @@ public class QueryParamDescriptors {
     // Scan parameters
     public static final String SCAN_FROM_TOKEN_NOTES = "Next page token parameter.";
     public static final String SCAN_FROM_TOKEN_DEFAULT = "null";
-
-    public static final String SCAN_RECORD_BINS_NOTES = "Comma separated list of bins to retrieve.";
-    public static final String SCAN_RECORD_BINS_DEFAULT = "All bins";
 }

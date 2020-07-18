@@ -151,12 +151,6 @@ import java.lang.annotation.Target;
 
         // Scan parameters
         @ApiImplicitParam(
-                name = AerospikeAPIConstants.RECORD_BINS,
-                dataType = "string",
-                paramType = "query",
-                value = QueryParamDescriptors.SCAN_RECORD_BINS_NOTES,
-                defaultValue = QueryParamDescriptors.SCAN_RECORD_BINS_DEFAULT),
-        @ApiImplicitParam(
                 name = AerospikeAPIConstants.FROM_TOKEN,
                 dataType = "string",
                 paramType = "query",

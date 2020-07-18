@@ -35,13 +35,8 @@ public class AerospikeScanServiceV1 implements AerospikeScanService {
     private AerospikeClientPool clientPool;
 
     @Override
-    public RestClientScanResponse scan(AuthDetails authDetails, Map<String, String> requestParams, ScanPolicy policy,
-                                       String namespace, String set) {
-        String[] binNames = null;
-        if (requestParams.containsKey(AerospikeAPIConstants.RECORD_BINS)) {
-            binNames = requestParams.get(AerospikeAPIConstants.RECORD_BINS).split(",");
-        }
-
+    public RestClientScanResponse scan(AuthDetails authDetails, String[] binNames, Map<String, String> requestParams,
+                                       ScanPolicy policy, String namespace, String set) {
         String fromToken = null;
         if (requestParams.containsKey(AerospikeAPIConstants.FROM_TOKEN)) {
             fromToken = requestParams.get(AerospikeAPIConstants.FROM_TOKEN);
