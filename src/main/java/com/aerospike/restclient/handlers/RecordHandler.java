@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -24,29 +24,34 @@ import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.WritePolicy;
 
 public class RecordHandler {
-	private AerospikeClient client;
 
-	public RecordHandler(AerospikeClient client) {
-		this.client = client;
-	}
+    private final AerospikeClient client;
 
-	public boolean deleteRecord(WritePolicy policy, Key key) {
-		return client.delete(policy, key);
-	}
+    public RecordHandler(AerospikeClient client) {
+        this.client = client;
+    }
 
-	public Record getRecord(Policy policy, Key key, String[]bins) {
-		return client.get(policy, key, bins);
-	}
+    public boolean deleteRecord(WritePolicy policy, Key key) {
+        return client.delete(policy, key);
+    }
 
-	public Record getRecord(Policy policy, Key key) {
-		return client.get(policy, key);
-	}
+    public Record getRecord(Policy policy, Key key, String[] bins) {
+        return client.get(policy, key, bins);
+    }
 
-	public void putRecord(WritePolicy policy, Key key, Bin... bins) {
-		client.put(policy, key, bins);
-	}
+    public Record getRecord(Policy policy, Key key) {
+        return client.get(policy, key);
+    }
 
-	public boolean existsRecord(Policy policy, Key key) {
-		return client.exists(policy, key);
-	}
+    public void putRecord(WritePolicy policy, Key key, Bin... bins) {
+        client.put(policy, key, bins);
+    }
+
+    public boolean existsRecord(Policy policy, Key key) {
+        return client.exists(policy, key);
+    }
+
+    public static RecordHandler create(AerospikeClient client) {
+        return new RecordHandler(client);
+    }
 }

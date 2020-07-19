@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,24 +16,27 @@
  */
 package com.aerospike.restclient.service;
 
-import java.util.Map;
-
 import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.RestClientRecord;
+import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 
+import java.util.Map;
+
 public interface AerospikeRecordService {
-	public void
-	storeRecord(String namespace, String set, String key, Map<String, Object> binMap,
-			RecordKeyType keyType, WritePolicy policy);
+    public void
+    storeRecord(AuthDetails authDetails, String namespace, String set, String key, Map<String, Object> binMap,
+                RecordKeyType keyType, WritePolicy policy);
 
-	public RestClientRecord
-	fetchRecord(String namespace, String set, String key, String[] bins, RecordKeyType keyType, Policy policy);
+    public RestClientRecord
+    fetchRecord(AuthDetails authDetails, String namespace, String set, String key, String[] bins,
+                RecordKeyType keyType, Policy policy);
 
-	public void
-	deleteRecord(String namespace, String set, String key, RecordKeyType keyType, WritePolicy policy);
+    public void
+    deleteRecord(AuthDetails authDetails, String namespace, String set, String key,
+                 RecordKeyType keyType, WritePolicy policy);
 
-	public boolean
-	recordExists(String namespace, String set, String key, RecordKeyType keyType);
+    public boolean
+    recordExists(AuthDetails authDetails, String namespace, String set, String key, RecordKeyType keyType);
 }

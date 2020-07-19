@@ -65,6 +65,15 @@
                     "application/json",
                     "application/msgpack"
                 ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -105,6 +114,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "in": "body",
                         "name": "rcRole",
@@ -160,6 +176,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "name",
                         "in": "path",
                         "description": "The name of the role whose information should be retrieved.",
@@ -206,6 +229,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "name": "name",
                         "in": "path",
@@ -256,6 +286,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "name": "name",
                         "in": "path",
@@ -325,6 +362,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "name",
                         "in": "path",
                         "description": "The name of the role from which privileges will be removed.",
@@ -387,6 +431,15 @@
                     "application/json",
                     "application/msgpack"
                 ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -427,6 +480,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "in": "body",
                         "name": "userInfo",
@@ -482,6 +542,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "user",
                         "in": "path",
                         "description": "user",
@@ -528,6 +595,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "name": "user",
                         "in": "path",
@@ -576,6 +650,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "in": "body",
                         "name": "password",
@@ -635,6 +716,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "in": "body",
                         "name": "roles",
@@ -704,6 +792,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "in": "body",
                         "name": "roles",
                         "description": "A list of names to revoke from the user",
@@ -771,6 +866,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "name": "allowInline",
                         "in": "query",
@@ -994,6 +1096,15 @@
                     "application/json",
                     "application/msgpack"
                 ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1023,6 +1134,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "name": "taskId",
                         "in": "path",
@@ -1076,6 +1194,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "name": "commitLevel",
                         "in": "query",
@@ -1362,6 +1487,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "name": "commitLevel",
                         "in": "query",
@@ -1652,6 +1784,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "namespace",
                         "in": "query",
                         "description": "If specified, the list of returned indices will only contain entries from this namespace.",
@@ -1706,6 +1845,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "in": "body",
                         "name": "indexModel",
                         "description": "indexModel",
@@ -1759,6 +1905,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "name": "name",
                         "in": "path",
@@ -1817,6 +1970,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "name",
                         "in": "path",
                         "description": "The name of the index",
@@ -1873,6 +2033,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "in": "body",
                         "name": "infoRequests",
@@ -1931,6 +2098,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "in": "body",
                         "name": "infoRequests",
@@ -1998,6 +2172,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "name": "compress",
                         "in": "query",
@@ -2197,6 +2378,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "key",
                         "in": "path",
                         "description": "Userkey for the record.",
@@ -2257,6 +2445,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "in": "body",
                         "name": "bins",
@@ -2543,6 +2738,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "in": "body",
                         "name": "bins",
                         "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
@@ -2824,6 +3026,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "commitLevel",
                         "in": "query",
                         "description": "Desired consistency guarantee when committing a transaction on the server.",
@@ -3099,6 +3308,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "in": "body",
                         "name": "bins",
@@ -3383,6 +3599,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "compress",
                         "in": "query",
                         "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
@@ -3588,6 +3811,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "key",
                         "in": "path",
                         "description": "Userkey for the record.",
@@ -3655,6 +3885,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "in": "body",
                         "name": "bins",
@@ -3948,6 +4185,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "in": "body",
                         "name": "bins",
                         "description": "Bins to be stored in the record. This is a mapping from a string bin name to a value. Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can only be sent using MessagePack\n example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}",
@@ -4236,6 +4480,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "commitLevel",
                         "in": "query",
                         "description": "Desired consistency guarantee when committing a transaction on the server.",
@@ -4518,6 +4769,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "in": "body",
                         "name": "bins",
@@ -4813,6 +5071,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "commitLevel",
                         "in": "query",
                         "description": "Desired consistency guarantee when committing a transaction on the server.",
@@ -5105,6 +5370,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "name": "commitLevel",
                         "in": "query",
@@ -5402,6 +5674,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "compress",
                         "in": "query",
                         "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
@@ -5543,14 +5822,6 @@
                             "type": "string"
                         },
                         "collectionFormat": "multi"
-                    },
-                    {
-                        "name": "recordBins",
-                        "in": "query",
-                        "description": "Comma separated list of bins to retrieve.",
-                        "required": false,
-                        "type": "string",
-                        "default": "All bins"
                     },
                     {
                         "name": "recordsPerSecond",
@@ -5669,6 +5940,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "compress",
                         "in": "query",
                         "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
@@ -5810,14 +6088,6 @@
                             "type": "string"
                         },
                         "collectionFormat": "multi"
-                    },
-                    {
-                        "name": "recordBins",
-                        "in": "query",
-                        "description": "Comma separated list of bins to retrieve.",
-                        "required": false,
-                        "type": "string",
-                        "default": "All bins"
                     },
                     {
                         "name": "recordsPerSecond",
@@ -5943,6 +6213,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "date",
                         "in": "query",
                         "description": "All records last updated before this date/time will be truncated. If not specified, all records will be truncated.\n This is a string representation of a date time utilizing the ISO-8601 extended offset date-time format. example: 2019-12-03T10:15:30+01:00",
@@ -5997,6 +6274,13 @@
                     "application/msgpack"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
                     {
                         "name": "date",
                         "in": "query",

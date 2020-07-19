@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,22 +16,46 @@
  */
 package com.aerospike.restclient.handlers;
 
-import java.util.List;
-
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.cluster.Node;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ClusterHandler {
-	private AerospikeClient client;
 
-	public ClusterHandler(AerospikeClient client) {
-		this.client = client;
-	}
+    private final AerospikeClient client;
 
-	public List<String>nodeNames(){
-		return client.getNodeNames();
-	}
-	public Node[] getNodes() {
-		return client.getNodes();
-	}
+    public ClusterHandler(AerospikeClient client) {
+        this.client = client;
+    }
+
+    /*
+     * Return list [{"name": "nodeName1"}, {"name":"nodeName2"}]
+     */
+    public List<Map<String, Object>> getNodeMaps() {
+        List<Map<String, Object>> nodeList = new ArrayList<>();
+        for (String nodeName : nodeNames()) {
+            Map<String, Object> nodeMap = new HashMap<>();
+            nodeMap.put("name", nodeName);
+            nodeList.add(nodeMap);
+        }
+
+        return nodeList;
+    }
+
+    private List<String> nodeNames() {
+        return client.getNodeNames();
+    }
+
+    public Node[] getNodes() {
+        return client.getNodes();
+    }
+
+    public static ClusterHandler create(AerospikeClient client) {
+        return new ClusterHandler(client);
+    }
+
 }

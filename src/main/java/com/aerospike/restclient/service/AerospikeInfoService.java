@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,13 +16,14 @@
  */
 package com.aerospike.restclient.service;
 
+import com.aerospike.client.policy.InfoPolicy;
+import com.aerospike.restclient.domain.auth.AuthDetails;
+
 import java.util.Map;
 
-import com.aerospike.client.policy.InfoPolicy;
+public interface AerospikeInfoService {
 
-public interface AerospikeInfoService{
+    public Map<String, String> infoAny(AuthDetails authDetails, String[] requests, InfoPolicy policy);
 
-	public Map<String, String> infoAny(String[] requests, InfoPolicy policy);
-
-	public Map<String, String> infoNodeName(String nodeName, String[] requests, InfoPolicy policy);
+    public Map<String, String> infoNodeName(AuthDetails authDetails, String nodeName, String[] requests, InfoPolicy policy);
 }

@@ -36,15 +36,19 @@ To run the REST Client locally during development:
 
 See [Installation and Configuration](./docs/installation-and-config.md) for configuration directions.
 
+## Authentication
+Use [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) to enable multi-user tenancy in the Aerospike REST client.  
+Please note that only Aerospike Enterprise Edition supports the [security features](https://aerospike.com/docs/guide/security/index.html).
+
 ## Data Formats and API
 
 ### Formats
 
-The Aerospike REST client allows communication utilizing `JSON` and `MessagePack` formats. For more information about how to specify the format, and recommended usages of each, see [Data Formats](./docs/data-formats.md)
+The Aerospike REST client allows communication utilizing `JSON` and `MessagePack` formats. For more information about how to specify the format, and recommended usages of each, see [Data Formats](./docs/data-formats.md).
 
 ### Interactive UI and Swagger Specification
 
-After installing and starting the REST client, you can try out the API using an interactive frontend powered by Swagger UI. The interactive documentation is located at: `http://<API_ENDPOINT>:8080/swagger-ui.html`
+After installing and starting the REST client, you can try out the API using an interactive frontend powered by Swagger UI. The interactive documentation is located at: `http://<API_ENDPOINT>:8080/swagger-ui.html`.
 
 The Swagger `.JSON` specification of the API is available at: `http://<API_ENDPOINT>:8080/v2/api-docs` .
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -18,9 +18,7 @@ package com.aerospike.restclient.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import springfox.documentation.annotations.ApiIgnore;
-
 
 /*
  * A controller which allows for a 200 response from the base URL.
@@ -30,9 +28,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @ApiIgnore
 public class BaseController {
 
-	@RequestMapping(value="")
-	public void respond() {
-		return;
-	}
+    @RequestMapping(value = "")
+    public void respond() {
+    }
 
 }

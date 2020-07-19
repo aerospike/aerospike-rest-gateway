@@ -16,74 +16,35 @@
  */
 package com.aerospike.restclient.service;
 
-import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.Operation;
-import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.WritePolicy;
-import com.aerospike.client.query.PredExp;
-import com.aerospike.client.query.Statement;
-import com.aerospike.client.task.ExecuteTask;
 import com.aerospike.restclient.domain.RestClientExecuteTask;
 import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
 import com.aerospike.restclient.domain.RestClientOperation;
-import com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.aerospike.restclient.util.converters.OperationsConverter;
-import com.aerospike.restclient.util.converters.PolicyValueConverter;
+import com.aerospike.restclient.domain.auth.AuthDetails;
+import com.aerospike.restclient.handlers.ExecuteHandler;
+import com.aerospike.restclient.util.AerospikeClientPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class AerospikeExecuteServiceV1 implements AerospikeExecuteService {
 
     @Autowired
-    private AerospikeClient client;
+    private AerospikeClientPool clientPool;
 
     @Override
-    public RestClientExecuteTask executeScan(String namespace, String set, List<RestClientOperation> opsList,
-                                             WritePolicy policy, Map<String, String> requestParams) {
-        Statement stmt = new Statement();
-        stmt.setNamespace(namespace);
-        stmt.setSetName(set);
-
-        if (requestParams.containsKey(AerospikeAPIConstants.RECORD_BINS)) {
-            String[] binNames = requestParams.get(AerospikeAPIConstants.RECORD_BINS).split(",");
-            stmt.setBinNames(binNames);
-        }
-        if (requestParams.containsKey(AerospikeAPIConstants.RECORDS_PER_SECOND)) {
-            int recordsPerSecond = PolicyValueConverter.getIntValue(requestParams.get(AerospikeAPIConstants.RECORDS_PER_SECOND));
-            stmt.setRecordsPerSecond(recordsPerSecond);
-        }
-        if (requestParams.containsKey(AerospikeAPIConstants.PRED_EXP)) {
-            PredExp[] predExps = PolicyValueConverter.getPredExp(requestParams.get(AerospikeAPIConstants.PRED_EXP));
-            stmt.setPredExp(predExps);
-        }
-
-        List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap).collect(Collectors.toList());
-        Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
-
-        ExecuteTask task = client.execute(policy, stmt, operations);
-        RestClientExecuteTask restClientTask = new RestClientExecuteTask(task.getTaskId(), true);
-
-        return restClientTask;
+    public RestClientExecuteTask executeScan(AuthDetails authDetails, String namespace, String set,
+                                             List<RestClientOperation> opsList, WritePolicy policy,
+                                             Map<String, String> requestParams) {
+        return ExecuteHandler.create(clientPool.getClient(authDetails))
+                .executeScan(namespace, set, opsList, policy, requestParams);
     }
 
     @Override
-    public RestClientExecuteTaskStatus queryScanStatus(String taskId) {
-        long id = PolicyValueConverter.getLongValue(taskId);
-
-        Statement statement = new Statement();
-        statement.setTaskId(id);
-
-        ExecuteTask task = new ExecuteTask(client.getCluster(), new Policy(), statement);
-        int status = task.queryStatus();
-
-        return new RestClientExecuteTaskStatus(
-                new RestClientExecuteTask(id, true),
-                status
-        );
+    public RestClientExecuteTaskStatus queryScanStatus(AuthDetails authDetails, String taskId) {
+        return ExecuteHandler.create(clientPool.getClient(authDetails)).queryScanStatus(taskId);
     }
 }

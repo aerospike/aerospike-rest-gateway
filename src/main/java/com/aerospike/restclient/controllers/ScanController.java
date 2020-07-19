@@ -18,18 +18,19 @@ package com.aerospike.restclient.controllers;
 
 import com.aerospike.client.policy.ScanPolicy;
 import com.aerospike.restclient.domain.RestClientError;
+import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.domain.scanmodels.RestClientScanResponse;
 import com.aerospike.restclient.service.AerospikeScanService;
 import com.aerospike.restclient.util.APIParamDescriptors;
+import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.annotations.ASRestClientScanPolicyQueryParams;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-
-import java.util.Map;
 
 @Api(tags = "Scan Operations", description = "Read records in specified namespace, set.")
 @RestController
@@ -56,11 +57,14 @@ public class ScanController {
     public RestClientScanResponse performScan(
             @ApiParam(value = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @ApiParam(value = APIParamDescriptors.SET_NOTES, required = true) @PathVariable(value = "set") String set,
-            @ApiIgnore @RequestParam Map<String, String> requestParams) {
+            @ApiIgnore @RequestParam MultiValueMap<String, String> requestParams,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
-        ScanPolicy policy = RequestParamHandler.getScanPolicy(requestParams);
+        String[] bins = RequestParamHandler.getBinsFromMap(requestParams);
+        ScanPolicy policy = RequestParamHandler.getScanPolicy(requestParams.toSingleValueMap());
+        AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.scan(requestParams, policy, namespace, set);
+        return service.scan(authDetails, bins, requestParams.toSingleValueMap(), policy, namespace, set);
     }
 
     @ApiOperation(value = "Return multiple records from the server in a scan request.", nickname = "performScan")
@@ -79,10 +83,13 @@ public class ScanController {
     @ASRestClientScanPolicyQueryParams
     public RestClientScanResponse performScan(
             @ApiParam(value = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @ApiIgnore @RequestParam Map<String, String> requestParams) {
+            @ApiIgnore @RequestParam MultiValueMap<String, String> requestParams,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
-        ScanPolicy policy = RequestParamHandler.getScanPolicy(requestParams);
+        String[] bins = RequestParamHandler.getBinsFromMap(requestParams);
+        ScanPolicy policy = RequestParamHandler.getScanPolicy(requestParams.toSingleValueMap());
+        AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.scan(requestParams, policy, namespace, null);
+        return service.scan(authDetails, bins, requestParams.toSingleValueMap(), policy, namespace, null);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,86 +16,95 @@
  */
 package com.aerospike.restclient.config;
 
+import com.aerospike.client.policy.ClientPolicy;
+import com.aerospike.restclient.util.TLSPolicyBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.aerospike.client.policy.ClientPolicy;
-import com.aerospike.restclient.util.TLSPolicyBuilder;
-
 @Configuration
 public class ClientPolicyConfig {
 
+    /* Client policies */
+    @Value("${aerospike.restclient.clientpolicy.user:#{null}}")
+    String username;
+    @Value("${aerospike.restclient.clientpolicy.password:#{null}}")
+    String password;
+    @Value("${aerospike.restclient.clientpolicy.clusterName:#{null}}")
+    String clusterName;
 
-	/* Client policies */
-	@Value("${aerospike.restclient.clientpolicy.user:#{null}}") String username;
-	@Value("${aerospike.restclient.clientpolicy.password:#{null}}") String password;
-	@Value("${aerospike.restclient.clientpolicy.clusterName:#{null}}") String clusterName;
+    @Value("${aerospike.restclient.clientpolicy.connPoolsPerNode:#{null}}")
+    Integer connPoolsPerNode;
+    @Value("${aerospike.restclient.clientpolicy.maxConnsPerNode:#{null}}")
+    Integer maxConnsPerNode;
+    @Value("${aerospike.restclient.clientpolicy.maxSocketIdle:#{null}}")
+    Integer maxSocketIdle;
+    @Value("${aerospike.restclient.clientpolicy.tendInterval:#{null}}")
+    Integer tendInterval;
+    @Value("${aerospike.restclient.clientpolicy.timeout:#{null}}")
+    Integer timeout;
 
-	@Value("${aerospike.restclient.clientpolicy.connPoolsPerNode:#{null}}")Integer connPoolsPerNode;
-	@Value("${aerospike.restclient.clientpolicy.maxConnsPerNode:#{null}}")Integer maxConnsPerNode;
-	@Value("${aerospike.restclient.clientpolicy.maxSocketIdle:#{null}}")Integer maxSocketIdle;
-	@Value("${aerospike.restclient.clientpolicy.tendInterval:#{null}}")Integer tendInterval;
-	@Value("${aerospike.restclient.clientpolicy.timeout:#{null}}")Integer timeout;
+    @Value("${aerospike.restclient.clientpolicy.failIfNotConnected:#{null}}")
+    Boolean failIfNotConnected;
+    @Value("${aerospike.restclient.clientpolicy.sharedThreadPool:#{null}}")
+    Boolean sharedThreadPool;
+    @Value("${aerospike.restclient.clientpolicy.useServicesAlternate:#{null}}")
+    Boolean useServicesAlternate;
+    @Value("${aerospike.restclient.clientpolicy.requestProleReplicas:#{null}}")
+    Boolean requestProleReplicas;
 
-	@Value("${aerospike.restclient.clientpolicy.failIfNotConnected:#{null}}")Boolean failIfNotConnected;
-	@Value("${aerospike.restclient.clientpolicy.sharedThreadPool:#{null}}")Boolean sharedThreadPool;
-	@Value("${aerospike.restclient.clientpolicy.useServicesAlternate:#{null}}")Boolean useServicesAlternate;
-	@Value("${aerospike.restclient.clientpolicy.requestProleReplicas:#{null}}")Boolean requestProleReplicas;
+    /* Read policies */
+    @Bean
+    public ClientPolicy ConfigClientPolicy(@Autowired TLSPolicyBuilder builder) {
+        ClientPolicy clientPolicy = new ClientPolicy();
 
-	/* Read policies */
+        if (username != null) {
+            clientPolicy.user = username;
+        }
 
-	@Bean
-	public ClientPolicy ConfigClientPolicy(@Autowired TLSPolicyBuilder builder) {
-		ClientPolicy clientPolicy = new ClientPolicy();
+        if (password != null) {
+            clientPolicy.password = password;
+        }
 
-		if (username != null) {
-			clientPolicy.user = username;
-		}
+        if (clusterName != null) {
+            clientPolicy.clusterName = clusterName;
+        }
 
-		if (password != null) {
-			clientPolicy.password = password;
-		}
+        if (connPoolsPerNode != null) {
+            clientPolicy.connPoolsPerNode = connPoolsPerNode;
+        }
 
-		if (clusterName != null) {
-			clientPolicy.clusterName = clusterName;
-		}
+        if (maxConnsPerNode != null) {
+            clientPolicy.maxConnsPerNode = maxConnsPerNode;
+        }
 
-		if (connPoolsPerNode != null) {
-			clientPolicy.connPoolsPerNode = connPoolsPerNode;
-		}
+        if (maxSocketIdle != null) {
+            clientPolicy.maxSocketIdle = maxSocketIdle;
+        }
 
-		if (maxConnsPerNode != null) {
-			clientPolicy.maxConnsPerNode = maxConnsPerNode;
-		}
+        if (tendInterval != null) {
+            clientPolicy.tendInterval = tendInterval;
+        }
 
-		if (maxSocketIdle != null) {
-			clientPolicy.maxSocketIdle = maxSocketIdle;
-		}
+        if (timeout != null) {
+            clientPolicy.timeout = timeout;
+        }
 
-		if (tendInterval != null) {
-			clientPolicy.tendInterval = tendInterval;
-		}
+        if (failIfNotConnected != null) {
+            clientPolicy.failIfNotConnected = failIfNotConnected;
+        }
 
-		if (timeout != null) {
-			clientPolicy.timeout = timeout;
-		}
+        if (sharedThreadPool != null) {
+            clientPolicy.sharedThreadPool = sharedThreadPool;
+        }
 
-		if (failIfNotConnected != null) {
-			clientPolicy.failIfNotConnected = failIfNotConnected;
-		}
+        if (useServicesAlternate != null) {
+            clientPolicy.useServicesAlternate = useServicesAlternate;
+        }
 
-		if (sharedThreadPool != null) {
-			clientPolicy.sharedThreadPool = sharedThreadPool;
-		}
+        clientPolicy.tlsPolicy = builder.build();
 
-		if (useServicesAlternate != null) {
-			clientPolicy.useServicesAlternate = useServicesAlternate;
-		}
-
-		clientPolicy.tlsPolicy = builder.build();
-
-		return clientPolicy;
-	}
+        return clientPolicy;
+    }
 }

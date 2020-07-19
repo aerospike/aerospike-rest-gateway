@@ -17,12 +17,13 @@
 package com.aerospike.restclient.service;
 
 import com.aerospike.client.policy.ScanPolicy;
+import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.domain.scanmodels.RestClientScanResponse;
 
 import java.util.Map;
 
 public interface AerospikeScanService {
 
-    public RestClientScanResponse scan(Map<String, String> requestParams, ScanPolicy policy,
-                                       String namespace, String set);
+    public RestClientScanResponse scan(AuthDetails authDetails, String[] binNames, Map<String, String> requestParams,
+                                       ScanPolicy policy, String namespace, String set);
 }

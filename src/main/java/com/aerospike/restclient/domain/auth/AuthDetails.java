@@ -14,13 +14,35 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.aerospike.restclient.service;
+package com.aerospike.restclient.domain.auth;
 
-import com.aerospike.restclient.domain.auth.AuthDetails;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Map;
+@ApiModel(value = "AuthDetails")
+public class AuthDetails {
 
-public interface AerospikeClusterService {
+    @ApiModelProperty(value = "Basic access authentication username.")
+    private final String user;
 
-    public Map<String, Object> getClusterInfo(AuthDetails authDetails);
+    @ApiModelProperty(value = "Basic access authentication password.")
+    private final String password;
+
+    public AuthDetails(String user, String password) {
+        this.user = user;
+        this.password = password;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String toString() {
+        return user + password;
+    }
 }

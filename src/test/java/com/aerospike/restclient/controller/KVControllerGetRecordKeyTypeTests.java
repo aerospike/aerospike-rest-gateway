@@ -16,14 +16,11 @@
  */
 package com.aerospike.restclient.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.verify;
-
-import java.util.Arrays;
-
+import com.aerospike.client.policy.Policy;
+import com.aerospike.restclient.controllers.KeyValueController;
+import com.aerospike.restclient.service.AerospikeRecordService;
+import com.aerospike.restclient.util.AerospikeAPIConstants;
+import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -40,12 +37,10 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.aerospike.client.policy.Policy;
-import com.aerospike.restclient.controllers.KeyValueController;
-import com.aerospike.restclient.service.AerospikeRecordService;
-import com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.Collections;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(Parameterized.class)
 @SpringBootTest
@@ -59,12 +54,12 @@ public class KVControllerGetRecordKeyTypeTests {
 	@Autowired KeyValueController controller;
 	@MockBean AerospikeRecordService recordService;
 
-	private String ns = "test";
-	private String set = "set";
-	private String key = "key";
+	private final String ns = "test";
+	private final String set = "set";
+	private final String key = "key";
 
 	private MultiValueMap<String, String> queryParams;
-	private RecordKeyType expectedKeyType;
+	private final RecordKeyType expectedKeyType;
 
 	@Parameters
 	public static Object[] keyType() {
@@ -81,18 +76,18 @@ public class KVControllerGetRecordKeyTypeTests {
 	}
 
 	@Before
-	public void setup() throws JsonProcessingException {
-		queryParams = new LinkedMultiValueMap<String, String>();
+	public void setup() {
+		queryParams = new LinkedMultiValueMap<>();
 		if (expectedKeyType != null) {
-			queryParams.put(AerospikeAPIConstants.KEY_TYPE, Arrays.asList(expectedKeyType.toString()));
+			queryParams.put(AerospikeAPIConstants.KEY_TYPE, Collections.singletonList(expectedKeyType.toString()));
 		}
 	}
 
-
 	@Test
 	public void testKeyTypeForNSSetKey() {
-		controller.getRecordNamespaceSetKey(ns, set, key, queryParams);
+		controller.getRecordNamespaceSetKey(ns, set, key, queryParams, null);
 		verify(recordService, Mockito.only()).fetchRecord(
+				isNull(),
 				any(String.class),
 				any(String.class),
 				any(String.class),
@@ -101,8 +96,9 @@ public class KVControllerGetRecordKeyTypeTests {
 	}
 	@Test
 	public void testKeyTypeForNSKey() {
-		controller.getRecordNamespaceKey(ns, key, queryParams);
+		controller.getRecordNamespaceKey(ns, key, queryParams, null);
 		verify(recordService, Mockito.only()).fetchRecord(
+				isNull(),
 				any(String.class),
 				isNull(),
 				any(String.class),

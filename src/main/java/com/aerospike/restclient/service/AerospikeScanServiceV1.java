@@ -17,37 +17,37 @@
 package com.aerospike.restclient.service;
 
 import com.aerospike.client.policy.ScanPolicy;
+import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.domain.scanmodels.RestClientScanResponse;
 import com.aerospike.restclient.handlers.ScanHandler;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
+import com.aerospike.restclient.util.AerospikeClientPool;
 import com.aerospike.restclient.util.converters.PolicyValueConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Provider;
 import java.util.Map;
 
 @Service
 public class AerospikeScanServiceV1 implements AerospikeScanService {
 
     @Autowired
-    private Provider<ScanHandler> handler;
+    private AerospikeClientPool clientPool;
 
     @Override
-    public RestClientScanResponse scan(Map<String, String> requestParams, ScanPolicy policy,
-                                       String namespace, String set) {
-        String[] binNames = null;
-        if (requestParams.containsKey(AerospikeAPIConstants.RECORD_BINS)) {
-            binNames = requestParams.get(AerospikeAPIConstants.RECORD_BINS).split(",");
-        }
+    public RestClientScanResponse scan(AuthDetails authDetails, String[] binNames, Map<String, String> requestParams,
+                                       ScanPolicy policy, String namespace, String set) {
         String fromToken = null;
         if (requestParams.containsKey(AerospikeAPIConstants.FROM_TOKEN)) {
             fromToken = requestParams.get(AerospikeAPIConstants.FROM_TOKEN);
         }
+
         long maxRecords = 0;
         if (requestParams.containsKey(AerospikeAPIConstants.MAX_RECORDS)) {
             maxRecords = PolicyValueConverter.getLongValue(requestParams.get(AerospikeAPIConstants.MAX_RECORDS));
         }
-        return handler.get().scanPartition(policy, namespace, set, maxRecords, fromToken, binNames);
+
+        return ScanHandler.create(clientPool.getClient(authDetails))
+                .scanPartition(policy, namespace, set, maxRecords, fromToken, binNames);
     }
 }

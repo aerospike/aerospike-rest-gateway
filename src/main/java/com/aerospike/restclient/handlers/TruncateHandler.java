@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,20 +16,24 @@
  */
 package com.aerospike.restclient.handlers;
 
-import java.util.Calendar;
-
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.policy.InfoPolicy;
 
+import java.util.Calendar;
+
 public class TruncateHandler {
-	private AerospikeClient client;
 
+    private final AerospikeClient client;
 
-	public TruncateHandler(AerospikeClient client) {
-		this.client = client;
-	}
+    public TruncateHandler(AerospikeClient client) {
+        this.client = client;
+    }
 
-	public void truncate(InfoPolicy policy, String ns, String set, Calendar beforeLastUpdate) {
-		client.truncate(policy, ns, set, beforeLastUpdate);
-	}
+    public void truncate(InfoPolicy policy, String ns, String set, Calendar beforeLastUpdate) {
+        client.truncate(policy, ns, set, beforeLastUpdate);
+    }
+
+    public static TruncateHandler create(AerospikeClient client) {
+        return new TruncateHandler(client);
+    }
 }

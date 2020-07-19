@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,27 +16,24 @@
  */
 package com.aerospike.restclient.service;
 
-import java.util.Calendar;
-
+import com.aerospike.restclient.domain.auth.AuthDetails;
+import com.aerospike.restclient.handlers.TruncateHandler;
+import com.aerospike.restclient.util.AerospikeClientPool;
+import com.aerospike.restclient.util.converters.DateConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.aerospike.restclient.handlers.TruncateHandler;
-import com.aerospike.restclient.util.converters.DateConverter;
+import java.util.Calendar;
 
 @Service
 public class AerospikeTruncateServiceV1 implements AerospikeTruncateService {
 
-	private TruncateHandler handler;
+    @Autowired
+    private AerospikeClientPool clientPool;
 
-	@Autowired
-	public AerospikeTruncateServiceV1(TruncateHandler handler) {
-		this.handler = handler;
-	}
-
-	@Override
-	public void truncate(String namespace, String set, String dateString) {
-		Calendar calendar = DateConverter.iso8601StringToCalendar(dateString);
-		handler.truncate(null, namespace, set, calendar);
-	}
+    @Override
+    public void truncate(AuthDetails authDetails, String namespace, String set, String dateString) {
+        Calendar calendar = DateConverter.iso8601StringToCalendar(dateString);
+        TruncateHandler.create(clientPool.getClient(authDetails)).truncate(null, namespace, set, calendar);
+    }
 }

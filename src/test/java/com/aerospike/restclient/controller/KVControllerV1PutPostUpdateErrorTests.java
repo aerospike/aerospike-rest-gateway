@@ -16,13 +16,11 @@
  */
 package com.aerospike.restclient.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-
-import java.io.ByteArrayInputStream;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.aerospike.client.AerospikeException;
+import com.aerospike.restclient.controllers.KeyValueController;
+import com.aerospike.restclient.service.AerospikeRecordService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,11 +31,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.aerospike.client.AerospikeException;
-import com.aerospike.restclient.controllers.KeyValueController;
-import com.aerospike.restclient.service.AerospikeRecordService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.ByteArrayInputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -47,15 +45,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class KVControllerV1PutPostUpdateErrorTests {
 
-	private String ns = "test";
-	private String set = "set";
-	private String key = "key";
+	private final String ns = "test";
+	private final String set = "set";
+	private final String key = "key";
 
 	private Map<String, Object> dummyBins;
 	private Map<String, String> queryParams;
-	private AerospikeException expectedException = new AerospikeException("test exception");
+	private final AerospikeException expectedException = new AerospikeException("test exception");
 	private byte[] msgpackBins;
-	private ObjectMapper mpMapper = new ObjectMapper(new MessagePackFactory());
+	private final ObjectMapper mpMapper = new ObjectMapper(new MessagePackFactory());
 
 	@Autowired KeyValueController controller;
 	@MockBean AerospikeRecordService recordService;
@@ -63,78 +61,76 @@ public class KVControllerV1PutPostUpdateErrorTests {
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws JsonProcessingException {
-		dummyBins = new HashMap<String, Object>();
+		dummyBins = new HashMap<>();
 		dummyBins.put("bin", "a");
 		msgpackBins = mpMapper.writeValueAsBytes(dummyBins);
-		queryParams = new HashMap<String, String>();
+		queryParams = new HashMap<>();
 		Mockito.doThrow(expectedException)
 		.when(recordService)
-		.storeRecord(anyString(), any(), anyString(), any(dummyBins.getClass()), any(), any());
+		.storeRecord(isNull(), anyString(), any(), anyString(), any(dummyBins.getClass()), any(), any());
 	}
-
 
 	/* Create/Post */
 	@Test(expected=AerospikeException.class)
 	public void testCreateNSSetKey() {
-		controller.createRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams);
+		controller.createRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams, null);
 	}
 
 	@Test(expected=AerospikeException.class)
-
 	public void testCreateNSKey() {
-		controller.createRecordNamespaceKey(ns, key, dummyBins, queryParams);
+		controller.createRecordNamespaceKey(ns, key, dummyBins, queryParams, null);
 	}
 
 	@Test(expected=AerospikeException.class)
 	public void testCreateNSSetKeyMP() {
-		controller.createRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams);
+		controller.createRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
 	}
 
 	@Test(expected=AerospikeException.class)
 	public void testCreateNSKeyMP() {
-		controller.createRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams);
+		controller.createRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
 	}
 
 	/* Update/Patch */
 	@Test(expected=AerospikeException.class)
 	public void testUpdateNSSetKey() {
-		controller.updateRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams);
+		controller.updateRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams, null);
 	}
 
 	@Test(expected=AerospikeException.class)
 	public void testUpdateNSKey() {
-		controller.updateRecordNamespaceKey(ns, key, dummyBins, queryParams);
+		controller.updateRecordNamespaceKey(ns, key, dummyBins, queryParams, null);
 	}
 
 	@Test(expected=AerospikeException.class)
 	public void testUpdateNSSetKeyMP() {
-		controller.updateRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams);
+		controller.updateRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
 	}
 
 	@Test(expected=AerospikeException.class)
 	public void testUpdateNSKeyMP() {
-		controller.updateRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams);
+		controller.updateRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
 	}
 
 	/* Replace/Put */
 	@Test(expected=AerospikeException.class)
 	public void testReplaceNSSetKey() {
-		controller.replaceRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams);
+		controller.replaceRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams, null);
 	}
 
 	@Test(expected=AerospikeException.class)
 	public void testReplaceNSKey() {
-		controller.replaceRecordNamespaceKey(ns, key, dummyBins, queryParams);
+		controller.replaceRecordNamespaceKey(ns, key, dummyBins, queryParams, null);
 	}
 
 	@Test(expected=AerospikeException.class)
 	public void testReplaceNSSetKeyMP() {
-		controller.replaceRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams);
+		controller.replaceRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
 	}
 
 	@Test(expected=AerospikeException.class)
 	public void testReplaceNSKeyMP() {
-		controller.replaceRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams);
+		controller.replaceRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
 	}
 
 }

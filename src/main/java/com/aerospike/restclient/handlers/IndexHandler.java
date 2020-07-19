@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2020 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -22,34 +22,40 @@ import com.aerospike.client.query.IndexCollectionType;
 import com.aerospike.client.query.IndexType;
 
 public class IndexHandler {
-	private AerospikeClient client;
 
-	public IndexHandler(AerospikeClient client) {
-		this.client = client;
-	}
+    private final AerospikeClient client;
 
-	public void createIndex(
-			Policy policy,
-			String namespace,
-			String setName,
-			String indexName,
-			String binName,
-			IndexType indexType) {
-		client.createIndex(policy, namespace, setName, indexName, binName, indexType);
-	}
+    public IndexHandler(AerospikeClient client) {
+        this.client = client;
+    }
 
-	public void createIndex(
-			Policy policy,
-			String namespace,
-			String setName,
-			String indexName,
-			String binName,
-			IndexType indexType,
-			IndexCollectionType collectionType) {
-		client.createIndex(policy, namespace, setName, indexName, binName, indexType, collectionType);
-	}
+    public void createIndex(
+            Policy policy,
+            String namespace,
+            String setName,
+            String indexName,
+            String binName,
+            IndexType indexType) {
+        client.createIndex(policy, namespace, setName, indexName, binName, indexType);
+    }
 
-	public void deleteIndex(Policy policy, String namespace, String setName, String indexName) {
-		client.dropIndex(policy, namespace, setName, indexName);
-	}
+    public void createIndex(
+            Policy policy,
+            String namespace,
+            String setName,
+            String indexName,
+            String binName,
+            IndexType indexType,
+            IndexCollectionType collectionType) {
+        client.createIndex(policy, namespace, setName, indexName, binName, indexType, collectionType);
+    }
+
+    public void deleteIndex(Policy policy, String namespace, String setName, String indexName) {
+        client.dropIndex(policy, namespace, setName, indexName);
+    }
+
+    public static IndexHandler create(AerospikeClient client) {
+        return new IndexHandler(client);
+    }
+
 }

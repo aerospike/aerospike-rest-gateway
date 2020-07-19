@@ -16,16 +16,14 @@
  */
 package com.aerospike.restclient.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.verify;
-
-import java.util.HashMap;
-import java.util.Map;
-
+import com.aerospike.client.AerospikeException;
+import com.aerospike.client.policy.RecordExistsAction;
+import com.aerospike.client.policy.WritePolicy;
+import com.aerospike.restclient.ASTestUtils.WritePolicyMatcher;
+import com.aerospike.restclient.ASTestUtils.WritePolicyMatcher.WritePolicyComparator;
+import com.aerospike.restclient.controllers.KeyValueController;
+import com.aerospike.restclient.service.AerospikeRecordService;
+import com.aerospike.restclient.util.AerospikeAPIConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,15 +33,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.aerospike.client.AerospikeException;
-import com.aerospike.client.policy.RecordExistsAction;
-import com.aerospike.client.policy.WritePolicy;
-import com.aerospike.restclient.ASTestUtils.WritePolicyMatcher;
-import com.aerospike.restclient.ASTestUtils.WritePolicyMatcher.WritePolicyComparator;
-import com.aerospike.restclient.controllers.KeyValueController;
-import com.aerospike.restclient.service.AerospikeRecordService;
-import com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -51,31 +45,27 @@ public class KVControllerV1DeleteRecordTests {
 
 	@Autowired KeyValueController controller;
 	@MockBean AerospikeRecordService recordService;
-	private AerospikeException expectedException = new AerospikeException("test exception");
+	private final AerospikeException expectedException = new AerospikeException("test exception");
 
-	private WritePolicyComparator existsActionComparator = new WritePolicyComparator() {
-		@Override
-		public boolean comparePolicy(WritePolicy p1, WritePolicy p2) {
-			return p1.recordExistsAction == p2.recordExistsAction;
-		}
-	};
+	private final WritePolicyComparator existsActionComparator = (p1, p2) -> p1.recordExistsAction == p2.recordExistsAction;
 
-	private String ns = "test";
-	private String set = "set";
-	private String key = "key";
+	private final String ns = "test";
+	private final String set = "set";
+	private final String key = "key";
 
 	private Map<String, String> queryParams;
 
 	@Before
 	/* Initialize the query params argument */
-	public void setup() throws JsonProcessingException {
-		queryParams = new HashMap<String, String>();
+	public void setup() {
+		queryParams = new HashMap<>();
 	}
 
 	@Test
 	public void tesNSSetKey() {
-		controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams);
+		controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams, null);
 		verify(recordService, Mockito.only()).deleteRecord(
+				isNull(),
 				eq(ns),
 				eq(set),
 				eq(key),
@@ -85,8 +75,9 @@ public class KVControllerV1DeleteRecordTests {
 
 	@Test
 	public void testNSKey() {
-		controller.deleteRecordNamespaceKey(ns, key, queryParams);
+		controller.deleteRecordNamespaceKey(ns, key, queryParams, null);
 		verify(recordService, Mockito.only()).deleteRecord(
+				isNull(),
 				eq(ns),
 				isNull(),
 				eq(key),
@@ -100,8 +91,9 @@ public class KVControllerV1DeleteRecordTests {
 		expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
 		WritePolicyMatcher matcher = new WritePolicyMatcher(expectedPolicy, existsActionComparator);
 		queryParams.put(AerospikeAPIConstants.RECORD_EXISTS_ACTION, RecordExistsAction.CREATE_ONLY.toString());
-		controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams);
+		controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams, null);
 		verify(recordService, Mockito.only()).deleteRecord(
+				isNull(),
 				eq(ns),
 				eq(set),
 				eq(key),
@@ -116,8 +108,9 @@ public class KVControllerV1DeleteRecordTests {
 		WritePolicyMatcher matcher = new WritePolicyMatcher(expectedPolicy, existsActionComparator);
 		queryParams.put(AerospikeAPIConstants.RECORD_EXISTS_ACTION, RecordExistsAction.CREATE_ONLY.toString());
 
-		controller.deleteRecordNamespaceKey(ns, key, queryParams);
+		controller.deleteRecordNamespaceKey(ns, key, queryParams, null);
 		verify(recordService, Mockito.only()).deleteRecord(
+				isNull(),
 				eq(ns),
 				isNull(),
 				eq(key),
@@ -128,23 +121,25 @@ public class KVControllerV1DeleteRecordTests {
 	public void testErrorNSSetKey() {
 		Mockito.doThrow(expectedException)
 		.when(recordService).deleteRecord(
+				isNull(),
 				any(String.class),
 				any(String.class),
 				any(String.class),
 				any(),
 				any());
-		controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams);
+		controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams, null);
 	}
 
 	@Test(expected=AerospikeException.class)
 	public void testErrorNSKey() {
 		Mockito.doThrow(expectedException)
 		.when(recordService).deleteRecord(
+				isNull(),
 				any(String.class),
 				isNull(),
 				any(String.class),
 				any(),
 				any());
-		controller.deleteRecordNamespaceKey(ns, key, queryParams);
+		controller.deleteRecordNamespaceKey(ns, key, queryParams, null);
 	}
 }
