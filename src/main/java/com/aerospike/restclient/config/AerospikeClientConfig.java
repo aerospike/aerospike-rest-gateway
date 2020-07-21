@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.Nullable;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 
@@ -61,7 +62,7 @@ public class AerospikeClientConfig {
         AerospikeClient client;
 
         logger.info("Init the AerospikeClient");
-        /* A list of hosts was provided, parse it into host array*/
+        /* A list of hosts was provided, parse it into host array */
         if (hostList != null) {
             client = new AerospikeClient(policy, Host.parseHosts(hostList, port));
 
@@ -77,6 +78,7 @@ public class AerospikeClientConfig {
     int poolSize;
 
     @Autowired
+    @Nullable
     AerospikeClient defaultClient;
 
     @Bean
