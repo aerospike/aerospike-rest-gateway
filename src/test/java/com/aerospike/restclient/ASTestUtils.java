@@ -592,13 +592,9 @@ public class ASTestUtils {
 		}
 
 		if (expectedOpVals != null) {
-			if (!compareMapStringObj(expectedOpVals, otherOpVals)) {
-				return false;
-			}
-		} else if (otherOpVals != null) {
-			return false;
+			return compareMapStringObj(expectedOpVals, otherOpVals);
 		}
 
-		return true;
+		return otherOpVals == null;
 	}
 }
