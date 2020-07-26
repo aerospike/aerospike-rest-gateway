@@ -39,18 +39,18 @@ docker run -itd --rm -p 8080:8080 --name AS_Rest1 -e aerospike_restclient_hostna
 
 ### Verifying installation
 
-**Note:** The following steps assume REST Client's base path is `http://localhost:8080/as-rest-client` if this is not the case, the provided URLs will need to be modified accordingly.
+**Note:** The following steps assume REST Client's base path is `http://localhost:8080/` if this is not the case, the provided URLs will need to be modified accordingly.
 
 To test that the rest client is up and running, and connected to the Aerospike database you can run:
 
-    curl http://localhost:8080/as-rest-client/v1/cluster
+    curl http://localhost:8080/v1/cluster
 
 This will return basic information about the cluster.
 
-Interactive API documentation may be found at <http://localhost:8080/as-rest-client/swagger-ui.html> . This will allow you to
+Interactive API documentation may be found at <http://localhost:8080/swagger-ui.html> . This will allow you to
 test out various commands in your browser.
 
-The Swagger specification, in `JSON` format, can be found at <http://localhost:8080/as-rest-client/v2/api-docs> .
+The Swagger specification, in `JSON` format, can be found at <http://localhost:8080/v2/api-docs> .
 
 ## Configuration
 
