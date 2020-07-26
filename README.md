@@ -26,15 +26,9 @@ This will place the file in the `build/libs` directory.
 docker build -t aerospike-client-rest .
 ```
 
-## Run Locally
+## Running 
 
-To run the REST Client locally during development:
-
-```sh
-./gradlew bootRun
-```
-
-See [Installation and Configuration](./docs/installation-and-config.md) for configuration directions.
+See [Installation and Configuration](./docs/installation-and-config.md) for installation, configuration and running manual.
 
 ## Authentication
 Use [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) to enable multi-user tenancy in the Aerospike REST client.  

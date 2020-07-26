@@ -7,13 +7,19 @@
 * The Rest Client requires Java 8.
 * The Rest Client requires an Aerospike Server to be installed and reachable. See [Configuration](#configuration) for details on specifying the location of this server.
 
-### Run from Executable Jar
+### Build and development
 
-* Build
+* Build 
 ```
 ./gradlew build
 ```
-* Execute
+* Run Locally during development:
+
+```sh
+./gradlew bootRun
+```
+
+### Run from Jar file
 ```
 java -jar build/libs/aerospike-client-rest-<VERSION>.jar
 ```
@@ -22,10 +28,15 @@ More information at the following links:
 * [Installation as an init.d service](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/htmlsingle/#deployment-service)
 * [Installation as a systemd service](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/htmlsingle/#deployment-systemd-service)
 
-### Run with Docker
+### Run using Docker
 * Build the docker image
 ```
 docker build -t aerospike-client-rest .
+```
+
+* Run the REST Client using docker
+```sh
+docker run -itd --rm -p 8080:8080 --name AS_Rest1 -e aerospike_restclient_hostname=172.17.0.3 aerospike-client-rest
 ```
 
 ### Run on Kubernetes
@@ -33,25 +44,25 @@ docker build -t aerospike-client-rest .
 
 ### Verifying installation
 
-**Note:** The following steps assume REST Client's base path is `http://localhost:8080/as-rest-client` if this is not the case, the provided URLs will need to be modified accordingly.
+**Note:** The following steps assume REST Client's base path is `http://localhost:8080/` if this is not the case, the provided URLs will need to be modified accordingly.
 
 To test that the rest client is up and running, and connected to the Aerospike database you can run:
 
-    curl http://localhost:8080/as-rest-client/v1/cluster
+    curl http://localhost:8080/v1/cluster
 
 This will return basic information about the cluster.
 
-Interactive API documentation may be found at <http://localhost:8080/as-rest-client/swagger-ui.html> . This will allow you to
+Interactive API documentation may be found at <http://localhost:8080/swagger-ui.html> . This will allow you to
 test out various commands in your browser.
 
-The Swagger specification, in `JSON` format, can be found at <http://localhost:8080/as-rest-client/v2/api-docs> .
+The Swagger specification, in `JSON` format, can be found at <http://localhost:8080/v2/api-docs> .
 
 ## Configuration
 
-By default the REST Client looks for an Aerospike Server available at `localhost:3000` . The following environment variables allow specification of a different host/port.
-
-* `aerospike.restclient.hostname` This is the IP address or Hostname of a single node in the cluster. It defaults to `localhost`. If TLS is being utilized, `aerospike.restclient.hostlist` should be used instead of this variable.
-* `aerospike.restclient.port` The port to communicate with the Aerospike cluster over. Defaults to `3000`
+* `server.port` Change the port the REST Client is listening on (default: 8080)
+* `aerospike.restclient.hostname` The IP address or Hostname of a seed node in the cluster (default: `localhost`)
+**Note:** If TLS is being utilized, `aerospike.restclient.hostlist` should be used instead of this variable.
+* `aerospike.restclient.port` The port to communicate with the Aerospike cluster over. (default: `3000`)
 * `aerospike.restclient.hostlist` A comma separated list of cluster hostnames, (optional TLS names) and ports. If this is specified, it overrides the previous two environment variables. The format is described below:
 
 ``` None
@@ -66,6 +77,11 @@ By default the REST Client looks for an Aerospike Server available at `localhost
     * tlsname and port are optional.
     */
 ```
+Example:
+```
+java -jar as-rest-client-*.jar --aerospike.restclient.hostname=172.17.0.3 --server.port=9876
+```
+### Authentication
 
 The REST Client also allows authentication to an Aerospike Enterprise edition server with security enabled. The following environment variables are used to find authentication information.
 
