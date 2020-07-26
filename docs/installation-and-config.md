@@ -13,7 +13,7 @@
 ```
 ./gradlew build
 ```
-* Run Locally during during development:
+* Run Locally during development:
 
 ```sh
 ./gradlew bootRun
