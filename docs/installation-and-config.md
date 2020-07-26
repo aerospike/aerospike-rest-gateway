@@ -54,10 +54,11 @@ The Swagger specification, in `JSON` format, can be found at <http://localhost:8
 
 ## Configuration
 
+* `server.port` Change the port the REST Client is listening on (default: 8080)
 By default the REST Client looks for an Aerospike Server available at `localhost:3000` . The following environment variables allow specification of a different host/port.
-
-* `aerospike.restclient.hostname` This is the IP address or Hostname of a single node in the cluster. It defaults to `localhost`. If TLS is being utilized, `aerospike.restclient.hostlist` should be used instead of this variable.
-* `aerospike.restclient.port` The port to communicate with the Aerospike cluster over. Defaults to `3000`
+* `aerospike.restclient.hostname` The IP address or Hostname of a seed node in the cluster (default: `localhost`)
+**Note:** If TLS is being utilized, `aerospike.restclient.hostlist` should be used instead of this variable.
+* `aerospike.restclient.port` The port to communicate with the Aerospike cluster over. (default: `3000`)
 * `aerospike.restclient.hostlist` A comma separated list of cluster hostnames, (optional TLS names) and ports. If this is specified, it overrides the previous two environment variables. The format is described below:
 
 ``` None
@@ -72,6 +73,11 @@ By default the REST Client looks for an Aerospike Server available at `localhost
     * tlsname and port are optional.
     */
 ```
+Example:
+```
+java -jar as-rest-client-*.jar --aerospike.restclient.hostname=172.17.0.3 --server.port=9876
+```
+
 
 The REST Client also allows authentication to an Aerospike Enterprise edition server with security enabled. The following environment variables are used to find authentication information.
 
