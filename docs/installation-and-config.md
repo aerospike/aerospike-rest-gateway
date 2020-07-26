@@ -28,6 +28,12 @@ More information at the following links:
 docker build -t aerospike-client-rest .
 ```
 
+* Run the REST Client using docker
+```sh
+docker run -itd --rm -p 8080:8080 --name AS_Rest1 -e aerospike_restclient_hostname=172.17.0.3 aerospike-client-rest
+```
+
+
 ### Run on Kubernetes
 * Use the official [Helm chart](https://github.com/aerospike/aerospike-client-rest-kubernetes) to deploy the Aerospike REST Client to Kubernetes.
 
