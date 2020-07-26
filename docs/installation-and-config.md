@@ -55,6 +55,7 @@ The Swagger specification, in `JSON` format, can be found at <http://localhost:8
 ## Configuration
 
 * `server.port` Change the port the REST Client is listening on (default: 8080)
+
 By default the REST Client looks for an Aerospike Server available at `localhost:3000` . The following environment variables allow specification of a different host/port.
 * `aerospike.restclient.hostname` The IP address or Hostname of a seed node in the cluster (default: `localhost`)
 **Note:** If TLS is being utilized, `aerospike.restclient.hostlist` should be used instead of this variable.
