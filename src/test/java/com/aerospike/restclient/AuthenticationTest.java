@@ -91,6 +91,8 @@ public class AuthenticationTest {
 
     @Test
     public void testInvalidUserAuthentication() throws Exception {
+        if (!ClusterUtils.isSecurityEnabled(client)) return;
+
         mockMVC.perform(get(testEndpoint)
                 .header("Authorization", invalidAuthHeader))
                 .andExpect(status().isInternalServerError());
