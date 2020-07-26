@@ -7,13 +7,19 @@
 * The Rest Client requires Java 8.
 * The Rest Client requires an Aerospike Server to be installed and reachable. See [Configuration](#configuration) for details on specifying the location of this server.
 
-### Run from Executable Jar
+### Build and development
 
-* Build
+* Build 
 ```
 ./gradlew build
 ```
-* Execute
+* Run Locally during during development:
+
+```sh
+./gradlew bootRun
+```
+
+### Run from Jar file
 ```
 java -jar build/libs/aerospike-client-rest-<VERSION>.jar
 ```
@@ -22,7 +28,7 @@ More information at the following links:
 * [Installation as an init.d service](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/htmlsingle/#deployment-service)
 * [Installation as a systemd service](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/htmlsingle/#deployment-systemd-service)
 
-### Run with Docker
+### Run using Docker
 * Build the docker image
 ```
 docker build -t aerospike-client-rest .
@@ -32,7 +38,6 @@ docker build -t aerospike-client-rest .
 ```sh
 docker run -itd --rm -p 8080:8080 --name AS_Rest1 -e aerospike_restclient_hostname=172.17.0.3 aerospike-client-rest
 ```
-
 
 ### Run on Kubernetes
 * Use the official [Helm chart](https://github.com/aerospike/aerospike-client-rest-kubernetes) to deploy the Aerospike REST Client to Kubernetes.
@@ -55,8 +60,6 @@ The Swagger specification, in `JSON` format, can be found at <http://localhost:8
 ## Configuration
 
 * `server.port` Change the port the REST Client is listening on (default: 8080)
-
-By default the REST Client looks for an Aerospike Server available at `localhost:3000` . The following environment variables allow specification of a different host/port.
 * `aerospike.restclient.hostname` The IP address or Hostname of a seed node in the cluster (default: `localhost`)
 **Note:** If TLS is being utilized, `aerospike.restclient.hostlist` should be used instead of this variable.
 * `aerospike.restclient.port` The port to communicate with the Aerospike cluster over. (default: `3000`)
