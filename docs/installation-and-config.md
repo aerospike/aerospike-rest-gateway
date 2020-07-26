@@ -77,7 +77,7 @@ Example:
 ```
 java -jar as-rest-client-*.jar --aerospike.restclient.hostname=172.17.0.3 --server.port=9876
 ```
-
+### Authentication
 
 The REST Client also allows authentication to an Aerospike Enterprise edition server with security enabled. The following environment variables are used to find authentication information.
 
