@@ -19,14 +19,14 @@
 ./gradlew bootRun
 ```
 
-### Run from Jar file
+### Run using a Jar file
 ```
 java -jar build/libs/aerospike-client-rest-<VERSION>.jar
 ```
 The fully executable jar contains an extra script at the front of the file, which allows you to just symlink your Spring Boot jar to init.d or use a systemd script.  
 More information at the following links:
-* [Installation as an init.d service](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/htmlsingle/#deployment-service)
-* [Installation as a systemd service](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/htmlsingle/#deployment-systemd-service)
+* [Installation as an init.d service](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment-service)
+* [Installation as a systemd service](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment-systemd-service)
 
 ### Run using Docker
 * Build the docker image
@@ -58,6 +58,7 @@ test out various commands in your browser.
 The Swagger specification, in `JSON` format, can be found at <http://localhost:8080/v2/api-docs> .
 
 ## Configuration
+Read more about Spring Boot [Externalized Configuration](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config).
 
 * `server.port` Change the port the REST Client is listening on (default: 8080)
 * `aerospike.restclient.hostname` The IP address or Hostname of a seed node in the cluster (default: `localhost`)
@@ -88,13 +89,16 @@ The REST Client also allows authentication to an Aerospike Enterprise edition se
 * `aerospike.restclient.clientpolicy.user` This is the name of a user registered with the Aerospike database. This variable is only needed when the Aerospike cluster is running with security enabled.
 * `aerospike.restclient.clientpolicy.password` This is the password for the previously specified user. This variable is only needed when the Aerospike cluster is running with security enabled.
 
-Multi-user authentication configuration variables:
+To utilize the multi-tenancy capability within the REST Client, send Aerospike login credentials using the [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication).  
+Set custom multi-user authentication configuration variables if needed:
 * `aerospike.restclient.requireAuthentication` Set this boolean flag to true to require the Basic Authentication on each request.
-* `aerospike.restclient.pool.size` Represents the max size of the clients LRU cache (default value: 16)
+* `aerospike.restclient.pool.size` Represents the max size of the authenticated clients LRU cache (default value: 16).
+Please note that an oversized client cache will consume a lot of resources and affect the performance.
 
 ### TLS Configuration
 
-Beginning with version `1.1.0` the Aerospike REST Client supports TLS communication between the client and the Aerospike Server. (This feature requires an Enterprise Edition Aerospike Server). If utilizing TLS, the `aerospike.restclient.hostlist` variable should be set to include appropriate TLS Names for each of the Aerospike Nodes. For example: `localhost:cluster-tls-name:4333` The following environment variables allow configuration of this connection:
+Beginning with version `1.1.0` the Aerospike REST Client supports TLS communication between the client and the Aerospike Server. (This feature requires an Enterprise Edition Aerospike Server).
+If utilizing TLS, the `aerospike.restclient.hostlist` variable should be set to include appropriate TLS Names for each of the Aerospike Nodes. For example: `localhost:cluster-tls-name:4333` The following environment variables allow configuration of this connection:
 
 * `aerospike.restclient.ssl.enabled` boolean, set to `true` to enable a TLS connection with the Aerospike Server. If no other SSL environment variables are provided, the REST client will attempt to establish a secure connection utilizing the default Java SSL trust and keystore settings. Default: `false`
 * `aerospike.restclient.ssl.keystorepath` The path to a Java KeyStore to be used to interact with the Aerospike Server. If omitted the default Java KeyStore location and password will be used.

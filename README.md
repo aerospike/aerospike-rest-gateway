@@ -34,6 +34,8 @@ See [Installation and Configuration](./docs/installation-and-config.md) for inst
 Use [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) to enable multi-user tenancy in the Aerospike REST client.  
 Please note that only Aerospike Enterprise Edition supports the [security features](https://aerospike.com/docs/guide/security/index.html).
 
+For example, having the default `admin:admin` credentials, send the `Authorization: Basic YWRtaW46YWRtaW4=` header with the request to make an authenticated query.
+
 ## Data Formats and API
 
 ### Formats
