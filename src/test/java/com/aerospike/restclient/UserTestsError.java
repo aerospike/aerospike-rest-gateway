@@ -58,7 +58,7 @@ public class UserTestsError {
 	TypeReference<Map<String,Object>> userType= new TypeReference<Map<String,Object>>() {};
 	String userName = "JunitUser";
 
-	private String endpoint = "/v1/admin/user";
+	private final String endpoint = "/v1/admin/user";
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -79,7 +79,7 @@ public class UserTestsError {
 	@Before
 	public void setUp() {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-		createdUsers = new ArrayList<String>();
+		createdUsers = new ArrayList<>();
 	}
 
 	@After
@@ -88,21 +88,22 @@ public class UserTestsError {
 			try {
 				client.dropUser(null, user);
 				Thread.sleep(500);
-			} catch (AerospikeException e) {} catch (InterruptedException e) {}
+			} catch (AerospikeException | InterruptedException e) {}
 		}
 	}
 
 	@Test
 	public void getUserThatDoesNotExist() throws Exception {
+		Assume.assumeFalse(ClusterUtils.isSecurityEnabled(client));
 		/* Get information on the user we just created*/
 		mockMVC.perform(get(endpoint +"/" + "notARealUser")
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
-
 	}
 
 	@Test
 	public void deleteUserThatDoesNotExist() throws Exception {
+		Assume.assumeFalse(ClusterUtils.isSecurityEnabled(client));
 		/* Get information on the user we just created*/
 		mockMVC.perform(delete(endpoint +"/" + "notARealUser")
 				.contentType(MediaType.APPLICATION_JSON))
@@ -111,6 +112,7 @@ public class UserTestsError {
 
 	@Test
 	public void patchUserThatDoesNotExist() throws Exception {
+		Assume.assumeFalse(ClusterUtils.isSecurityEnabled(client));
 		String newPassword = "SuperSecret";
 		mockMVC.perform(patch(endpoint + "/" + "notARealUser")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -173,7 +175,7 @@ public class UserTestsError {
 
 	@Test
 	public void addRolesToNonExistantUser() throws Exception {
-
+		Assume.assumeFalse(ClusterUtils.isSecurityEnabled(client));
 		String[] roles = {Role.ReadWrite, Role.ReadWriteUdf};
 
 		mockMVC.perform(post(endpoint + "/notARealUser/role")
@@ -184,7 +186,7 @@ public class UserTestsError {
 
 	@Test
 	public void deleteRolesFromNonExistantUser() throws Exception {
-
+		Assume.assumeFalse(ClusterUtils.isSecurityEnabled(client));
 		String[] roles = {Role.ReadWrite, Role.ReadWriteUdf};
 
 		mockMVC.perform(patch(endpoint + "/notARealUser/role/delete")

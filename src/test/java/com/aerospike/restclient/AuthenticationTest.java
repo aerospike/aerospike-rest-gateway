@@ -81,6 +81,8 @@ public class AuthenticationTest {
 
     @Test
     public void testValidUserAuthentication() throws Exception {
+        Assume.assumeFalse(ClusterUtils.isSecurityEnabled(client));
+
         MockHttpServletResponse response = mockMVC.perform(get(testEndpoint)
                 .header("Authorization", validAuthHeader))
                 .andExpect(status().isOk()).andReturn().getResponse();
@@ -91,7 +93,7 @@ public class AuthenticationTest {
 
     @Test
     public void testInvalidUserAuthentication() throws Exception {
-        if (!ClusterUtils.isSecurityEnabled(client)) return;
+        Assume.assumeTrue(ClusterUtils.isSecurityEnabled(client));
 
         mockMVC.perform(get(testEndpoint)
                 .header("Authorization", invalidAuthHeader))
