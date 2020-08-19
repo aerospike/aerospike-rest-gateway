@@ -20,21 +20,20 @@ const composeEnhancer: typeof compose =
     (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export const store = createStore(
-    connectRouter(history)(
-        combineReducers({
-            api: apiReducer,
-            activeStockSymbol,
-            activeStockBins,
-            activeGroupStocks,
-            dailyStockEntries,
-            activeStockFilter,
-            stockList,
-            recentPortfolios,
-            apiCallState: apiCalls,
-            dataUpload,
-            errorState: errors
-        })
-    ),
+    combineReducers({
+        api: apiReducer,
+        activeStockSymbol,
+        activeStockBins,
+        activeGroupStocks,
+        dailyStockEntries,
+        activeStockFilter,
+        stockList,
+        recentPortfolios,
+        apiCallState: apiCalls,
+        dataUpload,
+        errorState: errors,
+        router: connectRouter(history)
+    }),
     {},
     composeEnhancer(applyMiddleware(routerMiddleware(history), thunk))
 );
