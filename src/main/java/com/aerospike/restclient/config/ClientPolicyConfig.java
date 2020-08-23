@@ -16,6 +16,7 @@
  */
 package com.aerospike.restclient.config;
 
+import com.aerospike.client.policy.AuthMode;
 import com.aerospike.client.policy.ClientPolicy;
 import com.aerospike.restclient.util.TLSPolicyBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class ClientPolicyConfig {
     String password;
     @Value("${aerospike.restclient.clientpolicy.clusterName:#{null}}")
     String clusterName;
+    @Value("${aerospike.restclient.clientpolicy.authMode:#{null}}")
+    String authMode;
 
     @Value("${aerospike.restclient.clientpolicy.connPoolsPerNode:#{null}}")
     Integer connPoolsPerNode;
@@ -69,6 +72,10 @@ public class ClientPolicyConfig {
 
         if (clusterName != null) {
             clientPolicy.clusterName = clusterName;
+        }
+
+        if (authMode != null) {
+            clientPolicy.authMode = AuthMode.valueOf(authMode.toUpperCase());
         }
 
         if (connPoolsPerNode != null) {
