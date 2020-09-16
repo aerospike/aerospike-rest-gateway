@@ -88,6 +88,7 @@ The REST Client also allows authentication to an Aerospike Enterprise edition se
 
 * `aerospike.restclient.clientpolicy.user` This is the name of a user registered with the Aerospike database. This variable is only needed when the Aerospike cluster is running with security enabled.
 * `aerospike.restclient.clientpolicy.password` This is the password for the previously specified user. This variable is only needed when the Aerospike cluster is running with security enabled.
+* `aerospike.restclient.clientpolicy.authMode` This is the authentication mode. Use it when user/password is defined. Supported modes are INTERNAL, EXTERNAL and EXTERNAL_INSECURE. Default is INTERNAL.
 
 To utilize the multi-tenancy capability within the REST Client, send Aerospike login credentials using the [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication).  
 Set custom multi-user authentication configuration variables if needed:
