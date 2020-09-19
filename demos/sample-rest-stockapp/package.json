@@ -68,6 +68,9 @@
         "ts-node": "^7.0.1",
         "typescript": "^3.2.4"
     },
+    "resolutions": {
+        "node-forge": "^0.10.0"
+    },
     "browserslist": [
         ">0.2%",
         "not dead",
