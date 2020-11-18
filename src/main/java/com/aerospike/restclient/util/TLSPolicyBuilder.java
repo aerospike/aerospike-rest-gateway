@@ -1,5 +1,10 @@
 package com.aerospike.restclient.util;
 
+import com.aerospike.client.policy.TlsPolicy;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
+
+import javax.net.ssl.SSLContext;
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -8,13 +13,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.List;
-
-import javax.net.ssl.SSLContext;
-
-import com.aerospike.client.policy.TlsPolicy;
-
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.SSLContexts;
 
 public class TLSPolicyBuilder  {
 
@@ -26,7 +24,7 @@ public class TLSPolicyBuilder  {
     char[] truststorePassword;
     List<String> allowedCiphers;
     List<String> allowedProtocols;
-    boolean forLoginOnly;
+    Boolean forLoginOnly;
 
     public TLSPolicyBuilder(
         boolean enabled,
@@ -37,7 +35,7 @@ public class TLSPolicyBuilder  {
         char[] truststorePassword,
         List<String> allowedCiphers,
         List<String> allowedProtocols,
-        boolean forLoginOnly
+        Boolean forLoginOnly
     ) {
         this.enabled = enabled;
         this.keystorePath = keystorePath;
@@ -68,7 +66,9 @@ public class TLSPolicyBuilder  {
             policy.protocols = allowedProtocols.toArray(new String[] {});
         }
 
-        policy.forLoginOnly = forLoginOnly;
+        if (forLoginOnly != null) {
+            policy.forLoginOnly = forLoginOnly;
+        }
 
         return policy;
     }
