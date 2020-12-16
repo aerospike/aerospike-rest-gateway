@@ -532,7 +532,7 @@ public class KeyValueController {
             @ApiParam(value = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @ApiParam(value = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
             @ApiIgnore HttpServletResponse res,
-            @ApiParam(name = "keytype", value = QueryParamDescriptors.KEYTYPE_NOTES, required = false, defaultValue = QueryParamDescriptors.KEYTYPE_DEFAULT) @RequestParam(value = "keytype", required = false) RecordKeyType keyType,
+            @ApiParam(name = "keytype", value = QueryParamDescriptors.KEYTYPE_NOTES) @RequestParam(value = "keytype", required = false) RecordKeyType keyType,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
@@ -560,7 +560,7 @@ public class KeyValueController {
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @ApiParam(value = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
             @ApiIgnore HttpServletResponse res,
-            @ApiParam(name = "keytype", value = QueryParamDescriptors.KEYTYPE_NOTES, required = false, defaultValue = QueryParamDescriptors.KEYTYPE_DEFAULT) @RequestParam(value = "keytype", required = false) RecordKeyType keyType,
+            @ApiParam(name = "keytype", value = QueryParamDescriptors.KEYTYPE_NOTES) @RequestParam(value = "keytype", required = false) RecordKeyType keyType,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
