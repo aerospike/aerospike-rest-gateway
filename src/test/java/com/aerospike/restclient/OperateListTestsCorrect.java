@@ -59,8 +59,8 @@ public class OperateListTestsCorrect {
 	private WebApplicationContext wac;
 
 	List<Object> objectList;
-	private Key testKey = new Key("test", "junit", "listop");
-	private String testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "listop");
+	private final Key testKey;
+	private final String testEndpoint;
 
 	@Before
 	public void setup() {
@@ -82,7 +82,7 @@ public class OperateListTestsCorrect {
 		client.delete(null, testKey);
 	}
 
-	private OperationPerformer opPerformer = null;
+	private final OperationPerformer opPerformer;
 
 	@Parameters
 	public static Object[][] getParams() {
@@ -105,10 +105,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListAppend() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListAppend() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		opValues.put("bin", "list");
 		opValues.put("value", "aerospike");
 		opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_APPEND);
@@ -125,10 +125,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListAppendItems() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListAppendItems() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		List<Object>appendValues = Arrays.asList("aero", "spike", "aero");
 
 		opValues.put("bin", "list");
@@ -149,12 +149,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListAppendItemsWithPolicy() throws Exception {
+	public void testListAppendItemsWithPolicy() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		Map<String,Object>listPolicyMap = buildListPolicyMap(ListOrder.UNORDERED, ListWriteFlags.ADD_UNIQUE);
 		List<Object>appendValues = Arrays.asList("aero", "spike");
 
@@ -177,10 +177,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListClear() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListClear() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_CLEAR);
@@ -197,10 +197,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListGet() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListGet() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 2);
@@ -215,11 +215,11 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListGetByIndexIndex() throws Exception {
+	public void testListGetByIndexIndex() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 2);
@@ -234,12 +234,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListGetByIndexReverseRank() throws Exception {
+	public void testListGetByIndexReverseRank() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 2);
@@ -255,11 +255,11 @@ public class OperateListTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListGetByIndexRange() throws Exception {
+	public void testListGetByIndexRange() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -278,11 +278,11 @@ public class OperateListTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListGetByIndexRangeNoCount() throws Exception {
+	public void testListGetByIndexRangeNoCount() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -299,12 +299,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListGetByRankValue() throws Exception {
+	public void testListGetByRankValue() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("rank", 2);
@@ -320,12 +320,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListGetByRankIndex() throws Exception {
+	public void testListGetByRankIndex() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("rank", 2);
@@ -341,12 +341,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListGetByRankRange() throws Exception {
+	public void testListGetByRankRange() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("rank", 1);
@@ -362,18 +362,18 @@ public class OperateListTestsCorrect {
 		@SuppressWarnings("unchecked")
 		List<Object> retItems = (List<Object>) binsObject.get("list");
 
-		Set<Object> retItemSet = new HashSet<Object>(retItems);
-		Set<Object>expectedSet = new HashSet<Object>(Arrays.asList(1, 2, 3));
-		Assert.assertTrue(retItemSet.equals(expectedSet));
+		Set<Object> retItemSet = new HashSet<>(retItems);
+		Set<Object>expectedSet = new HashSet<>(Arrays.asList(1, 2, 3));
+		Assert.assertEquals(retItemSet, expectedSet);
 	}
 
 	@Test
-	public void testListGetByRankRangeNoCount() throws Exception {
+	public void testListGetByRankRangeNoCount() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("rank", 1);
@@ -388,18 +388,18 @@ public class OperateListTestsCorrect {
 		@SuppressWarnings("unchecked")
 		List<Object> retItems = (List<Object>) binsObject.get("list");
 
-		Set<Object> retItemSet = new HashSet<Object>(retItems);
-		Set<Object>expectedSet = new HashSet<Object>(Arrays.asList(1, 2, 3, 4));
-		Assert.assertTrue(retItemSet.equals(expectedSet));
+		Set<Object> retItemSet = new HashSet<>(retItems);
+		Set<Object>expectedSet = new HashSet<>(Arrays.asList(1, 2, 3, 4));
+		Assert.assertEquals(retItemSet, expectedSet);
 	}
 
 	@Test
-	public void testListGetByValueRelRankRange() throws Exception {
+	public void testListGetByValueRelRankRange() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("rank", 1);
@@ -416,18 +416,18 @@ public class OperateListTestsCorrect {
 		@SuppressWarnings("unchecked")
 		List<Object> retItems = (List<Object>) binsObject.get("list");
 
-		Set<Object> retItemSet = new HashSet<Object>(retItems);
-		Set<Object>expectedSet = new HashSet<Object>(Arrays.asList(3, 4));
-		Assert.assertTrue(retItemSet.equals(expectedSet));
+		Set<Object> retItemSet = new HashSet<>(retItems);
+		Set<Object>expectedSet = new HashSet<>(Arrays.asList(3, 4));
+		Assert.assertEquals(retItemSet, expectedSet);
 	}
 
 	@Test
-	public void testListGetByValueRelRankRangeNoCount() throws Exception {
+	public void testListGetByValueRelRankRangeNoCount() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("rank", 2);
@@ -443,16 +443,16 @@ public class OperateListTestsCorrect {
 		@SuppressWarnings("unchecked")
 		List<Object> retItems = (List<Object>) binsObject.get("list");
 
-		Set<Object> retItemSet = new HashSet<Object>(retItems);
-		Set<Object>expectedSet = new HashSet<Object>(Arrays.asList(2, 3, 4));
-		Assert.assertTrue(retItemSet.equals(expectedSet));
+		Set<Object> retItemSet = new HashSet<>(retItems);
+		Set<Object>expectedSet = new HashSet<>(Arrays.asList(2, 3, 4));
+		Assert.assertEquals(retItemSet, expectedSet);
 	}
 
 	@Test
-	public void testListGetByValueIndex() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListGetByValueIndex() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("value", 0);
@@ -464,17 +464,17 @@ public class OperateListTestsCorrect {
 
 		Map<String, Object>binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-		Assert.assertTrue(ASTestUtils.compareCollection((List<?>) binsObject.get("list"), Arrays.asList(2)));
+		Assert.assertTrue(ASTestUtils.compareCollection((List<?>) binsObject.get("list"), Collections.singletonList(2)));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListGetByValueRange() throws Exception {
+	public void testListGetByValueRange() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("valueBegin", 1);
@@ -489,18 +489,18 @@ public class OperateListTestsCorrect {
 
 		List<Object> retItems = (List<Object>) binsObject.get("list");
 
-		Set<Object> retItemSet = new HashSet<Object>(retItems);
-		Set<Object>expectedSet = new HashSet<Object>(Arrays.asList(1, 2, 3));
-		Assert.assertTrue(retItemSet.equals(expectedSet));
+		Set<Object> retItemSet = new HashSet<>(retItems);
+		Set<Object>expectedSet = new HashSet<>(Arrays.asList(1, 2, 3));
+		Assert.assertEquals(retItemSet, expectedSet);
 	}
 
 	@Test
-	public void testListGetByValueRangeNoEnd() throws Exception {
+	public void testListGetByValueRangeNoEnd() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("valueBegin", 1);
@@ -515,19 +515,19 @@ public class OperateListTestsCorrect {
 		@SuppressWarnings("unchecked")
 		List<Object> retItems = (List<Object>) binsObject.get("list");
 
-		Set<Object> retItemSet = new HashSet<Object>(retItems);
-		Set<Object>expectedSet = new HashSet<Object>(Arrays.asList(1, 2, 3, 4));
-		Assert.assertTrue(retItemSet.equals(expectedSet));
+		Set<Object> retItemSet = new HashSet<>(retItems);
+		Set<Object>expectedSet = new HashSet<>(Arrays.asList(1, 2, 3, 4));
+		Assert.assertEquals(retItemSet, expectedSet);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListGetByValueRangeNoBegin() throws Exception {
+	public void testListGetByValueRangeNoBegin() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("valueEnd", 4);
@@ -541,19 +541,19 @@ public class OperateListTestsCorrect {
 
 		List<Object> retItems = (List<Object>) binsObject.get("list");
 
-		Set<Object> retItemSet = new HashSet<Object>(retItems);
-		Set<Object>expectedSet = new HashSet<Object>(Arrays.asList(0, 1, 2, 3));
-		Assert.assertTrue(retItemSet.equals(expectedSet));
+		Set<Object> retItemSet = new HashSet<>(retItems);
+		Set<Object>expectedSet = new HashSet<>(Arrays.asList(0, 1, 2, 3));
+		Assert.assertEquals(retItemSet, expectedSet);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListGetByValueList() throws Exception {
+	public void testListGetByValueList() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("values", Arrays.asList(0, 1, 4));
@@ -567,17 +567,17 @@ public class OperateListTestsCorrect {
 
 		List<Object> retItems = (List<Object>) binsObject.get("list");
 
-		Set<Object> retItemSet = new HashSet<Object>(retItems);
-		Set<Object>expectedSet = new HashSet<Object>(Arrays.asList(2, 0, 4));
-		Assert.assertTrue(retItemSet.equals(expectedSet));
+		Set<Object> retItemSet = new HashSet<>(retItems);
+		Set<Object>expectedSet = new HashSet<>(Arrays.asList(2, 0, 4));
+		Assert.assertEquals(retItemSet, expectedSet);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListGetRange() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListGetRange() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -596,10 +596,10 @@ public class OperateListTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListGetRangeNoCount() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListGetRangeNoCount() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -616,10 +616,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListIncrement() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListIncrement() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -638,10 +638,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListIncrementNoValue() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListIncrementNoValue() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
 		opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_INCREMENT);
@@ -658,12 +658,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListIncrementWithPolicy() throws Exception {
+	public void testListIncrementWithPolicy() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		Map<String,Object>listPolicyMap = buildListPolicyMap(ListOrder.UNORDERED, ListWriteFlags.DEFAULT);
 
 		opValues.put("bin", "list");
@@ -684,10 +684,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListInsert() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListInsert() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -707,11 +707,11 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListInsertPolicy() throws Exception {
+	public void testListInsertPolicy() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		Map<String,Object>listPolicyMap = buildListPolicyMap(ListOrder.UNORDERED, ListWriteFlags.DEFAULT);
 
 		opValues.put("bin", "list");
@@ -731,10 +731,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListInsertItems() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListInsertItems() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -756,12 +756,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListInsertItemsPolicy() throws Exception {
+	public void testListInsertItemsPolicy() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		Map<String,Object>listPolicyMap = buildListPolicyMap(ListOrder.UNORDERED, ListWriteFlags.DEFAULT);
 
 		opValues.put("bin", "list");
@@ -785,10 +785,10 @@ public class OperateListTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListPop() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListPop() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -808,10 +808,10 @@ public class OperateListTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListPopRange() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListPopRange() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -834,10 +834,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListPopRangeNoCount() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListPopRangeNoCount() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -862,10 +862,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListRemove() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListRemove() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 2);
@@ -883,12 +883,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListRemoveByIndex() throws Exception {
+	public void testListRemoveByIndex() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 2);
@@ -898,7 +898,6 @@ public class OperateListTestsCorrect {
 		opList.add(opMap);
 
 		Map<String, Object>returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
-
 
 		//The popped value was the smallest element, so it's rank should be 0
 		Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 0));
@@ -911,12 +910,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListRemoveByIndexRange() throws Exception {
+	public void testListRemoveByIndexRange() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -931,7 +930,6 @@ public class OperateListTestsCorrect {
 		//Three items were removed, so the server should return 3 items
 		Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 3));
 
-
 		@SuppressWarnings("unchecked")
 		List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
 
@@ -942,12 +940,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListRemoveByIndexRangeNoCount() throws Exception {
+	public void testListRemoveByIndexRangeNoCount() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -961,7 +959,6 @@ public class OperateListTestsCorrect {
 		//Three items were removed, so the server should return 3 items
 		Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 4));
 
-
 		@SuppressWarnings("unchecked")
 		List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
 
@@ -974,12 +971,12 @@ public class OperateListTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListRemoveByRank() throws Exception {
+	public void testListRemoveByRank() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("rank", 0);
@@ -999,12 +996,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListRemoveByRankRange() throws Exception {
+	public void testListRemoveByRankRange() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("rank", 1);
@@ -1022,12 +1019,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListRemoveByRankRangeNoCount() throws Exception {
+	public void testListRemoveByRankRangeNoCount() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("rank", 1);
@@ -1040,16 +1037,16 @@ public class OperateListTestsCorrect {
 
 		@SuppressWarnings("unchecked")
 		List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
-		Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(0)));
+		Assert.assertTrue(ASTestUtils.compareCollection(retItems, Collections.singletonList(0)));
 	}
 
 	@Test
-	public void testListRemoveByValueRelRankRange() throws Exception {
+	public void testListRemoveByValueRelRankRange() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("value", 1);
@@ -1068,12 +1065,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListRemoveByValueRelRankRangeNoCount() throws Exception {
+	public void testListRemoveByValueRelRankRangeNoCount() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("value", 1);
@@ -1091,15 +1088,15 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListRemoveByValue() throws Exception {
+	public void testListRemoveByValue() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
 		objectList.add(0);
 		Bin newListBin = new Bin("list", objectList);
 		client.put(null, testKey, newListBin);
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("value", 0);
@@ -1121,12 +1118,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListRemoveByValueRange() throws Exception {
+	public void testListRemoveByValueRange() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("valueBegin", 1);
@@ -1147,12 +1144,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListRemoveByValueRangeNoBegin() throws Exception {
+	public void testListRemoveByValueRangeNoBegin() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("valueEnd", 3);
@@ -1173,12 +1170,12 @@ public class OperateListTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListRemoveByValueRangeNoEnd() throws Exception {
+	public void testListRemoveByValueRangeNoEnd() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("valueBegin", 1);
@@ -1193,20 +1190,20 @@ public class OperateListTestsCorrect {
 		Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 4));
 
 		List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
-		Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(0)));
+		Assert.assertTrue(ASTestUtils.compareCollection(retItems, Collections.singletonList(0)));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testListRemoveByValueList() throws Exception {
+	public void testListRemoveByValueList() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
 		objectList.add(0);
 		Bin newListBin = new Bin("list", objectList);
 		client.put(null, testKey, newListBin);
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("values", Arrays.asList(0, 2, 4));
@@ -1227,11 +1224,11 @@ public class OperateListTestsCorrect {
 
 
 	@Test
-	public void testListRemoveRange() throws Exception {
+	public void testListRemoveRange() {
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -1252,11 +1249,11 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListRemoveRangeNoCount() throws Exception {
+	public void testListRemoveRangeNoCount() {
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -1277,10 +1274,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListSetValue() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListSetValue() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("value", "two");
@@ -1298,12 +1295,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListSetValueWithPolicy() throws Exception {
+	public void testListSetValueWithPolicy() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		Map<String,Object>listPolicyMap = buildListPolicyMap(ListOrder.UNORDERED, ListWriteFlags.ADD_UNIQUE);
 
 		opValues.put("bin", "list");
@@ -1323,12 +1320,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListSetOrder() throws Exception {
+	public void testListSetOrder() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("listOrder", "ORDERED");
@@ -1345,10 +1342,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListSize() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListSize() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_SIZE);
@@ -1361,12 +1358,12 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListSort() throws Exception {
+	public void testListSort() {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_SORT);
@@ -1381,10 +1378,10 @@ public class OperateListTestsCorrect {
 	}
 
 	@Test
-	public void testListTrim() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testListTrim() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "list");
 		opValues.put("index", 1);
@@ -1418,12 +1415,12 @@ public class OperateListTestsCorrect {
 
 		@SuppressWarnings("unchecked")
 		List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
-		Assert.assertTrue(((List)retItems.get(7)).isEmpty());
+		Assert.assertTrue(((List<?>)retItems.get(7)).isEmpty());
 	}
 
 	private Map<String,Object> buildListPolicyMap(ListOrder order, int flags) {
-		Map<String, Object> policyMap = new HashMap<String, Object>();
-		List<Object> flagStrings = new ArrayList<Object>();
+		Map<String, Object> policyMap = new HashMap<>();
+		List<Object> flagStrings = new ArrayList<>();
 		if (order == ListOrder.ORDERED) {
 			policyMap.put("order", "ORDERED");
 		} else if (order == ListOrder.UNORDERED) {
@@ -1440,7 +1437,7 @@ public class OperateListTestsCorrect {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<String, Object>getReturnedBins(Map<String, Object> rec) throws Exception {
+	private Map<String, Object>getReturnedBins(Map<String, Object> rec) {
 		return (Map<String, Object>) rec.get("bins");
 	}
 
