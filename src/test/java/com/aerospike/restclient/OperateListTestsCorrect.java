@@ -59,6 +59,7 @@ public class OperateListTestsCorrect {
     private WebApplicationContext wac;
 
     List<Object> objectList;
+    List<Object> objectMapList;
     private final Key testKey;
     private final String testEndpoint;
 
@@ -66,15 +67,24 @@ public class OperateListTestsCorrect {
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
         Bin strBin = new Bin("str", "bin");
-        objectList = new ArrayList<Object>();
+        objectList = new ArrayList<>();
         objectList.add(1L);
         objectList.add(2L);
         objectList.add(0L);
         objectList.add(3L);
         objectList.add(4L);
 
+        Map<String, String> mapValue = new HashMap<>();
+        mapValue.put("3", "b");
+        mapValue.put("1", "a");
+        mapValue.put("5", "c");
+
+        objectMapList = new ArrayList<>();
+        objectMapList.add(mapValue);
+
         Bin listBin = new Bin("list", objectList);
-        client.put(null, testKey, strBin, listBin);
+        Bin mapBin = new Bin("map", objectMapList);
+        client.put(null, testKey, strBin, listBin, mapBin);
     }
 
     @After
@@ -570,6 +580,32 @@ public class OperateListTestsCorrect {
         Set<Object> retItemSet = new HashSet<>(retItems);
         Set<Object> expectedSet = new HashSet<>(Arrays.asList(2, 0, 4));
         Assert.assertEquals(retItemSet, expectedSet);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testListGetByMapValueList() {
+        Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
+
+        List<Map<String, Object>> opList = new ArrayList<>();
+        Map<String, Object> opMap = new HashMap<>();
+        Map<String, Object> opValues = new HashMap<>();
+
+        opValues.put("bin", "map");
+        opValues.put("values", objectMapList);
+        opValues.put("listReturnType", "INDEX");
+        opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_GET_BY_VALUE_LIST);
+        opMap.put(OPERATION_VALUES_FIELD, opValues);
+
+        opList.add(opMap);
+
+        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+
+        List<Object> retItems = (List<Object>) binsObject.get("map");
+
+        Set<Object> retItemSet = new HashSet<>(retItems);
+        Set<Object> expectedSet = new HashSet<>(Collections.singletonList(0));
+        Assert.assertEquals(expectedSet, retItemSet);
     }
 
     @SuppressWarnings("unchecked")
