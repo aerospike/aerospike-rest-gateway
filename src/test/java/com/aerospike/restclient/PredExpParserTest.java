@@ -40,8 +40,8 @@ public class PredExpParserTest {
     private WebApplicationContext wac;
 
     private MockMvc mockMVC;
-    private RecordDeserializer recordDeserializer;
-    private String currentMediaType;
+    private final RecordDeserializer recordDeserializer;
+    private final String currentMediaType;
 
     /*
      * Returns a two item array, of mediatype and record deserializer
@@ -56,17 +56,17 @@ public class PredExpParserTest {
         };
     }
 
-    private Key testKey;
-    private Key intKey;
-    private Key bytesKey;
+    private final Key testKey;
+    private final Key intKey;
+    private final Key bytesKey;
 
     private List<Key> keysToRemove;
 
     // Endpoint to receive all requests
-    private String noBinEndpoint;
-    private String intEndpoint;
-    private String bytesEndpoint;
-    private String digestEndpoint;
+    private final String noBinEndpoint;
+    private final String intEndpoint;
+    private final String bytesEndpoint;
+    private final String digestEndpoint;
 
 
     @Before

@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 class JSONOperationPerformer implements OperationPerformer {
 	ObjectMapper mapper;
-	private TypeReference<Map<String, Object>>recordType = new TypeReference<Map<String, Object>>() {};
+	private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {};
 
 	public JSONOperationPerformer() {
 		this.mapper = new ObjectMapper();

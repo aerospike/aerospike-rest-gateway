@@ -41,11 +41,11 @@ public class OperateHLLTestsCorrect {
     @Autowired
     private WebApplicationContext wac;
 
-    private Key testKey;
-    private String testEndpoint;
+    private final Key testKey;
+    private final String testEndpoint;
 
-    private List<Object> values = Arrays.asList("a", "b", "c", "d", "e", "f", "g", "g");
-    private List<Object> values2 = Arrays.asList("a", "b", "c", "d", "e", "h", "i", "j");
+    private final List<Object> values = Arrays.asList("a", "b", "c", "d", "e", "f", "g", "g");
+    private final List<Object> values2 = Arrays.asList("a", "b", "c", "d", "e", "h", "i", "j");
 
     @Before
     public void setup() {
@@ -58,7 +58,7 @@ public class OperateHLLTestsCorrect {
     public void clean() {
     }
 
-    private OperationPerformer opPerformer;
+    private final OperationPerformer opPerformer;
 
     @Parameterized.Parameters
     public static Object[][] getParams() {

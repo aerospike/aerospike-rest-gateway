@@ -41,10 +41,10 @@ public class NestedCdtOperationsTest {
     @Autowired
     private WebApplicationContext wac;
 
-    private OperationPerformer opPerformer;
+    private final OperationPerformer opPerformer;
 
-    private Key testKey = new Key("test", "junit", "nested");
-    private String testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "nested");
+    private final Key testKey = new Key("test", "junit", "nested");
+    private final String testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "nested");
 
     private List<Object> l1, l2, l3, objectList;
     private Map<Object, Object> m1, m2, objectMap;

@@ -20,7 +20,6 @@ import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.Record;
-import com.aerospike.client.Value.BytesValue;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,12 +55,12 @@ public class MsgPackOperateTest {
 	@Autowired
 	private WebApplicationContext wac;
 
-	private Key testKey = new Key("test", "junit", "operate");
-	private Key intKey = new Key("test", "junit", 1);
-	private Key bytesKey = new Key("test", "junit", new byte[] {1, 127, 127, 1});
+	private final Key testKey = new Key("test", "junit", "operate");
+	private final Key intKey = new Key("test", "junit", 1);
+	private final Key bytesKey = new Key("test", "junit", new byte[] {1, 127, 127, 1});
 
-	private String testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "operate");
-	private TypeReference<Map<String, Object>>binType = new TypeReference<Map<String, Object>>() {};
+	private final String testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "operate");
+	private final TypeReference<Map<String, Object>> binType = new TypeReference<Map<String, Object>>() {};
 	@Before
 	public void setup() {
 		objectMapper = new ObjectMapper(new MessagePackFactory());
@@ -83,9 +82,9 @@ public class MsgPackOperateTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetOp() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		opMap.put(OPERATION_FIELD, AerospikeOperation.GET);
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 
@@ -102,9 +101,9 @@ public class MsgPackOperateTest {
 	@Test
 	public void testAddOp() throws Exception {
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "int");
 		opValues.put("incr", 2);
@@ -115,7 +114,7 @@ public class MsgPackOperateTest {
 		byte[] payload = objectMapper.writeValueAsBytes(opList);
 		ASTestUtils.performOperation(mockMVC, testEndpoint, payload);
 
-		Map<String, Object> expectedBins = new HashMap<String, Object>();
+		Map<String, Object> expectedBins = new HashMap<>();
 		expectedBins.put("str", "bin");
 		expectedBins.put("int", 7L);
 
@@ -127,9 +126,9 @@ public class MsgPackOperateTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testReadOp() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		opMap.put(OPERATION_FIELD, AerospikeOperation.READ);
 		opValues.put("bin", "str");
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
@@ -148,9 +147,9 @@ public class MsgPackOperateTest {
 	@Test
 	public void testPutOp() throws Exception {
 
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "new");
 		opValues.put("value", "put");
@@ -162,7 +161,7 @@ public class MsgPackOperateTest {
 
 		ASTestUtils.performOperation(mockMVC, testEndpoint, payload);
 
-		Map<String, Object> expectedBins = new HashMap<String, Object>();
+		Map<String, Object> expectedBins = new HashMap<>();
 		expectedBins.put("str", "bin");
 		expectedBins.put("int", 5L);
 		expectedBins.put("new", "put");
@@ -175,9 +174,9 @@ public class MsgPackOperateTest {
 
 	@Test
 	public void testAppendOp() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		opMap.put(OPERATION_FIELD, AerospikeOperation.APPEND);
 		opValues.put("value", "ary");
 		opValues.put("bin", "str");
@@ -189,7 +188,7 @@ public class MsgPackOperateTest {
 		ASTestUtils.performOperation(mockMVC, testEndpoint, payload);
 
 		/* Only read the str bin on the get*/
-		Map<String, Object> expectedBins = new HashMap<String, Object>();
+		Map<String, Object> expectedBins = new HashMap<>();
 		expectedBins.put("str", "binary");
 		Map<String, Object>realBins = client.get(null, testKey, "str").bins;
 
@@ -198,9 +197,9 @@ public class MsgPackOperateTest {
 
 	@Test
 	public void testPrependOp() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opMap.put(OPERATION_FIELD, AerospikeOperation.PREPEND);
 		opValues.put("value", "ro");
@@ -213,7 +212,7 @@ public class MsgPackOperateTest {
 		ASTestUtils.performOperation(mockMVC, testEndpoint, payload);
 
 		/* Only read the str bin on the get*/
-		Map<String, Object> expectedBins = new HashMap<String, Object>();
+		Map<String, Object> expectedBins = new HashMap<>();
 		expectedBins.put("str", "robin");
 		Map<String, Object>realBins = client.get(null, testKey, "str").bins;
 
@@ -222,9 +221,9 @@ public class MsgPackOperateTest {
 
 	@Test
 	public void testTouchOp() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		Record record = client.get(null, testKey);
 		int oldGeneration = record.generation;
@@ -243,9 +242,9 @@ public class MsgPackOperateTest {
 
 	@Test
 	public void testTouchOpWithIntegerKey() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		String intEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "1") + "?keytype=INTEGER";
 		Record record = client.get(null, intKey);
 		int oldGeneration = record.generation;
@@ -264,11 +263,11 @@ public class MsgPackOperateTest {
 
 	@Test
 	public void testTouchOpWithBytesKey() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
-		String urlBytes = Base64.getUrlEncoder().encodeToString((byte[])((BytesValue)bytesKey.userKey).getObject());
+		String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
 		String bytesEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", urlBytes) + "?keytype=BYTES";
 
 		Record record = client.get(null, bytesKey);
@@ -291,9 +290,9 @@ public class MsgPackOperateTest {
 	 */
 	@Test
 	public void testTouchOpWithDigestKey() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		String urlBytes = Base64.getUrlEncoder().encodeToString(testKey.digest);
 		String bytesEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", urlBytes) + "?keytype=DIGEST";
