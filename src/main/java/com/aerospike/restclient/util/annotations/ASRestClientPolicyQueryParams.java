@@ -88,6 +88,11 @@ import java.lang.annotation.Target;
                 paramType = "query",
                 value = QueryParamDescriptors.POLICY_PRED_EXP_NOTES),
         @ApiImplicitParam(
+                name = AerospikeAPIConstants.FILTER_EXP,
+                dataType = "string",
+                paramType = "query",
+                value = QueryParamDescriptors.POLICY_FILTER_EXP_NOTES),
+        @ApiImplicitParam(
                 name = AerospikeAPIConstants.COMPRESS,
                 dataType = "boolean",
                 paramType = "query",

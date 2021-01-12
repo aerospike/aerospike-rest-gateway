@@ -45,8 +45,11 @@ public class QueryParamDescriptors {
     public static final String POLICY_MAX_RETRIES_NOTES = "Maximum number of retries before aborting the current transaction.\n" +
             "The initial attempt is not counted as a retry.";
 
-    public static final String POLICY_PRED_EXP_NOTES = "Optional predicate expression filter in postfix notation. If the predicate " +
-            "expression exists and evaluates to false, the transaction is ignored.";
+    public static final String POLICY_PRED_EXP_NOTES = "Optional Predicate Expression filter (obsolete as of Aerospike Database 5.2.0) " +
+            "in infix notation DSL. If the Predicate Expression exists and evaluates to false, the transaction is ignored.";
+
+    public static final String POLICY_FILTER_EXP_NOTES = "Optional Filter Expression (introduced in Aerospike Database 5.2.0) " +
+            "in infix notation DSL.";
 
     public static final String POLICY_COMPRESS_NOTES = "Use zlib compression on command buffers sent to the server and responses received " +
             "from the server when the buffer size is greater than 128 bytes.";
