@@ -67,6 +67,10 @@ public class PolicyConverter {
 			policy.predExp = PolicyValueConverter.getPredExp(
 					policyMap.get(AerospikeAPIConstants.PRED_EXP));
 		}
+		if (policyMap.containsKey(AerospikeAPIConstants.FILTER_EXP)) {
+			policy.filterExp = PolicyValueConverter.getFilterExp(
+					policyMap.get(AerospikeAPIConstants.FILTER_EXP));
+		}
 		if (policyMap.containsKey(AerospikeAPIConstants.COMPRESS)) {
 			policy.compress = PolicyValueConverter.getCompress(
 					policyMap.get(AerospikeAPIConstants.COMPRESS));
