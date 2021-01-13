@@ -20,7 +20,6 @@ import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Operation;
 import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.WritePolicy;
-import com.aerospike.client.query.PredExp;
 import com.aerospike.client.query.Statement;
 import com.aerospike.client.task.ExecuteTask;
 import com.aerospike.restclient.domain.RestClientExecuteTask;
@@ -55,10 +54,6 @@ public class ExecuteHandler {
         if (requestParams.containsKey(AerospikeAPIConstants.RECORDS_PER_SECOND)) {
             int recordsPerSecond = PolicyValueConverter.getIntValue(requestParams.get(AerospikeAPIConstants.RECORDS_PER_SECOND));
             stmt.setRecordsPerSecond(recordsPerSecond);
-        }
-        if (requestParams.containsKey(AerospikeAPIConstants.PRED_EXP)) {
-            PredExp[] predExps = PolicyValueConverter.getPredExp(requestParams.get(AerospikeAPIConstants.PRED_EXP));
-            stmt.setPredExp(predExps);
         }
 
         List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap).collect(Collectors.toList());

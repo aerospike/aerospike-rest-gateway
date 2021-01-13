@@ -59,20 +59,20 @@ public class OperateMapTestsCorrect {
 	@Autowired
 	private WebApplicationContext wac;
 
-	private OperationPerformer opPerformer = null;
+	private OperationPerformer opPerformer;
 
 	private Map<Object, Object> objectMap;
 	private Map<Object, Object> objectMapInt;
 	private List<Map<String, Object>> opList;
-	private String mapBinName = "map";
-	private String mapBinNameInt = "mapint";
-	private Key testKey = new Key("test", "junit", "mapop");
-	private String testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "mapop");
+	private final String mapBinName = "map";
+	private final String mapBinNameInt = "mapint";
+	private final Key testKey;
+	private final String testEndpoint;
 
 	@Before
 	public void setup() {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-		objectMap = new HashMap<Object, Object>();
+		objectMap = new HashMap<>();
 		objectMap.put("one", 1);
 		objectMap.put("two", 2);
 		objectMap.put("three", 3);
@@ -81,7 +81,7 @@ public class OperateMapTestsCorrect {
 		Bin mapBin = new Bin(mapBinName, objectMap);
 
 		// Create a map with only integer values, for rank operation simplicity
-		objectMapInt = new HashMap<Object, Object>();
+		objectMapInt = new HashMap<>();
 		objectMapInt.put("one", 1);
 		objectMapInt.put("two", 2);
 		objectMapInt.put("three", 3);
@@ -95,7 +95,7 @@ public class OperateMapTestsCorrect {
 						new MapPolicy(MapOrder.KEY_ORDERED, MapWriteMode.UPDATE), mapBinName),
 				MapOperation.setMapPolicy(
 						new MapPolicy(MapOrder.KEY_ORDERED, MapWriteMode.UPDATE), mapBinNameInt));
-		opList = new ArrayList<Map<String, Object>>();
+		opList = new ArrayList<>();
 
 	}
 
@@ -126,9 +126,9 @@ public class OperateMapTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapClear() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+	public void testMapClear() {
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_CLEAR);
@@ -144,9 +144,9 @@ public class OperateMapTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapDecrement() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+	public void testMapDecrement() {
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		Map<String, Object>policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteMode.UPDATE);
 
@@ -168,9 +168,9 @@ public class OperateMapTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapIncrement() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+	public void testMapIncrement() {
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		Map<String, Object>policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteMode.UPDATE);
 
@@ -192,8 +192,8 @@ public class OperateMapTestsCorrect {
 
 	@Test
 	public void testMapGetByIndex() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put("index", 0);
@@ -210,8 +210,8 @@ public class OperateMapTestsCorrect {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMapGetByIndexRange() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put("index", 1);
@@ -231,8 +231,8 @@ public class OperateMapTestsCorrect {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMapGetByIndexRangeNoCount() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put("index", 1);
@@ -250,8 +250,8 @@ public class OperateMapTestsCorrect {
 
 	@Test
 	public void testMapGetByKey() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put("key", "three");
@@ -289,8 +289,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapGetByKeyList() throws Exception {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put("keys", Arrays.asList("aero", "two", "three"));
@@ -309,8 +309,8 @@ public class OperateMapTestsCorrect {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMapGetByKeyRange() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
@@ -331,8 +331,8 @@ public class OperateMapTestsCorrect {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMapGetByKeyRangeNoBegin() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		// A value after "ten"
@@ -352,8 +352,8 @@ public class OperateMapTestsCorrect {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMapGetByKeyRangeNoEnd() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
@@ -373,8 +373,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapGetByRank() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("rank", 4);
@@ -391,8 +391,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapGetByRankRange() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("rank", 1);
@@ -412,8 +412,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapGetByRankRangeNoCount() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("rank", 1);
@@ -433,8 +433,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapGetByValue() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put("value", 3);
@@ -457,8 +457,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapGetByValueRange() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put(OperationConverter.VALUE_BEGIN_KEY, 1);
@@ -479,8 +479,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapGetByValueRangeNoBegin() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put(OperationConverter.VALUE_END_KEY, 4);
@@ -500,8 +500,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapGetByValueRangeNoEnd() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put(OperationConverter.VALUE_BEGIN_KEY, 1);
@@ -521,8 +521,8 @@ public class OperateMapTestsCorrect {
 	public void testMapGetByValueList() throws Exception {
 		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("values", Arrays.asList(0, 2, 10));
@@ -540,8 +540,8 @@ public class OperateMapTestsCorrect {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMapGetByKeyRelIndexRange() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("value", "one");
@@ -566,8 +566,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapGetByValueRelRankRange() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("value", 1);
@@ -589,9 +589,9 @@ public class OperateMapTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapPut() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+	public void testMapPut() {
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		Map<String, Object>policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteMode.UPDATE);
 
@@ -613,13 +613,13 @@ public class OperateMapTestsCorrect {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapPutItems() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+	public void testMapPutItems() {
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		Map<String, Object>policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteMode.UPDATE);
 
-		Map<Object, Object> putValues = new HashMap<Object, Object>();
+		Map<Object, Object> putValues = new HashMap<>();
 		putValues.put("five", 5);
 		putValues.put("six", 6);
 		putValues.put("list", Arrays.asList(1, 2, 3));
@@ -646,8 +646,8 @@ public class OperateMapTestsCorrect {
 
 	@Test
 	public void testMapRemoveByIndex() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put("index", 0);
@@ -668,8 +668,8 @@ public class OperateMapTestsCorrect {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMapRemoveByIndexRange() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put("index", 0);
@@ -695,8 +695,8 @@ public class OperateMapTestsCorrect {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMapRemoveByIndexRangeNoCount() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put("index", 0);
@@ -719,8 +719,8 @@ public class OperateMapTestsCorrect {
 
 	@Test
 	public void testMapRemoveByKey() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put("key", "two");
@@ -742,8 +742,8 @@ public class OperateMapTestsCorrect {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMapRemoveByKeyRange() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
@@ -769,8 +769,8 @@ public class OperateMapTestsCorrect {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMapRemoveByKeyRangeNoBegin() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 
@@ -797,8 +797,8 @@ public class OperateMapTestsCorrect {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMapRemoveByKeyRangeNoEnd() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
@@ -825,8 +825,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapRemoveByRank() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("rank", 2);
@@ -849,8 +849,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapRemoveByRankRange() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("rank", 1);
@@ -881,8 +881,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapRemoveByRankRangeNoCount() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("rank", 1);
@@ -910,8 +910,8 @@ public class OperateMapTestsCorrect {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testMapRemoveByKeyRelIndexRange() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("value", "one");
@@ -936,8 +936,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapRemoveByValueRelRankRange() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("value", 10);
@@ -962,8 +962,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapRemoveByValue() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put("value", 3);
@@ -993,8 +993,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapRemoveByValueRange() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put(OperationConverter.VALUE_BEGIN_KEY, 1);
@@ -1022,8 +1022,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapRemoveByValueRangeNoBegin() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put(OperationConverter.VALUE_END_KEY, 4);
@@ -1051,8 +1051,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapRemoveByValueRangeNoEnd() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put(OperationConverter.VALUE_BEGIN_KEY, 1);
@@ -1080,8 +1080,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapRemoveByValueList() throws Exception {
 
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinNameInt);
 		opValues.put("values", Arrays.asList(1, 2, 3));
@@ -1112,8 +1112,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapWriteFlagsCreateOnly() throws Exception {
 		Map<String, Object>policyMap = getMapPolicyMap(MapOrder.UNORDERED, MapWriteFlags.CREATE_ONLY);
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 		String newKey = "new_key";
 		String newVal = "new_value";
 		Map<Object, Object>expected = new HashMap<>();
@@ -1136,7 +1136,6 @@ public class OperateMapTestsCorrect {
 		Assert.assertEquals(newVal, realMapBin.get(newKey));
 
 		opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opList, status().isInternalServerError());
-
 	}
 
 	/*
@@ -1146,8 +1145,8 @@ public class OperateMapTestsCorrect {
 	@Test
 	public void testMapWriteFlagsUpdateOnlyError() throws Exception {
 		Map<String, Object>policyMap = getMapPolicyMap(MapOrder.UNORDERED, MapWriteFlags.UPDATE_ONLY);
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 		String newKey = "new_key";
 		String newVal = "new_value";
 		Map<Object, Object>expected = new HashMap<>();
@@ -1171,10 +1170,10 @@ public class OperateMapTestsCorrect {
 	 * Test that a map put operation with update only can update an existing item.
 	 */
 	@Test
-	public void testMapWriteFlagsUpdateOnlyNoError() throws Exception {
+	public void testMapWriteFlagsUpdateOnlyNoError() {
 		Map<String, Object>policyMap = getMapPolicyMap(MapOrder.UNORDERED, MapWriteFlags.UPDATE_ONLY);
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 		String existingKey = "aero";
 		String newVal = "new_value";
 		Map<Object, Object>expected = new HashMap<>();
@@ -1204,11 +1203,11 @@ public class OperateMapTestsCorrect {
 	 * and the resulting map to not have new_key, and to contain {"aero"=>"new_val"}
 	 */
 	@Test
-	public void testMapWriteFlagsUpdateOnlyPartialNoFail() throws Exception {
+	public void testMapWriteFlagsUpdateOnlyPartialNoFail() {
 		Map<String, Object>policyMap = getMapPolicyMap(MapOrder.UNORDERED,
 				MapWriteFlags.UPDATE_ONLY | MapWriteFlags.PARTIAL | MapWriteFlags.NO_FAIL);
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 		String existingKey = "aero";
 		String newKey = "new_key";
 		String newVal = "new_value";
@@ -1218,7 +1217,7 @@ public class OperateMapTestsCorrect {
 		opValues.put("bin", mapBinName);
 		opValues.put(OperationConverter.MAP_POLICY_KEY, policyMap);
 
-		Map<Object, Object> putValues = new HashMap<Object, Object>();
+		Map<Object, Object> putValues = new HashMap<>();
 		putValues.put(existingKey, newVal);
 		putValues.put(newKey, newVal);
 		opValues.put("map", putValues);
@@ -1238,8 +1237,8 @@ public class OperateMapTestsCorrect {
 
 	@Test
 	public void testMapSize() throws Exception {
-		Map<String, Object>operation = new HashMap<String, Object>();
-		Map<String, Object>opValues = new HashMap<String, Object>();
+		Map<String, Object>operation = new HashMap<>();
+		Map<String, Object>opValues = new HashMap<>();
 
 		opValues.put("bin", mapBinName);
 		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_SIZE);
@@ -1249,9 +1248,10 @@ public class OperateMapTestsCorrect {
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 		Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), objectMap.size()));
 	}
+
 	/* HELPERS */
 	private Map<String, Object>getMapPolicyMap(MapOrder order, MapWriteMode writeMode) {
-		Map<String, Object>policyMap = new HashMap<String, Object>();
+		Map<String, Object>policyMap = new HashMap<>();
 		String orderString;
 		String writeModeString;
 		switch (order) {
@@ -1284,7 +1284,7 @@ public class OperateMapTestsCorrect {
 	}
 
 	private Map<String, Object>getMapPolicyMap(MapOrder order, int flags) {
-		Map<String, Object>policyMap = new HashMap<String, Object>();
+		Map<String, Object>policyMap = new HashMap<>();
 		String orderString;
 		List<String> writeFlags = new ArrayList<>();
 		switch (order) {
@@ -1319,7 +1319,6 @@ public class OperateMapTestsCorrect {
 		policyMap.put(OperationConverter.WRITE_FLAGS_KEY, writeFlags);
 		return policyMap;
 	}
-
 
 	@SuppressWarnings("unchecked")
 	private Map<String, Object>getReturnedBins(Map<String, Object> rec) throws Exception {

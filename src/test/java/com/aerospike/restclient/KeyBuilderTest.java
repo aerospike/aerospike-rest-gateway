@@ -29,9 +29,9 @@ import com.aerospike.restclient.util.KeyBuilder;
 import com.aerospike.restclient.util.RestClientErrors;
 
 public class KeyBuilderTest {
-	private String testNS = "keybuilderNS";
-	private String testSet = "keybuilderSet";
-	private String testStrKey = "keybuilderStr";
+	private final String testNS = "keybuilderNS";
+	private final String testSet = "keybuilderSet";
+	private final String testStrKey = "keybuilderStr";
 
 	@Test
 	public void testWithNoKeyType() {
@@ -96,7 +96,6 @@ public class KeyBuilderTest {
 		KeyBuilder.buildKey(testNS, testSet, "five", RecordKeyType.INTEGER);
 	}
 
-
 	/*
 	 * Helper to compare two AerospikeClient keys
 	 */
@@ -111,7 +110,6 @@ public class KeyBuilderTest {
 		} else if (realKey.setName != null) {
 			return false;
 		}
-
 
 		if (testKey.userKey != null) {
 			/* Need a different comparison for byte[] */
@@ -129,10 +127,6 @@ public class KeyBuilderTest {
 			return false;
 		}
 
-		if (! Arrays.equals(testKey.digest, realKey.digest)) {
-			return false;
-		}
-
-		return true;
+		return Arrays.equals(testKey.digest, realKey.digest);
 	}
 }

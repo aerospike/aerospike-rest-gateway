@@ -16,12 +16,16 @@
  */
 package com.aerospike.restclient.util.converters;
 
+import com.aerospike.client.exp.Expression;
 import com.aerospike.client.policy.*;
 import com.aerospike.client.query.PredExp;
 import com.aerospike.restclient.util.RestClientErrors;
-import com.aerospike.restclient.util.converters.predexp.PredExpParser;
+import com.aerospike.restclient.util.converters.exp.FilterExpParser;
+import com.aerospike.restclient.util.converters.exp.PredExpParser;
 
 public class PolicyValueConverter {
+    private static final PredExpParser predExpParser = new PredExpParser();
+    private static final FilterExpParser filterExpParser = new FilterExpParser();
 
     public static ReadModeAP getReadModeAP(String readModeAP) {
         try {
@@ -41,9 +45,17 @@ public class PolicyValueConverter {
 
     public static PredExp[] getPredExp(String predExp) {
         try {
-            return PredExpParser.parse(predExp);
+            return predExpParser.parse(predExp);
         } catch (Exception e) {
             throw new RestClientErrors.InvalidPolicyValueError("Invalid PredExp: " + predExp);
+        }
+    }
+
+    public static Expression getFilterExp(String filterExp) {
+        try {
+            return filterExpParser.parse(filterExp);
+        } catch (Exception e) {
+            throw new RestClientErrors.InvalidPolicyValueError("Invalid Filter Expression: " + filterExp);
         }
     }
 

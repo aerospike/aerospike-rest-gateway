@@ -51,14 +51,14 @@ public class ExecuteTests {
     private WebApplicationContext wac;
 
     private String setName;
-    private String namespace;
-    private String currentMediaType;
+    private final String namespace;
+    private final String currentMediaType;
 
     private static final int numberOfRecords = 10;
 
-    private Key[] testKeys;
-    private String testEndpoint;
-    private String queryStatusEndpoint;
+    private final Key[] testKeys;
+    private final String testEndpoint;
+    private final String queryStatusEndpoint;
 
     @Before
     public void setup() {
@@ -76,8 +76,8 @@ public class ExecuteTests {
         }
     }
 
-    private ObjectMapper objectMapper;
-    private ResponseDeserializer responseDeserializer;
+    private final ObjectMapper objectMapper;
+    private final ResponseDeserializer responseDeserializer;
 
     @Parameterized.Parameters
     public static Object[][] getParams() {

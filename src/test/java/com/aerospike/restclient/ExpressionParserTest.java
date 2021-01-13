@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(Parameterized.class)
 @SpringBootTest
-public class PredExpParserTest {
+public class ExpressionParserTest {
 
     /* Needed to run as a Spring Boot test */
     @ClassRule
@@ -40,8 +40,9 @@ public class PredExpParserTest {
     private WebApplicationContext wac;
 
     private MockMvc mockMVC;
-    private RecordDeserializer recordDeserializer;
-    private String currentMediaType;
+    private final RecordDeserializer recordDeserializer;
+    private final String currentMediaType;
+    private final String expParameter;
 
     /*
      * Returns a two item array, of mediatype and record deserializer
@@ -49,25 +50,29 @@ public class PredExpParserTest {
     @Parameterized.Parameters
     public static Object[] mappers() {
         return new Object[][]{
-                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true},
-                {new MsgPackRestRecordDeserializer(), "application/msgpack", true},
-                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false},
-                {new MsgPackRestRecordDeserializer(), "application/msgpack", false},
+                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true, "predexp"},
+                {new MsgPackRestRecordDeserializer(), "application/msgpack", true, "predexp"},
+                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false, "predexp"},
+                {new MsgPackRestRecordDeserializer(), "application/msgpack", false, "predexp"},
+
+                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true, "filterexp"},
+                {new MsgPackRestRecordDeserializer(), "application/msgpack", true, "filterexp"},
+                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false, "filterexp"},
+                {new MsgPackRestRecordDeserializer(), "application/msgpack", false, "filterexp"},
         };
     }
 
-    private Key testKey;
-    private Key intKey;
-    private Key bytesKey;
+    private final Key testKey;
+    private final Key intKey;
+    private final Key bytesKey;
 
     private List<Key> keysToRemove;
 
     // Endpoint to receive all requests
-    private String noBinEndpoint;
-    private String intEndpoint;
-    private String bytesEndpoint;
-    private String digestEndpoint;
-
+    private final String noBinEndpoint;
+    private final String intEndpoint;
+    private final String bytesEndpoint;
+    private final String digestEndpoint;
 
     @Before
     public void setup() {
@@ -83,10 +88,11 @@ public class PredExpParserTest {
         }
     }
 
-    public PredExpParserTest(RecordDeserializer deserializer, String mt, boolean useSet) {
+    public ExpressionParserTest(RecordDeserializer deserializer, String mt, boolean useSet, String expParameter) {
         this.recordDeserializer = deserializer;
         this.currentMediaType = mt;
         byte[] keyBytes = {1, 127, 127, 1};
+        this.expParameter = expParameter;
 
         if (useSet) {
             testKey = new Key("test", "junit", "getput");
@@ -138,7 +144,7 @@ public class PredExpParserTest {
         );
         for (String predexp : exps) {
             String encoded = Base64.getUrlEncoder().encodeToString(predexp.getBytes());
-            String endpoint = noBinEndpoint + "?predexp=" + encoded;
+            String endpoint = buildEndpoint(encoded);
             MockHttpServletResponse res = mockMVC.perform(
                     get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType)
             ).andExpect(status().isOk()).andReturn().getResponse();
@@ -163,7 +169,7 @@ public class PredExpParserTest {
         );
         for (String predexp : exps) {
             String encoded = Base64.getUrlEncoder().encodeToString(predexp.getBytes());
-            String endpoint = noBinEndpoint + "?predexp=" + encoded;
+            String endpoint = buildEndpoint(encoded);
             MockHttpServletResponse res = mockMVC.perform(
                     get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType)
             ).andExpect(status().isOk()).andReturn().getResponse();
@@ -185,11 +191,11 @@ public class PredExpParserTest {
         List<String> exps = Arrays.asList(
                 "LIST_ITERATE_OR(list, ==, r)",
                 "LIST_ITERATE_AND(list, !=, b)",
-                "(LIST_ITERATE_OR(list, ==, r) and LIST_ITERATE_AND(list, !=, b)) or str = hello"
+                "(LIST_ITERATE_OR(list, ==, r) and LIST_ITERATE_AND(list, !=, b)) or str == hello"
         );
         for (String predexp : exps) {
             String encoded = Base64.getUrlEncoder().encodeToString(predexp.getBytes());
-            String endpoint = noBinEndpoint + "?predexp=" + encoded;
+            String endpoint = buildEndpoint(encoded);
             MockHttpServletResponse res = mockMVC.perform(
                     get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType)
             ).andExpect(status().isOk()).andReturn().getResponse();
@@ -218,7 +224,7 @@ public class PredExpParserTest {
         );
         for (String predexp : exps) {
             String encoded = Base64.getUrlEncoder().encodeToString(predexp.getBytes());
-            String endpoint = noBinEndpoint + "?predexp=" + encoded;
+            String endpoint = buildEndpoint(encoded);
             MockHttpServletResponse res = mockMVC.perform(
                     get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType)
             ).andExpect(status().isOk()).andReturn().getResponse();
@@ -228,4 +234,7 @@ public class PredExpParserTest {
         keysToRemove.add(testKey);
     }
 
+    private String buildEndpoint(String encoded) {
+        return noBinEndpoint + "?" + expParameter + "=" + encoded;
+    }
 }

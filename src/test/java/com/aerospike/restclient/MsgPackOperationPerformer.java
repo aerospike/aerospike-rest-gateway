@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MsgPackOperationPerformer implements OperationPerformer {
 	ObjectMapper mapper;
-	private TypeReference<Map<String, Object>>recordType = new TypeReference<Map<String, Object>>() {};
+	private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {};
 
 	public MsgPackOperationPerformer() {
 		this.mapper = new ObjectMapper(new MessagePackFactory());

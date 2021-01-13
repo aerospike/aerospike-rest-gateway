@@ -39,8 +39,8 @@ public class OperateBitTestsCorrect {
     private WebApplicationContext wac;
 
     byte[] byteArray = new byte[]{12, 5, 110, 47};
-    private Key testKey;
-    private String testEndpoint;
+    private final Key testKey;
+    private final String testEndpoint;
 
     @Before
     public void setup() {
@@ -54,7 +54,7 @@ public class OperateBitTestsCorrect {
         client.delete(null, testKey);
     }
 
-    private OperationPerformer opPerformer;
+    private final OperationPerformer opPerformer;
 
     @Parameterized.Parameters
     public static Object[][] getParams() {

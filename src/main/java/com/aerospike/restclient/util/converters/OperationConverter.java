@@ -1732,7 +1732,7 @@ public class OperationConverter {
 		if (map.containsKey(VALUE_KEY)) {
 			return Base64.getDecoder().decode((String) map.get(VALUE_KEY));
 		} else {
-			return null;
+			throw new InvalidOperationError(String.format("Missing %s key", VALUE_KEY));
 		}
 	}
 
@@ -1781,7 +1781,10 @@ public class OperationConverter {
 
 	static Value getValue(Map<String, Object>map) {
 		Object val = map.get(VALUE_KEY);
-		return val == null ? null : Value.get(val);
+		if (val == null) {
+			throw new InvalidOperationError(String.format("Missing %s key", VALUE_KEY));
+		}
+		return Value.get(val);
 	}
 
 	static Value getValueBegin(Map<String, Object>map) {
@@ -1810,6 +1813,9 @@ public class OperationConverter {
 		}
 		List<Value> valueList = new ArrayList<>();
 		for (Object value : values) {
+            if (value instanceof Map<?, ?>) {
+                value = new TreeMap<>((Map<?, ?>) value);
+            }
 			valueList.add(Value.get(value));
 		}
 		return valueList;
@@ -1889,7 +1895,7 @@ public class OperationConverter {
 	}
 
 	static int getSortFlags(Map<String, Object>map) {
-		String flagString = null;
+		String flagString;
 		try {
 			flagString = (String)map.get(LIST_SORT_FLAGS_KEY);
 		} catch (ClassCastException cce) {
@@ -1907,7 +1913,7 @@ public class OperationConverter {
 	 */
 	static int getListReturnType(Map<String, Object>map) {
 		int inverted = getInverted(map);
-		String returnTypeString = null;
+		String returnTypeString;
 		try {
 			returnTypeString = (String)map.get(LIST_RETURN_KEY);
 		} catch (ClassCastException cce) {
@@ -1939,7 +1945,7 @@ public class OperationConverter {
 	 * this is the value of the LIST_RETURN_KEY field bitwise or'd with the value of the INVERTED_KEY field
 	 */
 	static int getMapReturnType(Map<String, Object>map) {
-		String returnTypeString = null;
+		String returnTypeString;
 		int inverted = getInverted(map);
 		try {
 			returnTypeString = (String)map.get(MAP_RETURN_KEY);
@@ -1972,7 +1978,7 @@ public class OperationConverter {
 	}
 
 	static int getInverted(Map<String, Object>map) {
-		boolean inverted = false;
+		boolean inverted;
 		if (map.containsKey(INVERTED_KEY)) {
 			try {
 				inverted = (boolean)map.get(INVERTED_KEY);
@@ -2034,8 +2040,8 @@ public class OperationConverter {
 
 	@SuppressWarnings("unchecked")
 	static Map<Value, Value> getMapValues(Map<String, Object>map) {
-		Map<Value, Value> valueMap = new HashMap<Value, Value>();
-		Map<Object, Object>objMap = null;
+		Map<Value, Value> valueMap = new HashMap<>();
+		Map<Object, Object>objMap;
 		try {
 			objMap = (Map<Object, Object>)map.get(MAP_VALUES_KEY);
 		} catch (ClassCastException cce) {
@@ -2059,13 +2065,13 @@ public class OperationConverter {
 
 	@SuppressWarnings("unchecked")
 	static List<Value> getMapKeys(Map<String, Object>map) {
-		List<Object>objList = null;
+		List<Object>objList;
 		try {
 			objList = (List<Object>)map.get(MAP_KEYS_KEY);
 		} catch (ClassCastException cce) {
 			throw new InvalidOperationError("keys must be a list");
 		}
-		List<Value> valueList = new ArrayList<Value>();
+		List<Value> valueList = new ArrayList<>();
 		for (Object value : objList) {
 			valueList.add(Value.get(value));
 		}
@@ -2076,7 +2082,7 @@ public class OperationConverter {
 		if (mapPolicy == null) {
 			return MapPolicy.Default;
 		}
-		MapOrder order = MapOrder.UNORDERED;
+		MapOrder order;
 
 		String orderString = (String) mapPolicy.get(ORDER_KEY);
 		if(orderString == null) {

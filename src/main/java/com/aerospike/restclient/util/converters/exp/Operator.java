@@ -14,11 +14,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.aerospike.restclient.util.converters.predexp;
+package com.aerospike.restclient.util.converters.exp;
 
 import java.util.Arrays;
 
 public final class Operator {
+
+    private Operator() {
+    }
 
     public static boolean isSimple(String op) {
         return Arrays.stream(Simple.values()).anyMatch((t) -> t.getName().equalsIgnoreCase(op));

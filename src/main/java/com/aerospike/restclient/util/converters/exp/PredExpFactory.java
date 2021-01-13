@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.aerospike.restclient.util.converters.predexp;
+package com.aerospike.restclient.util.converters.exp;
 
 import com.aerospike.client.query.PredExp;
 import com.aerospike.client.query.RegexFlag;
@@ -22,17 +22,13 @@ import com.google.common.base.Preconditions;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-public final class PredExpFactory {
+@SuppressWarnings("deprecation")
+public class PredExpFactory extends BaseExpFactory {
 
-    private PredExpFactory() {
-    }
-
-    public static PredExp getLogicalExp(String name, int nexp) {
+    public PredExp getLogicalExp(String name, int nexp) {
         final Operator.Logic op = Operator.Logic.fromString(name);
         Preconditions.checkNotNull(op, "getLogicalExp operator fromString");
         switch (op) {
@@ -45,7 +41,7 @@ public final class PredExpFactory {
         }
     }
 
-    public static PredExp getUnaryLogicalExp(String name) {
+    public PredExp getUnaryLogicalExp(String name) {
         final Operator.LogicUnary op = Operator.LogicUnary.fromString(name);
         Preconditions.checkNotNull(op, "getUnaryLogicalExp operator fromString");
         switch (op) {
@@ -56,7 +52,7 @@ public final class PredExpFactory {
         }
     }
 
-    public static List<PredExp> getCompareExp(String c1, String op, String c2) {
+    public List<PredExp> getCompareExp(String c1, String op, String c2) {
         List<PredExp> predExpList = new ArrayList<>();
         Optional<Integer> intVal = parseInt(c2);
         if (intVal.isPresent()) {
@@ -71,14 +67,7 @@ public final class PredExpFactory {
         return predExpList;
     }
 
-    private static String stripQuotes(String str) {
-        if (str.length() >= 2 && str.charAt(0) == '"' && str.charAt(str.length() - 1) == '"') {
-            return str.substring(1, str.length() - 1);
-        }
-        return str;
-    }
-
-    public static PredExp getSimpleExp(String op, boolean isInt) {
+    public PredExp getSimpleExp(String op, boolean isInt) {
         final Operator.Simple operator = Operator.Simple.fromString(op);
         Preconditions.checkNotNull(operator, "getSimpleExp operator fromString");
         PredExp predExp = null;
@@ -110,7 +99,7 @@ public final class PredExpFactory {
         return predExp;
     }
 
-    public static List<PredExp> getSpecialExp(String name, String params) {
+    public List<PredExp> getSpecialExp(String name, String params) {
         final Operator.Special op = Operator.Special.valueOf(name);
         switch (op) {
             case LAST_UPDATE:
@@ -152,7 +141,7 @@ public final class PredExpFactory {
      * PredExp.integerGreaterEq()
      * </pre>
      */
-    private static List<PredExp> getLastUpdateExpr(String params) {
+    private List<PredExp> getLastUpdateExpr(String params) {
         List<String> p = extractParameters(params);
         Preconditions.checkArgument(p.size() == 2, "getLastUpdateExpr invalid format");
         List<PredExp> predExpList = new ArrayList<>();
@@ -172,7 +161,7 @@ public final class PredExpFactory {
      * PredExp.integerGreaterEq()
      * </pre>
      */
-    private static List<PredExp> getVoidTimeExpr(String params) {
+    private List<PredExp> getVoidTimeExpr(String params) {
         List<String> p = extractParameters(params);
         Preconditions.checkArgument(p.size() == 2, "getVoidTimeExpr invalid format");
         List<PredExp> predExpList = new ArrayList<>();
@@ -196,7 +185,7 @@ public final class PredExpFactory {
      * PredExp.integerEqual()
      * </pre>
      */
-    private static List<PredExp> getDigestModuloExpr(String params) {
+    private List<PredExp> getDigestModuloExpr(String params) {
         List<String> p = extractParameters(params);
         Preconditions.checkArgument(p.size() == 3, "getDigestModuloExpr invalid format");
         List<PredExp> predExpList = new ArrayList<>();
@@ -216,7 +205,7 @@ public final class PredExpFactory {
      * PredExp.stringRegex(RegexFlag.NONE)
      * </pre>
      */
-    private static List<PredExp> getStringRegexExpr(String params) {
+    private List<PredExp> getStringRegexExpr(String params) {
         List<String> p = extractParameters(params);
         Preconditions.checkArgument(p.size() == 2, "getStringRegexExpr invalid format");
         List<PredExp> predExpList = new ArrayList<>();
@@ -236,7 +225,7 @@ public final class PredExpFactory {
      * PredExp.geoJSONWithin()
      * </pre>
      */
-    private static List<PredExp> getGeojsonWithinExpr(String params) {
+    private List<PredExp> getGeojsonWithinExpr(String params) {
         List<String> p = extractParameters(params);
         Preconditions.checkArgument(p.size() == 2, "getGeojsonWithinExpr invalid format");
         List<PredExp> predExpList = new ArrayList<>();
@@ -249,7 +238,7 @@ public final class PredExpFactory {
     /**
      * Create geospatial json "contains" predicate.
      */
-    private static List<PredExp> getGeojsonContainsExpr(String params) {
+    private List<PredExp> getGeojsonContainsExpr(String params) {
         List<String> p = extractParameters(params);
         Preconditions.checkArgument(p.size() == 2, "getGeojsonContainsExpr invalid format");
         List<PredExp> predExpList = new ArrayList<>();
@@ -272,7 +261,7 @@ public final class PredExpFactory {
      * PredExp.listIterateOr("v")
      * </pre>
      */
-    private static List<PredExp> getListIterateOrExpr(String params) {
+    private List<PredExp> getListIterateOrExpr(String params) {
         List<String> p = extractParameters(params);
         Preconditions.checkArgument(p.size() == 3, "getListIterateOrExpr invalid format");
         List<PredExp> predExpList = new ArrayList<>();
@@ -304,7 +293,7 @@ public final class PredExpFactory {
      * PredExp.listIterateAnd("v")
      * </pre>
      */
-    private static List<PredExp> getListIterateAndExpr(String params) {
+    private List<PredExp> getListIterateAndExpr(String params) {
         List<String> p = extractParameters(params);
         Preconditions.checkArgument(p.size() == 3, "getListIterateAndExpr invalid format");
         List<PredExp> predExpList = new ArrayList<>();
@@ -336,7 +325,7 @@ public final class PredExpFactory {
      * PredExp.mapKeyIterateOr("k")
      * </pre>
      */
-    private static List<PredExp> getMapKeyIterateOrExpr(String params) {
+    private List<PredExp> getMapKeyIterateOrExpr(String params) {
         List<String> p = extractParameters(params);
         Preconditions.checkArgument(p.size() == 3, "getMapKeyIterateOrExpr invalid format");
         List<PredExp> predExpList = new ArrayList<>();
@@ -367,7 +356,7 @@ public final class PredExpFactory {
      * PredExp.mapValIterateOr("v")
      * </pre>
      */
-    private static List<PredExp> getMapValIterateOrExpr(String params) {
+    private List<PredExp> getMapValIterateOrExpr(String params) {
         List<String> p = extractParameters(params);
         Preconditions.checkArgument(p.size() == 3, "getMapValIterateOrExpr invalid format");
         List<PredExp> predExpList = new ArrayList<>();
@@ -399,7 +388,7 @@ public final class PredExpFactory {
      * PredExp.mapKeyIterateAnd("k")
      * </pre>
      */
-    private static List<PredExp> getMapKeyIterateAndExpr(String params) {
+    private List<PredExp> getMapKeyIterateAndExpr(String params) {
         List<String> p = extractParameters(params);
         Preconditions.checkArgument(p.size() == 3, "getMapKeyIterateAndExpr invalid format");
         List<PredExp> predExpList = new ArrayList<>();
@@ -431,7 +420,7 @@ public final class PredExpFactory {
      * PredExp.mapValIterateAnd("v")
      * </pre>
      */
-    private static List<PredExp> getMapValIterateAndExpr(String params) {
+    private List<PredExp> getMapValIterateAndExpr(String params) {
         List<String> p = extractParameters(params);
         Preconditions.checkArgument(p.size() == 3, "getMapValIterateAndExpr invalid format");
         List<PredExp> predExpList = new ArrayList<>();
@@ -450,19 +439,4 @@ public final class PredExpFactory {
         return predExpList;
     }
 
-    private static List<String> extractParameters(String params) {
-        params = params.replaceAll("[()]", "");
-        List<String> p = Arrays.asList(params.split(","));
-        return p.stream().map(String::trim).collect(Collectors.toList());
-    }
-
-    private static Optional<Integer> parseInt(String s) {
-        int i;
-        try {
-            i = Integer.parseInt(s);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-        return Optional.of(i);
-    }
 }
