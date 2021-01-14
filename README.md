@@ -6,6 +6,11 @@ The Aerospike REST client provides a server which translates Restful API request
 
 It can be used as a bridge between applications written in languages without an existing Aerospike Client library, or as a pluggable component in a pre-existing architecture.
 
+## Prerequisites
+
+* Java 8 or later
+* Aerospike Server version 4.9+
+
 ## Installation
 
 For instructions on installing the Rest Client see [Installation and Configuration](./docs/installation-and-config.md) .
