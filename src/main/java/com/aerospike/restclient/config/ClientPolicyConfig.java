@@ -39,6 +39,8 @@ public class ClientPolicyConfig {
 
     @Value("${aerospike.restclient.clientpolicy.connPoolsPerNode:#{null}}")
     Integer connPoolsPerNode;
+    @Value("${aerospike.restclient.clientpolicy.minConnsPerNode:#{null}}")
+    Integer minConnsPerNode;
     @Value("${aerospike.restclient.clientpolicy.maxConnsPerNode:#{null}}")
     Integer maxConnsPerNode;
     @Value("${aerospike.restclient.clientpolicy.maxSocketIdle:#{null}}")
@@ -80,6 +82,10 @@ public class ClientPolicyConfig {
 
         if (connPoolsPerNode != null) {
             clientPolicy.connPoolsPerNode = connPoolsPerNode;
+        }
+
+        if (minConnsPerNode != null) {
+            clientPolicy.minConnsPerNode = minConnsPerNode;
         }
 
         if (maxConnsPerNode != null) {
