@@ -27,12 +27,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
 
@@ -42,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(Parameterized.class)
 @SpringBootTest
+@AutoConfigureMockMvc
 public class OperateMapTestsCorrect {
 
 	/* Needed to run as a Spring Boot test */
@@ -51,15 +51,13 @@ public class OperateMapTestsCorrect {
 	@Rule
 	public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
+	@Autowired
 	private MockMvc mockMVC;
 
 	@Autowired
 	private AerospikeClient client;
 
-	@Autowired
-	private WebApplicationContext wac;
-
-	private OperationPerformer opPerformer;
+	private final OperationPerformer opPerformer;
 
 	private Map<Object, Object> objectMap;
 	private Map<Object, Object> objectMapInt;
@@ -71,7 +69,6 @@ public class OperateMapTestsCorrect {
 
 	@Before
 	public void setup() {
-		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 		objectMap = new HashMap<>();
 		objectMap.put("one", 1);
 		objectMap.put("two", 2);

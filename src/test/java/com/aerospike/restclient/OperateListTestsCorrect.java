@@ -27,12 +27,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
 
@@ -41,6 +40,7 @@ import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALU
 
 @RunWith(Parameterized.class)
 @SpringBootTest
+@AutoConfigureMockMvc
 public class OperateListTestsCorrect {
 
     @ClassRule
@@ -49,14 +49,11 @@ public class OperateListTestsCorrect {
     @Rule
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-
+    @Autowired
     private MockMvc mockMVC;
 
     @Autowired
     private AerospikeClient client;
-
-    @Autowired
-    private WebApplicationContext wac;
 
     List<Object> objectList;
     List<Object> objectMapList;
@@ -65,7 +62,6 @@ public class OperateListTestsCorrect {
 
     @Before
     public void setup() {
-        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
         Bin strBin = new Bin("str", "bin");
         objectList = new ArrayList<>();
         objectList.add(1L);
