@@ -30,6 +30,7 @@ import com.aerospike.restclient.util.KeyBuilder;
 import com.aerospike.restclient.util.RestClientErrors;
 import com.aerospike.restclient.util.converters.OperationsConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreaker;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,13 +43,17 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
     @Autowired
     private AerospikeClientPool clientPool;
 
+    @Autowired
+    private Resilience4JCircuitBreaker circuitBreaker;
+
     @Override
     public RestClientRecord operate(AuthDetails authDetails, String namespace, String set, String key,
                                     List<Map<String, Object>> opsMaps, RecordKeyType keyType, WritePolicy policy) {
 
         Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMaps);
         Key opKey = KeyBuilder.buildKey(namespace, set, key, keyType);
-        Record fetchedRecord = OperateHandler.create(clientPool.getClient(authDetails)).operate(policy, opKey, operations);
+        Record fetchedRecord = circuitBreaker.run(() -> OperateHandler.create(clientPool.getClient(authDetails))
+                .operate(policy, opKey, operations));
         if (fetchedRecord == null) {
             throw new RestClientErrors.RecordNotFoundError();
         }
@@ -65,7 +70,8 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
 
         Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
         Key opKey = KeyBuilder.buildKey(namespace, set, key, keyType);
-        Record fetchedRecord = OperateHandler.create(clientPool.getClient(authDetails)).operate(policy, opKey, operations);
+        Record fetchedRecord = circuitBreaker.run(() -> OperateHandler.create(clientPool.getClient(authDetails))
+                .operate(policy, opKey, operations));
         if (fetchedRecord == null) {
             throw new RestClientErrors.RecordNotFoundError();
         }
