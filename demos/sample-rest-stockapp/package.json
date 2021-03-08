@@ -77,7 +77,8 @@
     },
     "resolutions": {
         "node-forge": "^0.10.0",
-        "immer": "^8.0.1"
+        "immer": "^8.0.1",
+        "node-fetch": "^2.6.1"
     },
     "browserslist": [
         ">0.2%",
