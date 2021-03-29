@@ -16,11 +16,18 @@
  */
 package com.aerospike.restclient;
 
-import com.aerospike.client.*;
-import com.aerospike.client.Value.BytesValue;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.AerospikeException;
+import com.aerospike.client.Key;
+import com.aerospike.client.Record;
+import com.aerospike.client.Value;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -34,7 +41,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,7 +61,7 @@ public class RecordPostCorrectTests {
 	@Rule
 	public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-	private PostPerformer postPerformer = null;
+	private final PostPerformer postPerformer;
 	private MockMvc mockMVC;
 
 	@Autowired
@@ -59,13 +70,13 @@ public class RecordPostCorrectTests {
 	@Autowired
 	private WebApplicationContext wac;
 
-	private Key testKey = new Key("test", "junit", "getput");
-	private Key intKey = new Key("test", "junit", 1);
-	private Key bytesKey = new Key("test", "junit", new byte[] {1, 127, 127, 1});
-	private String testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
-	private String digestEndpoint;
-	private String intEndpoint;
-	private String bytesEndpoint;
+	private final Key testKey;
+	private final Key intKey;
+	private final Key bytesKey;
+	private final String testEndpoint;
+	private final String digestEndpoint;
+	private final String intEndpoint;
+	private final String bytesEndpoint;
 
 	@Before
 	public void setup() {
@@ -77,13 +88,11 @@ public class RecordPostCorrectTests {
 		client.delete(null, testKey);
 		try {
 			client.delete(null, bytesKey);
-		} catch (AerospikeException e) {
-			;
+		} catch (AerospikeException ignore) {
 		}
 		try {
 			client.delete(null, intKey);
-		} catch (AerospikeException e) {
-			;
+		} catch (AerospikeException ignore) {
 		}
 	}
 
@@ -119,11 +128,10 @@ public class RecordPostCorrectTests {
 			String urlDigest = Base64.getUrlEncoder().encodeToString(testKey.digest);
 			digestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", urlDigest) + "?keytype=DIGEST";
 
-			String urlBytes = Base64.getUrlEncoder().encodeToString((byte[])((BytesValue)bytesKey.userKey).getObject());
+			String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
 			bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", urlBytes) + "?keytype=BYTES";
 
 			intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "1") + "?keytype=INTEGER";
-
 		} else {
 			this.testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "getput");
 			this.testKey = new Key("test", null, "getput");
@@ -133,7 +141,7 @@ public class RecordPostCorrectTests {
 			String urlDigest = Base64.getUrlEncoder().encodeToString(testKey.digest);
 			digestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", urlDigest) + "?keytype=DIGEST";
 
-			String urlBytes = Base64.getUrlEncoder().encodeToString((byte[])((BytesValue)bytesKey.userKey).getObject());
+			String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
 			bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test",  urlBytes) + "?keytype=BYTES";
 
 			intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "1") + "?keytype=INTEGER";
@@ -143,7 +151,7 @@ public class RecordPostCorrectTests {
 
 	@Test
 	public void PutInteger() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 
 		binMap.put("integer", 12345);
 
@@ -155,7 +163,7 @@ public class RecordPostCorrectTests {
 
 	@Test
 	public void PutString() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 
 		binMap.put("string", "Aerospike");
 
@@ -167,8 +175,7 @@ public class RecordPostCorrectTests {
 
 	@Test
 	public void PutDouble() throws Exception {
-
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 
 		binMap.put("double", 2.718);
 
@@ -180,7 +187,7 @@ public class RecordPostCorrectTests {
 
 	@Test
 	public void PutList() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 
 		List<?>trueList = Arrays.asList(1L, "a", 3.5);
 
@@ -196,9 +203,9 @@ public class RecordPostCorrectTests {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void PutMapStringKeys() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 
-		Map<Object, Object>testMap = new HashMap<Object, Object>();
+		Map<Object, Object>testMap = new HashMap<>();
 
 		testMap.put("string", "a string");
 		testMap.put("long", 2L);
@@ -215,7 +222,7 @@ public class RecordPostCorrectTests {
 
 	@Test
 	public void PutWithIntegerKey() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 
 		binMap.put("integer", 12345);
 
@@ -227,9 +234,8 @@ public class RecordPostCorrectTests {
 
 	@Test
 	public void PutWithBytesKey() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 		binMap.put("integer", 12345);
-
 
 		postPerformer.perform(mockMVC, bytesEndpoint, binMap);
 
@@ -239,7 +245,7 @@ public class RecordPostCorrectTests {
 
 	@Test
 	public void PutWithDigestKey() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 
 		binMap.put("integer", 12345);
 
@@ -284,20 +290,21 @@ public class RecordPostCorrectTests {
 
 interface PostPerformer {
 	public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object>binMap)
-			throws JsonProcessingException, Exception;
+			throws Exception;
 }
 
 class JSONPostPerformer implements PostPerformer {
-	String mediaType = null;
-	ObjectMapper mapper = null;
+	String mediaType;
+	ObjectMapper mapper;
 
 	public JSONPostPerformer(String mediaType, ObjectMapper mapper) {
 		this.mediaType = mediaType;
 		this.mapper = mapper;
 	}
+
 	@Override
 	public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object>binMap)
-			throws JsonProcessingException, Exception {
+			throws Exception {
 		mockMVC.perform(post(testEndpoint).contentType(mediaType)
 				.content(mapper.writeValueAsString(binMap)))
 		.andExpect(status().isCreated());
@@ -306,8 +313,8 @@ class JSONPostPerformer implements PostPerformer {
 }
 
 class MsgPackPostPerformer implements PostPerformer {
-	String mediaType = null;
-	ObjectMapper mapper = null;
+	String mediaType;
+	ObjectMapper mapper;
 
 	public MsgPackPostPerformer(String mediaType, ObjectMapper mapper) {
 		this.mediaType = mediaType;
@@ -316,7 +323,7 @@ class MsgPackPostPerformer implements PostPerformer {
 
 	@Override
 	public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object>binMap)
-			throws JsonProcessingException, Exception {
+			throws Exception {
 		mockMVC.perform(post(testEndpoint).contentType(mediaType)
 				.content(mapper.writeValueAsBytes(binMap)))
 		.andExpect(status().isCreated());
