@@ -106,11 +106,6 @@ import java.lang.annotation.Target;
                 paramType = "query",
                 value = QueryParamDescriptors.SCAN_POLICY_MAX_RECORDS_NOTES),
         @ApiImplicitParam(
-                name = AerospikeAPIConstants.SCAN_PERCENT,
-                dataType = "int",
-                paramType = "query",
-                value = QueryParamDescriptors.SCAN_POLICY_SCAN_PERCENT_NOTES),
-        @ApiImplicitParam(
                 name = AerospikeAPIConstants.RECORDS_PER_SECOND,
                 dataType = "int",
                 paramType = "query",
@@ -130,11 +125,6 @@ import java.lang.annotation.Target;
                 dataType = "boolean",
                 paramType = "query",
                 value = QueryParamDescriptors.SCAN_POLICY_INCLUDE_BIN_DATA_NOTES),
-        @ApiImplicitParam(
-                name = AerospikeAPIConstants.FAIL_ON_CLUSTER_CHANGE,
-                dataType = "boolean",
-                paramType = "query",
-                value = QueryParamDescriptors.SCAN_POLICY_FAIL_ON_CLUSTER_CHANGE_NOTES),
 
         // Scan parameters
         @ApiImplicitParam(

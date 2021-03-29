@@ -33,10 +33,6 @@ public class ScanPolicyConverter {
             scanPolicy.maxRecords = PolicyValueConverter.getLongValue(
                     policyMap.get(AerospikeAPIConstants.MAX_RECORDS));
         }
-        if (policyMap.containsKey(AerospikeAPIConstants.SCAN_PERCENT)) {
-            scanPolicy.scanPercent = PolicyValueConverter.getIntValue(
-                    policyMap.get(AerospikeAPIConstants.SCAN_PERCENT));
-        }
         if (policyMap.containsKey(AerospikeAPIConstants.RECORDS_PER_SECOND)) {
             scanPolicy.recordsPerSecond = PolicyValueConverter.getIntValue(
                     policyMap.get(AerospikeAPIConstants.RECORDS_PER_SECOND));
@@ -52,10 +48,6 @@ public class ScanPolicyConverter {
         if (policyMap.containsKey(AerospikeAPIConstants.INCLUDE_BIN_DATA)) {
             scanPolicy.includeBinData = PolicyValueConverter.getBoolValue(
                     policyMap.get(AerospikeAPIConstants.INCLUDE_BIN_DATA));
-        }
-        if (policyMap.containsKey(AerospikeAPIConstants.FAIL_ON_CLUSTER_CHANGE)) {
-            scanPolicy.failOnClusterChange = PolicyValueConverter.getBoolValue(
-                    policyMap.get(AerospikeAPIConstants.FAIL_ON_CLUSTER_CHANGE));
         }
         return scanPolicy;
     }

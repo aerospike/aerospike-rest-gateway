@@ -86,12 +86,10 @@ public final class AerospikeAPIConstants {
 
 	// SCAN POLICY KEYS
 	public static final String MAX_RECORDS = "maxRecords";
-	public static final String SCAN_PERCENT = "scanPercent";
 	public static final String RECORDS_PER_SECOND = "recordsPerSecond";
 	public static final String MAX_CONCURRENT_NODES = "maxConcurrentNodes";
 	public static final String CONCURRENT_NODES = "concurrentNodes";
 	public static final String INCLUDE_BIN_DATA = "includeBinData";
-	public static final String FAIL_ON_CLUSTER_CHANGE = "failOnClusterChange";
 
 	public static final String FROM_TOKEN = "from";
 
