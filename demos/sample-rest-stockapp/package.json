@@ -79,7 +79,8 @@
         "node-forge": "^0.10.0",
         "immer": "^8.0.1",
         "node-fetch": "^2.6.1",
-        "elliptic": "^6.5.4"
+        "elliptic": "^6.5.4",
+        "react-dev-utils": "^11.0.4"
     },
     "browserslist": [
         ">0.2%",

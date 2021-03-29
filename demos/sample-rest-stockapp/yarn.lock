@@ -14518,9 +14518,9 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-dev-utils@npm:^11.0.3":
-  version: 11.0.3
-  resolution: "react-dev-utils@npm:11.0.3"
+"react-dev-utils@npm:^11.0.4":
+  version: 11.0.4
+  resolution: "react-dev-utils@npm:11.0.4"
   dependencies:
     "@babel/code-frame": 7.10.4
     address: 1.1.2
@@ -14546,7 +14546,7 @@ fsevents@^1.2.7:
     shell-quote: 1.7.2
     strip-ansi: 6.0.0
     text-table: 0.2.0
-  checksum: b2f338fd21ff47602c90637111407aeabd3e662c84e0ef860c47451d5d65e7c8df5129435468d35374f0cb3423b49989068377866ec3da93d7e85799a08fc28a
+  checksum: 88723121444390f55bb5ac003f9106ee238af4830264736d2ec340b1b7e662f8ee6c0af0f9a1611c02afdd1fbab1b60acd8af95f3e15f1d786580fd0bdabdfe2
   languageName: node
   linkType: hard
 
