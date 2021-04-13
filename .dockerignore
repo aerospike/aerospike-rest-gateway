@@ -1,6 +1,6 @@
 .git
 .cache
-.travis
+.github
 build
 
 .idea
