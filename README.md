@@ -1,6 +1,6 @@
 # aerospike-client-rest
 
-[![Build Status](https://travis-ci.org/aerospike/aerospike-client-rest.svg?branch=master)](https://travis-ci.org/aerospike/aerospike-client-rest)
+[![Build](https://github.com/aerospike/aerospike-client-rest/actions/workflows/build.yml/badge.svg)](https://github.com/aerospike/aerospike-client-rest/actions/workflows/build.yml)
 
 The Aerospike REST client provides a server which translates Restful API requests into messages to an Aerospike Cluster.
 
