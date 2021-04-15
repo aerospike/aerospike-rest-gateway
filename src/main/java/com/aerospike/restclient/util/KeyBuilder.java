@@ -16,10 +16,10 @@
  */
 package com.aerospike.restclient.util;
 
-import java.util.Base64;
-
 import com.aerospike.client.Key;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
+
+import java.util.Base64;
 
 public class KeyBuilder {
 
@@ -38,13 +38,12 @@ public class KeyBuilder {
 		case DIGEST: {
 			byte[] digestBytes = getByteArrayFromstring(strKey);
 			if (digestBytes.length != 20) {
-				throw new RestClientErrors.InvalidKeyError(String.format("Digest must be 20 bytes long", strKey));
+				throw new RestClientErrors.InvalidKeyError(String.format("Digest must be 20 bytes long: %s", strKey));
 			}
 			return new Key(namespace, digestBytes, set, null);
 		}
 		default:
-			throw new RestClientErrors.InvalidKeyError(String.format("Invalid keytype value: %s", keyType.toString()));
-
+			throw new RestClientErrors.InvalidKeyError(String.format("Invalid keyType value: %s", keyType.toString()));
 		}
 	}
 
@@ -68,7 +67,7 @@ public class KeyBuilder {
 		try {
 			return Base64.getUrlDecoder().decode(strKey);
 		} catch (IllegalArgumentException nfe) {
-			throw new RestClientErrors.InvalidKeyError(String.format("Unable to decode bytes", strKey));
+			throw new RestClientErrors.InvalidKeyError(String.format("Unable to decode bytes: %s", strKey));
 		}
 	}
 

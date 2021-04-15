@@ -17,13 +17,11 @@
 package com.aerospike.restclient.domain;
 
 import com.aerospike.client.BatchRead;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(value="BatchRead")
 public class RestClientBatchReadResponse {
-
 
 	public RestClientBatchReadResponse() {}
 
@@ -45,7 +43,5 @@ public class RestClientBatchReadResponse {
 
 	@ApiModelProperty(value="List of bins to limit the record response to.")
 	public String[] binNames;
-
-
 
 }

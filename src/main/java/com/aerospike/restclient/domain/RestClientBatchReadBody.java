@@ -19,22 +19,20 @@ package com.aerospike.restclient.domain;
 import com.aerospike.client.BatchRead;
 import com.aerospike.restclient.util.RestClientErrors;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(value="BatchReadRequest")
 public class RestClientBatchReadBody {
 
-
-	@ApiModelProperty(value="Key to retrieve a record", required=true)
+	@ApiModelProperty(value="Key to retrieve a record.", required=true)
 	@JsonProperty(required=true)
 	public RestClientKey key;
 
-	@ApiModelProperty(value="Whether all bins should be returned with this record")
+	@ApiModelProperty(value="Whether all bins should be returned with this record.")
 	public boolean readAllBins;
 
-	@ApiModelProperty(value="List of bins to limit the record response to.", required=false)
+	@ApiModelProperty(value="List of bins to limit the record response to.")
 	public String[] binNames;
 
 	public RestClientBatchReadBody() {}
