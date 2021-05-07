@@ -95,6 +95,6 @@ public class AerospikeClientPool {
 
     @SuppressWarnings("UnstableApiUsage")
     protected String buildPoolKey(AuthDetails authDetails) {
-        return Hashing.md5().hashBytes(authDetails.toString().getBytes()).toString();
+        return Hashing.sha256().hashBytes(authDetails.toString().getBytes()).toString();
     }
 }
