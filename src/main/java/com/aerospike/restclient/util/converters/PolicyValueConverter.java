@@ -17,7 +17,12 @@
 package com.aerospike.restclient.util.converters;
 
 import com.aerospike.client.exp.Expression;
-import com.aerospike.client.policy.*;
+import com.aerospike.client.policy.CommitLevel;
+import com.aerospike.client.policy.GenerationPolicy;
+import com.aerospike.client.policy.ReadModeAP;
+import com.aerospike.client.policy.ReadModeSC;
+import com.aerospike.client.policy.RecordExistsAction;
+import com.aerospike.client.policy.Replica;
 import com.aerospike.client.query.PredExp;
 import com.aerospike.restclient.util.RestClientErrors;
 import com.aerospike.restclient.util.converters.exp.FilterExpParser;
@@ -43,6 +48,7 @@ public class PolicyValueConverter {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public static PredExp[] getPredExp(String predExp) {
         try {
             return predExpParser.parse(predExp);
@@ -61,14 +67,6 @@ public class PolicyValueConverter {
 
     public static boolean getCompress(String compress) {
         return getBoolValue(compress);
-    }
-
-    public static Priority getPriority(String priority) {
-        try {
-            return Priority.valueOf(priority);
-        } catch (IllegalArgumentException e) {
-            throw new RestClientErrors.InvalidPolicyValueError("Invalid priority: " + priority);
-        }
     }
 
     public static Replica getReplica(String replica) {
@@ -104,7 +102,7 @@ public class PolicyValueConverter {
     }
 
     public static boolean getBoolValue(String testValue) {
-        return testValue.toLowerCase().equals("true");
+        return testValue.equalsIgnoreCase("true");
     }
 
     public static int getIntValue(String intString) {

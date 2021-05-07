@@ -16,21 +16,19 @@
  */
 package com.aerospike.restclient.converters;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.aerospike.client.policy.CommitLevel;
 import com.aerospike.client.policy.GenerationPolicy;
-import com.aerospike.client.policy.Priority;
 import com.aerospike.client.policy.RecordExistsAction;
 import com.aerospike.client.policy.Replica;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.converters.policyconverters.WritePolicyConverter;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class WritePolicyConverterTests {
 
@@ -38,7 +36,7 @@ public class WritePolicyConverterTests {
 
 	@Before
 	public void setup() {
-		policyMap = new HashMap<String, String>();
+		policyMap = new HashMap<>();
 	}
 
 	@Test
@@ -46,13 +44,6 @@ public class WritePolicyConverterTests {
 		policyMap.put(AerospikeAPIConstants.REPLICA, Replica.MASTER.toString());
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
 		Assert.assertEquals(policy.replica, Replica.MASTER);
-	}
-
-	@Test
-	public void testPriority() {
-		policyMap.put(AerospikeAPIConstants.PRIORITY, Priority.MEDIUM.toString());
-		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertEquals(policy.priority, Priority.MEDIUM);
 	}
 
 	@Test
