@@ -286,6 +286,18 @@ public class RecordPostCorrectTests {
 		Record record = client.get(null, this.testKey);
 		Assert.assertEquals(((Value.GeoJSONValue) record.bins.get("geo_json")).getObject(), geoStr);
 	}
+
+	@Test
+	public void PostBoolean() throws Exception {
+		Map<String, Object> binMap = new HashMap<>();
+		
+		binMap.put("bool", true);
+
+		postPerformer.perform(mockMVC, testEndpoint, binMap);
+
+		Record record = client.get(null, this.testKey);
+		Assert.assertEquals((long) record.bins.get("bool"), 1L);
+	}
 }
 
 interface PostPerformer {

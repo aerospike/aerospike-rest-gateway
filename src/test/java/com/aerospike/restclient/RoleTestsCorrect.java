@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.After;
@@ -62,14 +63,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest
 public class RoleTestsCorrect {
 
-
 	@ClassRule
 	public static final SpringClassRule springClassRule = new SpringClassRule();
 
 	@Rule
 	public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-	private RestRoleHandler handler;
+	private final RestRoleHandler handler;
 
 	@Parameters
 	public static Object[] getParams() {
@@ -123,12 +123,12 @@ public class RoleTestsCorrect {
 		createdRole = new Role();
 		createdRole.name = TestRoleName;
 		createdRole.privileges = createdPrivileges;
-		createdRoles = new ArrayList<String>();
+		createdRoles = new ArrayList<>();
 
 		try {
 			client.createRole(null, TestRoleName, createdPrivileges);
 			createdRoles.add(TestRoleName);
-		} catch (AerospikeException e) {} // If this fails, it probably means the role already exists, so it's fine.
+		} catch (AerospikeException ignore) {} // If this fails, it probably means the role already exists, so it's fine.
 		// Give some time for the creation to propagate to all nodes
 		Thread.sleep(1000);
 	}
@@ -138,12 +138,12 @@ public class RoleTestsCorrect {
 		for (String role: createdRoles) {
 			try {
 				client.dropRole(null, role);
-			} catch (AerospikeException e) {}
+			} catch (AerospikeException ignore) {}
 		}
 		try {
 			//Replication of the user dropping is asynchronous, so wait for it to happen
 			Thread.sleep(1000);
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException ignore) {}
 	}
 
 	@Test
@@ -186,7 +186,7 @@ public class RoleTestsCorrect {
 		crPrivilege.namespace = "test";
 		crPrivilege.setName = "rwu";
 
-		testRole.privileges = Arrays.asList(crPrivilege);
+		testRole.privileges = Collections.singletonList(crPrivilege);
 		createdRoles.add(testRole.name);
 
 		handler.createRole(mockMVC, endpoint, new RestClientRole(testRole));
@@ -196,7 +196,6 @@ public class RoleTestsCorrect {
 
 		Role fetchedRole = client.queryRole(null, testRole.name);
 		Assert.assertTrue(roleEquals(fetchedRole, testRole));
-
 	}
 
 	@Test
@@ -266,11 +265,7 @@ public class RoleTestsCorrect {
 			return false;
 		}
 
-		if (priv1.code != priv2.code) {
-			return false;
-		}
-
-		return true;
+		return priv1.code == priv2.code;
 	}
 
 	private boolean rcRolesListContainsRole(List<RestClientRole> rcRoles, Role role) {
