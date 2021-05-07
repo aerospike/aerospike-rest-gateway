@@ -16,60 +16,104 @@
  */
 package com.aerospike.restclient.domain;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.validation.constraints.NotNull;
-
 import com.aerospike.client.admin.Role;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @JsonInclude(Include.NON_NULL)
+@ApiModel(value = "RestClientRole")
 public class RestClientRole {
 
-	@NotNull
-	@ApiModelProperty(example="customRole")
-	String name;
+    @NotNull
+    @ApiModelProperty(required = true, value = "Role name.", example = "customRole")
+    private String name;
 
-	@NotNull
-	List<RestClientPrivilege> privileges;
+    @NotNull
+    @ApiModelProperty(required = true, value = "List of assigned privileges.")
+    private List<RestClientPrivilege> privileges;
 
-	public String getName() {
-		return this.name;
-	}
-	public List<RestClientPrivilege> getPrivileges() {
-		return this.privileges;
-	}
+    @ApiModelProperty(value = "List of allowable IP addresses.")
+    private List<String> whitelist;
 
-	public void setName(String name) {
-		this.name = name;
-	}
-	public void setPrivileges(List<RestClientPrivilege> privileges) {
-		this.privileges = privileges;
-	}
+    @ApiModelProperty(value = "Maximum reads per second limit.")
+    private int readQuota;
 
-	/*
-	 * Convert to Java Client role
-	 */
-	public Role toRole() {
-		Role role = new Role();
-		role.name = name;
-		role.privileges = this.privileges.stream().map(elt -> elt.toPrivilege()).collect(Collectors.toList());
+    @ApiModelProperty(value = "Maximum writes per second limit.")
+    private int writeQuota;
 
-		return role;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public RestClientRole() {
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/*
-	 * Constructor from Java Client Role
-	 */
-	public RestClientRole (Role role) {
-		name = role.name;
-		privileges = role.privileges.stream().map(elt -> new RestClientPrivilege(elt)).collect(Collectors.toList());
-	}
+    public List<RestClientPrivilege> getPrivileges() {
+        return this.privileges;
+    }
+
+    public void setPrivileges(List<RestClientPrivilege> privileges) {
+        this.privileges = privileges;
+    }
+
+    public List<String> getWhitelist() {
+        return this.whitelist;
+    }
+
+    public void setWhitelist(List<String> whitelist) {
+        this.whitelist = whitelist;
+    }
+
+    public int getReadQuota() {
+        return this.readQuota;
+    }
+
+    public void setReadQuota(int readQuota) {
+        this.readQuota = readQuota;
+    }
+
+    public int getWriteQuota() {
+        return this.writeQuota;
+    }
+
+    public void setWriteQuota(int writeQuota) {
+        this.writeQuota = writeQuota;
+    }
+
+    /*
+     * Convert to Java Client role
+     */
+    public Role toRole() {
+        Role role = new Role();
+        role.name = name;
+        role.privileges = this.privileges.stream()
+                .map(RestClientPrivilege::toPrivilege).collect(Collectors.toList());
+        role.whitelist = whitelist;
+        role.readQuota = readQuota;
+        role.writeQuota = writeQuota;
+
+        return role;
+    }
+
+    public RestClientRole() {
+    }
+
+    /*
+     * Constructor from Java Client Role
+     */
+    public RestClientRole(Role role) {
+        name = role.name;
+        privileges = role.privileges.stream()
+                .map(RestClientPrivilege::new).collect(Collectors.toList());
+        whitelist = role.whitelist;
+        readQuota = role.readQuota;
+        writeQuota = role.writeQuota;
+    }
 }
