@@ -47,6 +47,9 @@ public class AerospikeClientConfig {
     @Value("${aerospike.restclient.requireAuthentication:false}")
     boolean requireAuthentication;
 
+    @Value("${aerospike.restclient.useBoolBin:false}")
+    boolean useBoolBin;
+
     @Autowired
     ClientPolicy policy;
 
@@ -89,7 +92,8 @@ public class AerospikeClientConfig {
                 port,
                 hostList,
                 hostname,
-                defaultClient
+                defaultClient,
+                useBoolBin
         );
     }
 }

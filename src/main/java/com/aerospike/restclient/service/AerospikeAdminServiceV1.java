@@ -21,6 +21,7 @@ import com.aerospike.client.admin.Role;
 import com.aerospike.client.admin.User;
 import com.aerospike.restclient.domain.RestClientPrivilege;
 import com.aerospike.restclient.domain.RestClientRole;
+import com.aerospike.restclient.domain.RestClientRoleQuota;
 import com.aerospike.restclient.domain.RestClientUserModel;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.handlers.AdminHandler;
@@ -94,7 +95,24 @@ class AerospikeAdminServiceV1 implements AerospikeAdminService {
     @Override
     public void createRole(AuthDetails authDetails, RestClientRole rcRole) {
         Role asRole = rcRole.toRole();
-        AdminHandler.create(clientPool.getClient(authDetails)).createRole(null, asRole.name, asRole.privileges);
+        AdminHandler.create(clientPool.getClient(authDetails)).createRole(
+                null,
+                asRole.name,
+                asRole.privileges,
+                asRole.whitelist,
+                asRole.readQuota,
+                asRole.writeQuota
+        );
+    }
+
+    @Override
+    public void setRoleQuotas(AuthDetails authDetails, String roleName, RestClientRoleQuota roleQuota) {
+        AdminHandler.create(clientPool.getClient(authDetails)).setRoleQuotas(
+                null,
+                roleName,
+                roleQuota.getReadQuota(),
+                roleQuota.getWriteQuota()
+        );
     }
 
     @Override

@@ -18,6 +18,7 @@ package com.aerospike.restclient.util;
 
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Host;
+import com.aerospike.client.Value;
 import com.aerospike.client.policy.ClientPolicy;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.google.common.cache.Cache;
@@ -41,7 +42,8 @@ public class AerospikeClientPool {
     private final String hostname;
 
     public AerospikeClientPool(int poolSize, ClientPolicy clientPolicy,
-                               int port, String hostList, String hostname, AerospikeClient defaultClient) {
+                               int port, String hostList, String hostname,
+                               AerospikeClient defaultClient, boolean useBoolBin) {
         this.clientPool = CacheBuilder.newBuilder().maximumSize(poolSize).build();
         if (defaultClient != null) {
             this.clientPool.put(DEFAULT_CLIENT_KEY, defaultClient);
@@ -51,6 +53,8 @@ public class AerospikeClientPool {
         this.port = port;
         this.hostList = hostList;
         this.hostname = hostname;
+
+        Value.UseBoolBin = useBoolBin;
     }
 
     public AerospikeClient getClient(AuthDetails authDetails) {
@@ -91,6 +95,6 @@ public class AerospikeClientPool {
 
     @SuppressWarnings("UnstableApiUsage")
     protected String buildPoolKey(AuthDetails authDetails) {
-        return Hashing.md5().hashBytes(authDetails.toString().getBytes()).toString();
+        return Hashing.sha256().hashBytes(authDetails.toString().getBytes()).toString();
     }
 }

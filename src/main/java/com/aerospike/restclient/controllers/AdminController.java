@@ -20,14 +20,27 @@ import com.aerospike.client.admin.User;
 import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.RestClientPrivilege;
 import com.aerospike.restclient.domain.RestClientRole;
+import com.aerospike.restclient.domain.RestClientRoleQuota;
 import com.aerospike.restclient.domain.RestClientUserModel;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeAdminService;
 import com.aerospike.restclient.util.HeaderHandler;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Example;
+import io.swagger.annotations.ExampleProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -187,6 +200,27 @@ public class AdminController {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         adminService.createRole(authDetails, rcRole);
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 403, response = RestClientError.class, message = "Not authorized to create roles.",
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")})),
+            @ApiResponse(code = 400, response = RestClientError.class, message = "Invalid role creation parameters",
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")})),
+            @ApiResponse(code = 409, response = RestClientError.class, message = "Role already exists.",
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
+    })
+    @ApiOperation(value = "Set maximum reads/writes per second limits for a role.", nickname = "setRoleQuotas")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @RequestMapping(method = RequestMethod.POST, value = "/role/{name}/quota",
+            consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
+    public void setRoleQuotas(
+            @ApiParam(value = "The name of the role to which quotas will be set.", required = true) @PathVariable(value = "name") String name,
+            @ApiParam(required = true) @RequestBody RestClientRoleQuota roleQuota,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+
+        AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
+        adminService.setRoleQuotas(authDetails, name, roleQuota);
     }
 
     @ApiResponses(value = {

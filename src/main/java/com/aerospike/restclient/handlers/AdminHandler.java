@@ -70,8 +70,13 @@ public class AdminHandler {
         return client.queryRole(policy, roleName);
     }
 
-    public void createRole(AdminPolicy policy, String roleName, List<Privilege> privileges) {
-        client.createRole(policy, roleName, privileges);
+    public void createRole(AdminPolicy policy, String roleName, List<Privilege> privileges,
+                           List<String> whitelist, int readQuota, int writeQuota) {
+        client.createRole(policy, roleName, privileges, whitelist, readQuota, writeQuota);
+    }
+
+    public void setRoleQuotas(AdminPolicy policy, String roleName, int readQuota, int writeQuota) {
+        client.setQuotas(policy, roleName, readQuota, writeQuota);
     }
 
     public void deleteRole(AdminPolicy policy, String roleName) {

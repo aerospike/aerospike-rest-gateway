@@ -19,6 +19,7 @@ package com.aerospike.restclient.service;
 import com.aerospike.client.admin.User;
 import com.aerospike.restclient.domain.RestClientPrivilege;
 import com.aerospike.restclient.domain.RestClientRole;
+import com.aerospike.restclient.domain.RestClientRoleQuota;
 import com.aerospike.restclient.domain.RestClientUserModel;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 
@@ -47,6 +48,8 @@ public interface AerospikeAdminService {
     public List<RestClientRole> getRoles(AuthDetails authDetails);
 
     public void createRole(AuthDetails authDetails, RestClientRole rcRole);
+
+    public void setRoleQuotas(AuthDetails authDetails, String roleName, RestClientRoleQuota roleQuota);
 
     public RestClientRole getRole(AuthDetails authDetails, String roleName);
 

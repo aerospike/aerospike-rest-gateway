@@ -1,9 +1,9 @@
 buildscript {
 	ext {
-		springBootVersion = '2.4.2'
+		springBootVersion = '2.4.5'
 		springfoxVersion = '2.9.2'
 		httpclientVersion = '4.5.12'
-		aerospikeClientVersion = findProperty('aerospikeClientVersion') ?:'5.0.2'
+		aerospikeClientVersion = findProperty('aerospikeClientVersion') ?:'5.1.0'
 	}
     if (findProperty("aerospikeUseLocal")) {
     print("using Local repo")

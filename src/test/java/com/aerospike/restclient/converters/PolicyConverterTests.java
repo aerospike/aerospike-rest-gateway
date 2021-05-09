@@ -16,7 +16,10 @@
  */
 package com.aerospike.restclient.converters;
 
-import com.aerospike.client.policy.*;
+import com.aerospike.client.policy.CommitLevel;
+import com.aerospike.client.policy.GenerationPolicy;
+import com.aerospike.client.policy.RecordExistsAction;
+import com.aerospike.client.policy.Replica;
 import com.aerospike.restclient.util.RestClientErrors.InvalidPolicyValueError;
 import com.aerospike.restclient.util.converters.PolicyValueConverter;
 import org.junit.Test;
@@ -25,20 +28,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class PolicyConverterTests {
-
-
-	@Test
-	public void testPriority() {
-		assertEquals(Priority.HIGH, PolicyValueConverter.getPriority("HIGH"));
-		assertEquals(Priority.MEDIUM, PolicyValueConverter.getPriority("MEDIUM"));
-		assertEquals(Priority.LOW, PolicyValueConverter.getPriority("LOW"));
-		assertEquals(Priority.DEFAULT, PolicyValueConverter.getPriority("DEFAULT"));
-	}
-
-	@Test(expected=InvalidPolicyValueError.class)
-	public void testInvalidPriority() {
-		PolicyValueConverter.getPriority("highest");
-	}
 
 	@Test
 	public void testReplica() {

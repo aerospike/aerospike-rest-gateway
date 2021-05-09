@@ -16,18 +16,16 @@
  */
 package com.aerospike.restclient.converters;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.aerospike.client.policy.BatchPolicy;
+import com.aerospike.client.policy.Replica;
+import com.aerospike.restclient.util.AerospikeAPIConstants;
+import com.aerospike.restclient.util.converters.policyconverters.BatchPolicyConverter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.aerospike.client.policy.BatchPolicy;
-import com.aerospike.client.policy.Priority;
-import com.aerospike.client.policy.Replica;
-import com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.aerospike.restclient.util.converters.policyconverters.BatchPolicyConverter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BatchPolicyConverterTests {
 
@@ -35,7 +33,7 @@ public class BatchPolicyConverterTests {
 
 	@Before
 	public void setup() {
-		policyMap = new HashMap<String, String>();
+		policyMap = new HashMap<>();
 	}
 
 	@Test
@@ -43,13 +41,6 @@ public class BatchPolicyConverterTests {
 		policyMap.put(AerospikeAPIConstants.REPLICA, Replica.MASTER.toString());
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
 		Assert.assertEquals(policy.replica, Replica.MASTER);
-	}
-
-	@Test
-	public void testPriority() {
-		policyMap.put(AerospikeAPIConstants.PRIORITY, Priority.MEDIUM.toString());
-		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.priority, Priority.MEDIUM);
 	}
 
 	@Test
