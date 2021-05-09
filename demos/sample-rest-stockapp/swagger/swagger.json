@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "REST Interface for Aerospike Database.",
-        "version": "1.7.0",
+        "version": "1.8.0",
         "title": "Aerospike REST Client",
         "contact": {
             "name": "Aerospike, Inc.",
@@ -406,6 +406,78 @@
                     },
                     "404": {
                         "description": "Specified role not found",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "500": {
+                        "description": "The REST Client encountered an error processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/v1/admin/role/{name}/quota": {
+            "post": {
+                "tags": [
+                    "Admin Operations"
+                ],
+                "summary": "Set maximum reads/writes per second limits for a role.",
+                "operationId": "setRoleQuotas",
+                "consumes": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/msgpack"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "The name of the role to which quotas will be set.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "roleQuota",
+                        "description": "roleQuota",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RestClientRoleQuota"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted"
+                    },
+                    "400": {
+                        "description": "Invalid role creation parameters",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "403": {
+                        "description": "Not authorized to create roles.",
+                        "schema": {
+                            "$ref": "#/definitions/RestClientError"
+                        }
+                    },
+                    "409": {
+                        "description": "Role already exists.",
                         "schema": {
                             "$ref": "#/definitions/RestClientError"
                         }
@@ -5395,13 +5467,6 @@
                         "type": "boolean"
                     },
                     {
-                        "name": "failOnClusterChange",
-                        "in": "query",
-                        "description": "Terminate scan if cluster in migration state. Only used for server versions < 4.9.",
-                        "required": false,
-                        "type": "boolean"
-                    },
-                    {
                         "name": "filterexp",
                         "in": "query",
                         "description": "Optional Filter Expression (introduced in Aerospike Database 5.2.0) in infix notation DSL.",
@@ -5528,14 +5593,6 @@
                             "SEQUENCE",
                             "RANDOM"
                         ]
-                    },
-                    {
-                        "name": "scanPercent",
-                        "in": "query",
-                        "description": "Percent of data to scan. Valid integer range is 1 to 100.\nThis field is supported on server versions < 4.9.\nFor server versions >= 4.9, use maxRecords.",
-                        "required": false,
-                        "type": "integer",
-                        "format": "int32"
                     },
                     {
                         "name": "sendKey",
@@ -5638,13 +5695,6 @@
                         "type": "boolean"
                     },
                     {
-                        "name": "failOnClusterChange",
-                        "in": "query",
-                        "description": "Terminate scan if cluster in migration state. Only used for server versions < 4.9.",
-                        "required": false,
-                        "type": "boolean"
-                    },
-                    {
                         "name": "filterexp",
                         "in": "query",
                         "description": "Optional Filter Expression (introduced in Aerospike Database 5.2.0) in infix notation DSL.",
@@ -5771,14 +5821,6 @@
                             "SEQUENCE",
                             "RANDOM"
                         ]
-                    },
-                    {
-                        "name": "scanPercent",
-                        "in": "query",
-                        "description": "Percent of data to scan. Valid integer range is 1 to 100.\nThis field is supported on server versions < 4.9.\nFor server versions >= 4.9, use maxRecords.",
-                        "required": false,
-                        "type": "integer",
-                        "format": "int32"
                     },
                     {
                         "name": "sendKey",
@@ -6026,12 +6068,12 @@
                     }
                 },
                 "key": {
-                    "description": "Key to retrieve a record",
+                    "description": "Key to retrieve a record.",
                     "$ref": "#/definitions/Key"
                 },
                 "readAllBins": {
                     "type": "boolean",
-                    "description": "Whether all bins should be returned with this record"
+                    "description": "Whether all bins should be returned with this record."
                 }
             },
             "title": "BatchReadRequest"
@@ -6039,14 +6081,10 @@
         "Key": {
             "type": "object",
             "required": [
-                "namespace"
+                "namespace",
+                "userKey"
             ],
             "properties": {
-                "digest": {
-                    "type": "string",
-                    "example": "AAAAAAAAAAAAAAAAAAAAAAAAAAA=",
-                    "description": "URL safe base64 encoded key digest. Returned by the server on batch responses. May be provided by client."
-                },
                 "keytype": {
                     "type": "string",
                     "example": "STRING",
@@ -6398,19 +6436,58 @@
         },
         "RestClientRole": {
             "type": "object",
+            "required": [
+                "name",
+                "privileges"
+            ],
             "properties": {
                 "name": {
                     "type": "string",
-                    "example": "customRole"
+                    "example": "customRole",
+                    "description": "Role name."
                 },
                 "privileges": {
                     "type": "array",
+                    "description": "List of assigned privileges.",
                     "items": {
                         "$ref": "#/definitions/Privilege"
                     }
+                },
+                "readQuota": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Maximum reads per second limit."
+                },
+                "whitelist": {
+                    "type": "array",
+                    "description": "List of allowable IP addresses.",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "writeQuota": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Maximum writes per second limit."
                 }
             },
             "title": "RestClientRole"
+        },
+        "RestClientRoleQuota": {
+            "type": "object",
+            "properties": {
+                "readQuota": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Maximum reads per second limit."
+                },
+                "writeQuota": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Maximum writes per second limit."
+                }
+            },
+            "title": "RestClientRoleQuota"
         },
         "RestClientScanResponse": {
             "type": "object",
@@ -6465,13 +6542,31 @@
         "User": {
             "type": "object",
             "properties": {
+                "connsInUse": {
+                    "type": "integer",
+                    "format": "int32"
+                },
                 "name": {
                     "type": "string"
+                },
+                "readInfo": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
                 },
                 "roles": {
                     "type": "array",
                     "items": {
                         "type": "string"
+                    }
+                },
+                "writeInfo": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "format": "int32"
                     }
                 }
             },
