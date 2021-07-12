@@ -16,12 +16,7 @@
  */
 package com.aerospike.restclient;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -38,7 +33,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(Parameterized.class)
 @SpringBootTest
@@ -64,8 +63,8 @@ public class RecordPatchErrorTests {
 		return new Object[] {true, false};
 	}
 
-	private String nonExistentNSEndpoint = null;
-	private String nonExistentRecordEndpoint = null;
+	private final String nonExistentNSEndpoint;
+	private final String nonExistentRecordEndpoint;
 
 	public RecordPatchErrorTests(boolean useSet) {
 		if (useSet) {
@@ -84,7 +83,7 @@ public class RecordPatchErrorTests {
 
 	@Test
 	public void PatchRecordToInvalidNamespace() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 		binMap.put("integer", 12345);
 
 		mockMVC.perform(patch(nonExistentNSEndpoint)
@@ -95,7 +94,7 @@ public class RecordPatchErrorTests {
 
 	@Test
 	public void PatchRecordWhichDoesNotExist() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 
 		binMap.put("string", "Aerospike");
 
@@ -103,8 +102,6 @@ public class RecordPatchErrorTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(binMap))
 				).andExpect(status().isNotFound());
-
 	}
-
 
 }

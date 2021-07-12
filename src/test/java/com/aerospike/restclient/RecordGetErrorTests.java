@@ -16,11 +16,8 @@
  */
 package com.aerospike.restclient;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Map;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -39,8 +36,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(Parameterized.class)
 @SpringBootTest
@@ -57,13 +56,12 @@ public class RecordGetErrorTests {
 		return new Object[] {true, false};
 	}
 
-
-	String nonExistentNSendpoint = null;
-	String nonExistentRecordEndpoint = null;
-	String invalidKeytypeEndpoint = null;
-	String invalidIntegerEndpoint = null;
-	String invalidBytesEndpoint = null;
-	String invalidDigestEndpoint = null;
+	String nonExistentNSendpoint;
+	String nonExistentRecordEndpoint;
+	String invalidKeytypeEndpoint;
+	String invalidIntegerEndpoint;
+	String invalidBytesEndpoint;
+	String invalidDigestEndpoint;
 
 	public  RecordGetErrorTests(boolean useSet) {
 		if (useSet) {
@@ -83,11 +81,11 @@ public class RecordGetErrorTests {
 		}
 	}
 
-
 	@Autowired
 	private ObjectMapper objectMapper;
 
 	private MockMvc mockMVC;
+
 	@Autowired
 	private WebApplicationContext wac;
 
@@ -131,7 +129,6 @@ public class RecordGetErrorTests {
 		mockMVC.perform(
 				get(invalidKeytypeEndpoint)
 				).andExpect(status().isBadRequest());
-
 	}
 
 	@Test
@@ -139,7 +136,6 @@ public class RecordGetErrorTests {
 		mockMVC.perform(
 				get(invalidIntegerEndpoint)
 				).andExpect(status().isBadRequest());
-
 	}
 
 	@Test
@@ -147,7 +143,6 @@ public class RecordGetErrorTests {
 		mockMVC.perform(
 				get(invalidBytesEndpoint) /*This has an illegally encoded urlsafebase64 */
 				).andExpect(status().isBadRequest());
-
 	}
 
 	@Test
@@ -155,6 +150,5 @@ public class RecordGetErrorTests {
 		mockMVC.perform(
 				get(invalidDigestEndpoint) /* This is not 20 bytes long */
 				).andExpect(status().isBadRequest());
-
 	}
 }
