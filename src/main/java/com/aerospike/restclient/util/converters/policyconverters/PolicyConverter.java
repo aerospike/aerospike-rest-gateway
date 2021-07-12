@@ -24,6 +24,7 @@ import java.util.Map;
 
 public class PolicyConverter {
 
+    @SuppressWarnings("deprecation")
     public static Policy policyFromMap(Map<String, String> policyMap) {
         Policy policy = new Policy();
 
