@@ -16,13 +16,9 @@
  */
 package com.aerospike.restclient;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-
+import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.Bin;
+import com.aerospike.client.Key;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -39,16 +35,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.Bin;
-import com.aerospike.client.Key;
-import com.aerospike.client.Value;
-import com.aerospike.client.Value.BytesValue;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /*
  * These Tests are simple tests which store a simple value via the Java Client, then retrieve it via REST
  * The expected and returned values are compared.
- *
  */
 @RunWith(Parameterized.class)
 @SpringBootTest
@@ -68,18 +64,18 @@ public class RecordExistsTests {
 
 	private MockMvc mockMVC;
 
-	private Key testKey = new Key("test", "junit", "getput");
-	private Key intKey = new Key("test", "junit", 1);
-	private Key bytesKey = new Key("test", "junit", new Value.BytesValue(new byte[]{1, 127, 127, 1}));
+	private final Key testKey;
+	private final Key intKey;
+	private final Key bytesKey;
 
 	private List<Key> keysToRemove;
 
 	// Endpoint to receive all requests
-	private String testEndpoint = ASTestUtils.buildEndpoint("kvs", "test",  "junit", "getput");
-	private String intEndpoint = null;
-	private String digestEndpoint = null;
-	private String bytesEndpoint = null;
-	private String nonExistentEndpoint = null;
+	private final String testEndpoint;
+	private final String intEndpoint;
+	private final String digestEndpoint;
+	private final String bytesEndpoint;
+	private final String nonExistentEndpoint;
 
 	@Parameters
 	public static Object[] getParams() {
@@ -101,7 +97,7 @@ public class RecordExistsTests {
 
 			intEndpoint = ASTestUtils.buildEndpoint("kvs", "test",  "junit", "1") + "?keytype=INTEGER";
 
-			String urlBytes = Base64.getUrlEncoder().encodeToString((byte[])((BytesValue)bytesKey.userKey).getObject());
+			String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
 			bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", urlBytes) + "?keytype=BYTES";
 		} else {
 			testKey = new Key("test", null, "getput");
@@ -117,16 +113,15 @@ public class RecordExistsTests {
 
 			intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "1") + "?keytype=INTEGER";
 
-			String urlBytes = Base64.getUrlEncoder().encodeToString((byte[])((BytesValue)bytesKey.userKey).getObject());
+			String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
 			bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", urlBytes) + "?keytype=BYTES";
-
 		}
 	}
 
 	@Before
 	public void setup() {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-		keysToRemove = new ArrayList<Key>();
+		keysToRemove = new ArrayList<>();
 		client.put(null, testKey, new Bin("a", "b"));
 	}
 
@@ -138,10 +133,8 @@ public class RecordExistsTests {
 		}
 	}
 
-
 	@Test
 	public void testStringKeyExists() throws Exception {
-
 		mockMVC.perform(
 				head(testEndpoint)).andExpect(status().isOk());
 	}
@@ -190,6 +183,3 @@ public class RecordExistsTests {
 	}
 
 }
-
-
-

@@ -16,12 +16,10 @@
  */
 package com.aerospike.restclient;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.HashMap;
-import java.util.Map;
-
+import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.Bin;
+import com.aerospike.client.Key;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -39,10 +37,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.Bin;
-import com.aerospike.client.Key;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(Parameterized.class)
 @SpringBootTest
@@ -70,9 +69,9 @@ public class RecordPostErrorTests {
 		return new Object[] {true, false};
 	}
 
-	private String nonExistentNSEndpoint = null;
-	private String existingRecordEndpoint = null;
-	private Key testKey = null;
+	private final String nonExistentNSEndpoint;
+	private final String existingRecordEndpoint;
+	private final Key testKey;
 
 	public RecordPostErrorTests(boolean useSet) {
 		if (useSet) {
@@ -100,7 +99,7 @@ public class RecordPostErrorTests {
 
 	@Test
 	public void PostRecordToInvalidNamespace() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 		binMap.put("integer", 12345);
 
 		mockMVC.perform(post(nonExistentNSEndpoint)
@@ -111,7 +110,7 @@ public class RecordPostErrorTests {
 
 	@Test
 	public void PostRecordToExistingKey() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 
 		binMap.put("string", "Aerospike");
 
@@ -119,8 +118,6 @@ public class RecordPostErrorTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(binMap))
 				).andExpect(status().isConflict());
-
 	}
-
 
 }
