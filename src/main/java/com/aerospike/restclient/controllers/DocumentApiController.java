@@ -38,6 +38,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = "Document API Operations", description = "Perform operations on records using JSONPath queries.")
@@ -67,7 +69,7 @@ public class DocumentApiController {
      *                     GET                        *
      **************************************************
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{key}/{bin}/{jsonpath}",
+    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{key}",
             produces = {"application/json", "application/msgpack"})
     @ApiOperation(value = GET_DOCUMENT_NOTES, nickname = "getDocumentObject")
     @ResponseStatus(HttpStatus.OK)
@@ -80,23 +82,23 @@ public class DocumentApiController {
                     examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
     })
     @ASRestClientPolicyQueryParams
-    public Object
+    public Map<String, Object>
     getDocumentObject(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @ApiParam(value = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @ApiParam(value = BIN_NAME_NOTES, required = true) @PathVariable(value = "bin") String binName,
-            @ApiParam(value = JSON_PATH_NOTES, required = true) @PathVariable(value = "jsonpath") String jsonPath,
             @ApiIgnore @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         Policy policy = RequestParamHandler.getPolicy(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
+        List<String> bins = Arrays.asList(RequestParamHandler.getBinsFromMap(requestParams));
+        String jsonPath = RequestParamHandler.getJsonPathFromMap(requestParams);
 
-        return service.getObject(authDetails, namespace, null, key, binName, jsonPath, keyType, policy);
+        return service.getObject(authDetails, namespace, null, key, bins, jsonPath, keyType, policy);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{set}/{key}/{bin}/{jsonpath}",
+    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{set}/{key}",
             produces = {"application/json", "application/msgpack"})
     @ApiOperation(value = GET_DOCUMENT_NOTES, nickname = "getDocumentObjectSet")
     @ResponseStatus(HttpStatus.OK)
@@ -109,21 +111,21 @@ public class DocumentApiController {
                     examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
     })
     @ASRestClientPolicyQueryParams
-    public Object
+    public Map<String, Object>
     getDocumentObjectSet(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @ApiParam(value = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @ApiParam(value = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @ApiParam(value = BIN_NAME_NOTES, required = true) @PathVariable(value = "bin") String binName,
-            @ApiParam(value = JSON_PATH_NOTES, required = true) @PathVariable(value = "jsonpath") String jsonPath,
             @ApiIgnore @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         Policy policy = RequestParamHandler.getPolicy(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
+        List<String> bins = Arrays.asList(RequestParamHandler.getBinsFromMap(requestParams));
+        String jsonPath = RequestParamHandler.getJsonPathFromMap(requestParams);
 
-        return service.getObject(authDetails, namespace, set, key, binName, jsonPath, keyType, policy);
+        return service.getObject(authDetails, namespace, set, key, bins, jsonPath, keyType, policy);
     }
 
     /*
@@ -131,7 +133,7 @@ public class DocumentApiController {
      *                     PUT                        *
      **************************************************
      */
-    @RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{key}/{bin}/{jsonpath}",
+    @RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{key}",
             produces = {"application/json", "application/msgpack"})
     @ApiOperation(value = PUT_DOCUMENT_NOTES, nickname = "putDocumentObject")
     @ResponseStatus(HttpStatus.OK)
@@ -148,20 +150,20 @@ public class DocumentApiController {
     putDocumentObject(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @ApiParam(value = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @ApiParam(value = BIN_NAME_NOTES, required = true) @PathVariable(value = "bin") String binName,
-            @ApiParam(value = JSON_PATH_NOTES, required = true) @PathVariable(value = "jsonpath") String jsonPath,
             @ApiParam(value = JSON_OBJECT_NOTES, required = true) @RequestBody Object jsonObject,
-            @ApiIgnore @RequestParam Map<String, String> requestParams,
+            @ApiIgnore @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
-        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
+        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams.toSingleValueMap());
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
+        List<String> bins = Arrays.asList(RequestParamHandler.getBinsFromMap(requestParams));
+        String jsonPath = RequestParamHandler.getJsonPathFromMap(requestParams);
 
-        service.putObject(authDetails, namespace, null, key, binName, jsonPath, jsonObject, keyType, policy);
+        service.putObject(authDetails, namespace, null, key, bins, jsonPath, jsonObject, keyType, policy);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{set}/{key}/{bin}/{jsonpath}",
+    @RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{set}/{key}",
             produces = {"application/json", "application/msgpack"})
     @ApiOperation(value = PUT_DOCUMENT_NOTES, nickname = "putDocumentObjectSet")
     @ResponseStatus(HttpStatus.OK)
@@ -179,17 +181,17 @@ public class DocumentApiController {
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @ApiParam(value = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @ApiParam(value = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @ApiParam(value = BIN_NAME_NOTES, required = true) @PathVariable(value = "bin") String binName,
-            @ApiParam(value = JSON_PATH_NOTES, required = true) @PathVariable(value = "jsonpath") String jsonPath,
             @ApiParam(value = JSON_OBJECT_NOTES, required = true) @RequestBody Object jsonObject,
-            @ApiIgnore @RequestParam Map<String, String> requestParams,
+            @ApiIgnore @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
-        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
+        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams.toSingleValueMap());
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
+        List<String> bins = Arrays.asList(RequestParamHandler.getBinsFromMap(requestParams));
+        String jsonPath = RequestParamHandler.getJsonPathFromMap(requestParams);
 
-        service.putObject(authDetails, namespace, set, key, binName, jsonPath, jsonObject, keyType, policy);
+        service.putObject(authDetails, namespace, set, key, bins, jsonPath, jsonObject, keyType, policy);
     }
 
     /*
@@ -197,7 +199,7 @@ public class DocumentApiController {
      *                     POST                       *
      **************************************************
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{key}/{bin}/{jsonpath}",
+    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{key}",
             produces = {"application/json", "application/msgpack"})
     @ApiOperation(value = APPEND_DOCUMENT_NOTES, nickname = "appendDocumentObject")
     @ResponseStatus(HttpStatus.OK)
@@ -214,20 +216,20 @@ public class DocumentApiController {
     appendDocumentObject(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @ApiParam(value = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @ApiParam(value = BIN_NAME_NOTES, required = true) @PathVariable(value = "bin") String binName,
-            @ApiParam(value = JSON_PATH_NOTES, required = true) @PathVariable(value = "jsonpath") String jsonPath,
             @ApiParam(value = JSON_OBJECT_NOTES, required = true) @RequestBody Object jsonObject,
-            @ApiIgnore @RequestParam Map<String, String> requestParams,
+            @ApiIgnore @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
-        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
+        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams.toSingleValueMap());
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
+        List<String> bins = Arrays.asList(RequestParamHandler.getBinsFromMap(requestParams));
+        String jsonPath = RequestParamHandler.getJsonPathFromMap(requestParams);
 
-        service.appendObject(authDetails, namespace, null, key, binName, jsonPath, jsonObject, keyType, policy);
+        service.appendObject(authDetails, namespace, null, key, bins, jsonPath, jsonObject, keyType, policy);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{set}/{key}/{bin}/{jsonpath}",
+    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{set}/{key}",
             produces = {"application/json", "application/msgpack"})
     @ApiOperation(value = APPEND_DOCUMENT_NOTES, nickname = "appendDocumentObjectSet")
     @ResponseStatus(HttpStatus.OK)
@@ -245,17 +247,17 @@ public class DocumentApiController {
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @ApiParam(value = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @ApiParam(value = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @ApiParam(value = BIN_NAME_NOTES, required = true) @PathVariable(value = "bin") String binName,
-            @ApiParam(value = JSON_PATH_NOTES, required = true) @PathVariable(value = "jsonpath") String jsonPath,
             @ApiParam(value = JSON_OBJECT_NOTES, required = true) @RequestBody Object jsonObject,
-            @ApiIgnore @RequestParam Map<String, String> requestParams,
+            @ApiIgnore @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
-        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
+        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams.toSingleValueMap());
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
+        List<String> bins = Arrays.asList(RequestParamHandler.getBinsFromMap(requestParams));
+        String jsonPath = RequestParamHandler.getJsonPathFromMap(requestParams);
 
-        service.appendObject(authDetails, namespace, set, key, binName, jsonPath, jsonObject, keyType, policy);
+        service.appendObject(authDetails, namespace, set, key, bins, jsonPath, jsonObject, keyType, policy);
     }
 
     /*
@@ -263,7 +265,7 @@ public class DocumentApiController {
      *                     DELETE                     *
      **************************************************
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{key}/{bin}/{jsonpath}",
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{key}",
             produces = {"application/json", "application/msgpack"})
     @ApiOperation(value = DELETE_DOCUMENT_NOTES, nickname = "deleteDocumentObject")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -280,19 +282,19 @@ public class DocumentApiController {
     deleteDocumentObject(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @ApiParam(value = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @ApiParam(value = BIN_NAME_NOTES, required = true) @PathVariable(value = "bin") String binName,
-            @ApiParam(value = JSON_PATH_NOTES, required = true) @PathVariable(value = "jsonpath") String jsonPath,
-            @ApiIgnore @RequestParam Map<String, String> requestParams,
+            @ApiIgnore @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
-        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
+        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams.toSingleValueMap());
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
+        List<String> bins = Arrays.asList(RequestParamHandler.getBinsFromMap(requestParams));
+        String jsonPath = RequestParamHandler.getJsonPathFromMap(requestParams);
 
-        service.deleteObject(authDetails, namespace, null, key, binName, jsonPath, keyType, policy);
+        service.deleteObject(authDetails, namespace, null, key, bins, jsonPath, keyType, policy);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{set}/{key}/{bin}/{jsonpath}",
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{set}/{key}",
             produces = {"application/json", "application/msgpack"})
     @ApiOperation(value = DELETE_DOCUMENT_NOTES, nickname = "deleteDocumentObjectSet")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -310,15 +312,15 @@ public class DocumentApiController {
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @ApiParam(value = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @ApiParam(value = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @ApiParam(value = BIN_NAME_NOTES, required = true) @PathVariable(value = "bin") String binName,
-            @ApiParam(value = JSON_PATH_NOTES, required = true) @PathVariable(value = "jsonpath") String jsonPath,
-            @ApiIgnore @RequestParam Map<String, String> requestParams,
+            @ApiIgnore @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
-        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
+        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams.toSingleValueMap());
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
+        List<String> bins = Arrays.asList(RequestParamHandler.getBinsFromMap(requestParams));
+        String jsonPath = RequestParamHandler.getJsonPathFromMap(requestParams);
 
-        service.deleteObject(authDetails, namespace, set, key, binName, jsonPath, keyType, policy);
+        service.deleteObject(authDetails, namespace, set, key, bins, jsonPath, keyType, policy);
     }
 }

@@ -31,6 +31,8 @@ import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class AerospikeDocumentServiceV1 implements AerospikeDocumentService {
@@ -39,35 +41,35 @@ public class AerospikeDocumentServiceV1 implements AerospikeDocumentService {
     private AerospikeClientPool clientPool;
 
     @Override
-    public Object getObject(AuthDetails authDetails, String namespace, String set, String key, String binName,
-                            String jsonPath, AerospikeAPIConstants.RecordKeyType keyType, Policy policy) {
+    public Map<String, Object> getObject(AuthDetails authDetails, String namespace, String set, String key, List<String> bins,
+                                         String jsonPath, AerospikeAPIConstants.RecordKeyType keyType, Policy policy) {
         Key asKey = KeyBuilder.buildKey(namespace, set, key, keyType);
         return DocumentHandler.create(clientPool.getClient(authDetails)).getObject(asKey,
-                binName, decodeJsonPath(jsonPath), policy);
+                bins, decodeJsonPath(jsonPath), policy);
     }
 
     @Override
-    public void putObject(AuthDetails authDetails, String namespace, String set, String key, String binName,
+    public void putObject(AuthDetails authDetails, String namespace, String set, String key, List<String> bins,
                           String jsonPath, Object jsonObject, AerospikeAPIConstants.RecordKeyType keyType, WritePolicy policy) {
         Key asKey = KeyBuilder.buildKey(namespace, set, key, keyType);
         DocumentHandler.create(clientPool.getClient(authDetails)).putObject(asKey,
-                binName, decodeJsonPath(jsonPath), jsonObject, policy);
+                bins, decodeJsonPath(jsonPath), jsonObject, policy);
     }
 
     @Override
-    public void appendObject(AuthDetails authDetails, String namespace, String set, String key, String binName,
+    public void appendObject(AuthDetails authDetails, String namespace, String set, String key, List<String> bins,
                              String jsonPath, Object jsonObject, AerospikeAPIConstants.RecordKeyType keyType, WritePolicy policy) {
         Key asKey = KeyBuilder.buildKey(namespace, set, key, keyType);
         DocumentHandler.create(clientPool.getClient(authDetails)).appendObject(asKey,
-                binName, decodeJsonPath(jsonPath), jsonObject, policy);
+                bins, decodeJsonPath(jsonPath), jsonObject, policy);
     }
 
     @Override
-    public void deleteObject(AuthDetails authDetails, String namespace, String set, String key, String binName,
+    public void deleteObject(AuthDetails authDetails, String namespace, String set, String key, List<String> bins,
                              String jsonPath, AerospikeAPIConstants.RecordKeyType keyType, WritePolicy policy) {
         Key asKey = KeyBuilder.buildKey(namespace, set, key, keyType);
         DocumentHandler.create(clientPool.getClient(authDetails)).deleteObject(asKey,
-                binName, decodeJsonPath(jsonPath), policy);
+                bins, decodeJsonPath(jsonPath), policy);
     }
 
     private String decodeJsonPath(String jsonPath) {

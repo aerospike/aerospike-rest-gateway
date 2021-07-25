@@ -21,17 +21,20 @@ import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 
+import java.util.List;
+import java.util.Map;
+
 public interface AerospikeDocumentService {
 
-    Object getObject(AuthDetails authDetails, String namespace, String set, String key, String binName,
-                     String jsonPath, AerospikeAPIConstants.RecordKeyType keyType, Policy policy);
+    Map<String, Object> getObject(AuthDetails authDetails, String namespace, String set, String key, List<String> bins,
+                                  String jsonPath, AerospikeAPIConstants.RecordKeyType keyType, Policy policy);
 
-    void putObject(AuthDetails authDetails, String namespace, String set, String key, String binName,
+    void putObject(AuthDetails authDetails, String namespace, String set, String key, List<String> bins,
                    String jsonPath, Object jsonObject, AerospikeAPIConstants.RecordKeyType keyType, WritePolicy policy);
 
-    void appendObject(AuthDetails authDetails, String namespace, String set, String key, String binName,
+    void appendObject(AuthDetails authDetails, String namespace, String set, String key, List<String> bins,
                       String jsonPath, Object jsonObject, AerospikeAPIConstants.RecordKeyType keyType, WritePolicy policy);
 
-    void deleteObject(AuthDetails authDetails, String namespace, String set, String key, String binName,
+    void deleteObject(AuthDetails authDetails, String namespace, String set, String key, List<String> bins,
                       String jsonPath, AerospikeAPIConstants.RecordKeyType keyType, WritePolicy policy);
 }

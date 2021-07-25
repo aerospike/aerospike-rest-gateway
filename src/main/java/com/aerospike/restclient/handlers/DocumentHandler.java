@@ -23,6 +23,9 @@ import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.documentapi.AerospikeDocumentClient;
 import com.aerospike.restclient.util.RestClientErrors;
 
+import java.util.List;
+import java.util.Map;
+
 public class DocumentHandler {
 
     private final AerospikeDocumentClient client;
@@ -31,33 +34,33 @@ public class DocumentHandler {
         this.client = new AerospikeDocumentClient(client);
     }
 
-    public Object getObject(Key key, String binName, String jsonPath, Policy policy) {
+    public Map<String, Object> getObject(Key key, List<String> bins, String jsonPath, Policy policy) {
         try {
-            return client.get(policy, key, binName, jsonPath);
+            return client.get(policy, key, bins, jsonPath);
         } catch (Exception e) {
             throw new RestClientErrors.InvalidOperationError(e.getMessage());
         }
     }
 
-    public void putObject(Key key, String binName, String jsonPath, Object jsonObject, WritePolicy policy) {
+    public void putObject(Key key, List<String> bins, String jsonPath, Object jsonObject, WritePolicy policy) {
         try {
-            client.put(policy, key, binName, jsonPath, jsonObject);
+            client.put(policy, key, bins, jsonPath, jsonObject);
         } catch (Exception e) {
             throw new RestClientErrors.InvalidOperationError(e.getMessage());
         }
     }
 
-    public void appendObject(Key key, String binName, String jsonPath, Object jsonObject, WritePolicy policy) {
+    public void appendObject(Key key, List<String> bins, String jsonPath, Object jsonObject, WritePolicy policy) {
         try {
-            client.append(policy, key, binName, jsonPath, jsonObject);
+            client.append(policy, key, bins, jsonPath, jsonObject);
         } catch (Exception e) {
             throw new RestClientErrors.InvalidOperationError(e.getMessage());
         }
     }
 
-    public void deleteObject(Key key, String binName, String jsonPath, WritePolicy policy) {
+    public void deleteObject(Key key, List<String> bins, String jsonPath, WritePolicy policy) {
         try {
-            client.delete(policy, key, binName, jsonPath);
+            client.delete(policy, key, bins, jsonPath);
         } catch (Exception e) {
             throw new RestClientErrors.InvalidOperationError(e.getMessage());
         }
