@@ -111,4 +111,9 @@ public class QueryParamDescriptors {
 
     // Scan parameters
     public static final String SCAN_FROM_TOKEN_NOTES = "Next page token parameter.";
+
+    // JSONPath parameters
+    public static final String JSON_PATH_NOTES = "JSONPath query parameter.";
+    public static final String JSON_PATH_BINS_NOTES = "Specify a set of bins to handle the JSONPath query.";
+
 }

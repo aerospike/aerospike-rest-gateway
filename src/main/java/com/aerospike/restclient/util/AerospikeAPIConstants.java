@@ -26,6 +26,7 @@ public final class AerospikeAPIConstants {
 	public static final String RECORD_GENERATION = "generation";
 	public static final String RECORD_EXPIRATION = "expiration";
 	public static final String RECORD_TTL = "ttl";
+	public static final String JSON_PATH = "jsonPath";
 
 	// Entries in a JSON representation of a key
 	public static final String PRIMARY_KEY = "pk";
