@@ -24,7 +24,8 @@ import com.aerospike.restclient.service.AerospikeDocumentService;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;
-import com.aerospike.restclient.util.annotations.ASRestClientPolicyQueryParams;
+import com.aerospike.restclient.util.annotations.ASRestDocumentPolicyQueryParams;
+import com.aerospike.restclient.util.annotations.ASRestDocumentWritePolicyQueryParams;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -81,7 +82,7 @@ public class DocumentApiController {
             @ApiResponse(code = 400, response = RestClientError.class, message = "Invalid parameters or request",
                     examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
     })
-    @ASRestClientPolicyQueryParams
+    @ASRestDocumentPolicyQueryParams
     public Map<String, Object>
     getDocumentObject(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -110,7 +111,7 @@ public class DocumentApiController {
             @ApiResponse(code = 400, response = RestClientError.class, message = "Invalid parameters or request",
                     examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
     })
-    @ASRestClientPolicyQueryParams
+    @ASRestDocumentPolicyQueryParams
     public Map<String, Object>
     getDocumentObjectSet(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -145,7 +146,7 @@ public class DocumentApiController {
             @ApiResponse(code = 400, response = RestClientError.class, message = "Invalid parameters or request",
                     examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
     })
-    @ASRestClientPolicyQueryParams
+    @ASRestDocumentWritePolicyQueryParams
     public void
     putDocumentObject(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -175,7 +176,7 @@ public class DocumentApiController {
             @ApiResponse(code = 400, response = RestClientError.class, message = "Invalid parameters or request",
                     examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
     })
-    @ASRestClientPolicyQueryParams
+    @ASRestDocumentWritePolicyQueryParams
     public void
     putDocumentObjectSet(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -211,7 +212,7 @@ public class DocumentApiController {
             @ApiResponse(code = 400, response = RestClientError.class, message = "Invalid parameters or request",
                     examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
     })
-    @ASRestClientPolicyQueryParams
+    @ASRestDocumentWritePolicyQueryParams
     public void
     appendDocumentObject(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -241,7 +242,7 @@ public class DocumentApiController {
             @ApiResponse(code = 400, response = RestClientError.class, message = "Invalid parameters or request",
                     examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
     })
-    @ASRestClientPolicyQueryParams
+    @ASRestDocumentWritePolicyQueryParams
     public void
     appendDocumentObjectSet(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -277,7 +278,7 @@ public class DocumentApiController {
             @ApiResponse(code = 400, response = RestClientError.class, message = "Invalid parameters or request",
                     examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
     })
-    @ASRestClientPolicyQueryParams
+    @ASRestDocumentWritePolicyQueryParams
     public void
     deleteDocumentObject(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -306,7 +307,7 @@ public class DocumentApiController {
             @ApiResponse(code = 400, response = RestClientError.class, message = "Invalid parameters or request",
                     examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
     })
-    @ASRestClientPolicyQueryParams
+    @ASRestDocumentWritePolicyQueryParams
     public void
     deleteDocumentObjectSet(
             @ApiParam(value = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
