@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.aerospike.restclient.util.AerospikeAPIConstants.JSON_PATH;
+import static com.aerospike.restclient.util.AerospikeAPIConstants.RECORD_BINS;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,7 +60,8 @@ public class DocumentApiTests {
 
     private Map<String, Object> objectMap;
     private final Key testKey;
-    private final String testBinName = "docBin";
+    private final String testBinName1 = "docBin1";
+    private final String testBinName2 = "docBin2";
     private final String testEndpoint;
 
     @Before
@@ -69,8 +72,9 @@ public class DocumentApiTests {
                 ImmutableMap.of("key02", "E1", "key03", "F1"),
                 ImmutableMap.of("key04", "G1", "key05", "H1")
         ));
-        Bin docBin = new Bin(testBinName, objectMap);
-        client.put(null, testKey, docBin);
+        Bin docBin1 = new Bin(testBinName1, objectMap);
+        Bin docBin2 = new Bin(testBinName2, objectMap);
+        client.put(null, testKey, docBin1, docBin2);
     }
 
     @After
@@ -91,10 +95,10 @@ public class DocumentApiTests {
     public DocumentApiTests(ObjectMapper objectMapper, String mediaType, boolean useSet) {
         if (useSet) {
             testKey = new Key("test", "junit", "doc");
-            testEndpoint = "/v1/document/test/junit/doc/" + testBinName + "/";
+            testEndpoint = "/v1/document/test/junit/doc";
         } else {
             testKey = new Key("test", null, "doc");
-            testEndpoint = "/v1/document/test/doc/" + testBinName + "/";
+            testEndpoint = "/v1/document/test/doc";
         }
         this.objectMapper = objectMapper;
         this.mediaType = mediaType;
@@ -102,92 +106,110 @@ public class DocumentApiTests {
 
     @Test
     public void testDocumentGet() throws Exception {
-        String jsonPath = URLEncoder.encode("$.example1", StandardCharsets.UTF_8.toString());
+        String binParam = "?" + RECORD_BINS + "=" + testBinName1 +
+                "&" + RECORD_BINS + "=" + testBinName2;
+        String jsonPathParam = "&" + JSON_PATH + "=" +
+                URLEncoder.encode("$.example1", StandardCharsets.UTF_8.toString());
 
         MvcResult result = mockMVC.perform(
-                get(testEndpoint + jsonPath)
+                get(testEndpoint + binParam + jsonPathParam)
         ).andExpect(status().isOk()).andReturn();
 
         MockHttpServletResponse res = result.getResponse();
         String resJson = res.getContentAsString();
         TypeReference<Map<String, Object>> typeReference = new TypeReference<Map<String, Object>>() {
         };
-        Map<String, Object> resObject = objectMapper.readValue(resJson, typeReference);
+        Map<String, Object> pathResult = objectMapper.readValue(resJson, typeReference);
 
-        Assert.assertEquals(objectMap.get("example1"), resObject);
+        Assert.assertEquals(objectMap.get("example1"), pathResult.get(testBinName1));
+        Assert.assertEquals(objectMap.get("example1"), pathResult.get(testBinName2));
     }
 
     @Test
     public void testDocumentPut() throws Exception {
-        String jsonPath = URLEncoder.encode("$.example3", StandardCharsets.UTF_8.toString());
+        String binParam = "?" + RECORD_BINS + "=" + testBinName1 +
+                "&" + RECORD_BINS + "=" + testBinName2;
+        String jsonPathParam = "&" + JSON_PATH + "=" +
+                URLEncoder.encode("$.example3", StandardCharsets.UTF_8.toString());
 
         byte[] payload = objectMapper.writeValueAsBytes("str3");
-        mockMVC.perform(put(testEndpoint + jsonPath)
+        mockMVC.perform(put(testEndpoint + binParam + jsonPathParam)
                 .contentType(mediaType)
                 .content(payload)
                 .accept(mediaType))
                 .andExpect(status().isOk());
 
         MvcResult result = mockMVC.perform(
-                get(testEndpoint + jsonPath)
+                get(testEndpoint + binParam + jsonPathParam)
         ).andExpect(status().isOk()).andReturn();
 
         MockHttpServletResponse res = result.getResponse();
         String resJson = res.getContentAsString();
-        TypeReference<String> typeReference = new TypeReference<String>() {
+        TypeReference<Map<String, String>> typeReference = new TypeReference<Map<String, String>>() {
         };
-        String resObject = objectMapper.readValue(resJson, typeReference);
+        Map<String, String> pathResult = objectMapper.readValue(resJson, typeReference);
 
-        Assert.assertEquals("str3", resObject);
+        Assert.assertEquals("str3", pathResult.get(testBinName1));
+        Assert.assertEquals("str3", pathResult.get(testBinName2));
     }
 
     @Test
     public void testDocumentAppend() throws Exception {
-        String jsonPath = URLEncoder.encode("$.example1.key01", StandardCharsets.UTF_8.toString());
+        String binParam = "?" + RECORD_BINS + "=" + testBinName1 +
+                "&" + RECORD_BINS + "=" + testBinName2;
+        String jsonPathParam = "&" + JSON_PATH + "=" +
+                URLEncoder.encode("$.example1.key01", StandardCharsets.UTF_8.toString());
 
         byte[] payload = objectMapper.writeValueAsBytes("D1");
-        mockMVC.perform(post(testEndpoint + jsonPath)
+        mockMVC.perform(post(testEndpoint + binParam + jsonPathParam)
                 .contentType(mediaType)
                 .content(payload)
                 .accept(mediaType))
                 .andExpect(status().isOk());
 
         MvcResult result = mockMVC.perform(
-                get(testEndpoint + jsonPath)
+                get(testEndpoint + binParam + jsonPathParam)
         ).andExpect(status().isOk()).andReturn();
 
         MockHttpServletResponse res = result.getResponse();
         String resJson = res.getContentAsString();
-        TypeReference<List<String>> typeReference = new TypeReference<List<String>>() {
+        TypeReference<Map<String, List<String>>> typeReference = new TypeReference<Map<String, List<String>>>() {
         };
-        List<String> resObject = objectMapper.readValue(resJson, typeReference);
+        Map<String, List<String>> pathResult = objectMapper.readValue(resJson, typeReference);
 
-        Assert.assertEquals(Arrays.asList("A1", "B1", "C1", "D1"), resObject);
+        Assert.assertEquals(Arrays.asList("A1", "B1", "C1", "D1"), pathResult.get(testBinName1));
+        Assert.assertEquals(Arrays.asList("A1", "B1", "C1", "D1"), pathResult.get(testBinName2));
     }
 
     @Test
     public void testDocumentDelete() throws Exception {
-        String jsonDeletePath = URLEncoder.encode("$.example2[1]", StandardCharsets.UTF_8.toString());
-        String jsonPath = URLEncoder.encode("$.example2", StandardCharsets.UTF_8.toString());
+        String binParam = "?" + RECORD_BINS + "=" + testBinName1 +
+                "&" + RECORD_BINS + "=" + testBinName2;
+        String jsonDeletePathParam = "&" + JSON_PATH + "=" +
+                URLEncoder.encode("$.example2[1]", StandardCharsets.UTF_8.toString());
+        String jsonPathParam = "&" + JSON_PATH + "=" +
+                URLEncoder.encode("$.example2", StandardCharsets.UTF_8.toString());
 
         mockMVC.perform(
-                delete(testEndpoint + jsonDeletePath)
+                delete(testEndpoint + binParam + jsonDeletePathParam)
         ).andExpect(status().isNoContent());
 
         MvcResult result = mockMVC.perform(
-                get(testEndpoint + jsonPath)
+                get(testEndpoint + binParam + jsonPathParam)
         ).andExpect(status().isOk()).andReturn();
 
         MockHttpServletResponse res = result.getResponse();
         String resJson = res.getContentAsString();
-        TypeReference<List<Map<String, Object>>> typeReference = new TypeReference<List<Map<String, Object>>>() {
-        };
-        List<Map<String, Object>> resObject = objectMapper.readValue(resJson, typeReference);
+        TypeReference<Map<String, List<Map<String, Object>>>> typeReference =
+                new TypeReference<Map<String, List<Map<String, Object>>>>() {
+                };
+        Map<String, List<Map<String, Object>>> pathResult = objectMapper.readValue(resJson, typeReference);
 
         List<Map<String, Object>> expected = Collections.singletonList(
                 ImmutableMap.of("key02", "E1", "key03", "F1")
         );
 
-        Assert.assertEquals(expected, resObject);
+        Assert.assertEquals(expected, pathResult.get(testBinName1));
+        Assert.assertEquals(expected, pathResult.get(testBinName2));
     }
 }
