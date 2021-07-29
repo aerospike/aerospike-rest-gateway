@@ -89,6 +89,8 @@ The REST Client also allows authentication to an Aerospike Enterprise edition se
 * `aerospike.restclient.clientpolicy.user` This is the name of a user registered with the Aerospike database. This variable is only needed when the Aerospike cluster is running with security enabled.
 * `aerospike.restclient.clientpolicy.password` This is the password for the previously specified user. This variable is only needed when the Aerospike cluster is running with security enabled.
 * `aerospike.restclient.clientpolicy.authMode` This is the authentication mode. Use it when user/password is defined. Supported modes are INTERNAL, EXTERNAL and EXTERNAL_INSECURE. Default is INTERNAL.
+* `aerospike.restclient.clientpolicy.clusterName` This is the expected cluster name. Default is empty and does not validate target cluster name.
+
 
 To utilize the multi-tenancy capability within the REST Client, send Aerospike login credentials using the [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication).  
 Set custom multi-user authentication configuration variables if needed:
@@ -110,6 +112,21 @@ If utilizing TLS, the `aerospike.restclient.hostlist` variable should be set to 
 * `aerospike.restclient.ssl.forloginonly` Boolean indicating that SSL should only be used for the initial login connection to Aerospike. Default: `false`
 * `aerospike.restclient.ssl.allowedciphers` An optional comma separated list of ciphers that are permitted to be used in communication with Aerospike. Available cipher names can be obtained by `SSLSocket.getSupportedCipherSuites()`.
 * `aerospike.restclient.ssl.allowedprotocols` An optional comma separated list of protocols that are permitted to be used in communication with Aerospike. Available values can be aquired using `SSLSocket.getSupportedProtocols()`. By Default only `TLSv1.2` is allowed.
+
+### Aerospike Client Policy Configuration
+The REST Client allows modification of the internal Aerospike client policies using the following environment variables. Please refer to the [ClientPolicy](https://docs.aerospike.com/apidocs/java/com/aerospike/client/policy/ClientPolicy.html) page on the Aerospike Java client API for more details about each policy settings.
+* `aerospike.restclient.clientpolicy.connPoolsPerNode`
+* `aerospike.restclient.clientpolicy.minConnsPerNode`
+* `aerospike.restclient.clientpolicy.maxConnsPerNode`
+* `aerospike.restclient.clientpolicy.maxSocketIdle`
+* `aerospike.restclient.clientpolicy.tendInterval`
+* `aerospike.restclient.clientpolicy.timeout`
+* `aerospike.restclient.clientpolicy.failIfNotConnected`
+* `aerospike.restclient.clientpolicy.sharedThreadPool`
+* `aerospike.restclient.clientpolicy.useServicesAlternate`
+* `aerospike.restclient.clientpolicy.requestProleReplicas`
+
+
 
 ## Further Reading
 
