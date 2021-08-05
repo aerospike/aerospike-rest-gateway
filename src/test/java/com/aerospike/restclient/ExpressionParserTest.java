@@ -3,8 +3,12 @@ package com.aerospike.restclient;
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
-import com.aerospike.client.Value;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +21,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,9 +52,6 @@ public class ExpressionParserTest {
     private final String currentMediaType;
     private final String expParameter;
 
-    /*
-     * Returns a two item array, of mediatype and record deserializer
-     */
     @Parameterized.Parameters
     public static Object[] mappers() {
         return new Object[][]{
@@ -63,69 +68,29 @@ public class ExpressionParserTest {
     }
 
     private final Key testKey;
-    private final Key intKey;
-    private final Key bytesKey;
-
-    private List<Key> keysToRemove;
-
-    // Endpoint to receive all requests
     private final String noBinEndpoint;
-    private final String intEndpoint;
-    private final String bytesEndpoint;
-    private final String digestEndpoint;
 
     @Before
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-        keysToRemove = new ArrayList<>();
     }
 
     @After
     public void clean() {
         client.delete(null, this.testKey);
-        for (Key key : keysToRemove) {
-            client.delete(null, key);
-        }
     }
 
     public ExpressionParserTest(RecordDeserializer deserializer, String mt, boolean useSet, String expParameter) {
         this.recordDeserializer = deserializer;
         this.currentMediaType = mt;
-        byte[] keyBytes = {1, 127, 127, 1};
         this.expParameter = expParameter;
 
         if (useSet) {
             testKey = new Key("test", "junit", "getput");
-            intKey = new Key("test", "junit", 1);
-
-            bytesKey = new Key("test", "junit", new Value.BytesValue(keyBytes));
-
             noBinEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
-
-            intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "1") + "?keytype=INTEGER";
-
-            String keyDigest = Base64.getUrlEncoder().encodeToString(this.testKey.digest);
-            digestEndpoint = ASTestUtils.buildEndpoint("kvs",
-                    this.testKey.namespace, this.testKey.setName, keyDigest) + "?keytype=DIGEST";
-
-            String b64byteStr = Base64.getUrlEncoder().encodeToString(keyBytes);
-            bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", b64byteStr) + "?keytype=BYTES";
         } else {
             testKey = new Key("test", null, "getput");
-            intKey = new Key("test", null, 1);
-
-            bytesKey = new Key("test", null, new Value.BytesValue(keyBytes));
-
             noBinEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "getput");
-
-            intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "1") + "?keytype=INTEGER";
-
-            String keyDigest = Base64.getUrlEncoder().encodeToString(this.testKey.digest);
-            digestEndpoint = ASTestUtils.buildEndpoint("kvs",
-                    this.testKey.namespace, keyDigest) + "?keytype=DIGEST";
-
-            String b64byteStr = Base64.getUrlEncoder().encodeToString(keyBytes);
-            bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", b64byteStr) + "?keytype=BYTES";
         }
     }
 
@@ -151,7 +116,6 @@ public class ExpressionParserTest {
             Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
             Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
         }
-        keysToRemove.add(testKey);
     }
 
     @Test
@@ -176,7 +140,6 @@ public class ExpressionParserTest {
             Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
             Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
         }
-        keysToRemove.add(testKey);
     }
 
     @Test
@@ -202,7 +165,6 @@ public class ExpressionParserTest {
             Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
             Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
         }
-        keysToRemove.add(testKey);
     }
 
     @Test
@@ -231,7 +193,6 @@ public class ExpressionParserTest {
             Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
             Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
         }
-        keysToRemove.add(testKey);
     }
 
     private String buildEndpoint(String encoded) {

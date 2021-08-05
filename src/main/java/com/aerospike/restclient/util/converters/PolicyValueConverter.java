@@ -28,6 +28,8 @@ import com.aerospike.restclient.util.RestClientErrors;
 import com.aerospike.restclient.util.converters.exp.FilterExpParser;
 import com.aerospike.restclient.util.converters.exp.PredExpParser;
 
+import java.util.Base64;
+
 public class PolicyValueConverter {
     private static final PredExpParser predExpParser = new PredExpParser();
     private static final FilterExpParser filterExpParser = new FilterExpParser();
@@ -59,7 +61,11 @@ public class PolicyValueConverter {
 
     public static Expression getFilterExp(String filterExp) {
         try {
-            return filterExpParser.parse(filterExp);
+            try {
+                return filterExpParser.parse(filterExp);
+            } catch (Exception e) {
+                return Expression.fromBytes(Base64.getUrlDecoder().decode(filterExp));
+            }
         } catch (Exception e) {
             throw new RestClientErrors.InvalidPolicyValueError("Invalid Filter Expression: " + filterExp);
         }
