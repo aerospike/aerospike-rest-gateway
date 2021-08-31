@@ -56,8 +56,6 @@ public class ClientPolicyConfig {
     Boolean sharedThreadPool;
     @Value("${aerospike.restclient.clientpolicy.useServicesAlternate:#{null}}")
     Boolean useServicesAlternate;
-    @Value("${aerospike.restclient.clientpolicy.requestProleReplicas:#{null}}")
-    Boolean requestProleReplicas;
 
     /* Read policies */
     @Bean
