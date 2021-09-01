@@ -6,7 +6,12 @@ import com.aerospike.client.Key;
 import com.aerospike.restclient.domain.RestClientRecord;
 import com.aerospike.restclient.domain.scanmodels.RestClientScanResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
@@ -45,12 +50,12 @@ public class ScanTest {
     private WebApplicationContext wac;
 
     private static final int numberOfRecords = 101;
-    private Key[] testKeys;
+    private final Key[] testKeys;
     private String testEndpoint;
 
     private String setName;
     private String namespace;
-    private String currentMediaType;
+    private final String currentMediaType;
 
     @Before
     public void setup() {
@@ -68,7 +73,7 @@ public class ScanTest {
         }
     }
 
-    private ResponseDeserializer responseDeserializer;
+    private final ResponseDeserializer responseDeserializer;
 
     @Parameterized.Parameters
     public static Object[][] getParams() {
