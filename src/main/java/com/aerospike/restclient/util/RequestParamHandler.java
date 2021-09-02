@@ -46,6 +46,14 @@ public final class RequestParamHandler {
         return binStr.toArray(new String[0]);
     }
 
+    public static String[] getKeysFromMap(MultiValueMap<String, String> requestParams) {
+        List<String> keys = requestParams.get(AerospikeAPIConstants.RECORD_KEY);
+        if (keys == null) {
+            return new String[0];
+        }
+        return keys.toArray(new String[0]);
+    }
+
     public static String getJsonPathFromMap(MultiValueMap<String, String> requestParams) {
         return requestParams.getFirst(AerospikeAPIConstants.JSON_PATH);
     }
