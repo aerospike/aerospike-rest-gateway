@@ -16,20 +16,16 @@
  */
 package com.aerospike.restclient.util.converters;
 
+import com.aerospike.client.Operation;
+
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.aerospike.client.Operation;
 
 public class OperationsConverter {
 
-	public static Operation[] mapListToOperationsArray(List<Map<String, Object>> ops) {
+    public static Operation[] mapListToOperationsArray(List<Map<String, Object>> ops) {
 
-		List<Operation> operations = ops.stream()
-				.map(op -> OperationConverter.convertMapToOperation(op))
-				.collect(Collectors.toList());
-
-		return operations.toArray(new Operation[0]);
-	}
+        return ops.stream()
+                .map(OperationConverter::convertMapToOperation).toArray(Operation[]::new);
+    }
 }

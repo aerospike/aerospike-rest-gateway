@@ -24,6 +24,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+
 @Configuration
 public class ClientPolicyConfig {
 
@@ -45,10 +47,14 @@ public class ClientPolicyConfig {
     Integer maxConnsPerNode;
     @Value("${aerospike.restclient.clientpolicy.maxSocketIdle:#{null}}")
     Integer maxSocketIdle;
+    @Value("${aerospike.restclient.clientpolicy.maxErrorRate:#{null}}")
+    Integer maxErrorRate;
     @Value("${aerospike.restclient.clientpolicy.tendInterval:#{null}}")
     Integer tendInterval;
     @Value("${aerospike.restclient.clientpolicy.timeout:#{null}}")
     Integer timeout;
+    @Value("${aerospike.restclient.clientpolicy.loginTimeout:#{null}}")
+    Integer loginTimeout;
 
     @Value("${aerospike.restclient.clientpolicy.failIfNotConnected:#{null}}")
     Boolean failIfNotConnected;
@@ -56,8 +62,11 @@ public class ClientPolicyConfig {
     Boolean sharedThreadPool;
     @Value("${aerospike.restclient.clientpolicy.useServicesAlternate:#{null}}")
     Boolean useServicesAlternate;
-    @Value("${aerospike.restclient.clientpolicy.requestProleReplicas:#{null}}")
-    Boolean requestProleReplicas;
+
+    @Value("${aerospike.restclient.clientpolicy.rackIds:#{null}}")
+    Integer[] rackIds;
+    @Value("${aerospike.restclient.clientpolicy.errorRateWindow:#{null}}")
+    Integer errorRateWindow;
 
     /* Read policies */
     @Bean
@@ -96,12 +105,20 @@ public class ClientPolicyConfig {
             clientPolicy.maxSocketIdle = maxSocketIdle;
         }
 
+        if (maxErrorRate != null) {
+            clientPolicy.maxErrorRate = maxErrorRate;
+        }
+
         if (tendInterval != null) {
             clientPolicy.tendInterval = tendInterval;
         }
 
         if (timeout != null) {
             clientPolicy.timeout = timeout;
+        }
+
+        if (loginTimeout != null) {
+            clientPolicy.loginTimeout = loginTimeout;
         }
 
         if (failIfNotConnected != null) {
@@ -114,6 +131,14 @@ public class ClientPolicyConfig {
 
         if (useServicesAlternate != null) {
             clientPolicy.useServicesAlternate = useServicesAlternate;
+        }
+
+        if (rackIds != null && rackIds.length > 0) {
+            clientPolicy.rackIds = Arrays.asList(rackIds);
+        }
+
+        if (errorRateWindow != null) {
+            clientPolicy.errorRateWindow = errorRateWindow;
         }
 
         clientPolicy.tlsPolicy = builder.build();

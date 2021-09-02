@@ -16,15 +16,11 @@
  */
 package com.aerospike.restclient;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.Bin;
+import com.aerospike.client.Key;
+import com.aerospike.client.Record;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,281 +40,264 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.Bin;
-import com.aerospike.client.Key;
-import com.aerospike.client.Record;
-import com.aerospike.client.Value.BytesValue;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(Parameterized.class)
 @SpringBootTest
 public class RecordPatchCorrectTests {
 
+    /* Needed to run as a Spring Boot test */
+    @ClassRule
+    public static final SpringClassRule springClassRule = new SpringClassRule();
 
-	/* Needed to run as a Spring Boot test */
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    @Autowired
+    private ObjectMapper objectMapper;
 
-	@Autowired
-	private ObjectMapper objectMapper;
+    private final UpdatePerformer patchPerformer;
+    private MockMvc mockMVC;
 
-	private UpdatePerformer patchPerformer = null;
-	private MockMvc mockMVC;
+    @Autowired
+    private AerospikeClient client;
 
-	@Autowired
-	private AerospikeClient client;
+    @Autowired
+    private WebApplicationContext wac;
 
-	@Autowired
-	private WebApplicationContext wac;
+    private final Key testKey;
+    private final Key intKey;
+    private final Key bytesKey;
+    private final String testEndpoint;
+    private final String intEndpoint;
+    private final String bytesEndpoint;
+    private final String digestEndpoint;
 
-	private Key testKey = new Key("test", "junit", "getput");
-	private Key intKey = new Key("test", "junit", 1);
-	private Key bytesKey = new Key("test", "junit", new byte[] {1, 127, 127, 1});
-	private String testEndpoint = null;
-	private String intEndpoint = null;
-	private String bytesEndpoint = null;
-	private String digestEndpoint = null;
+    @Before
+    public void setup() {
+        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+        Bin baseBin = new Bin("initial", "bin");
+        client.put(null, testKey, baseBin);
+        client.put(null, intKey, baseBin);
+        client.put(null, bytesKey, baseBin);
+    }
 
-	@Before
-	public void setup() {
-		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-		Bin baseBin = new Bin("initial", "bin");
-		client.put(null, testKey, baseBin);
-		client.put(null, intKey, baseBin);
-		client.put(null, bytesKey, baseBin);
-	}
+    @After
+    public void clean() {
+        client.delete(null, testKey);
+        client.delete(null, intKey);
+        client.delete(null, bytesKey);
+    }
 
-	@After
-	public void clean() {
-		client.delete(null, testKey);
-		client.delete(null, intKey);
-		client.delete(null, bytesKey);
-	}
+    @Parameters
+    public static Object[][] getParams() {
+        return new Object[][]{
+                {new JSONUpdatePerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), true},
+                {new MsgPackUpdatePerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())), true},
+                {new JSONUpdatePerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), false},
+                {new MsgPackUpdatePerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())), false}
+        };
+    }
 
-	@Parameters
-	public static Object[][] getParams() {
-		return new Object[][] {
-			{
-				new JSONUpdatePerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), true
-			},
-			{
-				new MsgPackUpdatePerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())), true
-			},
-			{
-				new JSONUpdatePerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), false
-			},
-			{
-				new MsgPackUpdatePerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())), false
-			}
-		};
-	}
+    public RecordPatchCorrectTests(UpdatePerformer performer, boolean useSet) {
+        if (useSet) {
+            this.testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
+            this.testKey = new Key("test", "junit", "getput");
+            this.intKey = new Key("test", "junit", 1);
+            this.bytesKey = new Key("test", "junit", new byte[]{1, 127, 127, 1});
 
-	public RecordPatchCorrectTests(UpdatePerformer performer, boolean useSet) {
-		if (useSet) {
-			this.testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
-			this.testKey = new Key("test", "junit", "getput");
-			this.intKey = new Key("test", "junit", 1);
-			this.bytesKey = new Key("test", "junit", new byte[] {1, 127, 127, 1});
+            String urlDigest = Base64.getUrlEncoder().encodeToString(testKey.digest);
+            digestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", urlDigest) + "?keytype=DIGEST";
 
-			String urlDigest = Base64.getUrlEncoder().encodeToString(testKey.digest);
-			digestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", urlDigest) + "?keytype=DIGEST";
+            String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
+            bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", urlBytes) + "?keytype=BYTES";
 
-			String urlBytes = Base64.getUrlEncoder().encodeToString((byte[])((BytesValue)bytesKey.userKey).getObject());
-			bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", urlBytes) + "?keytype=BYTES";
+            intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "1") + "?keytype=INTEGER";
 
-			intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "1") + "?keytype=INTEGER";
+        } else {
+            this.testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "getput");
+            this.testKey = new Key("test", null, "getput");
+            this.intKey = new Key("test", null, 1);
+            this.bytesKey = new Key("test", null, new byte[]{1, 127, 127, 1});
 
-		} else {
-			this.testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "getput");
-			this.testKey = new Key("test", null, "getput");
-			this.intKey = new Key("test", null, 1);
-			this.bytesKey = new Key("test", null, new byte[] {1, 127, 127, 1});
+            String urlDigest = Base64.getUrlEncoder().encodeToString(testKey.digest);
+            digestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", urlDigest) + "?keytype=DIGEST";
 
-			String urlDigest = Base64.getUrlEncoder().encodeToString(testKey.digest);
-			digestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", urlDigest) + "?keytype=DIGEST";
+            String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
+            bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", urlBytes) + "?keytype=BYTES";
 
-			String urlBytes = Base64.getUrlEncoder().encodeToString((byte[])((BytesValue)bytesKey.userKey).getObject());
-			bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test",  urlBytes) + "?keytype=BYTES";
+            intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "1") + "?keytype=INTEGER";
+        }
+        this.patchPerformer = performer;
+    }
 
-			intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "1") + "?keytype=INTEGER";
-		}
-		this.patchPerformer = performer;
-	}
+    @Test
+    public void PutInteger() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
+        binMap.put("integer", 12345);
 
-	@Test
-	public void PutInteger() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+        patchPerformer.perform(mockMVC, testEndpoint, binMap);
 
-		binMap.put("integer", 12345);
+        Record record = client.get(null, this.testKey);
+        Assert.assertTrue(record.bins.containsKey("initial"));
+        Assert.assertEquals(record.bins.get("integer"), 12345L);
+    }
 
-		patchPerformer.perform(mockMVC, testEndpoint, binMap);
+    @Test
+    public void PutString() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
+        binMap.put("string", "Aerospike");
 
-		Record record = client.get(null, this.testKey);
-		Assert.assertTrue(record.bins.containsKey("initial"));
-		Assert.assertEquals(record.bins.get("integer"), 12345L);
-	}
+        patchPerformer.perform(mockMVC, testEndpoint, binMap);
 
-	@Test
-	public void PutString() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+        Record record = client.get(null, this.testKey);
+        Assert.assertTrue(record.bins.containsKey("initial"));
+        Assert.assertEquals(record.bins.get("string"), "Aerospike");
+    }
 
-		binMap.put("string", "Aerospike");
+    @Test
+    public void PutDouble() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
+        binMap.put("double", 2.718);
 
-		patchPerformer.perform(mockMVC, testEndpoint, binMap);
+        patchPerformer.perform(mockMVC, testEndpoint, binMap);
 
-		Record record = client.get(null, this.testKey);
-		Assert.assertTrue(record.bins.containsKey("initial"));
-		Assert.assertEquals(record.bins.get("string"), "Aerospike");
-	}
+        Record record = client.get(null, this.testKey);
+        Assert.assertTrue(record.bins.containsKey("initial"));
+        Assert.assertEquals(record.bins.get("double"), 2.718);
+    }
 
-	@Test
-	public void PutDouble() throws Exception {
+    @Test
+    public void PutList() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
 
-		Map<String, Object> binMap = new HashMap<String, Object>();
+        List<?> trueList = Arrays.asList(1L, "a", 3.5);
 
-		binMap.put("double", 2.718);
+        binMap.put("ary", trueList);
 
-		patchPerformer.perform(mockMVC, testEndpoint, binMap);
+        patchPerformer.perform(mockMVC, testEndpoint, binMap);
 
-		Record record = client.get(null, this.testKey);
-		Assert.assertTrue(record.bins.containsKey("initial"));
-		Assert.assertEquals(record.bins.get("double"), 2.718);
-	}
+        Record record = client.get(null, this.testKey);
 
-	@Test
-	public void PutList() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+        Assert.assertTrue(record.bins.containsKey("initial"));
+        Assert.assertTrue(ASTestUtils.compareCollection((List<?>) record.bins.get("ary"), trueList));
+    }
 
-		List<?> trueList = Arrays.asList(1L, "a", 3.5);
+    @SuppressWarnings("unchecked")
+    @Test
+    public void PutMapStringKeys() throws Exception {
+        Map<Object, Object> testMap = new HashMap<>();
+        testMap.put("string", "a string");
+        testMap.put("long", 2L);
+        testMap.put("double", 4.5);
 
-		binMap.put("ary", trueList);
+        Map<String, Object> binMap = new HashMap<>();
+        binMap.put("map", testMap);
 
-		patchPerformer.perform(mockMVC, testEndpoint, binMap);
+        patchPerformer.perform(mockMVC, testEndpoint, binMap);
 
-		Record record = client.get(null, this.testKey);
+        Record record = client.get(null, this.testKey);
 
-		Assert.assertTrue(record.bins.containsKey("initial"));
-		Assert.assertTrue(ASTestUtils.compareCollection((List<?>) record.bins.get("ary"), trueList));
-	}
+        Assert.assertTrue(record.bins.containsKey("initial"));
+        Assert.assertTrue(ASTestUtils.compareMap((Map<Object, Object>) record.bins.get("map"), testMap));
+    }
 
-	@SuppressWarnings("unchecked")
-	@Test
-	public void PutMapStringKeys() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+    @Test
+    public void PutIntegerKey() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
+        binMap.put("integer", 12345);
 
-		Map<Object, Object> testMap = new HashMap<Object, Object>();
+        patchPerformer.perform(mockMVC, intEndpoint, binMap);
 
-		testMap.put("string", "a string");
-		testMap.put("long", 2L);
-		testMap.put("double", 4.5);
+        Record record = client.get(null, this.intKey);
+        Assert.assertTrue(record.bins.containsKey("initial"));
+        Assert.assertEquals(record.bins.get("integer"), 12345L);
+    }
 
-		binMap.put("map", testMap);
+    @Test
+    public void PutBytesKey() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
+        binMap.put("integer", 12345);
 
-		patchPerformer.perform(mockMVC, testEndpoint, binMap);
+        patchPerformer.perform(mockMVC, bytesEndpoint, binMap);
 
-		Record record = client.get(null, this.testKey);
+        Record record = client.get(null, this.bytesKey);
+        Assert.assertTrue(record.bins.containsKey("initial"));
+        Assert.assertEquals(record.bins.get("integer"), 12345L);
+    }
 
-		Assert.assertTrue(record.bins.containsKey("initial"));
-		Assert.assertTrue(ASTestUtils.compareMap((Map<Object, Object>) record.bins.get("map"), testMap));
-	}
+    @Test
+    public void PutDigestKey() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
+        binMap.put("integer", 12345);
 
-	@Test
-	public void PutIntegerKey() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+        patchPerformer.perform(mockMVC, digestEndpoint, binMap);
 
-		binMap.put("integer", 12345);
+        Record record = client.get(null, this.testKey);
+        Assert.assertTrue(record.bins.containsKey("initial"));
+        Assert.assertEquals(record.bins.get("integer"), 12345L);
+    }
 
-		patchPerformer.perform(mockMVC, intEndpoint, binMap);
+    @Test
+    public void PutIntegerWithGenerationMismatch() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
+        String queryParams = "?generation=150&generationPolicy=EXPECT_GEN_EQUAL";
 
-		Record record = client.get(null, this.intKey);
-		Assert.assertTrue(record.bins.containsKey("initial"));
-		Assert.assertEquals(record.bins.get("integer"), 12345L);
-	}
+        binMap.put("integer", 12345);
 
-	@Test
-	public void PutBytesKey() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+        mockMVC.perform(patch(testEndpoint + queryParams).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(binMap)))
+                .andExpect(status().isConflict());
 
-		binMap.put("integer", 12345);
-
-		patchPerformer.perform(mockMVC, bytesEndpoint, binMap);
-
-		Record record = client.get(null, this.bytesKey);
-		Assert.assertTrue(record.bins.containsKey("initial"));
-		Assert.assertEquals(record.bins.get("integer"), 12345L);
-	}
-
-	@Test
-	public void PutDigestKey() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
-
-		binMap.put("integer", 12345);
-
-		patchPerformer.perform(mockMVC, digestEndpoint, binMap);
-
-		Record record = client.get(null, this.testKey);
-		Assert.assertTrue(record.bins.containsKey("initial"));
-		Assert.assertEquals(record.bins.get("integer"), 12345L);
-	}
-
-	@Test
-	public void PutIntegerWithGenerationMismatch() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
-		String queryParams = "?generation=150&generationPolicy=EXPECT_GEN_EQUAL";
-
-		binMap.put("integer", 12345);
-
-		mockMVC.perform(patch(testEndpoint + queryParams).contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(binMap)))
-		.andExpect(status().isConflict());
-
-		Record record = client.get(null, this.testKey);
-		Assert.assertFalse(record.bins.containsKey("integer"));
-	}
+        Record record = client.get(null, this.testKey);
+        Assert.assertFalse(record.bins.containsKey("integer"));
+    }
 }
 
 interface UpdatePerformer {
-	public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object>binMap)
-			throws JsonProcessingException, Exception;
+    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
+            throws Exception;
 }
 
 class JSONUpdatePerformer implements UpdatePerformer {
-	String mediaType = null;
-	ObjectMapper mapper = null;
+    String mediaType;
+    ObjectMapper mapper;
 
-	public JSONUpdatePerformer(String mediaType, ObjectMapper mapper) {
-		this.mediaType = mediaType;
-		this.mapper = mapper;
-	}
-	@Override
-	public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object>binMap)
-			throws JsonProcessingException, Exception {
-		mockMVC.perform(patch(testEndpoint).contentType(mediaType)
-				.content(mapper.writeValueAsString(binMap)))
-		.andExpect(status().isNoContent());
-	}
+    public JSONUpdatePerformer(String mediaType, ObjectMapper mapper) {
+        this.mediaType = mediaType;
+        this.mapper = mapper;
+    }
 
+    @Override
+    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
+            throws Exception {
+        mockMVC.perform(patch(testEndpoint).contentType(mediaType)
+                .content(mapper.writeValueAsString(binMap)))
+                .andExpect(status().isNoContent());
+    }
 }
 
 class MsgPackUpdatePerformer implements UpdatePerformer {
-	String mediaType = null;
-	ObjectMapper mapper = null;
+    String mediaType;
+    ObjectMapper mapper;
 
-	public MsgPackUpdatePerformer(String mediaType, ObjectMapper mapper) {
-		this.mediaType = mediaType;
-		this.mapper = mapper;
-	}
+    public MsgPackUpdatePerformer(String mediaType, ObjectMapper mapper) {
+        this.mediaType = mediaType;
+        this.mapper = mapper;
+    }
 
-	@Override
-	public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object>binMap)
-			throws JsonProcessingException, Exception {
-		mockMVC.perform(patch(testEndpoint).contentType(mediaType)
-				.content(mapper.writeValueAsBytes(binMap)))
-		.andExpect(status().isNoContent());
-	}
+    @Override
+    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
+            throws Exception {
+        mockMVC.perform(patch(testEndpoint).contentType(mediaType)
+                .content(mapper.writeValueAsBytes(binMap)))
+                .andExpect(status().isNoContent());
+    }
 }

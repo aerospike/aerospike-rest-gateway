@@ -20,6 +20,7 @@ import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Key;
 import com.aerospike.client.Operation;
 import com.aerospike.client.Record;
+import com.aerospike.client.policy.BatchPolicy;
 import com.aerospike.client.policy.WritePolicy;
 
 public class OperateHandler {
@@ -32,6 +33,10 @@ public class OperateHandler {
 
     public Record operate(WritePolicy policy, Key key, Operation[] operations) {
         return client.operate(policy, key, operations);
+    }
+
+    public Record[] operate(BatchPolicy policy, Key[] key, Operation[] operations) {
+        return client.get(policy, key, operations);
     }
 
     public static OperateHandler create(AerospikeClient client) {
