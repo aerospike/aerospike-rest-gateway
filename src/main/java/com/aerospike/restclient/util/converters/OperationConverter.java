@@ -457,9 +457,12 @@ public class OperationConverter {
 	}
 
 	private static Operation mapToGetOp(Map<String, Object> opValues) {
-		// Make sure no options were passed to this operation
-		validateNoKeys(opValues);
+		onlyHasAllowedKeys(opValues, BIN_KEY);
 
+		String binName = getBinName(opValues);
+		if(Objects.nonNull(binName)) {
+			return Operation.get(binName);
+		}
 		return Operation.get();
 	}
 
