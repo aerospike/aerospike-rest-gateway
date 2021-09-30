@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "REST Interface for Aerospike Database.",
-    "version": "1.8.0",
+    "version": "1.9.0",
     "title": "Aerospike REST Client",
     "contact": {
       "name": "Aerospike, Inc.",
@@ -23,6 +23,10 @@
     {
       "name": "Cluster information operations",
       "description": "Retrieve basic information about the Aerospike cluster."
+    },
+    {
+      "name": "Document API Operations",
+      "description": "Perform operations on records using JSONPath queries."
     },
     {
       "name": "Execute Operations",
@@ -1164,6 +1168,2030 @@
             "description": "OK",
             "schema": {
               "$ref": "#/definitions/clusterInformation"
+            }
+          },
+          "500": {
+            "description": "The REST Client encountered an error processing the request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/v1/document/{namespace}/{key}": {
+      "get": {
+        "tags": [
+          "Document API Operations"
+        ],
+        "summary": "Retrieve the object in the document with key documentKey that is referenced by the JSON path.",
+        "operationId": "getDocumentObject",
+        "produces": [
+          "application/json",
+          "application/msgpack"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "compress",
+            "in": "query",
+            "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "filterexp",
+            "in": "query",
+            "description": "Optional Filter Expression (introduced in Aerospike Database 5.2.0) in infix notation DSL.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "jsonPath",
+            "in": "query",
+            "description": "JSONPath query parameter.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "description": "User key for the record.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "keytype",
+            "in": "query",
+            "description": "The Type of the userKey.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRING",
+              "INTEGER",
+              "BYTES",
+              "DIGEST"
+            ]
+          },
+          {
+            "name": "maxRetries",
+            "in": "query",
+            "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "Namespace for the record; equivalent to database name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "predexp",
+            "in": "query",
+            "description": "Optional Predicate Expression filter (obsolete as of Aerospike Database 5.2.0) in infix notation DSL. If the Predicate Expression exists and evaluates to false, the transaction is ignored.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "readModeAP",
+            "in": "query",
+            "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALL",
+              "ONE"
+            ]
+          },
+          {
+            "name": "readModeSC",
+            "in": "query",
+            "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALLOW_REPLICA",
+              "ALLOW_UNAVAILABLE",
+              "LINEARIZE",
+              "SESSION"
+            ]
+          },
+          {
+            "name": "recordBins",
+            "in": "query",
+            "description": "Specify a set of bins to handle the JSONPath query.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "replica",
+            "in": "query",
+            "description": "Replica algorithm used to determine the target node for a single record command.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "MASTER",
+              "MASTER_PROLES",
+              "SEQUENCE",
+              "RANDOM"
+            ]
+          },
+          {
+            "name": "sendKey",
+            "in": "query",
+            "description": "Send user defined key in addition to hash digest on both reads and writes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sleepBetweenRetries",
+            "in": "query",
+            "description": "Milliseconds to sleep between retries.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "socketTimeout",
+            "in": "query",
+            "description": "Socket idle timeout in milliseconds when processing a database command.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "totalTimeout",
+            "in": "query",
+            "description": "Total transaction timeout in milliseconds.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid parameters or request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "404": {
+            "description": "Record not found.",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "500": {
+            "description": "The REST Client encountered an error processing the request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Document API Operations"
+        ],
+        "summary": "Append an object to a list in a document specified by a JSON path.",
+        "operationId": "appendDocumentObject",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json",
+          "application/msgpack"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "commitLevel",
+            "in": "query",
+            "description": "Desired consistency guarantee when committing a transaction on the server.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "COMMIT_ALL",
+              "COMMIT_MASTER"
+            ]
+          },
+          {
+            "name": "compress",
+            "in": "query",
+            "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "durableDelete",
+            "in": "query",
+            "description": "If the transaction results in a record deletion, leave a tombstone for the record.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "expiration",
+            "in": "query",
+            "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filterexp",
+            "in": "query",
+            "description": "Optional Filter Expression (introduced in Aerospike Database 5.2.0) in infix notation DSL.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "generation",
+            "in": "query",
+            "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "generationPolicy",
+            "in": "query",
+            "description": "Qualify how to handle record writes based on record generation.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "NONE",
+              "EXPECT_GEN_EQUAL",
+              "EXPECT_GEN_GT"
+            ]
+          },
+          {
+            "in": "body",
+            "name": "jsonObject",
+            "description": "JSON Object",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "jsonPath",
+            "in": "query",
+            "description": "JSONPath query parameter.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "description": "User key for the record.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "keytype",
+            "in": "query",
+            "description": "The Type of the userKey.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRING",
+              "INTEGER",
+              "BYTES",
+              "DIGEST"
+            ]
+          },
+          {
+            "name": "maxRetries",
+            "in": "query",
+            "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "Namespace for the record; equivalent to database name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "predexp",
+            "in": "query",
+            "description": "Optional Predicate Expression filter (obsolete as of Aerospike Database 5.2.0) in infix notation DSL. If the Predicate Expression exists and evaluates to false, the transaction is ignored.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "readModeAP",
+            "in": "query",
+            "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALL",
+              "ONE"
+            ]
+          },
+          {
+            "name": "readModeSC",
+            "in": "query",
+            "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALLOW_REPLICA",
+              "ALLOW_UNAVAILABLE",
+              "LINEARIZE",
+              "SESSION"
+            ]
+          },
+          {
+            "name": "recordBins",
+            "in": "query",
+            "description": "Specify a set of bins to handle the JSONPath query.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "recordExistsAction",
+            "in": "query",
+            "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "UPDATE",
+              "UPDATE_ONLY",
+              "REPLACE",
+              "REPLACE_ONLY",
+              "CREATE_ONLY"
+            ]
+          },
+          {
+            "name": "replica",
+            "in": "query",
+            "description": "Replica algorithm used to determine the target node for a single record command.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "MASTER",
+              "MASTER_PROLES",
+              "SEQUENCE",
+              "RANDOM"
+            ]
+          },
+          {
+            "name": "respondAllOps",
+            "in": "query",
+            "description": "For client operate(), return a result for every operation.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sendKey",
+            "in": "query",
+            "description": "Send user defined key in addition to hash digest on both reads and writes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sleepBetweenRetries",
+            "in": "query",
+            "description": "Milliseconds to sleep between retries.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "socketTimeout",
+            "in": "query",
+            "description": "Socket idle timeout in milliseconds when processing a database command.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "totalTimeout",
+            "in": "query",
+            "description": "Total transaction timeout in milliseconds.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid parameters or request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "404": {
+            "description": "Record not found.",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "500": {
+            "description": "The REST Client encountered an error processing the request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "Document API Operations"
+        ],
+        "summary": "Put a document.",
+        "operationId": "putDocumentObject",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json",
+          "application/msgpack"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "commitLevel",
+            "in": "query",
+            "description": "Desired consistency guarantee when committing a transaction on the server.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "COMMIT_ALL",
+              "COMMIT_MASTER"
+            ]
+          },
+          {
+            "name": "compress",
+            "in": "query",
+            "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "durableDelete",
+            "in": "query",
+            "description": "If the transaction results in a record deletion, leave a tombstone for the record.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "expiration",
+            "in": "query",
+            "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filterexp",
+            "in": "query",
+            "description": "Optional Filter Expression (introduced in Aerospike Database 5.2.0) in infix notation DSL.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "generation",
+            "in": "query",
+            "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "generationPolicy",
+            "in": "query",
+            "description": "Qualify how to handle record writes based on record generation.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "NONE",
+              "EXPECT_GEN_EQUAL",
+              "EXPECT_GEN_GT"
+            ]
+          },
+          {
+            "in": "body",
+            "name": "jsonObject",
+            "description": "JSON Object",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "jsonPath",
+            "in": "query",
+            "description": "JSONPath query parameter.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "description": "User key for the record.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "keytype",
+            "in": "query",
+            "description": "The Type of the userKey.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRING",
+              "INTEGER",
+              "BYTES",
+              "DIGEST"
+            ]
+          },
+          {
+            "name": "maxRetries",
+            "in": "query",
+            "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "Namespace for the record; equivalent to database name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "predexp",
+            "in": "query",
+            "description": "Optional Predicate Expression filter (obsolete as of Aerospike Database 5.2.0) in infix notation DSL. If the Predicate Expression exists and evaluates to false, the transaction is ignored.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "readModeAP",
+            "in": "query",
+            "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALL",
+              "ONE"
+            ]
+          },
+          {
+            "name": "readModeSC",
+            "in": "query",
+            "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALLOW_REPLICA",
+              "ALLOW_UNAVAILABLE",
+              "LINEARIZE",
+              "SESSION"
+            ]
+          },
+          {
+            "name": "recordBins",
+            "in": "query",
+            "description": "Specify a set of bins to handle the JSONPath query.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "recordExistsAction",
+            "in": "query",
+            "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "UPDATE",
+              "UPDATE_ONLY",
+              "REPLACE",
+              "REPLACE_ONLY",
+              "CREATE_ONLY"
+            ]
+          },
+          {
+            "name": "replica",
+            "in": "query",
+            "description": "Replica algorithm used to determine the target node for a single record command.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "MASTER",
+              "MASTER_PROLES",
+              "SEQUENCE",
+              "RANDOM"
+            ]
+          },
+          {
+            "name": "respondAllOps",
+            "in": "query",
+            "description": "For client operate(), return a result for every operation.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sendKey",
+            "in": "query",
+            "description": "Send user defined key in addition to hash digest on both reads and writes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sleepBetweenRetries",
+            "in": "query",
+            "description": "Milliseconds to sleep between retries.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "socketTimeout",
+            "in": "query",
+            "description": "Socket idle timeout in milliseconds when processing a database command.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "totalTimeout",
+            "in": "query",
+            "description": "Total transaction timeout in milliseconds.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid parameters or request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "404": {
+            "description": "Record not found.",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "500": {
+            "description": "The REST Client encountered an error processing the request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Document API Operations"
+        ],
+        "summary": "Delete an object in a document specified by a JSON path.",
+        "operationId": "deleteDocumentObject",
+        "produces": [
+          "application/json",
+          "application/msgpack"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "commitLevel",
+            "in": "query",
+            "description": "Desired consistency guarantee when committing a transaction on the server.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "COMMIT_ALL",
+              "COMMIT_MASTER"
+            ]
+          },
+          {
+            "name": "compress",
+            "in": "query",
+            "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "durableDelete",
+            "in": "query",
+            "description": "If the transaction results in a record deletion, leave a tombstone for the record.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "expiration",
+            "in": "query",
+            "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filterexp",
+            "in": "query",
+            "description": "Optional Filter Expression (introduced in Aerospike Database 5.2.0) in infix notation DSL.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "generation",
+            "in": "query",
+            "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "generationPolicy",
+            "in": "query",
+            "description": "Qualify how to handle record writes based on record generation.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "NONE",
+              "EXPECT_GEN_EQUAL",
+              "EXPECT_GEN_GT"
+            ]
+          },
+          {
+            "name": "jsonPath",
+            "in": "query",
+            "description": "JSONPath query parameter.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "description": "User key for the record.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "keytype",
+            "in": "query",
+            "description": "The Type of the userKey.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRING",
+              "INTEGER",
+              "BYTES",
+              "DIGEST"
+            ]
+          },
+          {
+            "name": "maxRetries",
+            "in": "query",
+            "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "Namespace for the record; equivalent to database name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "predexp",
+            "in": "query",
+            "description": "Optional Predicate Expression filter (obsolete as of Aerospike Database 5.2.0) in infix notation DSL. If the Predicate Expression exists and evaluates to false, the transaction is ignored.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "readModeAP",
+            "in": "query",
+            "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALL",
+              "ONE"
+            ]
+          },
+          {
+            "name": "readModeSC",
+            "in": "query",
+            "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALLOW_REPLICA",
+              "ALLOW_UNAVAILABLE",
+              "LINEARIZE",
+              "SESSION"
+            ]
+          },
+          {
+            "name": "recordBins",
+            "in": "query",
+            "description": "Specify a set of bins to handle the JSONPath query.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "recordExistsAction",
+            "in": "query",
+            "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "UPDATE",
+              "UPDATE_ONLY",
+              "REPLACE",
+              "REPLACE_ONLY",
+              "CREATE_ONLY"
+            ]
+          },
+          {
+            "name": "replica",
+            "in": "query",
+            "description": "Replica algorithm used to determine the target node for a single record command.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "MASTER",
+              "MASTER_PROLES",
+              "SEQUENCE",
+              "RANDOM"
+            ]
+          },
+          {
+            "name": "respondAllOps",
+            "in": "query",
+            "description": "For client operate(), return a result for every operation.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sendKey",
+            "in": "query",
+            "description": "Send user defined key in addition to hash digest on both reads and writes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sleepBetweenRetries",
+            "in": "query",
+            "description": "Milliseconds to sleep between retries.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "socketTimeout",
+            "in": "query",
+            "description": "Socket idle timeout in milliseconds when processing a database command.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "totalTimeout",
+            "in": "query",
+            "description": "Total transaction timeout in milliseconds.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Invalid parameters or request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "404": {
+            "description": "Record not found.",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "500": {
+            "description": "The REST Client encountered an error processing the request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/v1/document/{namespace}/{set}/{key}": {
+      "get": {
+        "tags": [
+          "Document API Operations"
+        ],
+        "summary": "Retrieve the object in the document with key documentKey that is referenced by the JSON path.",
+        "operationId": "getDocumentObjectSet",
+        "produces": [
+          "application/json",
+          "application/msgpack"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "compress",
+            "in": "query",
+            "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "filterexp",
+            "in": "query",
+            "description": "Optional Filter Expression (introduced in Aerospike Database 5.2.0) in infix notation DSL.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "jsonPath",
+            "in": "query",
+            "description": "JSONPath query parameter.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "description": "User key for the record.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "keytype",
+            "in": "query",
+            "description": "The Type of the userKey.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRING",
+              "INTEGER",
+              "BYTES",
+              "DIGEST"
+            ]
+          },
+          {
+            "name": "maxRetries",
+            "in": "query",
+            "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "Namespace for the record; equivalent to database name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "predexp",
+            "in": "query",
+            "description": "Optional Predicate Expression filter (obsolete as of Aerospike Database 5.2.0) in infix notation DSL. If the Predicate Expression exists and evaluates to false, the transaction is ignored.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "readModeAP",
+            "in": "query",
+            "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALL",
+              "ONE"
+            ]
+          },
+          {
+            "name": "readModeSC",
+            "in": "query",
+            "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALLOW_REPLICA",
+              "ALLOW_UNAVAILABLE",
+              "LINEARIZE",
+              "SESSION"
+            ]
+          },
+          {
+            "name": "recordBins",
+            "in": "query",
+            "description": "Specify a set of bins to handle the JSONPath query.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "replica",
+            "in": "query",
+            "description": "Replica algorithm used to determine the target node for a single record command.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "MASTER",
+              "MASTER_PROLES",
+              "SEQUENCE",
+              "RANDOM"
+            ]
+          },
+          {
+            "name": "sendKey",
+            "in": "query",
+            "description": "Send user defined key in addition to hash digest on both reads and writes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "set",
+            "in": "path",
+            "description": "Set for the record; equivalent to database table.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sleepBetweenRetries",
+            "in": "query",
+            "description": "Milliseconds to sleep between retries.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "socketTimeout",
+            "in": "query",
+            "description": "Socket idle timeout in milliseconds when processing a database command.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "totalTimeout",
+            "in": "query",
+            "description": "Total transaction timeout in milliseconds.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid parameters or request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "404": {
+            "description": "Record not found.",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "500": {
+            "description": "The REST Client encountered an error processing the request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Document API Operations"
+        ],
+        "summary": "Append an object to a list in a document specified by a JSON path.",
+        "operationId": "appendDocumentObjectSet",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json",
+          "application/msgpack"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "commitLevel",
+            "in": "query",
+            "description": "Desired consistency guarantee when committing a transaction on the server.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "COMMIT_ALL",
+              "COMMIT_MASTER"
+            ]
+          },
+          {
+            "name": "compress",
+            "in": "query",
+            "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "durableDelete",
+            "in": "query",
+            "description": "If the transaction results in a record deletion, leave a tombstone for the record.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "expiration",
+            "in": "query",
+            "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filterexp",
+            "in": "query",
+            "description": "Optional Filter Expression (introduced in Aerospike Database 5.2.0) in infix notation DSL.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "generation",
+            "in": "query",
+            "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "generationPolicy",
+            "in": "query",
+            "description": "Qualify how to handle record writes based on record generation.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "NONE",
+              "EXPECT_GEN_EQUAL",
+              "EXPECT_GEN_GT"
+            ]
+          },
+          {
+            "in": "body",
+            "name": "jsonObject",
+            "description": "JSON Object",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "jsonPath",
+            "in": "query",
+            "description": "JSONPath query parameter.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "description": "User key for the record.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "keytype",
+            "in": "query",
+            "description": "The Type of the userKey.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRING",
+              "INTEGER",
+              "BYTES",
+              "DIGEST"
+            ]
+          },
+          {
+            "name": "maxRetries",
+            "in": "query",
+            "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "Namespace for the record; equivalent to database name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "predexp",
+            "in": "query",
+            "description": "Optional Predicate Expression filter (obsolete as of Aerospike Database 5.2.0) in infix notation DSL. If the Predicate Expression exists and evaluates to false, the transaction is ignored.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "readModeAP",
+            "in": "query",
+            "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALL",
+              "ONE"
+            ]
+          },
+          {
+            "name": "readModeSC",
+            "in": "query",
+            "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALLOW_REPLICA",
+              "ALLOW_UNAVAILABLE",
+              "LINEARIZE",
+              "SESSION"
+            ]
+          },
+          {
+            "name": "recordBins",
+            "in": "query",
+            "description": "Specify a set of bins to handle the JSONPath query.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "recordExistsAction",
+            "in": "query",
+            "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "UPDATE",
+              "UPDATE_ONLY",
+              "REPLACE",
+              "REPLACE_ONLY",
+              "CREATE_ONLY"
+            ]
+          },
+          {
+            "name": "replica",
+            "in": "query",
+            "description": "Replica algorithm used to determine the target node for a single record command.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "MASTER",
+              "MASTER_PROLES",
+              "SEQUENCE",
+              "RANDOM"
+            ]
+          },
+          {
+            "name": "respondAllOps",
+            "in": "query",
+            "description": "For client operate(), return a result for every operation.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sendKey",
+            "in": "query",
+            "description": "Send user defined key in addition to hash digest on both reads and writes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "set",
+            "in": "path",
+            "description": "Set for the record; equivalent to database table.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sleepBetweenRetries",
+            "in": "query",
+            "description": "Milliseconds to sleep between retries.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "socketTimeout",
+            "in": "query",
+            "description": "Socket idle timeout in milliseconds when processing a database command.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "totalTimeout",
+            "in": "query",
+            "description": "Total transaction timeout in milliseconds.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid parameters or request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "404": {
+            "description": "Record not found.",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "500": {
+            "description": "The REST Client encountered an error processing the request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "Document API Operations"
+        ],
+        "summary": "Put a document.",
+        "operationId": "putDocumentObjectSet",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json",
+          "application/msgpack"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "commitLevel",
+            "in": "query",
+            "description": "Desired consistency guarantee when committing a transaction on the server.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "COMMIT_ALL",
+              "COMMIT_MASTER"
+            ]
+          },
+          {
+            "name": "compress",
+            "in": "query",
+            "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "durableDelete",
+            "in": "query",
+            "description": "If the transaction results in a record deletion, leave a tombstone for the record.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "expiration",
+            "in": "query",
+            "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filterexp",
+            "in": "query",
+            "description": "Optional Filter Expression (introduced in Aerospike Database 5.2.0) in infix notation DSL.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "generation",
+            "in": "query",
+            "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "generationPolicy",
+            "in": "query",
+            "description": "Qualify how to handle record writes based on record generation.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "NONE",
+              "EXPECT_GEN_EQUAL",
+              "EXPECT_GEN_GT"
+            ]
+          },
+          {
+            "in": "body",
+            "name": "jsonObject",
+            "description": "JSON Object",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "jsonPath",
+            "in": "query",
+            "description": "JSONPath query parameter.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "description": "User key for the record.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "keytype",
+            "in": "query",
+            "description": "The Type of the userKey.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRING",
+              "INTEGER",
+              "BYTES",
+              "DIGEST"
+            ]
+          },
+          {
+            "name": "maxRetries",
+            "in": "query",
+            "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "Namespace for the record; equivalent to database name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "predexp",
+            "in": "query",
+            "description": "Optional Predicate Expression filter (obsolete as of Aerospike Database 5.2.0) in infix notation DSL. If the Predicate Expression exists and evaluates to false, the transaction is ignored.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "readModeAP",
+            "in": "query",
+            "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALL",
+              "ONE"
+            ]
+          },
+          {
+            "name": "readModeSC",
+            "in": "query",
+            "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALLOW_REPLICA",
+              "ALLOW_UNAVAILABLE",
+              "LINEARIZE",
+              "SESSION"
+            ]
+          },
+          {
+            "name": "recordBins",
+            "in": "query",
+            "description": "Specify a set of bins to handle the JSONPath query.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "recordExistsAction",
+            "in": "query",
+            "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "UPDATE",
+              "UPDATE_ONLY",
+              "REPLACE",
+              "REPLACE_ONLY",
+              "CREATE_ONLY"
+            ]
+          },
+          {
+            "name": "replica",
+            "in": "query",
+            "description": "Replica algorithm used to determine the target node for a single record command.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "MASTER",
+              "MASTER_PROLES",
+              "SEQUENCE",
+              "RANDOM"
+            ]
+          },
+          {
+            "name": "respondAllOps",
+            "in": "query",
+            "description": "For client operate(), return a result for every operation.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sendKey",
+            "in": "query",
+            "description": "Send user defined key in addition to hash digest on both reads and writes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "set",
+            "in": "path",
+            "description": "Set for the record; equivalent to database table.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sleepBetweenRetries",
+            "in": "query",
+            "description": "Milliseconds to sleep between retries.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "socketTimeout",
+            "in": "query",
+            "description": "Socket idle timeout in milliseconds when processing a database command.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "totalTimeout",
+            "in": "query",
+            "description": "Total transaction timeout in milliseconds.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid parameters or request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "404": {
+            "description": "Record not found.",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "500": {
+            "description": "The REST Client encountered an error processing the request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "Document API Operations"
+        ],
+        "summary": "Delete an object in a document specified by a JSON path.",
+        "operationId": "deleteDocumentObjectSet",
+        "produces": [
+          "application/json",
+          "application/msgpack"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "commitLevel",
+            "in": "query",
+            "description": "Desired consistency guarantee when committing a transaction on the server.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "COMMIT_ALL",
+              "COMMIT_MASTER"
+            ]
+          },
+          {
+            "name": "compress",
+            "in": "query",
+            "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "durableDelete",
+            "in": "query",
+            "description": "If the transaction results in a record deletion, leave a tombstone for the record.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "expiration",
+            "in": "query",
+            "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filterexp",
+            "in": "query",
+            "description": "Optional Filter Expression (introduced in Aerospike Database 5.2.0) in infix notation DSL.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "generation",
+            "in": "query",
+            "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "generationPolicy",
+            "in": "query",
+            "description": "Qualify how to handle record writes based on record generation.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "NONE",
+              "EXPECT_GEN_EQUAL",
+              "EXPECT_GEN_GT"
+            ]
+          },
+          {
+            "name": "jsonPath",
+            "in": "query",
+            "description": "JSONPath query parameter.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "description": "User key for the record.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "keytype",
+            "in": "query",
+            "description": "The Type of the userKey.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRING",
+              "INTEGER",
+              "BYTES",
+              "DIGEST"
+            ]
+          },
+          {
+            "name": "maxRetries",
+            "in": "query",
+            "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "Namespace for the record; equivalent to database name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "predexp",
+            "in": "query",
+            "description": "Optional Predicate Expression filter (obsolete as of Aerospike Database 5.2.0) in infix notation DSL. If the Predicate Expression exists and evaluates to false, the transaction is ignored.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "readModeAP",
+            "in": "query",
+            "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALL",
+              "ONE"
+            ]
+          },
+          {
+            "name": "readModeSC",
+            "in": "query",
+            "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALLOW_REPLICA",
+              "ALLOW_UNAVAILABLE",
+              "LINEARIZE",
+              "SESSION"
+            ]
+          },
+          {
+            "name": "recordBins",
+            "in": "query",
+            "description": "Specify a set of bins to handle the JSONPath query.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "recordExistsAction",
+            "in": "query",
+            "description": "How to handle the existence of the record. This is ignored for POST/PUT/UPDATE kvs methods.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "UPDATE",
+              "UPDATE_ONLY",
+              "REPLACE",
+              "REPLACE_ONLY",
+              "CREATE_ONLY"
+            ]
+          },
+          {
+            "name": "replica",
+            "in": "query",
+            "description": "Replica algorithm used to determine the target node for a single record command.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "MASTER",
+              "MASTER_PROLES",
+              "SEQUENCE",
+              "RANDOM"
+            ]
+          },
+          {
+            "name": "respondAllOps",
+            "in": "query",
+            "description": "For client operate(), return a result for every operation.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sendKey",
+            "in": "query",
+            "description": "Send user defined key in addition to hash digest on both reads and writes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "set",
+            "in": "path",
+            "description": "Set for the record; equivalent to database table.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sleepBetweenRetries",
+            "in": "query",
+            "description": "Milliseconds to sleep between retries.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "socketTimeout",
+            "in": "query",
+            "description": "Socket idle timeout in milliseconds when processing a database command.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "totalTimeout",
+            "in": "query",
+            "description": "Total transaction timeout in milliseconds.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Invalid parameters or request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "404": {
+            "description": "Record not found.",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
             }
           },
           "500": {
@@ -4854,6 +6882,495 @@
           },
           "409": {
             "description": "Generation mismatch for operation",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "500": {
+            "description": "The REST Client encountered an error processing the request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/v1/operate/read/{namespace}": {
+      "post": {
+        "tags": [
+          "Operate operations"
+        ],
+        "summary": "Perform read operations on multiple records.",
+        "operationId": "operateBatchNamespace",
+        "consumes": [
+          "application/json",
+          "application/msgpack"
+        ],
+        "produces": [
+          "application/json",
+          "application/msgpack"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "allowInline",
+            "in": "query",
+            "description": "Allow batch to be processed immediately in the server's receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "compress",
+            "in": "query",
+            "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "filterexp",
+            "in": "query",
+            "description": "Optional Filter Expression (introduced in Aerospike Database 5.2.0) in infix notation DSL.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "description": "Record keys to perform operations on.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "keytype",
+            "in": "query",
+            "description": "The Type of the userKey.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRING",
+              "INTEGER",
+              "BYTES",
+              "DIGEST"
+            ]
+          },
+          {
+            "name": "maxConcurrentThreads",
+            "in": "query",
+            "description": "Maximum number of concurrent synchronous batch request threads to server nodes at any point in time. If there are 16 node/namespace combinations requested and maxConcurrentThreads is 8, then batch requests will be made for 8 node/namespace combinations in parallel threads. When a request completes, a new request will be issued until all 16 requests are complete.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "maxRetries",
+            "in": "query",
+            "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "Namespace for the record; equivalent to database name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "operations",
+            "description": "An array of operation objects specifying the operations to perform on the record",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Operation"
+              }
+            }
+          },
+          {
+            "name": "predexp",
+            "in": "query",
+            "description": "Optional Predicate Expression filter (obsolete as of Aerospike Database 5.2.0) in infix notation DSL. If the Predicate Expression exists and evaluates to false, the transaction is ignored.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "readModeAP",
+            "in": "query",
+            "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALL",
+              "ONE"
+            ]
+          },
+          {
+            "name": "readModeSC",
+            "in": "query",
+            "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALLOW_REPLICA",
+              "ALLOW_UNAVAILABLE",
+              "LINEARIZE",
+              "SESSION"
+            ]
+          },
+          {
+            "name": "recordBins",
+            "in": "query",
+            "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "replica",
+            "in": "query",
+            "description": "Replica algorithm used to determine the target node for a single record command.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "MASTER",
+              "MASTER_PROLES",
+              "SEQUENCE",
+              "RANDOM"
+            ]
+          },
+          {
+            "name": "sendKey",
+            "in": "query",
+            "description": "Send user defined key in addition to hash digest on both reads and writes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sendSetName",
+            "in": "query",
+            "description": "Send set name field to server for every key in the batch for batch index protocol.\nThis is only necessary when authentication is enabled and security roles are defined on a per set basis.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sleepBetweenRetries",
+            "in": "query",
+            "description": "Milliseconds to sleep between retries.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "socketTimeout",
+            "in": "query",
+            "description": "Socket idle timeout in milliseconds when processing a database command.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "totalTimeout",
+            "in": "query",
+            "description": "Total transaction timeout in milliseconds.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Record"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameters or request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "404": {
+            "description": "Namespace or record does not exist",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "409": {
+            "description": "Generation conflict",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "500": {
+            "description": "The REST Client encountered an error processing the request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/v1/operate/read/{namespace}/{set}": {
+      "post": {
+        "tags": [
+          "Operate operations"
+        ],
+        "summary": "Perform read operations on multiple records.",
+        "operationId": "operateBatchNamespaceSet",
+        "consumes": [
+          "application/json",
+          "application/msgpack"
+        ],
+        "produces": [
+          "application/json",
+          "application/msgpack"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "allowInline",
+            "in": "query",
+            "description": "Allow batch to be processed immediately in the server's receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "compress",
+            "in": "query",
+            "description": "Use zlib compression on command buffers sent to the server and responses received from the server when the buffer size is greater than 128 bytes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "filterexp",
+            "in": "query",
+            "description": "Optional Filter Expression (introduced in Aerospike Database 5.2.0) in infix notation DSL.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "description": "Record keys to perform operations on.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "keytype",
+            "in": "query",
+            "description": "The Type of the userKey.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "STRING",
+              "INTEGER",
+              "BYTES",
+              "DIGEST"
+            ]
+          },
+          {
+            "name": "maxConcurrentThreads",
+            "in": "query",
+            "description": "Maximum number of concurrent synchronous batch request threads to server nodes at any point in time. If there are 16 node/namespace combinations requested and maxConcurrentThreads is 8, then batch requests will be made for 8 node/namespace combinations in parallel threads. When a request completes, a new request will be issued until all 16 requests are complete.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "maxRetries",
+            "in": "query",
+            "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "Namespace for the record; equivalent to database name.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "operations",
+            "description": "An array of operation objects specifying the operations to perform on the record",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Operation"
+              }
+            }
+          },
+          {
+            "name": "predexp",
+            "in": "query",
+            "description": "Optional Predicate Expression filter (obsolete as of Aerospike Database 5.2.0) in infix notation DSL. If the Predicate Expression exists and evaluates to false, the transaction is ignored.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "readModeAP",
+            "in": "query",
+            "description": "Read policy for AP (availability) namespaces. How duplicates should be consulted in a read operation. Only makes a difference during migrations and only applicable in AP mode.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALL",
+              "ONE"
+            ]
+          },
+          {
+            "name": "readModeSC",
+            "in": "query",
+            "description": "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ALLOW_REPLICA",
+              "ALLOW_UNAVAILABLE",
+              "LINEARIZE",
+              "SESSION"
+            ]
+          },
+          {
+            "name": "recordBins",
+            "in": "query",
+            "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "replica",
+            "in": "query",
+            "description": "Replica algorithm used to determine the target node for a single record command.",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "MASTER",
+              "MASTER_PROLES",
+              "SEQUENCE",
+              "RANDOM"
+            ]
+          },
+          {
+            "name": "sendKey",
+            "in": "query",
+            "description": "Send user defined key in addition to hash digest on both reads and writes.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "sendSetName",
+            "in": "query",
+            "description": "Send set name field to server for every key in the batch for batch index protocol.\nThis is only necessary when authentication is enabled and security roles are defined on a per set basis.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "set",
+            "in": "path",
+            "description": "Set for the record; equivalent to database table.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sleepBetweenRetries",
+            "in": "query",
+            "description": "Milliseconds to sleep between retries.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "socketTimeout",
+            "in": "query",
+            "description": "Socket idle timeout in milliseconds when processing a database command.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "totalTimeout",
+            "in": "query",
+            "description": "Total transaction timeout in milliseconds.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Record"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameters or request",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "404": {
+            "description": "Namespace or record does not exist",
+            "schema": {
+              "$ref": "#/definitions/RestClientError"
+            }
+          },
+          "409": {
+            "description": "Generation conflict",
             "schema": {
               "$ref": "#/definitions/RestClientError"
             }
