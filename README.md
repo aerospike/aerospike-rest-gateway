@@ -1,10 +1,17 @@
-# aerospike-client-rest
+# Aerospike REST Client
 
 [![Build](https://github.com/aerospike/aerospike-client-rest/actions/workflows/build.yml/badge.svg)](https://github.com/aerospike/aerospike-client-rest/actions/workflows/build.yml)
 
 The Aerospike REST client provides a server which translates Restful API requests into messages to an Aerospike Cluster.
 
 It can be used as a bridge between applications written in languages without an existing Aerospike Client library, or as a pluggable component in a pre-existing architecture.
+
+## Getting Started blog posts
+
+1. [Aerospike REST Client Introduction](https://medium.com/aerospike-developer-blog/aerospike-rest-client-cb7e5967f423)
+2. [Dealing with Predicate Expression Filters in Aerospike REST Client (Part 1)](https://medium.com/aerospike-developer-blog/dealing-with-predicate-expression-filters-in-aerospike-rest-client-part-1-a43e43ac8c7d)
+3. [Dealing with Predicate Expression Filters in Aerospike REST Client (Part 2)](https://medium.com/aerospike-developer-blog/dealing-with-predicate-expression-filters-in-aerospike-rest-client-part-2-b9d9358c8a4e)
+4. [Authentication and Authorization using Aerospike REST client](https://medium.com/aerospike-developer-blog/authentication-and-authorization-using-aerospike-rest-client-ae0837301775)
 
 ## Prerequisites
 
