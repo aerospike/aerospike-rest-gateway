@@ -8,10 +8,10 @@ It can be used as a bridge between applications written in languages without an 
 
 ## Getting Started blog posts
 
-1. [Aerospike REST Client Introduction](https://medium.com/aerospike-developer-blog/aerospike-rest-client-cb7e5967f423)
-2. [Dealing with Predicate Expression Filters in Aerospike REST Client (Part 1)](https://medium.com/aerospike-developer-blog/dealing-with-predicate-expression-filters-in-aerospike-rest-client-part-1-a43e43ac8c7d)
-3. [Dealing with Predicate Expression Filters in Aerospike REST Client (Part 2)](https://medium.com/aerospike-developer-blog/dealing-with-predicate-expression-filters-in-aerospike-rest-client-part-2-b9d9358c8a4e)
-4. [Authentication and Authorization using Aerospike REST client](https://medium.com/aerospike-developer-blog/authentication-and-authorization-using-aerospike-rest-client-ae0837301775)
+1. [Aerospike REST Client Introduction](https://medium.com/aerospike-developer-blog/aerospike-rest-client-cb7e5967f423?source=friends_link&sk=0d6d69703e8a77da13ec0c6c012d1c29)
+2. [Dealing with Predicate Expression Filters in Aerospike REST Client (Part 1)](https://medium.com/aerospike-developer-blog/dealing-with-predicate-expression-filters-in-aerospike-rest-client-part-1-a43e43ac8c7d?source=friends_link&sk=bc0ed64110578ff6f4804753ca6369da)
+3. [Dealing with Predicate Expression Filters in Aerospike REST Client (Part 2)](https://medium.com/aerospike-developer-blog/dealing-with-predicate-expression-filters-in-aerospike-rest-client-part-2-b9d9358c8a4e?source=friends_link&sk=35c37b035d12789aae6272704ef95829)
+4. [Authentication and Authorization using Aerospike REST client](https://medium.com/aerospike-developer-blog/authentication-and-authorization-using-aerospike-rest-client-ae0837301775?source=friends_link&sk=4be1513a1158a8ecb0b3c0e163ba1c4b)
 
 ## Prerequisites
 
