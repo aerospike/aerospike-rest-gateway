@@ -16,16 +16,14 @@
  */
 package com.aerospike.restclient.domain.scanmodels;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "Pagination")
 public class Pagination {
 
-    @ApiModelProperty(value = "The next page token.")
+    @Schema(description = "The next page token.")
     private String nextToken;
 
-    @ApiModelProperty(value = "The total number of records in page.")
+    @Schema(description = "The total number of records in page.")
     private long totalRecords;
 
     public Pagination() {
@@ -46,5 +44,4 @@ public class Pagination {
     public void setTotalRecords(long total) {
         totalRecords = total;
     }
-
 }

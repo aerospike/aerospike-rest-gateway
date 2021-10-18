@@ -18,25 +18,20 @@ package com.aerospike.restclient.domain;
 
 import com.aerospike.client.AerospikeException;
 import com.aerospike.restclient.util.RestClientErrors.AerospikeRestClientError;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
-@ApiModel(value="RestClientError", description="Error object returned from unsuccesful operations.")
 public class RestClientError {
 
-	@ApiModelProperty(value="A message describing the cause of the error.", example="Error Message")
-	private String message;
+	@Schema(description = "A message describing the cause of the error.", example = "Error Message")
+	private final String message;
 
-	@ApiModelProperty(
-			value="A boolean specifying whether it was possible that the operation succeeded. This is only included if true.",
-			required=false, example="false")
+	@Schema(description = "A boolean specifying whether it was possible that the operation succeeded. This is only included if true.",
+			required = true,
+			example = "false")
+	private final Boolean inDoubt;
 
-	private Boolean inDoubt;
-
-	@ApiModelProperty(value="An internal error code for diagnostic purposes. This may be null",
-			example="-3")
-	private Integer internalErrorCode;
+	@Schema(description = "An internal error code for diagnostic purposes. This may be null", example = "-3")
+	private final Integer internalErrorCode;
 
 	public String getMessage() {
 		return message;

@@ -16,14 +16,12 @@
  */
 package com.aerospike.restclient.domain.swaggermodels;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value="NamespaceInformation")
 public class RestClientNamespaceInfoResponse {
-	@ApiModelProperty(example="testNS")
+	@Schema(example = "testNS")
 	public String name;
 
-	@ApiModelProperty
+	@Schema
 	public RestClientSetInformation[] sets;
 }

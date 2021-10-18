@@ -68,11 +68,11 @@ public class RestClientBatchReadBodyTest {
 
 		RestClientBatchReadBody mappedBody = mapper.mapToBatchReadBody(batchMap);
 
-		Assert.assertEquals(mappedBody.readAllBins, true);
+		Assert.assertTrue(mappedBody.readAllBins);
 		Assert.assertArrayEquals(mappedBody.binNames, new String[] {});
 		RestClientKey rcKey = mappedBody.key;
 
-		Assert.assertEquals(RecordKeyType.STRING, rcKey.keytype);
+		Assert.assertEquals(RecordKeyType.STRING, rcKey.keyType);
 	}
 
 	@Test
@@ -85,11 +85,11 @@ public class RestClientBatchReadBodyTest {
 
 		RestClientBatchReadBody mappedBody = mapper.mapToBatchReadBody(batchMap);
 
-		Assert.assertEquals(mappedBody.readAllBins, true);
+		Assert.assertTrue(mappedBody.readAllBins);
 		Assert.assertArrayEquals(mappedBody.binNames, bins);
 		RestClientKey rcKey = mappedBody.key;
 
-		Assert.assertEquals(RecordKeyType.STRING, rcKey.keytype);
+		Assert.assertEquals(RecordKeyType.STRING, rcKey.keyType);
 	}
 
 	@Test
@@ -100,11 +100,11 @@ public class RestClientBatchReadBodyTest {
 
 		RestClientBatchReadBody mappedBody = mapper.mapToBatchReadBody(batchMap);
 
-		Assert.assertEquals(mappedBody.readAllBins, true);
+		Assert.assertTrue(mappedBody.readAllBins);
 		Assert.assertArrayEquals(mappedBody.binNames, new String[] {});
 		RestClientKey rcKey = mappedBody.key;
 
-		Assert.assertEquals(RecordKeyType.INTEGER, rcKey.keytype);
+		Assert.assertEquals(RecordKeyType.INTEGER, rcKey.keyType);
 	}
 
 	@Test
@@ -115,11 +115,11 @@ public class RestClientBatchReadBodyTest {
 
 		RestClientBatchReadBody mappedBody = mapper.mapToBatchReadBody(batchMap);
 
-		Assert.assertEquals(mappedBody.readAllBins, true);
+		Assert.assertTrue(mappedBody.readAllBins);
 		Assert.assertArrayEquals(mappedBody.binNames, new String[] {});
 		RestClientKey rcKey = mappedBody.key;
 
-		Assert.assertEquals(RecordKeyType.BYTES, rcKey.keytype);
+		Assert.assertEquals(RecordKeyType.BYTES, rcKey.keyType);
 	}
 
 	@Test
@@ -130,15 +130,15 @@ public class RestClientBatchReadBodyTest {
 
 		RestClientBatchReadBody mappedBody = mapper.mapToBatchReadBody(batchMap);
 
-		Assert.assertEquals(mappedBody.readAllBins, true);
+		Assert.assertTrue(mappedBody.readAllBins);
 		Assert.assertArrayEquals(mappedBody.binNames, new String[] {});
 		RestClientKey rcKey = mappedBody.key;
 
-		Assert.assertEquals(RecordKeyType.DIGEST, rcKey.keytype);
+		Assert.assertEquals(RecordKeyType.DIGEST, rcKey.keyType);
 	}
 
 	@Test
-	public void testConversionToBatchReadWithBinNames() throws Exception {
+	public void testConversionToBatchReadWithBinNames() {
 		Key realKey = new Key(ns, set, "test");
 		RestClientKey rcKey = new RestClientKey(realKey);
 		String[] bins = {"b1", "b2", "b3"};
@@ -156,7 +156,7 @@ public class RestClientBatchReadBodyTest {
 	}
 
 	@Test
-	public void testConversionToBatchReadWithoutBinNames() throws Exception {
+	public void testConversionToBatchReadWithoutBinNames() {
 		Key realKey = new Key(ns, set, "test");
 		RestClientKey rcKey = new RestClientKey(realKey);
 		String[] bins = {"b1", "b2", "b3"};
@@ -174,7 +174,7 @@ public class RestClientBatchReadBodyTest {
 	}
 
 	@Test
-	public void testConversionToBatchReadWithOnlyKeySet() throws Exception {
+	public void testConversionToBatchReadWithOnlyKeySet() {
 		Key realKey = new Key(ns, set, "test");
 		RestClientKey rcKey = new RestClientKey(realKey);
 		RestClientBatchReadBody rCBRB = new RestClientBatchReadBody();
@@ -189,7 +189,7 @@ public class RestClientBatchReadBodyTest {
 	}
 
 	@Test(expected=RestClientErrors.InvalidKeyError.class)
-	public void testConversionWithNullKey() throws Exception {
+	public void testConversionWithNullKey() {
 		RestClientBatchReadBody rCBRB = new RestClientBatchReadBody();
 		rCBRB.key = null;
 		rCBRB.toBatchRead();

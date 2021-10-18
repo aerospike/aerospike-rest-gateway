@@ -20,21 +20,18 @@ import javax.validation.constraints.NotNull;
 
 import com.aerospike.client.admin.Privilege;
 import com.aerospike.client.admin.PrivilegeCode;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
-@ApiModel(value="Privilege")
 public class RestClientPrivilege {
 
 	@NotNull
-	@ApiModelProperty(required=true)
+	@Schema(required = true)
 	PrivilegeCode code;
 
-	@ApiModelProperty(value="Namespace Scope", example="testNS", required=false)
+	@Schema(description = "Namespace Scope", example = "testNS")
 	String namespace;
 
-	@ApiModelProperty(value="setName Scope", example="testSet", required=false)
+	@Schema(description = "setName Scope", example = "testSet")
 	String set;
 
 	public PrivilegeCode getCode() {
@@ -55,7 +52,6 @@ public class RestClientPrivilege {
 	public void setSet(String set) {
 		this.set = set;
 	}
-
 
 	public  Privilege toPrivilege() {
 		Privilege privilege = new Privilege();

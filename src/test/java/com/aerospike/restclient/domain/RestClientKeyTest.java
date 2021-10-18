@@ -56,7 +56,7 @@ public class RestClientKeyTest {
         Assert.assertEquals(testKey.setName, constructedKey.setName);
         Assert.assertEquals("key", constructedKey.userKey);
         byte[] constructedDigest = constructedKey.toKey().digest;
-        Assert.assertEquals(constructedKey.keytype, RecordKeyType.STRING);
+        Assert.assertEquals(constructedKey.keyType, RecordKeyType.STRING);
         Assert.assertArrayEquals(constructedDigest, testKey.digest);
     }
 
@@ -68,7 +68,7 @@ public class RestClientKeyTest {
         Assert.assertEquals(testKey.namespace, constructedKey.namespace);
         Assert.assertEquals(testKey.setName, constructedKey.setName);
         Assert.assertEquals(5L, constructedKey.userKey);
-        Assert.assertEquals(constructedKey.keytype, RecordKeyType.INTEGER);
+        Assert.assertEquals(constructedKey.keyType, RecordKeyType.INTEGER);
 
         byte[] constructedDigest = constructedKey.toKey().digest;
         Assert.assertArrayEquals(constructedDigest, testKey.digest);
@@ -82,7 +82,7 @@ public class RestClientKeyTest {
 
         Assert.assertEquals(testKey.namespace, constructedKey.namespace);
         Assert.assertEquals(testKey.setName, constructedKey.setName);
-        Assert.assertEquals(constructedKey.keytype, RecordKeyType.BYTES);
+        Assert.assertEquals(constructedKey.keyType, RecordKeyType.BYTES);
 
         Assert.assertArrayEquals(testBytes, decoder.decode((String) constructedKey.userKey));
         byte[] constructedDigest = constructedKey.toKey().digest;
@@ -105,7 +105,7 @@ public class RestClientKeyTest {
     public void testConversionToStringKey() {
         Key expectedKey = new Key(ns, set, "test");
         RestClientKey rcKey = new RestClientKey();
-        rcKey.keytype = RecordKeyType.STRING;
+        rcKey.keyType = RecordKeyType.STRING;
         rcKey.setName = set;
         rcKey.namespace = ns;
         rcKey.userKey = "test";
@@ -117,7 +117,7 @@ public class RestClientKeyTest {
     public void testConversionToLongKey() {
         Key expectedKey = new Key(ns, set, 5L);
         RestClientKey rcKey = new RestClientKey();
-        rcKey.keytype = RecordKeyType.INTEGER;
+        rcKey.keyType = RecordKeyType.INTEGER;
         rcKey.setName = set;
         rcKey.namespace = ns;
         rcKey.userKey = 5;
@@ -130,7 +130,7 @@ public class RestClientKeyTest {
         byte[] keyBytes = {1, 2, 3, 4};
         Key expectedKey = new Key(ns, set, keyBytes);
         RestClientKey rcKey = new RestClientKey();
-        rcKey.keytype = RecordKeyType.BYTES;
+        rcKey.keyType = RecordKeyType.BYTES;
         rcKey.setName = set;
         rcKey.namespace = ns;
         rcKey.userKey = encoder.encodeToString(keyBytes);
@@ -143,7 +143,7 @@ public class RestClientKeyTest {
         byte[] testBytes = new byte[20];
         Key expectedKey = new Key(ns, testBytes, null, null);
         RestClientKey rcKey = new RestClientKey();
-        rcKey.keytype = RecordKeyType.DIGEST;
+        rcKey.keyType = RecordKeyType.DIGEST;
         rcKey.namespace = ns;
         rcKey.userKey = encoder.encodeToString(testBytes);
 
@@ -204,7 +204,7 @@ public class RestClientKeyTest {
         Assert.assertEquals(rcKey.namespace, ns);
         Assert.assertEquals(rcKey.setName, set);
         Assert.assertEquals(rcKey.userKey, "key");
-        Assert.assertEquals(rcKey.keytype, RecordKeyType.STRING);
+        Assert.assertEquals(rcKey.keyType, RecordKeyType.STRING);
     }
 
     @Test
@@ -215,7 +215,7 @@ public class RestClientKeyTest {
         Assert.assertEquals(rcKey.namespace, ns);
         Assert.assertEquals(rcKey.setName, set);
         Assert.assertEquals(rcKey.userKey, 5);
-        Assert.assertEquals(rcKey.keytype, RecordKeyType.INTEGER);
+        Assert.assertEquals(rcKey.keyType, RecordKeyType.INTEGER);
     }
 
     @Test
@@ -228,7 +228,7 @@ public class RestClientKeyTest {
         Assert.assertEquals(rcKey.namespace, ns);
         Assert.assertEquals(rcKey.setName, set);
         Assert.assertEquals(rcKey.userKey, strBytes);
-        Assert.assertEquals(rcKey.keytype, RecordKeyType.DIGEST);
+        Assert.assertEquals(rcKey.keyType, RecordKeyType.DIGEST);
     }
 
     @Test
@@ -242,7 +242,7 @@ public class RestClientKeyTest {
         Assert.assertEquals(rcKey.namespace, ns);
         Assert.assertEquals(rcKey.setName, set);
         Assert.assertEquals(rcKey.userKey, strBytes);
-        Assert.assertEquals(rcKey.keytype, RecordKeyType.BYTES);
+        Assert.assertEquals(rcKey.keyType, RecordKeyType.BYTES);
     }
 
     private String getJsonRCKey(String namespace, String set, Object userKey,

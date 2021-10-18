@@ -20,12 +20,20 @@ import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeTruncateService;
 import com.aerospike.restclient.util.HeaderHandler;
-import io.swagger.annotations.*;
+import com.aerospike.restclient.util.ResponseExamples;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = "Truncate Operations", description = "Remove multiple records from the server.")
+@Tag(name = "Truncate Operations", description = "Remove multiple records from the server.")
 @RestController
 @RequestMapping("/v1/truncate")
 public class TruncateController {
@@ -37,18 +45,26 @@ public class TruncateController {
     @Autowired
     private AerospikeTruncateService truncateService;
 
+    @Operation(summary = "Truncate records in a specified namespace.", operationId = "truncateNamespace")
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}", produces = {"application/json", "application/msgpack"})
-    @ApiOperation(value = "Truncate records in a specified namespace.", nickname = "truncateNamespace")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @ApiResponses(value = {
-            @ApiResponse(code = 403, response = RestClientError.class, message = "Not authorized to access the resource",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")})),
-            @ApiResponse(code = 400, response = RestClientError.class, message = "Invalid parameters or request",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid parameters or request.",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Not authorized to access the resource.",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
     })
     public void truncateNamespace(
-            @ApiParam(value = "The namespace whose records will be truncated.", required = true) @PathVariable(value = "namespace") String namespace,
-            @ApiParam(value = DATE_QUERY_PARAM_NOTES, required = false, example = DATE_QUERY_PARAM_EXAMPLE) @RequestParam(value = "date", required = false) String dateString,
+            @Parameter(description = "The namespace whose records will be truncated.", required = true) @PathVariable(value = "namespace") String namespace,
+            @Parameter(description = DATE_QUERY_PARAM_NOTES, example = DATE_QUERY_PARAM_EXAMPLE) @RequestParam(value = "date", required = false) String dateString,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
@@ -56,25 +72,31 @@ public class TruncateController {
         truncateService.truncate(authDetails, namespace, null, dateString);
     }
 
-
+    @Operation(summary = "Truncate records in a specified namespace and set.", operationId = "truncateSet")
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{set}", produces = {"application/json", "application/msgpack"})
-    @ApiOperation(value = "Truncate records in a specified namespace and set.", nickname = "truncateSet")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @ApiResponses(value = {
-            @ApiResponse(code = 403, response = RestClientError.class, message = "Not authorized to access the resource",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")})),
-            @ApiResponse(code = 400, response = RestClientError.class, message = "Invalid parameters or request",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid parameters or request.",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Not authorized to access the resource.",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
     })
     public void truncateSet(
-            @ApiParam(value = "The namespace whose records will be truncated", required = true) @PathVariable(value = "namespace") String namespace,
-            @ApiParam(value = "The set, in the specified namespace, whose records will be truncated", required = true) @PathVariable(value = "set") String set,
-            @ApiParam(value = DATE_QUERY_PARAM_NOTES, required = false, example = DATE_QUERY_PARAM_EXAMPLE) @RequestParam(value = "date", required = false) String dateString,
+            @Parameter(description = "The namespace whose records will be truncated", required = true) @PathVariable(value = "namespace") String namespace,
+            @Parameter(description = "The set, in the specified namespace, whose records will be truncated", required = true) @PathVariable(value = "set") String set,
+            @Parameter(description = DATE_QUERY_PARAM_NOTES, example = DATE_QUERY_PARAM_EXAMPLE) @RequestParam(value = "date", required = false) String dateString,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
         truncateService.truncate(authDetails, namespace, set, dateString);
     }
-
 }

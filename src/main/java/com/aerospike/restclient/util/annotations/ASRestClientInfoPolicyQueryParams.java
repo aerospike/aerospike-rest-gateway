@@ -19,10 +19,9 @@ package com.aerospike.restclient.util.annotations;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.v3.oas.annotations.Parameters;
 
-@ApiImplicitParams(value={
-})
+@Parameters()
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ASRestClientInfoPolicyQueryParams {
 

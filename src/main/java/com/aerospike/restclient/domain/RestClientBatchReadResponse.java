@@ -17,10 +17,8 @@
 package com.aerospike.restclient.domain;
 
 import com.aerospike.client.BatchRead;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value="BatchRead")
 public class RestClientBatchReadResponse {
 
 	public RestClientBatchReadResponse() {}
@@ -32,16 +30,15 @@ public class RestClientBatchReadResponse {
 		binNames = batchRead.binNames;
 	}
 
-	@ApiModelProperty(value="Record associated with the key. Null if the record was not found")
+	@Schema(description = "Record associated with the key. Null if the record was not found")
 	public RestClientRecord record;
 
-	@ApiModelProperty(value="Key to retrieve a record")
+	@Schema(description = "Key to retrieve a record")
 	public RestClientKey key;
 
-	@ApiModelProperty(value="Whether all bins should be returned with this record")
+	@Schema(description = "Whether all bins should be returned with this record")
 	public boolean readAllBins;
 
-	@ApiModelProperty(value="List of bins to limit the record response to.")
+	@Schema(description = "List of bins to limit the record response to.")
 	public String[] binNames;
-
 }

@@ -20,8 +20,12 @@ import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.domain.swaggermodels.RestClientClusterInfoResponse;
 import com.aerospike.restclient.service.AerospikeClusterService;
 import com.aerospike.restclient.util.HeaderHandler;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,15 +34,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-@Api(tags = "Cluster information operations", description = "Retrieve basic information about the Aerospike cluster.")
+@Tag(name = "Cluster information operations", description = "Retrieve basic information about the Aerospike cluster.")
 @RestController
 @RequestMapping("/v1/cluster")
 class ClusterController {
     @Autowired
     private AerospikeClusterService service;
 
-    @ApiOperation(value = "Return an object containing information about the Aerospike cluster.",
-            response = RestClientClusterInfoResponse.class, nickname = "getClusterInfo")
+    @Operation(summary = "Return an object containing information about the Aerospike cluster.",
+            operationId = "getClusterInfo",
+            responses = @ApiResponse(content = @Content(schema = @Schema(implementation = RestClientClusterInfoResponse.class))))
+    @ApiResponses
     @RequestMapping(method = RequestMethod.GET, produces = {"application/json", "application/msgpack"})
     public Map<String, Object> getClusterInfo(@RequestHeader(value = "Authorization", required = false) String basicAuth) {
 

@@ -16,17 +16,15 @@
  */
 package com.aerospike.restclient.domain.swaggermodels;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-/* A Model describing the return value from requests to the /v1/cluster endpoint.
- *
+/*
+ * A Model describing the return value from requests to the /v1/cluster endpoint.
  */
-@ApiModel(value="clusterInformation")
 public class RestClientClusterInfoResponse {
-	@ApiModelProperty
+	@Schema()
 	public RestClientNodeInfoResponse[] nodes;
 
-	@ApiModelProperty
+	@Schema()
 	public RestClientNamespaceInfoResponse[] namespaces;
 }

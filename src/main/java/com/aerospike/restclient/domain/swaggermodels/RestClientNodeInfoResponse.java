@@ -16,12 +16,10 @@
  */
 package com.aerospike.restclient.domain.swaggermodels;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value="NodeInformation")
 public class RestClientNodeInfoResponse {
 
-	@ApiModelProperty(example="BB9DE9B1B270008")
+	@Schema(example = "BB9DE9B1B270008")
 	public String name;
 }

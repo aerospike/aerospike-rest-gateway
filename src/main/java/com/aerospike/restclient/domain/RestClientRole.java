@@ -19,32 +19,30 @@ package com.aerospike.restclient.domain;
 import com.aerospike.client.admin.Role;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonInclude(Include.NON_NULL)
-@ApiModel(value = "RestClientRole")
 public class RestClientRole {
 
     @NotNull
-    @ApiModelProperty(required = true, value = "Role name.", example = "customRole")
+    @Schema(required = true, description = "Role name.", example = "customRole")
     private String name;
 
     @NotNull
-    @ApiModelProperty(required = true, value = "List of assigned privileges.")
+    @Schema(required = true, description = "List of assigned privileges.")
     private List<RestClientPrivilege> privileges;
 
-    @ApiModelProperty(value = "List of allowable IP addresses.")
+    @Schema(description = "List of allowable IP addresses.")
     private List<String> whitelist;
 
-    @ApiModelProperty(value = "Maximum reads per second limit.")
+    @Schema(description = "Maximum reads per second limit.")
     private int readQuota;
 
-    @ApiModelProperty(value = "Maximum writes per second limit.")
+    @Schema(description = "Maximum writes per second limit.")
     private int writeQuota;
 
     public String getName() {

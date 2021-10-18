@@ -22,18 +22,25 @@ import com.aerospike.restclient.domain.RestClientBatchReadResponse;
 import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeBatchService;
+import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.annotations.ASRestClientBatchPolicyQueryParams;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Map;
 
-@Api(tags = "Batch Read Operations", description = "Retrieve multiple records from the server.")
+@Tag(name = "Batch Read Operations", description = "Retrieve multiple records from the server.")
 @RestController
 @RequestMapping("/v1/batch")
 public class BatchController {
@@ -41,27 +48,36 @@ public class BatchController {
     @Autowired
     private AerospikeBatchService service;
 
-    @ApiOperation(value = "Return multiple records from the server in a single request.", nickname = "performBatchGet")
+    @Operation(summary = "Return multiple records from the server in a single request.", operationId = "performBatchGet")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid parameters or request.",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Not authorized to access the resource.",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Non existent namespace used in one or more key.",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+    })
     @RequestMapping(method = RequestMethod.POST, consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"})
-    @ApiResponses(value = {
-            @ApiResponse(code = 404, response = RestClientError.class, message = "Non existent namespace used in one or more key.",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")})),
-            @ApiResponse(code = 403, response = RestClientError.class, message = "Not authorized to access the resource",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")})),
-            @ApiResponse(code = 400, response = RestClientError.class, message = "Invalid parameters or request",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))
-
-    })
     @ASRestClientBatchPolicyQueryParams
     public List<RestClientBatchReadResponse> performBatchGet(@RequestBody List<RestClientBatchReadBody> batchKeys,
-                                                             @ApiIgnore @RequestParam Map<String, String> requestParams,
+                                                             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                                              @RequestHeader(value = "Authorization", required = false) String basicAuth) {
-
         BatchPolicy policy = RequestParamHandler.getBatchPolicy(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
         return service.batchGet(authDetails, batchKeys, policy);
     }
-
 }
