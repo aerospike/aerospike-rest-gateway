@@ -1,15 +1,19 @@
 package com.aerospike.restclient.config;
 
-
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class OpenApiConfiguration {
+
+    @Autowired
+    private BuildProperties buildProperties;
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -20,7 +24,7 @@ public class OpenApiConfiguration {
         return new Info()
                 .title("Aerospike REST Client")
                 .description("REST Interface for Aerospike Database.")
-                .version("2.0")
+                .version(buildProperties.getVersion())
                 .contact(apiContact())
                 .license(apiLicence());
     }
