@@ -18,8 +18,8 @@ public class OpenApiConfiguration {
 
     private Info apiInfo() {
         return new Info()
-                .title("Human cloning API")
-                .description("API for creating clone who will fight in the clones wars")
+                .title("Aerospike REST Client")
+                .description("REST Interface for Aerospike Database.")
                 .version("2.0")
                 .contact(apiContact())
                 .license(apiLicence());
@@ -27,14 +27,13 @@ public class OpenApiConfiguration {
 
     private License apiLicence() {
         return new License()
-                .name("MIT Licence")
-                .url("https://opensource.org/licenses/mit-license.php");
+                .name("Apache 2.0 License")
+                .url("http://www.apache.org/licenses/LICENSE-2.0");
     }
 
     private Contact apiContact() {
         return new Contact()
-                .name("Erwan LE TUTOUR")
-                .email("erwanletutour.elt@gmail.com")
-                .url("https://github.com/ErwanLT");
+                .name("Aerospike, Inc.")
+                .url("https://www.aerospike.com");
     }
 }
