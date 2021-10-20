@@ -16,17 +16,14 @@
  */
 package com.aerospike.restclient.domain.swaggermodels;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
-@ApiModel(value="User")
 public class RestClientUserResponse {
 
-	@ApiModelProperty(example="testUser")
+	@Schema(example = "testUser")
 	String name;
 
-	@ApiModelProperty(example="[customRole1, customRole2]")
+	@Schema(example = "[customRole1, customRole2]")
 	String[] roles;
 
 	public void setName(String name) {

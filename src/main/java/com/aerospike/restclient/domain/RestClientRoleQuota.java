@@ -1,15 +1,13 @@
 package com.aerospike.restclient.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "RestClientRoleQuota")
 public class RestClientRoleQuota {
 
-    @ApiModelProperty(value = "Maximum reads per second limit.")
+    @Schema(description = "Maximum reads per second limit.")
     private int readQuota;
 
-    @ApiModelProperty(value = "Maximum writes per second limit.")
+    @Schema(description = "Maximum writes per second limit.")
     private int writeQuota;
 
     public int getReadQuota() {

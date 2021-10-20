@@ -22,11 +22,8 @@ import java.util.Map;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
-@ApiModel("Operation")
 public class RestClientOperation {
 
 	public RestClientOperation() {}
@@ -42,10 +39,10 @@ public class RestClientOperation {
 		this.opValues = (Map<String, Object>) opMap.get(AerospikeAPIConstants.OPERATION_VALUES_FIELD);
 	}
 
-	@ApiModelProperty(required=true, value="Aerospike operation to perform on the record", example="LIST_APPEND_ITEMS")
+	@Schema(required = true, description = "Aerospike operation to perform on the record", example = "LIST_APPEND_ITEMS")
 	private AerospikeOperation operation;
 
-	@ApiModelProperty(required=true, example="{\"bin\":\"listbin\",\"values\":[1,2,3]}")
+	@Schema(required = true, example = "{\"bin\":\"listbin\",\"values\":[1,2,3]}")
 	private Map<String, Object> opValues;
 
 	public AerospikeOperation getOperation() {
@@ -71,5 +68,4 @@ public class RestClientOperation {
 		mapRepresentation.put(AerospikeAPIConstants.OPERATION_VALUES_FIELD, opValues);
 		return mapRepresentation;
 	}
-
 }

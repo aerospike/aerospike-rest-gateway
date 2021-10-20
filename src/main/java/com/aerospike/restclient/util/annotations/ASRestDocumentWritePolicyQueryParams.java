@@ -18,8 +18,10 @@ package com.aerospike.restclient.util.annotations;
 
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.QueryParamDescriptors;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -29,124 +31,115 @@ import java.lang.annotation.Target;
 /*
  * Annotations used by Swagger to report correct query parameters for the given API method.
  */
-@ApiImplicitParams(value = {
-        @ApiImplicitParam(
+@Parameters(value = {
+        @Parameter(
                 name = AerospikeAPIConstants.SEND_KEY,
-                dataType = "boolean",
-                paramType = "query",
-                value = QueryParamDescriptors.POLICY_SEND_KEY_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.POLICY_SEND_KEY_NOTES,
+                schema = @Schema(type = "boolean"),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.REPLICA,
-                dataType = "string",
-                paramType = "query",
-                allowableValues = QueryParamDescriptors.POLICY_REPLICA_ALLOWABLE_VALUES,
-                value = QueryParamDescriptors.POLICY_REPLICA_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.POLICY_REPLICA_NOTES,
+                schema = @Schema(type = "string", allowableValues = QueryParamDescriptors.POLICY_REPLICA_ALLOWABLE_VALUES),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.KEY_TYPE,
-                dataType = "string",
-                paramType = "query",
-                allowableValues = QueryParamDescriptors.KEYTYPE_ALLOWABLE_VALUES,
-                value = QueryParamDescriptors.KEYTYPE_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.KEYTYPE_NOTES,
+                schema = @Schema(type = "string", allowableValues = QueryParamDescriptors.KEYTYPE_ALLOWABLE_VALUES),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.RECORD_BINS,
-                paramType = "query",
-                value = QueryParamDescriptors.JSON_PATH_BINS_NOTES,
-                dataType = "string",
+                description = QueryParamDescriptors.JSON_PATH_BINS_NOTES,
+                schema = @Schema(type = "array", required = true),
                 required = true,
-                allowMultiple = true),
-        @ApiImplicitParam(
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.READ_MODE_SC,
-                dataType = "string",
-                paramType = "query",
-                allowableValues = QueryParamDescriptors.POLICY_READMODESC_ALLOWABLE_VALUES,
-                value = QueryParamDescriptors.POLICY_READMODESC_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.POLICY_READMODESC_NOTES,
+                schema = @Schema(type = "string", allowableValues = QueryParamDescriptors.POLICY_READMODESC_ALLOWABLE_VALUES),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.READ_MODE_AP,
-                dataType = "string",
-                paramType = "query",
-                allowableValues = QueryParamDescriptors.POLICY_READMODEAP_ALLOWABLE_VALUES,
-                value = QueryParamDescriptors.POLICY_READMODEAP_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.POLICY_READMODEAP_NOTES,
+                schema = @Schema(type = "string", allowableValues = QueryParamDescriptors.POLICY_READMODEAP_ALLOWABLE_VALUES),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.TOTAL_TIMEOUT,
-                dataType = "int",
-                paramType = "query",
-                value = QueryParamDescriptors.POLICY_TOTAL_TIMEOUT_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.POLICY_TOTAL_TIMEOUT_NOTES,
+                schema = @Schema(type = "int"),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.SOCKET_TIMEOUT,
-                dataType = "int",
-                paramType = "query",
-                value = QueryParamDescriptors.POLICY_SOCKET_TIMEOUT_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.POLICY_SOCKET_TIMEOUT_NOTES,
+                schema = @Schema(type = "int"),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.SLEEP_BETWEEN_RETRIES,
-                dataType = "int",
-                paramType = "query",
-                value = QueryParamDescriptors.POLICY_SLEEP_BETWEEN_RETRIES_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.POLICY_SLEEP_BETWEEN_RETRIES_NOTES,
+                schema = @Schema(type = "int"),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.MAX_RETRIES,
-                dataType = "int",
-                paramType = "query",
-                value = QueryParamDescriptors.POLICY_MAX_RETRIES_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.POLICY_MAX_RETRIES_NOTES,
+                schema = @Schema(type = "int"),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.PRED_EXP,
-                dataType = "string",
-                paramType = "query",
-                value = QueryParamDescriptors.POLICY_PRED_EXP_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.POLICY_PRED_EXP_NOTES,
+                schema = @Schema(type = "string"),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.FILTER_EXP,
-                dataType = "string",
-                paramType = "query",
-                value = QueryParamDescriptors.POLICY_FILTER_EXP_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.POLICY_FILTER_EXP_NOTES,
+                schema = @Schema(type = "string"),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.COMPRESS,
-                dataType = "boolean",
-                paramType = "query",
-                value = QueryParamDescriptors.POLICY_COMPRESS_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.POLICY_COMPRESS_NOTES,
+                schema = @Schema(type = "boolean"),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.JSON_PATH,
-                dataType = "string",
-                paramType = "query",
+                description = QueryParamDescriptors.JSON_PATH_NOTES,
+                schema = @Schema(type = "string", required = true),
                 required = true,
-                value = QueryParamDescriptors.JSON_PATH_NOTES),
-
+                in = ParameterIn.QUERY),
         // Write Operation Policies
-        @ApiImplicitParam(
+        @Parameter(
                 name = AerospikeAPIConstants.EXPIRATION,
-                dataType = "int",
-                paramType = "query",
-                value = QueryParamDescriptors.WRITE_POLICY_EXPIRATION_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.WRITE_POLICY_EXPIRATION_NOTES,
+                schema = @Schema(type = "int"),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.GENERATION,
-                dataType = "int",
-                paramType = "query",
-                value = QueryParamDescriptors.WRITE_POLICY_GEN_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.WRITE_POLICY_GEN_NOTES,
+                schema = @Schema(type = "int"),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.DURABLE_DELETE,
-                dataType = "boolean",
-                paramType = "query",
-                value = QueryParamDescriptors.WRITE_POLICY_DURABLE_DELETE_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.WRITE_POLICY_DURABLE_DELETE_NOTES,
+                schema = @Schema(type = "boolean"),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.RESPOND_ALL_OPS,
-                dataType = "boolean",
-                paramType = "query",
-                value = QueryParamDescriptors.WRITE_POLICY_RESPOND_ALL_OPS_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.WRITE_POLICY_RESPOND_ALL_OPS_NOTES,
+                schema = @Schema(type = "boolean"),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.COMMIT_LEVEL,
-                dataType = "string",
-                paramType = "query",
-                allowableValues = QueryParamDescriptors.WRITE_POLICY_COMMIT_LEVEL_ALLOWABLE_VALUES,
-                value = QueryParamDescriptors.WRITE_POLICY_COMMIT_LEVEL_NOTES),
-        @ApiImplicitParam(
+                description = QueryParamDescriptors.WRITE_POLICY_COMMIT_LEVEL_NOTES,
+                schema = @Schema(type = "string", allowableValues = QueryParamDescriptors.WRITE_POLICY_COMMIT_LEVEL_ALLOWABLE_VALUES),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.GENERATION_POLICY,
-                dataType = "string",
-                paramType = "query",
-                allowableValues = QueryParamDescriptors.WRITE_POLICY_GEN_POLICY_ALLOWABLE_VALUES,
-                value = QueryParamDescriptors.WRITE_POLICY_GEN_POLICY_NOTES),
-        @ApiImplicitParam(
-                value = QueryParamDescriptors.WRITE_POLICY_RECORD_EXISTS_NOTES,
+                description = QueryParamDescriptors.WRITE_POLICY_GEN_POLICY_NOTES,
+                schema = @Schema(type = "string", allowableValues = QueryParamDescriptors.WRITE_POLICY_GEN_POLICY_ALLOWABLE_VALUES),
+                in = ParameterIn.QUERY),
+        @Parameter(
                 name = AerospikeAPIConstants.RECORD_EXISTS_ACTION,
-                dataType = "string",
-                paramType = "query",
-                allowableValues = QueryParamDescriptors.WRITE_POLICY_RECORD_EXISTS_ALLOWABLE_VALUES),
+                description = QueryParamDescriptors.WRITE_POLICY_RECORD_EXISTS_NOTES,
+                schema = @Schema(type = "string", allowableValues = QueryParamDescriptors.WRITE_POLICY_RECORD_EXISTS_ALLOWABLE_VALUES),
+                in = ParameterIn.QUERY)
 })
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

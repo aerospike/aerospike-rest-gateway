@@ -17,20 +17,18 @@
 package com.aerospike.restclient.domain.scanmodels;
 
 import com.aerospike.restclient.domain.RestClientRecord;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(value = "RestClientScanResponse")
 public class RestClientScanResponse {
 
-    @ApiModelProperty(value = "List of records for current page.")
-    private List<RestClientRecord> records;
+    @Schema(description = "List of records for current page.")
+    private final List<RestClientRecord> records;
 
-    @ApiModelProperty(value = "Pagination details.")
-    private Pagination pagination;
+    @Schema(description = "Pagination details.")
+    private final Pagination pagination;
 
     public RestClientScanResponse(int initialCapacity) {
         records = new ArrayList<>(initialCapacity);
@@ -56,5 +54,4 @@ public class RestClientScanResponse {
     public Pagination getPagination() {
         return pagination;
     }
-
 }

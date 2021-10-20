@@ -1,7 +1,6 @@
 buildscript {
 	ext {
 		springBootVersion = '2.4.5'
-		springfoxVersion = '2.9.2'
 		httpclientVersion = '4.5.12'
 		aerospikeClientVersion = findProperty('aerospikeClientVersion') ?:'5.1.8'
 	}
@@ -59,9 +58,9 @@ dependencies {
 	compile('org.springframework.retry:spring-retry:1.3.0')
 	compile('org.springframework:spring-aspects:5.2.7.RELEASE')
 	compile('org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:2.0.0')
-	compile("io.springfox:springfox-swagger2:${springfoxVersion}")
-	compile("io.springfox:springfox-swagger-ui:${springfoxVersion}")
+	compile('org.springdoc:springdoc-openapi-ui:1.5.11')
 	compile("javax.inject:javax.inject:1")
+	compile("com.google.guava:guava:31.0.1-jre")
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
 	testCompile group: 'junit', name: 'junit', version: '4.13.1'

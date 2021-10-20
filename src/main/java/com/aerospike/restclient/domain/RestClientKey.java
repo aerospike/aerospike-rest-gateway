@@ -24,31 +24,29 @@ import com.aerospike.client.Value.StringValue;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.aerospike.restclient.util.KeyBuilder;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Base64;
 import java.util.Base64.Encoder;
 
-@ApiModel(value="Key")
 public class RestClientKey {
 
-	@ApiModelProperty(required=true, example="testNS")
+	@Schema(required = true, example = "testNS")
 	public String namespace;
 
 	@JsonProperty(value="setName")
-	@ApiModelProperty(example="testSet")
+	@Schema(example = "testSet")
 	public String setName;
 
 	@JsonProperty(value="keytype")
-	@ApiModelProperty(
-			value="Enum describing the type of the userKey. This field is omitted in MessagePack responses.",
-			example="STRING")
-	public RecordKeyType keytype;
+	@Schema(
+			description = "Enum describing the type of the userKey. This field is omitted in MessagePack responses.",
+			example = "STRING")
+	public RecordKeyType keyType;
 
-	@ApiModelProperty(required=true,
-			value="The user key, it may be a string, integer, or URL safe Base64 encoded bytes.",
-			example="userKey")
+	@Schema(required = true,
+			description = "The user key, it may be a string, integer, or URL safe Base64 encoded bytes.",
+			example = "userKey")
 	public Object userKey;
 
 	public RestClientKey() {}
@@ -61,21 +59,21 @@ public class RestClientKey {
 		if (realKey.userKey != null) {
 			if (realKey.userKey instanceof StringValue) {
 				userKey = realKey.userKey.toString();
-				keytype = RecordKeyType.STRING;
+				keyType = RecordKeyType.STRING;
 			} else if (realKey.userKey instanceof IntegerValue || realKey.userKey instanceof LongValue) {
 				userKey = realKey.userKey.getObject();
-				keytype = RecordKeyType.INTEGER;
+				keyType = RecordKeyType.INTEGER;
 			} else if(realKey.userKey instanceof BytesValue) {
 				userKey = encoder.encodeToString((byte[])realKey.userKey.getObject());
-				keytype = RecordKeyType.BYTES;
+				keyType = RecordKeyType.BYTES;
 			}
 		} else {
 			userKey = encoder.encodeToString(realKey.digest);
-			keytype = RecordKeyType.DIGEST;
+			keyType = RecordKeyType.DIGEST;
 		}
 	}
 
 	public Key toKey() {
-		return KeyBuilder.buildKey(namespace, setName, userKey.toString(), keytype);
+		return KeyBuilder.buildKey(namespace, setName, userKey.toString(), keyType);
 	}
 }

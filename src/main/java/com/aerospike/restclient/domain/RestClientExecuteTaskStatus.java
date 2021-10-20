@@ -17,17 +17,15 @@
 package com.aerospike.restclient.domain;
 
 import com.aerospike.client.task.Task;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "RestClientExecuteTaskStatus")
 public class RestClientExecuteTaskStatus {
 
-    @ApiModelProperty(value = "The ExecuteTask object.")
-    private RestClientExecuteTask task;
+    @Schema(description = "The ExecuteTask object.")
+    private final RestClientExecuteTask task;
 
-    @ApiModelProperty(value = "The ExecuteTask status.")
-    private String status;
+    @Schema(description = "The ExecuteTask status.")
+    private final String status;
 
     public RestClientExecuteTaskStatus(RestClientExecuteTask task, int statusCode) {
         this.task = task;

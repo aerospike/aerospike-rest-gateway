@@ -21,37 +21,50 @@ import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeInfoService;
 import com.aerospike.restclient.util.HeaderHandler;
+import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.converters.policyconverters.InfoPolicyConverter;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/info")
-@Api(tags = "Info Operations", description = "Send info commands to nodes in the Aerospike cluster.")
+@Tag(name = "Info Operations", description = "Send info commands to nodes in the Aerospike cluster.")
 public class InfoController {
 
     @Autowired
     private AerospikeInfoService service;
 
-    @ApiOperation(value = "Send a list of info commands to a random node in the cluster", nickname = "infoAny")
-    @RequestMapping(method = RequestMethod.POST, consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
+    @Operation(summary = "Send a list of info commands to a random node in the cluster", operationId = "infoAny")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, examples = @Example(value =
-                    {@ExampleProperty(mediaType = "Example json", value = "{\"edition\": \"Aerospike Enterprise Edition\", \"name\":\"BB9DE9B1B270008}")}), message = "Commands sent succesfully."),
-            @ApiResponse(code = 403, response = RestClientError.class, message = "Not authorized to perform the info command",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))})
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Commands sent successfully.",
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.SUCCESS_INFO_VALUE))),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Not authorized to perform the info command.",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+    })
+    @RequestMapping(method = RequestMethod.POST, consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
     Map<String, String> infoAny(
-            @ApiParam(
-                    required = true,
+            @Parameter(
                     name = "infoRequests",
-                    examples = @Example(value =
-                            {@ExampleProperty(mediaType = "application/json", value = "['build', 'edition']")}),
-                    value = "An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.") @RequestBody String[] requests,
-            @ApiIgnore @RequestParam Map<String, String> infoMap,
+                    description = "An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.",
+                    required = true,
+                    examples = @ExampleObject(name = "application/json", value = "['build', 'edition']")) @RequestBody String[] requests,
+            @Parameter(hidden = true) @RequestParam Map<String, String> infoMap,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         InfoPolicy policy = InfoPolicyConverter.policyFromMap(infoMap);
@@ -60,24 +73,34 @@ public class InfoController {
         return service.infoAny(authDetails, requests, policy);
     }
 
-    @ApiOperation(value = "Send a list of info commands to a specific node in the cluster.", nickname = "infoNode")
+    @Operation(summary = "Send a list of info commands to a specific node in the cluster.", operationId = "infoNode")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, examples = @Example(value =
-                    {@ExampleProperty(mediaType = "Example json", value = "{\"edition\": \"Aerospike Enterprise Edition\", \"name\":\"BB9DE9B1B270008}")}), message = "Commands sent succesfully."),
-            @ApiResponse(code = 404, response = RestClientError.class, message = "The specified Node does not exist.",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")})),
-            @ApiResponse(code = 403, response = RestClientError.class, message = "Not authorized to perform the info command",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' ")}))})
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Commands sent successfully.",
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.SUCCESS_INFO_VALUE))),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Not authorized to perform the info command",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "The specified Node does not exist.",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+    })
     @RequestMapping(method = RequestMethod.POST, value = "/{node}", consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
     Map<String, String> infoNode(
-            @ApiParam(name = "node", value = "The node ID for the node which will receive the info commands.", required = true) @PathVariable(value = "node") String node,
-            @ApiParam(
+            @Parameter(name = "node", description = "The node ID for the node which will receive the info commands.", required = true) @PathVariable(value = "node") String node,
+            @Parameter(
                     name = "infoRequests",
+                    description = "An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.",
                     required = true,
-                    examples = @Example(value =
-                            {@ExampleProperty(mediaType = "application/json", value = "[build, edition]")}),
-                    value = "An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.") @RequestBody String[] requests,
-            @ApiIgnore @RequestParam Map<String, String> infoMap,
+                    examples = @ExampleObject(name = "application/json", value = "['build', 'edition']")) @RequestBody String[] requests,
+            @Parameter(hidden = true) @RequestParam Map<String, String> infoMap,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         InfoPolicy policy = InfoPolicyConverter.policyFromMap(infoMap);
@@ -85,5 +108,4 @@ public class InfoController {
 
         return service.infoNodeName(authDetails, node, requests, policy);
     }
-
 }

@@ -19,15 +19,12 @@ package com.aerospike.restclient.domain;
 import java.util.Map;
 
 import com.aerospike.client.Record;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /* Record describing what we return as a record in JSON */
-@ApiModel(value="Record")
 public class RestClientRecord {
 
-	public RestClientRecord() {};
+	public RestClientRecord() {}
 
 	public RestClientRecord(Record rec) {
 		generation = rec.generation;
@@ -35,13 +32,13 @@ public class RestClientRecord {
 		bins = rec.bins;
 	}
 
-	@ApiModelProperty(name="generation", value="The generation of the record.", example="2")
+	@Schema(name = "generation", description = "The generation of the record.", example = "2")
 	public int generation;
 
-	@ApiModelProperty(name="ttl", value="The time to live for the record, in seconds from now.", example="1000")
+	@Schema(name = "ttl", description = "The time to live for the record, in seconds from now.", example = "1000")
 	public int ttl;
 
-	@ApiModelProperty(name="bins", value="A mapping from binName to binValue",
+	@Schema(name = "bins", description = "A mapping from binName to binValue",
 			example="{\"bin1\": \"val1\", \"pi\": \"3.14\"}")
 	public Map<String, Object>bins;
 }

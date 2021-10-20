@@ -16,14 +16,13 @@
  */
 package com.aerospike.restclient.domain.swaggermodels;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel
 public class RestClientSetInformation {
-	@ApiModelProperty(example="100")
+
+	@Schema(example = "100")
 	public int objectCount;
 
-	@ApiModelProperty(example="demo")
+	@Schema(example = "demo")
 	public String name;
 }

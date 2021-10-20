@@ -23,6 +23,7 @@ import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -36,11 +37,16 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		/* Put our converters first in line */
+		/*
+			Put our converters first in line.
+			StringHttpMessageConverter must be first meaning it should be the last to add at index 0.
+		 */
 		converters.add(0, new MsgPackConverter());
 		converters.add(0, JSONMessageConverter.getConverter());
+		converters.add(0, new StringHttpMessageConverter());
 	}
 
 	@Override
@@ -50,7 +56,6 @@ public class WebConfig implements WebMvcConfigurer {
 		.allowedHeaders("*");
 		//.allowCredentials(Boolean.TRUE);
 	}
-
 }
 
 class MsgPackConverter extends AbstractJackson2HttpMessageConverter {
@@ -64,8 +69,7 @@ class MsgPackConverter extends AbstractJackson2HttpMessageConverter {
 
 	private static ObjectMapper getASMsgPackObjectMapper() {
 		MessagePackFactory aerospikeMsgPackFactory = new MessagePackFactory();
-		ObjectMapper msgPackMapper = new ObjectMapper(aerospikeMsgPackFactory);
-		return msgPackMapper;
+		return new ObjectMapper(aerospikeMsgPackFactory);
 	}
 
 	private static void addSerializerModules(ObjectMapper mapper) {

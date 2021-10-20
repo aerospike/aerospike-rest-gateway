@@ -16,20 +16,21 @@
  */
 package com.aerospike.restclient.controllers;
 
-import com.aerospike.client.policy.WritePolicy;
+import com.aerospike.client.policy.InfoPolicy;
+import com.aerospike.client.policy.Policy;
 import com.aerospike.restclient.domain.RestClientError;
-import com.aerospike.restclient.domain.RestClientExecuteTask;
-import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
-import com.aerospike.restclient.domain.RestClientOperation;
+import com.aerospike.restclient.domain.RestClientIndex;
 import com.aerospike.restclient.domain.auth.AuthDetails;
-import com.aerospike.restclient.service.AerospikeExecuteService;
-import com.aerospike.restclient.util.APIParamDescriptors;
+import com.aerospike.restclient.service.AerospikeSindexService;
 import com.aerospike.restclient.util.HeaderHandler;
-import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.ResponseExamples;
-import com.aerospike.restclient.util.annotations.ASRestClientWritePolicyQueryParams;
+import com.aerospike.restclient.util.annotations.ASRestClientInfoPolicyQueryParams;
+import com.aerospike.restclient.util.converters.policyconverters.InfoPolicyConverter;
+import com.aerospike.restclient.util.converters.policyconverters.PolicyConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,27 +44,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "Execute Operations", description = "Execute operations in background scan/query.")
+@Tag(name = "Secondary Index methods", description = "Manage secondary indexes.")
 @RestController
-@RequestMapping("/v1/execute")
-public class ExecuteController {
-
-    public static final String EXECUTE_NOTES = "Perform multiple operations in background scan/query.";
-    public static final String EXECUTE_STATUS_NOTES = "Get status of background scan by task id.";
-    public static final String TASK_ID_NOTES = "Background scan task id.";
-    public static final String OPERATIONS_PARAM_NOTES = "An array of operation objects specifying the operations to perform on the record.";
+@RequestMapping("/v1/index")
+class SIndexController {
 
     @Autowired
-    private AerospikeExecuteService service;
+    private AerospikeSindexService service;
 
-    @Operation(summary = EXECUTE_NOTES, operationId = "executeScanNamespaceSet")
+    @Parameters(value = {
+            @Parameter(name = "namespace",
+                    description = "If specified, the list of returned indices will only contain entries from this namespace.",
+                    schema = @Schema(type = "string"),
+                    in = ParameterIn.QUERY)
+    })
+    @Operation(summary = "Return information about multiple secondary indices.", operationId = "indexInformation")
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
@@ -72,45 +68,59 @@ public class ExecuteController {
                             examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Namespace or set does not exist.",
+                    description = "Specified namespace not found.",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+    })
+    @RequestMapping(method = RequestMethod.GET, produces = {"application/json", "application/msgpack"})
+    List<RestClientIndex> indexInformation(
+            @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+
+        String namespace = requestParams.get("namespace");
+        InfoPolicy policy = InfoPolicyConverter.policyFromMap(requestParams);
+        AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
+
+        return service.getIndexList(authDetails, namespace, policy);
+    }
+
+    @Operation(summary = "Create a secondary index.", operationId = "createIndex")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid index creation parameters.",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Not authorized to access the resource.",
                     content = @Content(
                             schema = @Schema(implementation = RestClientError.class),
                             examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
             @ApiResponse(
                     responseCode = "409",
-                    description = "Generation conflict.",
+                    description = "Index with the same name already exists, or equivalent index exists.",
                     content = @Content(
                             schema = @Schema(implementation = RestClientError.class),
                             examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
     })
-    @RequestMapping(method = RequestMethod.POST, value = "/scan/{namespace}/{set}",
-            consumes = {"application/json", "application/msgpack"},
-            produces = {"application/json", "application/msgpack"}
-    )
-    @ResponseStatus(HttpStatus.OK)
-    @ASRestClientWritePolicyQueryParams
-    public RestClientExecuteTask executeScanNamespaceSet(
-            @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = APIParamDescriptors.SET_NOTES, required = true) @PathVariable(value = "set") String set,
-            @Parameter(description = OPERATIONS_PARAM_NOTES, required = true)
-            @RequestBody List<RestClientOperation> operations,
-            @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @RequestMapping(method = RequestMethod.POST, consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
+    void createIndex(
+            @RequestBody RestClientIndex indexModel,
+            @Parameter(hidden = true) @RequestParam Map<String, String> policyMap,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
-        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
+        Policy policy = PolicyConverter.policyFromMap(policyMap);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.executeScan(authDetails, namespace, set, operations, policy, requestParams);
+        service.createIndex(authDetails, indexModel, policy);
     }
 
-    @Operation(summary = EXECUTE_NOTES, operationId = "executeScanNamespace")
+    @Operation(summary = "Remove a secondary Index", operationId = "dropIndex")
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
@@ -119,59 +129,51 @@ public class ExecuteController {
                             examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Namespace or set does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Generation conflict.",
+                    description = "Specified Index does not exist.",
                     content = @Content(
                             schema = @Schema(implementation = RestClientError.class),
                             examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
     })
-    @RequestMapping(method = RequestMethod.POST, value = "/scan/{namespace}",
-            consumes = {"application/json", "application/msgpack"},
-            produces = {"application/json", "application/msgpack"}
-    )
-    @ResponseStatus(HttpStatus.OK)
-    @ASRestClientWritePolicyQueryParams
-    public RestClientExecuteTask executeScanNamespace(
-            @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = OPERATIONS_PARAM_NOTES, required = true)
-            @RequestBody List<RestClientOperation> operations,
-            @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{name}", produces = {"application/json", "application/msgpack"})
+    void dropIndex(
+            @Parameter(required = true, description = "The namespace containing the index") @PathVariable(value = "namespace") String namespace,
+            @Parameter(required = true, description = "The name of the index") @PathVariable(value = "name") String name,
+            @Parameter(hidden = true) @RequestParam Map<String, String> policyMap,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
-        WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
+        Policy policy = PolicyConverter.policyFromMap(policyMap);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.executeScan(authDetails, namespace, null, operations, policy, requestParams);
+        service.dropIndex(authDetails, namespace, name, policy);
     }
 
-    @Operation(description = EXECUTE_STATUS_NOTES, operationId = "executeScanStatus")
+    @Operation(summary = "Get Information about a single secondary index.", operationId = "getIndexStats")
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
                     content = @Content(
                             schema = @Schema(implementation = RestClientError.class),
+                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Specified Index does not exist.",
+                    content = @Content(
+                            schema = @Schema(implementation = RestClientError.class),
                             examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
     })
-    @RequestMapping(method = RequestMethod.GET, value = "/scan/status/{taskId}",
-            produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(HttpStatus.OK)
-    public RestClientExecuteTaskStatus executeScanStatus(
-            @Parameter(description = TASK_ID_NOTES, required = true) @PathVariable(value = "taskId") String taskId,
+    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{name}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientInfoPolicyQueryParams
+    Map<String, String> getIndexStats(
+            @Parameter(required = true, description = "The namespace containing the index") @PathVariable(value = "namespace") String namespace,
+            @Parameter(required = true, description = "The name of the index") @PathVariable(value = "name") String name,
+            @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
+        InfoPolicy policy = InfoPolicyConverter.policyFromMap(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
-        return service.queryScanStatus(authDetails, taskId);
+
+        return service.indexStats(authDetails, namespace, name, policy);
     }
 }

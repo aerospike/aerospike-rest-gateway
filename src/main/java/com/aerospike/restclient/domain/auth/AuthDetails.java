@@ -16,16 +16,14 @@
  */
 package com.aerospike.restclient.domain.auth;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "AuthDetails")
 public class AuthDetails {
 
-    @ApiModelProperty(value = "Basic access authentication username.")
+    @Schema(description = "Basic access authentication username.")
     private final String user;
 
-    @ApiModelProperty(value = "Basic access authentication password.")
+    @Schema(description = "Basic access authentication password.")
     private final String password;
 
     public AuthDetails(String user, String password) {

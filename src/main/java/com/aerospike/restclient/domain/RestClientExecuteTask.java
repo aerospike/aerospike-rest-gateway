@@ -16,17 +16,15 @@
  */
 package com.aerospike.restclient.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel(value = "RestClientExecuteTask")
 public class RestClientExecuteTask {
 
-    @ApiModelProperty(value = "The task ID value.")
-    private long taskId;
+    @Schema(description = "The task ID value.")
+    private final long taskId;
 
-    @ApiModelProperty(value = "The scan indicator.")
-    private boolean scan;
+    @Schema(description = "The scan indicator.")
+    private final boolean scan;
 
     public RestClientExecuteTask(long taskId, boolean scan) {
         this.taskId = taskId;

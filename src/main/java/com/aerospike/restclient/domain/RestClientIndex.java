@@ -22,10 +22,8 @@ import com.aerospike.client.query.IndexCollectionType;
 import com.aerospike.client.query.IndexType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel
 public class RestClientIndex {
 
 	@JsonProperty("type")
@@ -34,16 +32,16 @@ public class RestClientIndex {
 	@JsonProperty("collection_type")
 	IndexCollectionType collectionType;
 
-	@ApiModelProperty(example="testNS")
+	@Schema(example = "testNS")
 	String namespace;
 
-	@ApiModelProperty(example="testSet")
+	@Schema(example = "testSet")
 	String set;
 
-	@ApiModelProperty(value="The bin which is indexed", example="ageBin")
+	@Schema(description = "The bin which is indexed", example = "ageBin")
 	String bin;
 
-	@ApiModelProperty(value="The name of the index. This must be unique per set", example="ageIndex")
+	@Schema(description = "The name of the index. This must be unique per set", example = "ageIndex")
 	String name;
 
 	public IndexType getIndexType() {
@@ -94,17 +92,17 @@ public class RestClientIndex {
 	}
 
 	/* Convert an info call to a RestClientIndex */
-	@ApiModelProperty(hidden=true)
+	@Schema(hidden = true)
 	private static final String NAME_KEY = "indexname";
-	@ApiModelProperty(hidden=true)
+	@Schema(hidden = true)
 	private static final String NS_KEY = "ns";
-	@ApiModelProperty(hidden=true)
+	@Schema(hidden = true)
 	private static final String SET_KEY = "set";
-	@ApiModelProperty(hidden=true)
+	@Schema(hidden = true)
 	private static final String BIN_KEY = "bin";
-	@ApiModelProperty(hidden=true)
+	@Schema(hidden = true)
 	private static final String INDEX_TYPE_KEY = "type";
-	@ApiModelProperty(hidden=true)
+	@Schema(hidden = true)
 	private static final String COLLECTION_TYPE_KEY = "indextype";
 
 	public RestClientIndex() {}
@@ -139,5 +137,4 @@ public class RestClientIndex {
 		}
 		return IndexCollectionType.valueOf(collType);
 	}
-
 }
