@@ -50,7 +50,8 @@ import java.lang.annotation.Target;
         @Parameter(
                 name = AerospikeAPIConstants.RECORD_BINS,
                 description = QueryParamDescriptors.JSON_PATH_BINS_NOTES,
-                schema = @Schema(type = "string", required = true),
+                schema = @Schema(type = "array", required = true),
+                required = true,
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.READ_MODE_SC,
@@ -101,6 +102,7 @@ import java.lang.annotation.Target;
                 name = AerospikeAPIConstants.JSON_PATH,
                 description = QueryParamDescriptors.JSON_PATH_NOTES,
                 schema = @Schema(type = "string", required = true),
+                required = true,
                 in = ParameterIn.QUERY),
         // Write Operation Policies
         @Parameter(

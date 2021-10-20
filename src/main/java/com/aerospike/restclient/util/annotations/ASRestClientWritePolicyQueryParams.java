@@ -50,7 +50,7 @@ import java.lang.annotation.Target;
         @Parameter(
                 name = AerospikeAPIConstants.RECORD_BINS,
                 description = QueryParamDescriptors.BINS_NOTES,
-                schema = @Schema(type = "string"),
+                schema = @Schema(type = "array"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.READ_MODE_SC,
