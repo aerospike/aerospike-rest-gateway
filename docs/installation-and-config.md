@@ -55,7 +55,7 @@ This will return basic information about the cluster.
 Interactive API documentation may be found at <http://localhost:8080/swagger-ui.html> . This will allow you to
 test out various commands in your browser.
 
-The Swagger specification, in `JSON` format, can be found at <http://localhost:8080/v2/api-docs> .
+The Swagger specification, in `JSON` format, can be found at <http://localhost:8080/v3/api-docs> .
 
 ## Configuration
 Read more about Spring Boot [Externalized Configuration](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config).
