@@ -144,7 +144,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -174,7 +177,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -182,7 +185,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -190,7 +193,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -198,7 +201,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -405,7 +408,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -435,7 +441,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -443,7 +449,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -451,7 +457,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -459,7 +465,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -491,7 +497,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -499,7 +505,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -778,7 +784,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -808,7 +817,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -816,7 +825,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -824,7 +833,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -832,7 +841,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -864,7 +873,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -872,7 +881,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1151,7 +1160,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -1181,7 +1193,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1189,7 +1201,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1197,7 +1209,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1205,7 +1217,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1237,7 +1249,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1245,7 +1257,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1574,7 +1586,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -1604,7 +1619,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1612,7 +1627,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1620,7 +1635,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1628,7 +1643,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1660,7 +1675,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1668,7 +1683,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1940,7 +1955,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -1970,7 +1988,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1978,7 +1996,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1986,7 +2004,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -1994,7 +2012,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2192,7 +2210,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -2222,7 +2243,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2230,7 +2251,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2238,7 +2259,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2246,7 +2267,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2278,7 +2299,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2286,7 +2307,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2556,7 +2577,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -2586,7 +2610,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2594,7 +2618,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2602,7 +2626,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2610,7 +2634,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2642,7 +2666,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2650,7 +2674,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2920,7 +2944,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -2950,7 +2977,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2958,7 +2985,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2966,7 +2993,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -2974,7 +3001,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3006,7 +3033,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3014,7 +3041,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3325,7 +3352,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -3355,7 +3385,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3363,7 +3393,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3371,7 +3401,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3379,7 +3409,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3411,7 +3441,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3419,7 +3449,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3701,7 +3731,10 @@
             "description": "Specify a set of bins to handle the JSONPath query.",
             "required": true,
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -3731,7 +3764,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3739,7 +3772,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3747,7 +3780,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3755,7 +3788,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -3972,7 +4005,10 @@
             "description": "Specify a set of bins to handle the JSONPath query.",
             "required": true,
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -4002,7 +4038,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4010,7 +4046,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4018,7 +4054,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4026,7 +4062,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4067,7 +4103,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4075,7 +4111,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4319,7 +4355,10 @@
             "description": "Specify a set of bins to handle the JSONPath query.",
             "required": true,
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -4349,7 +4388,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4357,7 +4396,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4365,7 +4404,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4373,7 +4412,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4414,7 +4453,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4422,7 +4461,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4666,7 +4705,10 @@
             "description": "Specify a set of bins to handle the JSONPath query.",
             "required": true,
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -4696,7 +4738,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4704,7 +4746,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4712,7 +4754,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4720,7 +4762,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4761,7 +4803,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4769,7 +4811,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -4995,7 +5037,10 @@
             "description": "Specify a set of bins to handle the JSONPath query.",
             "required": true,
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -5025,7 +5070,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5033,7 +5078,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5041,7 +5086,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5049,7 +5094,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5257,7 +5302,10 @@
             "description": "Specify a set of bins to handle the JSONPath query.",
             "required": true,
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -5287,7 +5335,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5295,7 +5343,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5303,7 +5351,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5311,7 +5359,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5352,7 +5400,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5360,7 +5408,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5595,7 +5643,10 @@
             "description": "Specify a set of bins to handle the JSONPath query.",
             "required": true,
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -5625,7 +5676,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5633,7 +5684,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5641,7 +5692,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5649,7 +5700,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5690,7 +5741,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5698,7 +5749,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5933,7 +5984,10 @@
             "description": "Specify a set of bins to handle the JSONPath query.",
             "required": true,
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -5963,7 +6017,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5971,7 +6025,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5979,7 +6033,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -5987,7 +6041,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6028,7 +6082,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6036,7 +6090,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6270,7 +6324,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -6300,7 +6357,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6308,7 +6365,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6316,7 +6373,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6324,7 +6381,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6356,7 +6413,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6364,7 +6421,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6636,7 +6693,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -6666,7 +6726,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6674,7 +6734,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6682,7 +6742,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6690,7 +6750,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6722,7 +6782,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6730,7 +6790,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -6993,7 +7053,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -7023,7 +7086,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -7031,7 +7094,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -7039,7 +7102,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -7047,7 +7110,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -7087,7 +7150,7 @@
             "in": "query",
             "description": "Maximum number of concurrent synchronous batch request threads to server nodes at any point in time. If there are 16 node/namespace combinations requested and maxConcurrentThreads is 8, then batch requests will be made for 8 node/namespace combinations in parallel threads. When a request completes, a new request will be issued until all 16 requests are complete.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -7104,7 +7167,10 @@
             "description": "Record keys to perform operations on.",
             "required": true,
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
@@ -7327,7 +7393,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -7357,7 +7426,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -7365,7 +7434,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -7373,7 +7442,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -7381,7 +7450,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -7421,7 +7490,7 @@
             "in": "query",
             "description": "Maximum number of concurrent synchronous batch request threads to server nodes at any point in time. If there are 16 node/namespace combinations requested and maxConcurrentThreads is 8, then batch requests will be made for 8 node/namespace combinations in parallel threads. When a request completes, a new request will be issued until all 16 requests are complete.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -7438,7 +7507,10 @@
             "description": "Record keys to perform operations on.",
             "required": true,
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
@@ -8118,7 +8190,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -8148,7 +8223,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8156,7 +8231,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8164,7 +8239,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8172,7 +8247,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8204,7 +8279,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8212,7 +8287,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8493,7 +8568,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -8523,7 +8601,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8531,7 +8609,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8539,7 +8617,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8547,7 +8625,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8579,7 +8657,7 @@
             "in": "query",
             "description": "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8587,7 +8665,7 @@
             "in": "query",
             "description": "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8850,7 +8928,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -8880,7 +8961,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8888,7 +8969,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8896,7 +8977,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8904,7 +8985,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -8944,7 +9025,7 @@
             "in": "query",
             "description": "Maximum number of concurrent synchronous batch request threads to server nodes at any point in time. If there are 16 node/namespace combinations requested and maxConcurrentThreads is 8, then batch requests will be made for 8 node/namespace combinations in parallel threads. When a request completes, a new request will be issued until all 16 requests are complete.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10555,7 +10636,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -10585,7 +10669,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10593,7 +10677,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10601,7 +10685,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10609,7 +10693,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10641,7 +10725,7 @@
             "in": "query",
             "description": "Number of records to return.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10649,7 +10733,7 @@
             "in": "query",
             "description": "Limit returned records per second (rps) rate for each server.\nDo not apply rps limit if recordsPerSecond is zero.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10657,7 +10741,7 @@
             "in": "query",
             "description": "Maximum number of concurrent requests to server nodes at any point in time. If there are 16 nodes in the cluster and maxConcurrentNodes is 8, then scan requests will be made to 8 nodes in parallel.  When a scan completes, a new scan request will be issued until all 16 nodes have been scanned.\nThis field is only relevant when concurrentNodes is true.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10857,7 +10941,10 @@
             "in": "query",
             "description": "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.",
             "schema": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -10887,7 +10974,7 @@
             "in": "query",
             "description": "Total transaction timeout in milliseconds.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10895,7 +10982,7 @@
             "in": "query",
             "description": "Socket idle timeout in milliseconds when processing a database command.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10903,7 +10990,7 @@
             "in": "query",
             "description": "Milliseconds to sleep between retries.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10911,7 +10998,7 @@
             "in": "query",
             "description": "Maximum number of retries before aborting the current transaction.\nThe initial attempt is not counted as a retry.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10943,7 +11030,7 @@
             "in": "query",
             "description": "Number of records to return.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10951,7 +11038,7 @@
             "in": "query",
             "description": "Limit returned records per second (rps) rate for each server.\nDo not apply rps limit if recordsPerSecond is zero.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {
@@ -10959,7 +11046,7 @@
             "in": "query",
             "description": "Maximum number of concurrent requests to server nodes at any point in time. If there are 16 nodes in the cluster and maxConcurrentNodes is 8, then scan requests will be made to 8 nodes in parallel.  When a scan completes, a new scan request will be issued until all 16 nodes have been scanned.\nThis field is only relevant when concurrentNodes is true.",
             "schema": {
-              "type": "int"
+              "type": "integer"
             }
           },
           {

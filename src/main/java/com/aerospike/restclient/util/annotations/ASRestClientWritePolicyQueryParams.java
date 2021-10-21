@@ -21,6 +21,7 @@ import com.aerospike.restclient.util.QueryParamDescriptors;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.lang.annotation.ElementType;
@@ -50,7 +51,7 @@ import java.lang.annotation.Target;
         @Parameter(
                 name = AerospikeAPIConstants.RECORD_BINS,
                 description = QueryParamDescriptors.BINS_NOTES,
-                schema = @Schema(type = "array"),
+                array = @ArraySchema(schema = @Schema(type = "string")),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.READ_MODE_SC,
@@ -65,22 +66,22 @@ import java.lang.annotation.Target;
         @Parameter(
                 name = AerospikeAPIConstants.TOTAL_TIMEOUT,
                 description = QueryParamDescriptors.POLICY_TOTAL_TIMEOUT_NOTES,
-                schema = @Schema(type = "int"),
+                schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.SOCKET_TIMEOUT,
                 description = QueryParamDescriptors.POLICY_SOCKET_TIMEOUT_NOTES,
-                schema = @Schema(type = "int"),
+                schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.SLEEP_BETWEEN_RETRIES,
                 description = QueryParamDescriptors.POLICY_SLEEP_BETWEEN_RETRIES_NOTES,
-                schema = @Schema(type = "int"),
+                schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.MAX_RETRIES,
                 description = QueryParamDescriptors.POLICY_MAX_RETRIES_NOTES,
-                schema = @Schema(type = "int"),
+                schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.PRED_EXP,
@@ -101,12 +102,12 @@ import java.lang.annotation.Target;
         @Parameter(
                 name = AerospikeAPIConstants.EXPIRATION,
                 description = QueryParamDescriptors.WRITE_POLICY_EXPIRATION_NOTES,
-                schema = @Schema(type = "int"),
+                schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.GENERATION,
                 description = QueryParamDescriptors.WRITE_POLICY_GEN_NOTES,
-                schema = @Schema(type = "int"),
+                schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.DURABLE_DELETE,

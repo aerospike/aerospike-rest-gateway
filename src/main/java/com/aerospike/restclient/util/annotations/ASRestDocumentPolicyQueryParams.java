@@ -21,6 +21,7 @@ import com.aerospike.restclient.util.QueryParamDescriptors;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.lang.annotation.ElementType;
@@ -47,7 +48,7 @@ import java.lang.annotation.Target;
         @Parameter(
                 name = AerospikeAPIConstants.RECORD_BINS,
                 description = QueryParamDescriptors.JSON_PATH_BINS_NOTES,
-                schema = @Schema(type = "array", required = true),
+                array = @ArraySchema(schema = @Schema(type = "string", required = true)),
                 required = true,
                 in = ParameterIn.QUERY),
         @Parameter(
@@ -63,22 +64,22 @@ import java.lang.annotation.Target;
         @Parameter(
                 name = AerospikeAPIConstants.TOTAL_TIMEOUT,
                 description = QueryParamDescriptors.POLICY_TOTAL_TIMEOUT_NOTES,
-                schema = @Schema(type = "int"),
+                schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.SOCKET_TIMEOUT,
                 description = QueryParamDescriptors.POLICY_SOCKET_TIMEOUT_NOTES,
-                schema = @Schema(type = "int"),
+                schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.SLEEP_BETWEEN_RETRIES,
                 description = QueryParamDescriptors.POLICY_SLEEP_BETWEEN_RETRIES_NOTES,
-                schema = @Schema(type = "int"),
+                schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.MAX_RETRIES,
                 description = QueryParamDescriptors.POLICY_MAX_RETRIES_NOTES,
-                schema = @Schema(type = "int"),
+                schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.PRED_EXP,
