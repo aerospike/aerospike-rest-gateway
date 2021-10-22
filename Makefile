@@ -8,7 +8,7 @@ package: clean build validatedocs
 	mkdir $(ARCHIVEDIR)
 	mkdir target
 	cp build/libs/*.jar $(ARCHIVEDIR)
-	cp docs/swagger.json $(ARCHIVEDIR)
+	cp docs/openapi.json $(ARCHIVEDIR)
 	tar -czvf target/$(ARCHIVENAME) $(ARCHIVEDIR)
 
 .PHONY: build
@@ -25,4 +25,4 @@ clean:
 
 .PHONY: validatedocs
 validatedocs:
-	swagger-cli validate docs/swagger.json
+	swagger-cli validate docs/openapi.json
