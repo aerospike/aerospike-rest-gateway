@@ -4,20 +4,13 @@ import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.exp.Exp;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -25,19 +18,14 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class FilterExpressionTest {
-
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     @Autowired
     private AerospikeClient client;
@@ -51,22 +39,21 @@ public class FilterExpressionTest {
     private final Key testKey;
     private final String noBinEndpoint;
 
-    @Parameterized.Parameters
-    public static Object[] mappers() {
-        return new Object[][]{
-                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true},
-                {new MsgPackRestRecordDeserializer(), "application/msgpack", true},
-                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false},
-                {new MsgPackRestRecordDeserializer(), "application/msgpack", false}
-        };
+    private static Stream<Arguments> mappers() {
+        return Stream.of(
+                Arguments.of(new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true),
+                Arguments.of(new MsgPackRestRecordDeserializer(), "application/msgpack", true),
+                Arguments.of(new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false),
+                Arguments.of(new MsgPackRestRecordDeserializer(), "application/msgpack", false)
+        );
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
-    @After
+    @AfterEach
     public void clean() {
         client.delete(null, this.testKey);
     }
@@ -101,7 +88,7 @@ public class FilterExpressionTest {
                 get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(mediaType)
         ).andExpect(status().isOk()).andReturn().getResponse();
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+        assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
 
     @Test
@@ -137,7 +124,7 @@ public class FilterExpressionTest {
                 get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(mediaType)
         ).andExpect(status().isOk()).andReturn().getResponse();
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+        assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
 
     @Test

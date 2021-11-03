@@ -26,16 +26,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -49,8 +45,8 @@ import com.aerospike.restclient.domain.RestClientPrivilege;
 import com.aerospike.restclient.domain.RestClientRole;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 public class RoleTestsError {
 
 	String endpoint = "/v1/admin/role";
@@ -72,12 +68,12 @@ public class RoleTestsError {
 	@Autowired
 	private AerospikeClient client;
 
-	@BeforeClass
+	@BeforeAll
 	public static void okToRun() {
-		Assume.assumeTrue(ASTestUtils.runningWithAuth());
+		assumeTrue(ASTestUtils.runningWithAuth());
 	}
 
-	@Before
+	@BeforeEach
 	public void setup() throws InterruptedException {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 		readTestDemo = new Privilege();
@@ -95,7 +91,7 @@ public class RoleTestsError {
 		createdRole = new Role();
 		createdRole.name = TestRoleName;
 		createdRole.privileges = createdPrivileges;
-		createdRoles = new ArrayList<String>();
+		createdRoles = new ArrayList<>();
 
 		try {
 			client.createRole(null, TestRoleName, createdPrivileges);
@@ -105,7 +101,7 @@ public class RoleTestsError {
 		Thread.sleep(1000);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		for (String role: createdRoles) {
 			try {
@@ -169,5 +165,4 @@ public class RoleTestsError {
 				.content(privsContent))
 		.andExpect(status().isNotFound());
 	}
-
 }

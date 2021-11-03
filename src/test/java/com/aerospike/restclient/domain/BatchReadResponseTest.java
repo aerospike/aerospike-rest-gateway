@@ -19,24 +19,28 @@ package com.aerospike.restclient.domain;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.aerospike.client.BatchRead;
 import com.aerospike.client.Key;
 import com.aerospike.client.Record;
 import com.aerospike.restclient.ASTestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class BatchReadResponseTest {
 
-	private static String ns = "test";
-	private static String set = "set";
-	private static String[] testBins = {"b1", "b2", "b3"};
+	private static final String ns = "test";
+	private static final String set = "set";
+	private static final String[] testBins = {"b1", "b2", "b3"};
 	private Record testRecord;
-	private Key testKey = new Key(ns, set, "key");
+	private final Key testKey = new Key(ns, set, "key");
 
-	@Before
+	@BeforeEach
 	public void setUpRecord() {
 		Map<String, Object>binMap = new HashMap<>();
 		binMap.put("bin1", "val1");
@@ -54,9 +58,9 @@ public class BatchReadResponseTest {
 
 		RestClientBatchReadResponse response = new RestClientBatchReadResponse(nullRecordRead);
 
-		Assert.assertArrayEquals(testBins, response.binNames);
-		Assert.assertNull(response.record);
-		Assert.assertFalse(response.readAllBins);
+		assertArrayEquals(testBins, response.binNames);
+		assertNull(response.record);
+		assertFalse(response.readAllBins);
 	}
 
 	@Test
@@ -65,9 +69,9 @@ public class BatchReadResponseTest {
 
 		RestClientBatchReadResponse response = new RestClientBatchReadResponse(nullRecordRead);
 
-		Assert.assertNull(response.binNames);
-		Assert.assertNull(response.record);
-		Assert.assertTrue(response.readAllBins);
+		assertNull(response.binNames);
+		assertNull(response.record);
+		assertTrue(response.readAllBins);
 	}
 
 	@Test
@@ -76,9 +80,9 @@ public class BatchReadResponseTest {
 
 		RestClientBatchReadResponse response = new RestClientBatchReadResponse(nullRecordRead);
 
-		Assert.assertNull(response.binNames);
-		Assert.assertNull(response.record);
-		Assert.assertFalse(response.readAllBins);
+		assertNull(response.binNames);
+		assertNull(response.record);
+		assertFalse(response.readAllBins);
 	}
 
 	@Test
@@ -86,7 +90,7 @@ public class BatchReadResponseTest {
 		BatchRead nullRecordRead = getBatchRead(testKey, null, false, null);
 		RestClientBatchReadResponse response = new RestClientBatchReadResponse(nullRecordRead);
 		Key convertedKey = response.key.toKey();
-		Assert.assertTrue(ASTestUtils.compareKeys(testKey, convertedKey));
+		assertTrue(ASTestUtils.compareKeys(testKey, convertedKey));
 	}
 
 	@Test
@@ -95,9 +99,9 @@ public class BatchReadResponseTest {
 		RestClientBatchReadResponse response = new RestClientBatchReadResponse(nullRecordRead);
 
 		RestClientRecord convertedRecord = response.record;
-		Assert.assertEquals(convertedRecord.bins, testRecord.bins);
-		Assert.assertEquals(convertedRecord.ttl, testRecord.getTimeToLive());
-		Assert.assertEquals(convertedRecord.generation, testRecord.generation);
+		assertEquals(convertedRecord.bins, testRecord.bins);
+		assertEquals(convertedRecord.ttl, testRecord.getTimeToLive());
+		assertEquals(convertedRecord.generation, testRecord.generation);
 	}
 
 	private BatchRead getBatchRead(Key key, String[] bins, boolean readAllbins, Record record) {

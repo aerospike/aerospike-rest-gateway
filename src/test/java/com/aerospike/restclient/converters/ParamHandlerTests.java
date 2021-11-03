@@ -20,8 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -29,6 +28,10 @@ import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.RestClientErrors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ParamHandlerTests {
 
@@ -39,7 +42,7 @@ public class ParamHandlerTests {
 		params.put(AerospikeAPIConstants.RECORD_BINS, Arrays.asList(expectedBins));
 
 		String[] actualBins = RequestParamHandler.getBinsFromMap(params);
-		Assert.assertTrue(Arrays.equals(expectedBins, actualBins));
+		assertTrue(Arrays.equals(expectedBins, actualBins));
 	}
 
 	@Test
@@ -49,15 +52,15 @@ public class ParamHandlerTests {
 		params.put(AerospikeAPIConstants.KEY_TYPE, Arrays.asList(expectedType.toString()));
 
 		RecordKeyType actualType = RequestParamHandler.getKeyTypeFromMap(params);
-		Assert.assertEquals(expectedType, actualType);
+		assertEquals(expectedType, actualType);
 	}
 
-	@Test(expected=RestClientErrors.InvalidPolicyValueError.class)
+	@Test()
 	public void getInvalidKeyTypeFromMultiMapTest() {
 		String fakeKeyType = "FAKE_KEY_TYPE";
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		params.put(AerospikeAPIConstants.KEY_TYPE, Arrays.asList(fakeKeyType));
-		RequestParamHandler.getKeyTypeFromMap(params);
+		assertThrows(RestClientErrors.InvalidPolicyValueError.class, () -> RequestParamHandler.getKeyTypeFromMap(params));
 	}
 
 	@Test
@@ -67,15 +70,14 @@ public class ParamHandlerTests {
 		params.put(AerospikeAPIConstants.KEY_TYPE, expectedType.toString());
 
 		RecordKeyType actualType = RequestParamHandler.getKeyTypeFromMap(params);
-		Assert.assertEquals(expectedType, actualType);
+		assertEquals(expectedType, actualType);
 	}
 
-	@Test(expected=RestClientErrors.InvalidPolicyValueError.class)
+	@Test()
 	public void getInvalidKeyTypeFromMapTest() {
 		String fakeKeyType = "FAKE_KEY_TYPE";
 		Map<String, String> params = new HashMap<>();
 		params.put(AerospikeAPIConstants.KEY_TYPE, fakeKeyType);
-
-		RequestParamHandler.getKeyTypeFromMap(params);
+		assertThrows(RestClientErrors.InvalidPolicyValueError.class, () -> RequestParamHandler.getKeyTypeFromMap(params));
 	}
 }

@@ -24,14 +24,10 @@ import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -48,10 +44,11 @@ import java.util.stream.Collectors;
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
 public class OperateTestCorrect {
 
     @Autowired
@@ -75,7 +72,7 @@ public class OperateTestCorrect {
     private final TypeReference<Map<String, Object>> binType = new TypeReference<Map<String, Object>>() {
     };
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
         Bin strBin = new Bin("str", "bin");
@@ -86,7 +83,7 @@ public class OperateTestCorrect {
         client.put(null, bytesKey, strBin, intBin);
     }
 
-    @After
+    @AfterEach
     public void clean() {
         client.delete(null, testKey);
         client.delete(null, testKey2);
@@ -107,12 +104,12 @@ public class OperateTestCorrect {
         String jsonResult = ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, jsString);
 
         Map<String, Object> rcRecord = objectMapper.readValue(jsonResult, binType);
-        Assert.assertNull(rcRecord.get(AerospikeAPIConstants.RECORD_BINS));
+        assertNull(rcRecord.get(AerospikeAPIConstants.RECORD_BINS));
 
         Record realRecord = client.getHeader(null, testKey);
 
         int generation = (int) rcRecord.get(AerospikeAPIConstants.GENERATION);
-        Assert.assertEquals(generation, realRecord.generation);
+        assertEquals(generation, realRecord.generation);
     }
 
     @SuppressWarnings("unchecked")
@@ -131,7 +128,7 @@ public class OperateTestCorrect {
         Map<String, Object> binsObject = objectMapper.readValue(jsonResult, binType);
         Map<String, Object> realBins = client.get(null, testKey).bins;
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj((Map<String, Object>) binsObject.get("bins"), realBins));
+        assertTrue(ASTestUtils.compareMapStringObj((Map<String, Object>) binsObject.get("bins"), realBins));
     }
 
     @Test
@@ -155,7 +152,7 @@ public class OperateTestCorrect {
 
         Map<String, Object> realBins = client.get(null, testKey).bins;
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(expectedBins, realBins));
+        assertTrue(ASTestUtils.compareMapStringObj(expectedBins, realBins));
     }
 
     @SuppressWarnings("unchecked")
@@ -176,7 +173,7 @@ public class OperateTestCorrect {
         /* Only read the str bin on the get*/
         Map<String, Object> realBins = client.get(null, testKey, "str").bins;
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj((Map<String, Object>) binsObject.get("bins"), realBins));
+        assertTrue(ASTestUtils.compareMapStringObj((Map<String, Object>) binsObject.get("bins"), realBins));
     }
 
     @Test
@@ -202,7 +199,7 @@ public class OperateTestCorrect {
 
         Map<String, Object> realBins = client.get(null, testKey).bins;
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(expectedBins, realBins));
+        assertTrue(ASTestUtils.compareMapStringObj(expectedBins, realBins));
     }
 
     @Test
@@ -225,7 +222,7 @@ public class OperateTestCorrect {
         expectedBins.put("str", "binary");
         Map<String, Object> realBins = client.get(null, testKey, "str").bins;
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(expectedBins, realBins));
+        assertTrue(ASTestUtils.compareMapStringObj(expectedBins, realBins));
     }
 
     @Test
@@ -249,7 +246,7 @@ public class OperateTestCorrect {
         expectedBins.put("str", "robin");
         Map<String, Object> realBins = client.get(null, testKey, "str").bins;
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(expectedBins, realBins));
+        assertTrue(ASTestUtils.compareMapStringObj(expectedBins, realBins));
     }
 
     @Test
@@ -270,7 +267,7 @@ public class OperateTestCorrect {
         ASTestUtils.performOperation(mockMVC, testEndpoint, jsString);
 
         record = client.get(null, testKey);
-        Assert.assertEquals(oldGeneration + 1, record.generation);
+        assertEquals(oldGeneration + 1, record.generation);
     }
 
     @Test
@@ -291,7 +288,7 @@ public class OperateTestCorrect {
         ASTestUtils.performOperation(mockMVC, intEndpoint, jsString);
 
         record = client.get(null, intKey);
-        Assert.assertEquals(oldGeneration + 1, record.generation);
+        assertEquals(oldGeneration + 1, record.generation);
     }
 
     @Test
@@ -315,7 +312,7 @@ public class OperateTestCorrect {
         ASTestUtils.performOperation(mockMVC, bytesEndpoint, jsString);
 
         record = client.get(null, bytesKey);
-        Assert.assertEquals(oldGeneration + 1, record.generation);
+        assertEquals(oldGeneration + 1, record.generation);
     }
 
     /*
@@ -341,7 +338,7 @@ public class OperateTestCorrect {
         ASTestUtils.performOperation(mockMVC, bytesEndpoint, jsString);
 
         record = client.get(null, testKey);
-        Assert.assertEquals(oldGeneration + 1, record.generation);
+        assertEquals(oldGeneration + 1, record.generation);
     }
 
     @Test
@@ -374,7 +371,7 @@ public class OperateTestCorrect {
         ASTestUtils.performOperation(mockMVC, testEndpoint, jsString);
 
         Record record = client.get(null, testKey);
-        Assert.assertNull(record);
+        assertNull(record);
     }
 
     @SuppressWarnings("unchecked")

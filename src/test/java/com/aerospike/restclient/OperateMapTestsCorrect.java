@@ -22,34 +22,32 @@ import com.aerospike.client.Key;
 import com.aerospike.client.cdt.*;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.aerospike.restclient.util.converters.OperationConverter;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 @AutoConfigureMockMvc
 public class OperateMapTestsCorrect {
-
-	/* Needed to run as a Spring Boot test */
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
-
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
 	@Autowired
 	private MockMvc mockMVC;
@@ -57,17 +55,38 @@ public class OperateMapTestsCorrect {
 	@Autowired
 	private AerospikeClient client;
 
-	private final OperationPerformer opPerformer;
+	private OperationPerformer opPerformer;
 
 	private Map<Object, Object> objectMap;
 	private Map<Object, Object> objectMapInt;
 	private List<Map<String, Object>> opList;
 	private final String mapBinName = "map";
 	private final String mapBinNameInt = "mapint";
-	private final Key testKey;
-	private final String testEndpoint;
+	private Key testKey;
+	private String testEndpoint;
 
-	@Before
+	private static Stream<Arguments> getParams() {
+		return Stream.of(
+				Arguments.of(new JSONOperationPerformer(), true, new MsgPackOperationPerformer(), true),
+				Arguments.of(new JSONOperationPerformer(), false, new MsgPackOperationPerformer(), false)
+		);
+	}
+
+	/* Set up the correct msgpack/json performer for this set of runs. Also decided whether to use the endpoint with a set or without */
+	@ParameterizedTest
+	@MethodSource("getParams")
+	void addParams(OperationPerformer performer, boolean useSet) {
+		this.opPerformer = performer;
+		if (useSet) {
+			testKey = new Key("test", "junit", "mapop");
+			testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "mapop");
+		} else {
+			testKey = new Key("test", null, "mapop");
+			testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "mapop");
+		}
+	}
+
+	@BeforeEach
 	public void setup() {
 		objectMap = new HashMap<>();
 		objectMap.put("one", 1);
@@ -96,29 +115,9 @@ public class OperateMapTestsCorrect {
 
 	}
 
-	@After
+	@AfterEach
 	public void clean() {
 		client.delete(null, testKey);
-	}
-
-	@Parameters
-	public static Object[][] getParams() {
-		return new Object[][] {
-			{new JSONOperationPerformer(), true}, { new MsgPackOperationPerformer(), true},
-			{new JSONOperationPerformer(), false}, { new MsgPackOperationPerformer(), false},
-		};
-	}
-
-	/* Set up the correct msgpack/json performer for this set of runs */
-	public OperateMapTestsCorrect(OperationPerformer performer, boolean useSet) {
-		this.opPerformer = performer;
-		if (useSet) {
-			testKey = new Key("test", "junit", "mapop");
-			testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "mapop");
-		} else {
-			testKey = new Key("test", null, "mapop");
-			testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "mapop");
-		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -136,7 +135,7 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = client.get(null, testKey).bins;
 		Map<String, Object> realMapBin = (Map<String, Object>) bins.get(mapBinName);
-		Assert.assertEquals(realMapBin.size(), 0);
+		assertEquals(realMapBin.size(), 0);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -160,7 +159,7 @@ public class OperateMapTestsCorrect {
 		Map<String, Object> bins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
 		objectMap.put("ten", 7);
-		Assert.assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
+		assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -184,11 +183,11 @@ public class OperateMapTestsCorrect {
 		Map<String, Object> bins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
 		objectMap.put("ten", 13);
-		Assert.assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
+		assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
 	}
 
 	@Test
-	public void testMapGetByIndex() throws Exception {
+	public void testMapGetByIndex() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -201,12 +200,12 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-		Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), "aero"));
+		assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), "aero"));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByIndexRange() throws Exception {
+	public void testMapGetByIndexRange() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -222,12 +221,12 @@ public class OperateMapTestsCorrect {
 
 		List<Object> keys = (List<Object>) bins.get(mapBinName);
 
-		Assert.assertTrue(ASTestUtils.compareCollection(keys, Arrays.asList("one", "ten", "three")));
+		assertTrue(ASTestUtils.compareCollection(keys, Arrays.asList("one", "ten", "three")));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByIndexRangeNoCount() throws Exception {
+	public void testMapGetByIndexRangeNoCount() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -242,11 +241,11 @@ public class OperateMapTestsCorrect {
 
 		List<Object> keys = (List<Object>) bins.get(mapBinName);
 
-		Assert.assertTrue(ASTestUtils.compareCollection(keys, Arrays.asList("one", "ten", "three", "two")));
+		assertTrue(ASTestUtils.compareCollection(keys, Arrays.asList("one", "ten", "three", "two")));
 	}
 
 	@Test
-	public void testMapGetByKey() throws Exception {
+	public void testMapGetByKey() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -259,7 +258,7 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-		Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), 3));
+		assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), 3));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -279,13 +278,13 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = client.get(null, testKey).bins;
 		Map<Object, Object> mapBin = (Map<Object, Object>) bins.get(mapBinName);
-		Assert.assertNotNull(mapBin.get("key1"));
+		assertNotNull(mapBin.get("key1"));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByKeyList() throws Exception {
-		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
+	public void testMapGetByKeyList() {
+		assumeTrue(ASTestUtils.supportsNewCDT(client));
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -300,12 +299,12 @@ public class OperateMapTestsCorrect {
 
 		List<Object>retValues = (List<Object>)bins.get(mapBinName);
 
-		Assert.assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList("spike", 3, 2)));
+		assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList("spike", 3, 2)));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByKeyRange() throws Exception {
+	public void testMapGetByKeyRange() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -322,12 +321,12 @@ public class OperateMapTestsCorrect {
 
 		List<Object>retValues = (List<Object>)bins.get(mapBinName);
 
-		Assert.assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList(1, 10, 3)));
+		assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList(1, 10, 3)));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByKeyRangeNoBegin() throws Exception {
+	public void testMapGetByKeyRangeNoBegin() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -343,12 +342,12 @@ public class OperateMapTestsCorrect {
 
 		List<Object>retValues = (List<Object>)bins.get(mapBinName);
 
-		Assert.assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList("spike", 1, 10, 3)));
+		assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList("spike", 1, 10, 3)));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByKeyRangeNoEnd() throws Exception {
+	public void testMapGetByKeyRangeNoEnd() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -364,11 +363,11 @@ public class OperateMapTestsCorrect {
 
 		List<Object>retValues = (List<Object>)bins.get(mapBinName);
 
-		Assert.assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList(1, 10, 3, 2)));
+		assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList(1, 10, 3, 2)));
 	}
 
 	@Test
-	public void testMapGetByRank() throws Exception {
+	public void testMapGetByRank() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -382,11 +381,11 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-		Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinNameInt), 10));
+		assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinNameInt), 10));
 	}
 
 	@Test
-	public void testMapGetByRankRange() throws Exception {
+	public void testMapGetByRankRange() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -403,11 +402,11 @@ public class OperateMapTestsCorrect {
 
 		@SuppressWarnings("unchecked")
 		List<Object> retVals = (List<Object>) bins.get(mapBinNameInt);
-		Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(1, 2, 3)));
+		assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(1, 2, 3)));
 	}
 
 	@Test
-	public void testMapGetByRankRangeNoCount() throws Exception {
+	public void testMapGetByRankRangeNoCount() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -423,12 +422,12 @@ public class OperateMapTestsCorrect {
 
 		@SuppressWarnings("unchecked")
 		List<Object> retVals = (List<Object>) bins.get(mapBinNameInt);
-		Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(1, 2, 3, 10)));
+		assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(1, 2, 3, 10)));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByValue() throws Exception {
+	public void testMapGetByValue() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -447,12 +446,12 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-		Assert.assertTrue(ASTestUtils.compareCollection((List<Object>)bins.get(mapBinName), Arrays.asList("three", "threez")));
+		assertTrue(ASTestUtils.compareCollection((List<Object>)bins.get(mapBinName), Arrays.asList("three", "threez")));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByValueRange() throws Exception {
+	public void testMapGetByValueRange() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -469,12 +468,12 @@ public class OperateMapTestsCorrect {
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
 		/* These keys come back in key sorted order, so "one" < "three" < "two" */
-		Assert.assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList(1, 3, 2)));
+		assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList(1, 3, 2)));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByValueRangeNoBegin() throws Exception {
+	public void testMapGetByValueRangeNoBegin() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -490,12 +489,12 @@ public class OperateMapTestsCorrect {
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
 		/* These keys come back in key sorted order, so "one" < "three" < "two" < "zero" */
-		Assert.assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList(1, 3, 2, 0)));
+		assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList(1, 3, 2, 0)));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByValueRangeNoEnd() throws Exception {
+	public void testMapGetByValueRangeNoEnd() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -510,13 +509,13 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 		/* These keys come back in key sorted order, so "one" < "ten", "three" < "two" */
-		Assert.assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList(1, 10, 3, 2)));
+		assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList(1, 10, 3, 2)));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByValueList() throws Exception {
-		Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
+	public void testMapGetByValueList() {
+		assumeTrue(ASTestUtils.supportsNewCDT(client));
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -531,12 +530,12 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 		/* These keys come back in key sorted order, so "ten" < "two" < "zero" */
-		Assert.assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList("ten", "two", "zero")));
+		assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList("ten", "two", "zero")));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByKeyRelIndexRange() throws Exception {
+	public void testMapGetByKeyRelIndexRange() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -551,17 +550,17 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 		List<Object> keys = (List<Object>) bins.get(mapBinNameInt);
-		Assert.assertTrue(ASTestUtils.compareCollection(keys, Arrays.asList("ten", "three", "two", "zero")));
+		assertTrue(ASTestUtils.compareCollection(keys, Arrays.asList("ten", "three", "two", "zero")));
 
 		opValues.put("count", 3);
 		bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 		keys = (List<Object>) bins.get(mapBinNameInt);
-		Assert.assertTrue(ASTestUtils.compareCollection(keys, Arrays.asList("ten", "three", "two")));
+		assertTrue(ASTestUtils.compareCollection(keys, Arrays.asList("ten", "three", "two")));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapGetByValueRelRankRange() throws Exception {
+	public void testMapGetByValueRelRankRange() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -576,12 +575,12 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 		List<Object> retVals = (List<Object>) bins.get(mapBinNameInt);
-		Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(0, 1, 2, 3, 10)));
+		assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(0, 1, 2, 3, 10)));
 
 		opValues.put("count", 3);
 		bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 		retVals = (List<Object>) bins.get(mapBinNameInt);
-		Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(0, 1, 2)));
+		assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(0, 1, 2)));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -605,7 +604,7 @@ public class OperateMapTestsCorrect {
 		Map<String, Object> bins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
 		objectMap.put("five", 5);
-		Assert.assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
+		assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -638,11 +637,11 @@ public class OperateMapTestsCorrect {
 		Map<String, Object> bins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
 
-		Assert.assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
+		assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
 	}
 
 	@Test
-	public void testMapRemoveByIndex() throws Exception {
+	public void testMapRemoveByIndex() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -654,17 +653,17 @@ public class OperateMapTestsCorrect {
 		opList.add(operation);
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
-		Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), "aero"));
+		assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), "aero"));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		@SuppressWarnings("unchecked")
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
-		Assert.assertFalse(realMapBin.containsKey("aero"));
+		assertFalse(realMapBin.containsKey("aero"));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByIndexRange() throws Exception {
+	public void testMapRemoveByIndexRange() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -680,18 +679,18 @@ public class OperateMapTestsCorrect {
 
 		List<Object>retVals = (List<Object>)bins.get(mapBinName);
 
-		Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList("aero", "one", "ten")));
+		assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList("aero", "one", "ten")));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
-		Assert.assertFalse(realMapBin.containsKey("aero"));
-		Assert.assertFalse(realMapBin.containsKey("one"));
-		Assert.assertFalse(realMapBin.containsKey("ten"));
+		assertFalse(realMapBin.containsKey("aero"));
+		assertFalse(realMapBin.containsKey("one"));
+		assertFalse(realMapBin.containsKey("ten"));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByIndexRangeNoCount() throws Exception {
+	public void testMapRemoveByIndexRangeNoCount() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -705,17 +704,17 @@ public class OperateMapTestsCorrect {
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
 		List<Object>retVals = (List<Object>)bins.get(mapBinName);
-		Assert.assertTrue(
+		assertTrue(
 				ASTestUtils.compareCollection(
 						retVals, Arrays.asList("aero", "one", "ten", "three", "two")));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
-		Assert.assertEquals(realMapBin.size(), 0);
+		assertEquals(realMapBin.size(), 0);
 	}
 
 	@Test
-	public void testMapRemoveByKey() throws Exception {
+	public void testMapRemoveByKey() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -728,17 +727,17 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-		Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), 2));
+		assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), 2));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		@SuppressWarnings("unchecked")
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
-		Assert.assertFalse(realMapBin.containsKey("two"));
+		assertFalse(realMapBin.containsKey("two"));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByKeyRange() throws Exception {
+	public void testMapRemoveByKeyRange() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -754,18 +753,18 @@ public class OperateMapTestsCorrect {
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
 		List<Object>retValues = (List<Object>)bins.get(mapBinName);
-		Assert.assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList(1, 10, 3)));
+		assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList(1, 10, 3)));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
-		Assert.assertFalse(realMapBin.containsKey("one"));
-		Assert.assertFalse(realMapBin.containsKey("ten"));
-		Assert.assertFalse(realMapBin.containsKey("three"));
+		assertFalse(realMapBin.containsKey("one"));
+		assertFalse(realMapBin.containsKey("ten"));
+		assertFalse(realMapBin.containsKey("three"));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByKeyRangeNoBegin() throws Exception {
+	public void testMapRemoveByKeyRangeNoBegin() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -781,19 +780,19 @@ public class OperateMapTestsCorrect {
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
 		List<Object>retValues = (List<Object>)bins.get(mapBinName);
-		Assert.assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList("spike", 1, 10, 3)));
+		assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList("spike", 1, 10, 3)));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
-		Assert.assertFalse(realMapBin.containsKey("aero"));
-		Assert.assertFalse(realMapBin.containsKey("one"));
-		Assert.assertFalse(realMapBin.containsKey("ten"));
-		Assert.assertFalse(realMapBin.containsKey("three"));
+		assertFalse(realMapBin.containsKey("aero"));
+		assertFalse(realMapBin.containsKey("one"));
+		assertFalse(realMapBin.containsKey("ten"));
+		assertFalse(realMapBin.containsKey("three"));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByKeyRangeNoEnd() throws Exception {
+	public void testMapRemoveByKeyRangeNoEnd() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -808,19 +807,19 @@ public class OperateMapTestsCorrect {
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
 		List<Object>retValues = (List<Object>)bins.get(mapBinName);
-		Assert.assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList(1, 10, 3, 2)));
+		assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList(1, 10, 3, 2)));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
-		Assert.assertFalse(realMapBin.containsKey("one"));
-		Assert.assertFalse(realMapBin.containsKey("ten"));
-		Assert.assertFalse(realMapBin.containsKey("three"));
-		Assert.assertFalse(realMapBin.containsKey("two"));
+		assertFalse(realMapBin.containsKey("one"));
+		assertFalse(realMapBin.containsKey("ten"));
+		assertFalse(realMapBin.containsKey("three"));
+		assertFalse(realMapBin.containsKey("two"));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByRank() throws Exception {
+	public void testMapRemoveByRank() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -834,17 +833,17 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-		Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinNameInt), 2));
+		assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinNameInt), 2));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinNameInt);
 
-		Assert.assertFalse(realMapBin.containsKey("two"));
+		assertFalse(realMapBin.containsKey("two"));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByRankRange() throws Exception {
+	public void testMapRemoveByRankRange() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -861,7 +860,7 @@ public class OperateMapTestsCorrect {
 
 		List<Object>retVals = (List<Object>)bins.get(mapBinNameInt);
 
-		Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(1, 2, 3)));
+		assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(1, 2, 3)));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinNameInt);
@@ -870,13 +869,13 @@ public class OperateMapTestsCorrect {
 		objectMapInt.remove("three");
 		objectMapInt.remove("two");
 
-		Assert.assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
+		assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
 
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByRankRangeNoCount() throws Exception {
+	public void testMapRemoveByRankRangeNoCount() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -892,7 +891,7 @@ public class OperateMapTestsCorrect {
 
 		List<Object>retVals = (List<Object>)bins.get(mapBinNameInt);
 
-		Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(1, 2, 3, 10)));
+		assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(1, 2, 3, 10)));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinNameInt);
@@ -901,12 +900,12 @@ public class OperateMapTestsCorrect {
 		objectMapInt.remove("three");
 		objectMapInt.remove("two");
 		objectMapInt.remove("ten");
-		Assert.assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
+		assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByKeyRelIndexRange() throws Exception {
+	public void testMapRemoveByKeyRelIndexRange() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -921,17 +920,17 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 		List<Object>retVals = (List<Object>)bins.get(mapBinNameInt);
-		Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList("ten", "three")));
+		assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList("ten", "three")));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinNameInt);
-		Assert.assertFalse(realMapBin.containsKey("ten"));
-		Assert.assertFalse(realMapBin.containsKey("three"));
+		assertFalse(realMapBin.containsKey("ten"));
+		assertFalse(realMapBin.containsKey("three"));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByValueRelRankRange() throws Exception {
+	public void testMapRemoveByValueRelRankRange() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -946,18 +945,18 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 		List<Object>retVals = (List<Object>)bins.get(mapBinNameInt);
-		Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(3, 10)));
+		assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(3, 10)));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinNameInt);
 		objectMapInt.remove("three");
 		objectMapInt.remove("ten");
-		Assert.assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
+		assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByValue() throws Exception {
+	public void testMapRemoveByValue() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -976,19 +975,19 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-		Assert.assertTrue(ASTestUtils.compareCollection((List<Object>)bins.get(mapBinName), Arrays.asList("three", "threez")));
+		assertTrue(ASTestUtils.compareCollection((List<Object>)bins.get(mapBinName), Arrays.asList("three", "threez")));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
 
 		objectMap.remove("three");
 		objectMap.remove("threez");
-		Assert.assertTrue(ASTestUtils.compareMap(objectMap, realMapBin));
+		assertTrue(ASTestUtils.compareMap(objectMap, realMapBin));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByValueRange() throws Exception {
+	public void testMapRemoveByValueRange() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -1004,7 +1003,7 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 		/* These keys come back in key sorted order, so "one" < "three" < "two" */
-		Assert.assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList(1, 3, 2)));
+		assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList(1, 3, 2)));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinNameInt);
@@ -1012,12 +1011,12 @@ public class OperateMapTestsCorrect {
 		objectMapInt.remove("one");
 		objectMapInt.remove("two");
 		objectMapInt.remove("three");
-		Assert.assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
+		assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByValueRangeNoBegin() throws Exception {
+	public void testMapRemoveByValueRangeNoBegin() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -1032,7 +1031,7 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 		/* These keys come back in key sorted order, so "one" < "three" < "two" < "zero"*/
-		Assert.assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList(1, 3, 2, 0)));
+		assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList(1, 3, 2, 0)));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinNameInt);
@@ -1041,12 +1040,12 @@ public class OperateMapTestsCorrect {
 		objectMapInt.remove("one");
 		objectMapInt.remove("two");
 		objectMapInt.remove("three");
-		Assert.assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
+		assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByValueRangeNoEnd() throws Exception {
+	public void testMapRemoveByValueRangeNoEnd() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -1061,7 +1060,7 @@ public class OperateMapTestsCorrect {
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 		/* These keys come back in key sorted order, so "one" < "ten", "three" < "two" */
-		Assert.assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList(1, 10, 3, 2)));
+		assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList(1, 10, 3, 2)));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinNameInt);
@@ -1070,12 +1069,12 @@ public class OperateMapTestsCorrect {
 		objectMapInt.remove("two");
 		objectMapInt.remove("three");
 		objectMapInt.remove("ten");
-		Assert.assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
+		assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testMapRemoveByValueList() throws Exception {
+	public void testMapRemoveByValueList() {
 
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
@@ -1089,7 +1088,7 @@ public class OperateMapTestsCorrect {
 		opList.add(operation);
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
-		Assert.assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList("one", "three", "two")));
+		assertTrue(ASTestUtils.containSameItems((List<Object>)bins.get(mapBinNameInt), Arrays.asList("one", "three", "two")));
 
 		Map<String, Object> realBins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinNameInt);
@@ -1097,7 +1096,7 @@ public class OperateMapTestsCorrect {
 		objectMapInt.remove("one");
 		objectMapInt.remove("two");
 		objectMapInt.remove("three");
-		Assert.assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
+		assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
 	}
 
 	/* TODO: Test setMapPolicy */
@@ -1130,7 +1129,7 @@ public class OperateMapTestsCorrect {
 		Map<String, Object> bins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
 
-		Assert.assertEquals(newVal, realMapBin.get(newKey));
+		assertEquals(newVal, realMapBin.get(newKey));
 
 		opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opList, status().isInternalServerError());
 	}
@@ -1146,7 +1145,7 @@ public class OperateMapTestsCorrect {
 		Map<String, Object>opValues = new HashMap<>();
 		String newKey = "new_key";
 		String newVal = "new_value";
-		Map<Object, Object>expected = new HashMap<>();
+		Map<Object, Object> expected = new HashMap<>();
 		expected.put(newKey, newVal);
 
 		opValues.put("bin", mapBinName);
@@ -1160,7 +1159,7 @@ public class OperateMapTestsCorrect {
 		opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opList, status().isInternalServerError());
 		Map<String, Object> bins = client.get(null, testKey).bins;
 		Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
-		Assert.assertNull(newVal, realMapBin.get(newKey));
+		assertNull(realMapBin.get(newKey));
 	}
 
 	/*
@@ -1189,7 +1188,7 @@ public class OperateMapTestsCorrect {
 		@SuppressWarnings("unchecked")
 		Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
 
-		Assert.assertEquals(newVal, realMapBin.get(existingKey));
+		assertEquals(newVal, realMapBin.get(existingKey));
 	}
 
 	/*
@@ -1228,12 +1227,12 @@ public class OperateMapTestsCorrect {
 		@SuppressWarnings("unchecked")
 		Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
 
-		Assert.assertEquals(newVal, realMapBin.get(existingKey));
-		Assert.assertNull(realMapBin.get(newKey));
+		assertEquals(newVal, realMapBin.get(existingKey));
+		assertNull(realMapBin.get(newKey));
 	}
 
 	@Test
-	public void testMapSize() throws Exception {
+	public void testMapSize() {
 		Map<String, Object>operation = new HashMap<>();
 		Map<String, Object>opValues = new HashMap<>();
 
@@ -1243,7 +1242,7 @@ public class OperateMapTestsCorrect {
 		opList.add(operation);
 
 		Map<String, Object> bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
-		Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), objectMap.size()));
+		assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), objectMap.size()));
 	}
 
 	/* HELPERS */
@@ -1318,7 +1317,7 @@ public class OperateMapTestsCorrect {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<String, Object>getReturnedBins(Map<String, Object> rec) throws Exception {
+	private Map<String, Object>getReturnedBins(Map<String, Object> rec) {
 		return (Map<String, Object>) rec.get("bins");
 	}
 }

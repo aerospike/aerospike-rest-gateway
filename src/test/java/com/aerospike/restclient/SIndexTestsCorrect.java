@@ -25,21 +25,15 @@ import com.aerospike.restclient.domain.RestClientIndex;
 import com.aerospike.restclient.util.InfoResponseParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -48,30 +42,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
-public class SindexTestsCorrect {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
+public class SIndexTestsCorrect {
 
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    private RestIndexHandler handler;
 
-    private final RestIndexHandler handler;
-
-    @Parameters
-    public static Object[] getParams() {
-        return new Object[]{
-                new JSONIndexHandler(), new MsgPackIndexHandler()
-        };
+    private static Stream<Arguments> getParams() {
+        return Stream.of(
+                Arguments.of(new JSONIndexHandler(), new MsgPackIndexHandler())
+        );
     }
 
-    public SindexTestsCorrect(RestIndexHandler handler) {
+    @ParameterizedTest
+    @MethodSource("getParams")
+    void addParams(RestIndexHandler handler) {
         this.handler = handler;
     }
 
@@ -101,13 +92,13 @@ public class SindexTestsCorrect {
     private AerospikeClient client;
 
     /* create and load an index*/
-    @Before
+    @BeforeEach
     public void setup() throws InterruptedException {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
         createdIndexPairs = new ArrayList<>();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         for (String[] idxPair : createdIndexPairs) {
             ASTestUtils.ensureDeletion(client, idxPair[0], idxPair[1]);
@@ -133,7 +124,7 @@ public class SindexTestsCorrect {
         List<Map<String, String>> idxInfoMaps = InfoResponseParser.getIndexInformation(idxInfos);
         List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).collect(Collectors.toList());
 
-        Assert.assertTrue(indexesContain(existingIndexes, postTestIdx));
+        assertTrue(indexesContain(existingIndexes, postTestIdx));
     }
 
     @Test
@@ -154,7 +145,7 @@ public class SindexTestsCorrect {
         List<Map<String, String>> idxInfoMaps = InfoResponseParser.getIndexInformation(idxInfos);
         List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).collect(Collectors.toList());
 
-        Assert.assertTrue(indexesContain(existingIndexes, postTestIdx));
+        assertTrue(indexesContain(existingIndexes, postTestIdx));
     }
 
     @Test
@@ -174,7 +165,7 @@ public class SindexTestsCorrect {
         List<Map<String, String>> idxInfoMaps = InfoResponseParser.getIndexInformation(idxInfos);
         List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).collect(Collectors.toList());
 
-        Assert.assertTrue(indexesContain(existingIndexes, postTestIdx));
+        assertTrue(indexesContain(existingIndexes, postTestIdx));
     }
 
     @Test
@@ -187,7 +178,7 @@ public class SindexTestsCorrect {
 
         List<RestClientIndex> indexList = handler.getIndexes(mockMVC, endpoint);
 
-        Assert.assertTrue(indexesContain(indexList, createdRCIndex));
+        assertTrue(indexesContain(indexList, createdRCIndex));
     }
 
     @Test
@@ -198,7 +189,7 @@ public class SindexTestsCorrect {
         String indexStat = Info.request(null, client.getNodes()[0], "sindex/" + testNS + "/" + testIndexName);
         Map<String, String> indexStatMap = InfoResponseParser.getIndexStatInfo(indexStat);
 
-        Assert.assertTrue(ASTestUtils.compareStringMap(restIndexStatMap, indexStatMap));
+        assertTrue(ASTestUtils.compareStringMap(restIndexStatMap, indexStatMap));
     }
 
     @Test
@@ -217,7 +208,7 @@ public class SindexTestsCorrect {
         /* give some time for the index dropping to occur */
         Thread.sleep(5000);
 
-        Assert.assertFalse(ASTestUtils.indexExists(client, testNS, testIndexName));
+        assertFalse(ASTestUtils.indexExists(client, testNS, testIndexName));
     }
 
     private boolean indexesContain(List<RestClientIndex> rcIndexes, RestClientIndex rcIndex) {
@@ -273,7 +264,6 @@ public class SindexTestsCorrect {
         String[] idxPair = new String[]{testNS, indexName};
         createdIndexPairs.add(idxPair);
     }
-
 }
 
 /*
@@ -304,7 +294,7 @@ class MsgPackIndexHandler implements RestIndexHandler {
         byte[] resBytes = mockMVC.perform(get(endpoint).accept(mediaType))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
 
-        return mapper.readValue(resBytes, SindexTestsCorrect.mapStringStringType);
+        return mapper.readValue(resBytes, SIndexTestsCorrect.mapStringStringType);
     }
 
     @Override
@@ -327,7 +317,7 @@ class MsgPackIndexHandler implements RestIndexHandler {
         byte[] resBytes = mockMVC.perform(get(endpoint).accept(mediaType))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
 
-        return mapper.readValue(resBytes, SindexTestsCorrect.listIndexType);
+        return mapper.readValue(resBytes, SIndexTestsCorrect.listIndexType);
     }
 }
 
@@ -345,7 +335,7 @@ class JSONIndexHandler implements RestIndexHandler {
         String resJson = mockMVC.perform(get(endpoint).accept(mediaType))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-        return mapper.readValue(resJson, SindexTestsCorrect.mapStringStringType);
+        return mapper.readValue(resJson, SIndexTestsCorrect.mapStringStringType);
     }
 
     @Override
@@ -368,7 +358,6 @@ class JSONIndexHandler implements RestIndexHandler {
         String resJson = mockMVC.perform(get(endpoint).accept(mediaType))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-        return mapper.readValue(resJson, SindexTestsCorrect.listIndexType);
+        return mapper.readValue(resJson, SIndexTestsCorrect.listIndexType);
     }
-
 }

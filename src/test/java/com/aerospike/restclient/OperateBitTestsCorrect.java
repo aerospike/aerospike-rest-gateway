@@ -4,31 +4,27 @@ import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.restclient.util.AerospikeOperation;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class OperateBitTestsCorrect {
-
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     private MockMvc mockMVC;
 
@@ -39,33 +35,34 @@ public class OperateBitTestsCorrect {
     private WebApplicationContext wac;
 
     byte[] byteArray = new byte[]{12, 5, 110, 47};
-    private final Key testKey;
-    private final String testEndpoint;
+    private Key testKey;
+    private String testEndpoint;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
         Bin bitBin = new Bin("bit", byteArray);
         client.put(null, testKey, bitBin);
     }
 
-    @After
+    @AfterEach
     public void clean() {
         client.delete(null, testKey);
     }
 
-    private final OperationPerformer opPerformer;
+    private OperationPerformer opPerformer;
 
-    @Parameterized.Parameters
-    public static Object[][] getParams() {
-        return new Object[][]{
-                {new JSONOperationPerformer(), true}, {new MsgPackOperationPerformer(), true},
-                {new JSONOperationPerformer(), false}, {new MsgPackOperationPerformer(), false}
-        };
+    private static Stream<Arguments> getParams() {
+        return Stream.of(
+                Arguments.of(new JSONOperationPerformer(), true, new MsgPackOperationPerformer(), true),
+                Arguments.of(new JSONOperationPerformer(), false, new MsgPackOperationPerformer(), false)
+        );
     }
 
     /* Set up the correct msgpack/json performer for this set of runs. Also decided whether to use the endpoint with a set or without */
-    public OperateBitTestsCorrect(OperationPerformer performer, boolean useSet) {
+    @ParameterizedTest
+    @MethodSource("getParams")
+    void addParams(OperationPerformer performer, boolean useSet) {
         this.opPerformer = performer;
         if (useSet) {
             testKey = new Key("test", "junit", "bitop");
@@ -92,7 +89,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 5, 110, 47, 0, 0, 0, 0}, realByteArray);
+        assertArrayEquals(new byte[]{12, 5, 110, 47, 0, 0, 0, 0}, realByteArray);
     }
 
     @Test
@@ -112,7 +109,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 11, 5, 110, 47}, realByteArray);
+        assertArrayEquals(new byte[]{12, 11, 5, 110, 47}, realByteArray);
     }
 
     @Test
@@ -131,7 +128,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 47}, realByteArray);
+        assertArrayEquals(new byte[]{12, 47}, realByteArray);
     }
 
     @Test
@@ -152,7 +149,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 5, 126, 47}, realByteArray);
+        assertArrayEquals(new byte[]{12, 5, 126, 47}, realByteArray);
     }
 
     @Test
@@ -173,7 +170,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 5, 127, 47}, realByteArray);
+        assertArrayEquals(new byte[]{12, 5, 127, 47}, realByteArray);
     }
 
     @Test
@@ -194,7 +191,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 5, 87, 47}, realByteArray);
+        assertArrayEquals(new byte[]{12, 5, 87, 47}, realByteArray);
     }
 
     @Test
@@ -215,7 +212,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 5, 40, 47}, realByteArray);
+        assertArrayEquals(new byte[]{12, 5, 40, 47}, realByteArray);
     }
 
     @Test
@@ -234,7 +231,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 5, -111, -48}, realByteArray);
+        assertArrayEquals(new byte[]{12, 5, -111, -48}, realByteArray);
     }
 
     @Test
@@ -254,7 +251,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 5, 110, 120}, realByteArray);
+        assertArrayEquals(new byte[]{12, 5, 110, 120}, realByteArray);
     }
 
     @Test
@@ -274,7 +271,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 5, 110, 5}, realByteArray);
+        assertArrayEquals(new byte[]{12, 5, 110, 5}, realByteArray);
     }
 
     @Test
@@ -294,7 +291,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 5, 110, 50}, realByteArray);
+        assertArrayEquals(new byte[]{12, 5, 110, 50}, realByteArray);
     }
 
     @Test
@@ -314,7 +311,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 5, 110, 44}, realByteArray);
+        assertArrayEquals(new byte[]{12, 5, 110, 44}, realByteArray);
     }
 
     @Test
@@ -334,7 +331,7 @@ public class OperateBitTestsCorrect {
 
         byte[] realByteArray = (byte[]) client.get(null, testKey).bins.get("bit");
 
-        Assert.assertArrayEquals(new byte[]{12, 5, 110, 3}, realByteArray);
+        assertArrayEquals(new byte[]{12, 5, 110, 3}, realByteArray);
     }
 
     @Test
@@ -358,7 +355,7 @@ public class OperateBitTestsCorrect {
             expected = (byte[]) ((Map<String, Object>) res.get("bins")).get("bit");
         }
 
-        Assert.assertArrayEquals(new byte[]{47}, expected);
+        assertArrayEquals(new byte[]{47}, expected);
     }
 
     @Test
@@ -377,7 +374,7 @@ public class OperateBitTestsCorrect {
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
         int expected = ((Map<String, Integer>) res.get("bins")).get("bit");
 
-        Assert.assertEquals(3, expected);
+        assertEquals(3, expected);
     }
 
     @Test
@@ -397,7 +394,7 @@ public class OperateBitTestsCorrect {
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
         int expected = ((Map<String, Integer>) res.get("bins")).get("bit");
 
-        Assert.assertEquals(1, expected);
+        assertEquals(1, expected);
     }
 
     @Test
@@ -416,7 +413,7 @@ public class OperateBitTestsCorrect {
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
         int expected = ((Map<String, Integer>) res.get("bins")).get("bit");
 
-        Assert.assertEquals(7, expected);
+        assertEquals(7, expected);
     }
 
     @Test
@@ -435,7 +432,6 @@ public class OperateBitTestsCorrect {
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
         int expected = ((Map<String, Integer>) res.get("bins")).get("bit");
 
-        Assert.assertEquals(22242, expected);
+        assertEquals(22242, expected);
     }
-
 }

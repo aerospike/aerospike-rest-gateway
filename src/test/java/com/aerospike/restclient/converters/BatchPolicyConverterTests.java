@@ -20,18 +20,22 @@ import com.aerospike.client.policy.BatchPolicy;
 import com.aerospike.client.policy.Replica;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.converters.policyconverters.BatchPolicyConverter;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class BatchPolicyConverterTests {
 
 	Map<String, String> policyMap;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		policyMap = new HashMap<>();
 	}
@@ -40,63 +44,62 @@ public class BatchPolicyConverterTests {
 	public void testReplica() {
 		policyMap.put(AerospikeAPIConstants.REPLICA, Replica.MASTER.toString());
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.replica, Replica.MASTER);
+		assertEquals(policy.replica, Replica.MASTER);
 	}
 
 	@Test
 	public void testTotalTimeout() {
 		policyMap.put(AerospikeAPIConstants.TOTAL_TIMEOUT, "333");
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.totalTimeout, 333);
+		assertEquals(policy.totalTimeout, 333);
 	}
 
 	@Test
 	public void testSocketTimeout() {
 		policyMap.put(AerospikeAPIConstants.SOCKET_TIMEOUT, "332");
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.socketTimeout, 332);
+		assertEquals(policy.socketTimeout, 332);
 	}
 
 	@Test
 	public void testSleepBetweenRetries() {
 		policyMap.put(AerospikeAPIConstants.SLEEP_BETWEEN_RETRIES, "111");
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.sleepBetweenRetries, 111);
+		assertEquals(policy.sleepBetweenRetries, 111);
 	}
 
 	@Test
 	public void testMaxRetries() {
 		policyMap.put(AerospikeAPIConstants.MAX_RETRIES, "5");
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.maxRetries, 5);
+		assertEquals(policy.maxRetries, 5);
 	}
 
 	@Test
 	public void testSendKey() {
 		policyMap.put(AerospikeAPIConstants.SEND_KEY, "true");
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertTrue(policy.sendKey);
+		assertTrue(policy.sendKey);
 	}
 
 	@Test
 	public void testAllowInline() {
 		policyMap.put(AerospikeAPIConstants.ALLOW_INLINE, "false");
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertFalse(policy.allowInline);
+		assertFalse(policy.allowInline);
 	}
 
 	@Test
 	public void testSendSetName() {
 		policyMap.put(AerospikeAPIConstants.SEND_SET_NAME, "true");
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertTrue(policy.sendSetName);
+		assertTrue(policy.sendSetName);
 	}
 
 	@Test
 	public void testMaxConcurrentThreads() {
 		policyMap.put(AerospikeAPIConstants.MAX_CONCURRENT_THREADS, "7");
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.maxConcurrentThreads, 7);
+		assertEquals(policy.maxConcurrentThreads, 7);
 	}
-
 }

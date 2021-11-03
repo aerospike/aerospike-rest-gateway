@@ -19,9 +19,8 @@ package com.aerospike.restclient.msgpack;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessageUnpacker;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
@@ -34,10 +33,13 @@ import com.aerospike.restclient.util.serializers.MsgPackObjKeySerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class MsgpackCustomSerializerTest {
 	private ObjectMapper mapper;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		mapper = new ObjectMapper(new MessagePackFactory());
 		SimpleModule recModule = new SimpleModule();
@@ -55,15 +57,15 @@ public class MsgpackCustomSerializerTest {
 		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(output);
 		org.msgpack.value.Value v = unpacker.unpackValue();
 		ValueType type = v.getValueType();
-		Assert.assertEquals(type, ValueType.EXTENSION);
+		assertEquals(type, ValueType.EXTENSION);
 
 		// Code from msgpack example repo
 		ExtensionValue ev = v.asExtensionValue();
 		byte extType = ev.getType();
-		Assert.assertEquals(extType, (byte)23);
+		assertEquals(extType, (byte)23);
 		byte[] extValue = ev.getData();
 		String outStr = new String(extValue, "UTF-8");
-		Assert.assertEquals(geoStr, outStr);
+		assertEquals(geoStr, outStr);
 	}
 
 	@Test
@@ -74,11 +76,11 @@ public class MsgpackCustomSerializerTest {
 		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(output);
 		org.msgpack.value.Value v = unpacker.unpackValue();
 		ValueType type = v.getValueType();
-		Assert.assertEquals(type, ValueType.BINARY);
+		assertEquals(type, ValueType.BINARY);
 
 		// Code from msgpack example repo
 		byte[] outBytes = v.asBinaryValue().asByteArray();
-		Assert.assertArrayEquals(testBytes, outBytes);
+		assertArrayEquals(testBytes, outBytes);
 	}
 
 	/*
@@ -92,20 +94,20 @@ public class MsgpackCustomSerializerTest {
 
 		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(output);
 		int size = unpacker.unpackMapHeader();
-		Assert.assertEquals(1, size);
+		assertEquals(1, size);
 
 		org.msgpack.value.Value v = unpacker.unpackValue();
 		ValueType type = v.getValueType();
-		Assert.assertEquals(type, ValueType.INTEGER);
+		assertEquals(type, ValueType.INTEGER);
 
 		int key = v.asIntegerValue().asInt();
-		Assert.assertEquals(key, 5);
+		assertEquals(key, 5);
 
 		v = unpacker.unpackValue();
 		type = v.getValueType();
-		Assert.assertEquals(type, ValueType.STRING);
+		assertEquals(type, ValueType.STRING);
 
 		String value = v.asStringValue().asString();
-		Assert.assertEquals("int", value);
+		assertEquals("int", value);
 	}
 }

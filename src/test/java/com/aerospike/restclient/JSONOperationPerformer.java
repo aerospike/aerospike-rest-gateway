@@ -37,7 +37,6 @@ class JSONOperationPerformer implements OperationPerformer {
 		this.mapper = new ObjectMapper();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public
 	Map<String, Object>performOperationsAndReturn(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>>ops) {
@@ -82,5 +81,4 @@ class JSONOperationPerformer implements OperationPerformer {
 		}
 		ASTestUtils.performOperationAndExpect(mockMVC, testEndpoint, jsonString, matcher);
 	}
-
 }

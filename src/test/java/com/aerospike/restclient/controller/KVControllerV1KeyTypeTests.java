@@ -24,20 +24,15 @@ import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -45,18 +40,12 @@ import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
 public class KVControllerV1KeyTypeTests {
-
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
 	@Autowired KeyValueController controller;
 	@MockBean AerospikeRecordService recordService;
@@ -68,26 +57,27 @@ public class KVControllerV1KeyTypeTests {
 	private Map<String, Object> dummyBins;
 	private Map<String, String> queryParams;
 	private MultiValueMap<String, String> multiQueryParams;
-	private final RecordKeyType expectedKeyType;
+	private RecordKeyType expectedKeyType;
 
 	private byte[] msgpackBins;
 	private final ObjectMapper mpMapper = new ObjectMapper(new MessagePackFactory());
 
-	@Parameters
-	public static Object[] keyType() {
-		return new Object[] {
-				RecordKeyType.STRING,
-				RecordKeyType.BYTES,
-				RecordKeyType.DIGEST,
-				RecordKeyType.INTEGER,
-				null
-		};
+	private static Stream<Arguments> keyType() {
+		return Stream.of(
+				Arguments.of(RecordKeyType.STRING),
+				Arguments.of(RecordKeyType.BYTES),
+				Arguments.of(RecordKeyType.DIGEST),
+				Arguments.of(RecordKeyType.INTEGER),
+				Arguments.of((Object) null));
 	}
-	public KVControllerV1KeyTypeTests(RecordKeyType keyType) {
+
+	@ParameterizedTest
+	@MethodSource("keyType")
+	void addKeyType(RecordKeyType keyType) {
 		this.expectedKeyType = keyType;
 	}
 
-	@Before
+	@BeforeEach
 	public void setup() throws JsonProcessingException {
 		dummyBins = new HashMap<>();
 		dummyBins.put("bin", "a");
@@ -150,6 +140,7 @@ public class KVControllerV1KeyTypeTests {
 				eq(expectedKeyType),
 				any(WritePolicy.class));
 	}
+
 	@Test
 	public void testKeyTypeDeleteNSKey() {
 		controller.deleteRecordNamespaceKey(ns, key, queryParams, null);
@@ -161,6 +152,7 @@ public class KVControllerV1KeyTypeTests {
 				eq(expectedKeyType),
 				any(WritePolicy.class));
 	}
+
 	/* CREATE */
 	@Test
 	public void testKeyTypeCreateNSSetKey() {
@@ -197,6 +189,7 @@ public class KVControllerV1KeyTypeTests {
 				isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins), eq(expectedKeyType),
 				isA(WritePolicy.class));
 	}
+
 	/* REPLACE */
 	@Test
 	public void testKeyTypeReplaceNSSetKey() {
@@ -233,6 +226,7 @@ public class KVControllerV1KeyTypeTests {
 				isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins), eq(expectedKeyType),
 				isA(WritePolicy.class));
 	}
+
 	/*GET */
 	@Test
 	public void testKeyTypeForNSSetKey() {
@@ -245,6 +239,7 @@ public class KVControllerV1KeyTypeTests {
 				any(String[].class),
 				eq(expectedKeyType), isA(Policy.class));
 	}
+
 	@Test
 	public void testKeyTypeForNSKey() {
 		controller.getRecordNamespaceKey(ns, key, multiQueryParams, null);

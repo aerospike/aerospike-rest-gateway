@@ -22,21 +22,15 @@ import com.aerospike.client.Key;
 import com.aerospike.client.Record;
 import com.aerospike.client.Value;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -46,23 +40,27 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class RecordPostCorrectTests {
 
-	/* Needed to run as a Spring Boot test */
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
-
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
-
-	private final PostPerformer postPerformer;
+	private PostPerformer postPerformer;
 	private MockMvc mockMVC;
+
+	private Key testKey;
+	private Key intKey;
+	private Key bytesKey;
+	private String testEndpoint;
+	private String digestEndpoint;
+	private String intEndpoint;
+	private String bytesEndpoint;
 
 	@Autowired
 	private AerospikeClient client;
@@ -70,20 +68,12 @@ public class RecordPostCorrectTests {
 	@Autowired
 	private WebApplicationContext wac;
 
-	private final Key testKey;
-	private final Key intKey;
-	private final Key bytesKey;
-	private final String testEndpoint;
-	private final String digestEndpoint;
-	private final String intEndpoint;
-	private final String bytesEndpoint;
-
-	@Before
+	@BeforeEach
 	public void setup() {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
 
-	@After
+	@AfterEach
 	public void clean() {
 		client.delete(null, testKey);
 		try {
@@ -96,29 +86,18 @@ public class RecordPostCorrectTests {
 		}
 	}
 
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[][] {
-			{
-				new JSONPostPerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()),
-				true
-			},
-			{
-				new MsgPackPostPerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())),
-				true
-			},
-			{
-				new JSONPostPerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()),
-				false
-			},
-			{
-				new MsgPackPostPerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())),
-				false
-			}
-		};
+	private static Stream<Arguments> getParams() {
+		return Stream.of(
+				Arguments.of(new JSONPostPerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), true),
+				Arguments.of(new MsgPackPostPerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())), true),
+				Arguments.of(new JSONPostPerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), false),
+				Arguments.of(new MsgPackPostPerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())), false)
+		);
 	}
 
-	public RecordPostCorrectTests(PostPerformer performer, boolean useSet) {
+	@ParameterizedTest
+	@MethodSource("getParams")
+	void addParams(PostPerformer performer, boolean useSet) {
 		if (useSet) {
 			this.testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
 			this.testKey = new Key("test", "junit", "getput");
@@ -158,7 +137,7 @@ public class RecordPostCorrectTests {
 		postPerformer.perform(mockMVC, testEndpoint, binMap);
 
 		Record record = client.get(null, this.testKey);
-		Assert.assertEquals(record.bins.get("integer"), 12345L);
+		assertEquals(record.bins.get("integer"), 12345L);
 	}
 
 	@Test
@@ -170,7 +149,7 @@ public class RecordPostCorrectTests {
 		postPerformer.perform(mockMVC, testEndpoint, binMap);
 
 		Record record = client.get(null, this.testKey);
-		Assert.assertEquals(record.bins.get("string"), "Aerospike");
+		assertEquals(record.bins.get("string"), "Aerospike");
 	}
 
 	@Test
@@ -182,7 +161,7 @@ public class RecordPostCorrectTests {
 		postPerformer.perform(mockMVC, testEndpoint, binMap);
 
 		Record record = client.get(null, this.testKey);
-		Assert.assertEquals(record.bins.get("double"), 2.718);
+		assertEquals(record.bins.get("double"), 2.718);
 	}
 
 	@Test
@@ -197,7 +176,7 @@ public class RecordPostCorrectTests {
 
 		Record record = client.get(null, this.testKey);
 
-		Assert.assertTrue(ASTestUtils.compareCollection((List<?>) record.bins.get("ary"), trueList));
+		assertTrue(ASTestUtils.compareCollection((List<?>) record.bins.get("ary"), trueList));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -217,7 +196,7 @@ public class RecordPostCorrectTests {
 
 		Record record = client.get(null, this.testKey);
 
-		Assert.assertTrue(ASTestUtils.compareMap((Map<Object,Object>) record.bins.get("map"), testMap));
+		assertTrue(ASTestUtils.compareMap((Map<Object,Object>) record.bins.get("map"), testMap));
 	}
 
 	@Test
@@ -229,7 +208,7 @@ public class RecordPostCorrectTests {
 		postPerformer.perform(mockMVC, intEndpoint, binMap);
 
 		Record record = client.get(null, this.intKey);
-		Assert.assertEquals(record.bins.get("integer"), 12345L);
+		assertEquals(record.bins.get("integer"), 12345L);
 	}
 
 	@Test
@@ -240,7 +219,7 @@ public class RecordPostCorrectTests {
 		postPerformer.perform(mockMVC, bytesEndpoint, binMap);
 
 		Record record = client.get(null, this.bytesKey);
-		Assert.assertEquals(record.bins.get("integer"), 12345L);
+		assertEquals(record.bins.get("integer"), 12345L);
 	}
 
 	@Test
@@ -252,7 +231,7 @@ public class RecordPostCorrectTests {
 		postPerformer.perform(mockMVC, digestEndpoint, binMap);
 
 		Record record = client.get(null, this.testKey);
-		Assert.assertEquals(record.bins.get("integer"), 12345L);
+		assertEquals(record.bins.get("integer"), 12345L);
 	}
 
 	@Test
@@ -268,7 +247,7 @@ public class RecordPostCorrectTests {
 		postPerformer.perform(mockMVC, testEndpoint, binMap);
 
 		Record record = client.get(null, this.testKey);
-		Assert.assertArrayEquals((byte[]) record.bins.get("byte_array"), arr);
+		assertArrayEquals((byte[]) record.bins.get("byte_array"), arr);
 	}
 
 	@Test
@@ -284,7 +263,7 @@ public class RecordPostCorrectTests {
 		postPerformer.perform(mockMVC, testEndpoint, binMap);
 
 		Record record = client.get(null, this.testKey);
-		Assert.assertEquals(((Value.GeoJSONValue) record.bins.get("geo_json")).getObject(), geoStr);
+		assertEquals(((Value.GeoJSONValue) record.bins.get("geo_json")).getObject(), geoStr);
 	}
 
 	@Test
@@ -296,13 +275,12 @@ public class RecordPostCorrectTests {
 		postPerformer.perform(mockMVC, testEndpoint, binMap);
 
 		Record record = client.get(null, this.testKey);
-		Assert.assertEquals((long) record.bins.get("bool"), 1L);
+		assertEquals((long) record.bins.get("bool"), 1L);
 	}
 }
 
 interface PostPerformer {
-	public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object>binMap)
-			throws Exception;
+	void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap) throws Exception;
 }
 
 class JSONPostPerformer implements PostPerformer {
@@ -340,5 +318,4 @@ class MsgPackPostPerformer implements PostPerformer {
 				.content(mapper.writeValueAsBytes(binMap)))
 		.andExpect(status().isCreated());
 	}
-
 }

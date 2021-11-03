@@ -22,10 +22,9 @@ import com.aerospike.client.policy.RecordExistsAction;
 import com.aerospike.client.policy.Replica;
 import com.aerospike.restclient.util.RestClientErrors.InvalidPolicyValueError;
 import com.aerospike.restclient.util.converters.PolicyValueConverter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PolicyConverterTests {
 
@@ -37,9 +36,9 @@ public class PolicyConverterTests {
 		assertEquals(Replica.SEQUENCE, PolicyValueConverter.getReplica("SEQUENCE"));
 	}
 
-	@Test(expected=InvalidPolicyValueError.class)
+	@Test()
 	public void testInvalidReplica() {
-		PolicyValueConverter.getReplica("none");
+		assertThrows(InvalidPolicyValueError.class, () -> PolicyValueConverter.getReplica("none"));
 	}
 
 	@Test
@@ -54,9 +53,9 @@ public class PolicyConverterTests {
 		assertTrue(PolicyValueConverter.getCompress("TRUE"));
 	}
 
-	@Test(expected=InvalidPolicyValueError.class)
+	@Test()
 	public void testInvalidCommitLevel() {
-		PolicyValueConverter.getCommitLevel("commited_enough");
+		assertThrows(InvalidPolicyValueError.class, () -> PolicyValueConverter.getCommitLevel("commited_enough"));
 	}
 
 	@Test
@@ -66,9 +65,9 @@ public class PolicyConverterTests {
 		assertEquals(GenerationPolicy.NONE, PolicyValueConverter.getGenerationPolicy("NONE"));
 	}
 
-	@Test(expected=InvalidPolicyValueError.class)
+	@Test()
 	public void testInvalidGenerationPolicy() {
-		PolicyValueConverter.getGenerationPolicy("lt");
+		assertThrows(InvalidPolicyValueError.class, () -> PolicyValueConverter.getGenerationPolicy("lt"));
 	}
 
 	@Test
@@ -80,13 +79,13 @@ public class PolicyConverterTests {
 		assertEquals(RecordExistsAction.UPDATE_ONLY, PolicyValueConverter.getRecordExistsAction("UPDATE_ONLY"));
 	}
 
-	@Test(expected=InvalidPolicyValueError.class)
+	@Test()
 	public void testInvalidRecordExistsAction() {
-		PolicyValueConverter.getRecordExistsAction("nothing");
+		assertThrows(InvalidPolicyValueError.class, () -> PolicyValueConverter.getRecordExistsAction("nothing"));
 	}
 
-	@Test(expected=InvalidPolicyValueError.class)
-	public void testIntvalue() {
-		PolicyValueConverter.getIntValue("five");
+	@Test()
+	public void testIntValue() {
+		assertThrows(InvalidPolicyValueError.class, () -> PolicyValueConverter.getIntValue("five"));
 	}
 }

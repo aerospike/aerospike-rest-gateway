@@ -18,12 +18,12 @@ package com.aerospike.restclient.domain;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import com.aerospike.client.BatchRead;
@@ -35,23 +35,24 @@ import com.aerospike.restclient.util.RestClientErrors;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.api.Assertions.*;
+
 public class RestClientBatchReadBodyTest {
 
 	private BatchReadBodyMapper mapper;
-	private static String ns = "test";
-	private static String set = "set";
+	private static final String ns = "test";
+	private static final String set = "set";
 
-
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[] {
-				new JsonBatchReadBodyMapper(new ObjectMapper()),
-				new MsgPackBatchReadBodyMapper(new ObjectMapper(new MessagePackFactory()))
-		};
+	private static Stream<Arguments> getParams() {
+		return Stream.of(
+				Arguments.of(new JsonBatchReadBodyMapper(new ObjectMapper())),
+				Arguments.of(new MsgPackBatchReadBodyMapper(new ObjectMapper(new MessagePackFactory())))
+		);
 	}
 
-	public RestClientBatchReadBodyTest(BatchReadBodyMapper mapper) {
+	@ParameterizedTest
+	@MethodSource("getParams")
+	void addMappers(BatchReadBodyMapper mapper) {
 		this.mapper = mapper;
 	}
 
@@ -68,11 +69,11 @@ public class RestClientBatchReadBodyTest {
 
 		RestClientBatchReadBody mappedBody = mapper.mapToBatchReadBody(batchMap);
 
-		Assert.assertTrue(mappedBody.readAllBins);
-		Assert.assertArrayEquals(mappedBody.binNames, new String[] {});
+		assertTrue(mappedBody.readAllBins);
+		assertArrayEquals(mappedBody.binNames, new String[] {});
 		RestClientKey rcKey = mappedBody.key;
 
-		Assert.assertEquals(RecordKeyType.STRING, rcKey.keyType);
+		assertEquals(RecordKeyType.STRING, rcKey.keyType);
 	}
 
 	@Test
@@ -85,11 +86,11 @@ public class RestClientBatchReadBodyTest {
 
 		RestClientBatchReadBody mappedBody = mapper.mapToBatchReadBody(batchMap);
 
-		Assert.assertTrue(mappedBody.readAllBins);
-		Assert.assertArrayEquals(mappedBody.binNames, bins);
+		assertTrue(mappedBody.readAllBins);
+		assertArrayEquals(mappedBody.binNames, bins);
 		RestClientKey rcKey = mappedBody.key;
 
-		Assert.assertEquals(RecordKeyType.STRING, rcKey.keyType);
+		assertEquals(RecordKeyType.STRING, rcKey.keyType);
 	}
 
 	@Test
@@ -100,11 +101,11 @@ public class RestClientBatchReadBodyTest {
 
 		RestClientBatchReadBody mappedBody = mapper.mapToBatchReadBody(batchMap);
 
-		Assert.assertTrue(mappedBody.readAllBins);
-		Assert.assertArrayEquals(mappedBody.binNames, new String[] {});
+		assertTrue(mappedBody.readAllBins);
+		assertArrayEquals(mappedBody.binNames, new String[] {});
 		RestClientKey rcKey = mappedBody.key;
 
-		Assert.assertEquals(RecordKeyType.INTEGER, rcKey.keyType);
+		assertEquals(RecordKeyType.INTEGER, rcKey.keyType);
 	}
 
 	@Test
@@ -115,11 +116,11 @@ public class RestClientBatchReadBodyTest {
 
 		RestClientBatchReadBody mappedBody = mapper.mapToBatchReadBody(batchMap);
 
-		Assert.assertTrue(mappedBody.readAllBins);
-		Assert.assertArrayEquals(mappedBody.binNames, new String[] {});
+		assertTrue(mappedBody.readAllBins);
+		assertArrayEquals(mappedBody.binNames, new String[] {});
 		RestClientKey rcKey = mappedBody.key;
 
-		Assert.assertEquals(RecordKeyType.BYTES, rcKey.keyType);
+		assertEquals(RecordKeyType.BYTES, rcKey.keyType);
 	}
 
 	@Test
@@ -130,11 +131,11 @@ public class RestClientBatchReadBodyTest {
 
 		RestClientBatchReadBody mappedBody = mapper.mapToBatchReadBody(batchMap);
 
-		Assert.assertTrue(mappedBody.readAllBins);
-		Assert.assertArrayEquals(mappedBody.binNames, new String[] {});
+		assertTrue(mappedBody.readAllBins);
+		assertArrayEquals(mappedBody.binNames, new String[] {});
 		RestClientKey rcKey = mappedBody.key;
 
-		Assert.assertEquals(RecordKeyType.DIGEST, rcKey.keyType);
+		assertEquals(RecordKeyType.DIGEST, rcKey.keyType);
 	}
 
 	@Test
@@ -150,9 +151,9 @@ public class RestClientBatchReadBodyTest {
 
 		BatchRead convertedBatchRead = rCBRB.toBatchRead();
 
-		Assert.assertFalse(convertedBatchRead.readAllBins);
-		Assert.assertTrue(ASTestUtils.compareKeys(realKey, convertedBatchRead.key));
-		Assert.assertArrayEquals(bins, convertedBatchRead.binNames);
+		assertFalse(convertedBatchRead.readAllBins);
+		assertTrue(ASTestUtils.compareKeys(realKey, convertedBatchRead.key));
+		assertArrayEquals(bins, convertedBatchRead.binNames);
 	}
 
 	@Test
@@ -168,9 +169,9 @@ public class RestClientBatchReadBodyTest {
 
 		BatchRead convertedBatchRead = rCBRB.toBatchRead();
 
-		Assert.assertTrue(convertedBatchRead.readAllBins);
-		Assert.assertTrue(ASTestUtils.compareKeys(realKey, convertedBatchRead.key));
-		Assert.assertNull(convertedBatchRead.binNames);
+		assertTrue(convertedBatchRead.readAllBins);
+		assertTrue(ASTestUtils.compareKeys(realKey, convertedBatchRead.key));
+		assertNull(convertedBatchRead.binNames);
 	}
 
 	@Test
@@ -183,18 +184,17 @@ public class RestClientBatchReadBodyTest {
 
 		BatchRead convertedBatchRead = rCBRB.toBatchRead();
 
-		Assert.assertFalse(convertedBatchRead.readAllBins);
-		Assert.assertTrue(ASTestUtils.compareKeys(realKey, convertedBatchRead.key));
-		Assert.assertNull(convertedBatchRead.binNames);
+		assertFalse(convertedBatchRead.readAllBins);
+		assertTrue(ASTestUtils.compareKeys(realKey, convertedBatchRead.key));
+		assertNull(convertedBatchRead.binNames);
 	}
 
-	@Test(expected=RestClientErrors.InvalidKeyError.class)
+	@Test()
 	public void testConversionWithNullKey() {
 		RestClientBatchReadBody rCBRB = new RestClientBatchReadBody();
 		rCBRB.key = null;
-		rCBRB.toBatchRead();
+		assertThrows(RestClientErrors.InvalidKeyError.class, rCBRB::toBatchRead);
 	}
-
 
 	/* HELPERS */
 	private Map<String, Object>getBatchReadBase(){
@@ -203,6 +203,7 @@ public class RestClientBatchReadBodyTest {
 		batchMap.put("binNames", new String[] {});
 		return batchMap;
 	}
+
 	private Map<String, Object>getKeyMap(Object userKey, RecordKeyType keytype) {
 		Map<String, Object>keyMap = new HashMap<>();
 		keyMap.put(AerospikeAPIConstants.NAMESPACE, ns);
@@ -223,7 +224,7 @@ interface BatchReadBodyMapper {
 
 class JsonBatchReadBodyMapper implements BatchReadBodyMapper {
 	TypeReference<RestClientBatchReadBody>brbType = new TypeReference<RestClientBatchReadBody>() {};
-	private ObjectMapper mapper;
+	private final ObjectMapper mapper;
 	public JsonBatchReadBodyMapper(ObjectMapper mapper) {
 		this.mapper = mapper;
 	}
@@ -236,7 +237,7 @@ class JsonBatchReadBodyMapper implements BatchReadBodyMapper {
 
 class MsgPackBatchReadBodyMapper implements BatchReadBodyMapper {
 	TypeReference<RestClientBatchReadBody>brbType = new TypeReference<RestClientBatchReadBody>() {};
-	private ObjectMapper mapper;
+	private final ObjectMapper mapper;
 	public MsgPackBatchReadBodyMapper(ObjectMapper mapper) {
 		this.mapper = mapper;
 	}

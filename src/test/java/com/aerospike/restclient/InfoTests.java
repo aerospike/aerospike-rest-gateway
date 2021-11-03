@@ -22,21 +22,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -47,15 +42,11 @@ import com.aerospike.client.cluster.Node;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 public class InfoTests {
-
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
-
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
 	public static TypeReference<Map<String, String>> infoResponseType = new TypeReference<Map<String, String>>() {};
 
@@ -68,27 +59,27 @@ public class InfoTests {
 
 	private MockMvc mockMVC = null;
 
-	private String endpoint = "/v1/info";
+	private final String endpoint = "/v1/info";
 
 	private Node testNode;
 
-	@Parameters
-	public static Object[] getParams(){
-		return new Object[] {
-				new JSONInfoPerformer(),
-				new MsgPackInfoPerformer()
-		};
+	private static Stream<Arguments> getParams() {
+		return Stream.of(
+				Arguments.of(new JSONInfoPerformer()),
+				Arguments.of(new MsgPackInfoPerformer())
+		);
 	}
 
+	@ParameterizedTest
+	@MethodSource("getParams")
+	void addParams(InfoPerformer performer) {
+		this.performer = performer;
+	}
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 		testNode = client.getNodes()[0];
-	}
-
-	public InfoTests(InfoPerformer performer) {
-		this.performer = performer;
 	}
 
 	@Test
@@ -97,13 +88,12 @@ public class InfoTests {
 		List<String>commands = Arrays.asList(command);
 		Map<String, String>responses = performer.performInfoAndReturn(endpoint, commands, mockMVC);
 
-		Assert.assertTrue(responses.containsKey(command));
+		assertTrue(responses.containsKey(command));
 		String restClientResponse = responses.get(command);
 
 		String clientResponse = Info.request(null, testNode, command);
 
-		Assert.assertEquals(restClientResponse, clientResponse);
-
+		assertEquals(restClientResponse, clientResponse);
 	}
 
 	@Test
@@ -113,13 +103,12 @@ public class InfoTests {
 		List<String>commands = Arrays.asList(command1, command2);
 		Map<String, String>responses = performer.performInfoAndReturn(endpoint, commands, mockMVC);
 
-		Assert.assertTrue(responses.containsKey(command1));
-		Assert.assertTrue(responses.containsKey(command2));
+		assertTrue(responses.containsKey(command1));
+		assertTrue(responses.containsKey(command2));
 
 		Map<String, String> clientResponses = Info.request(null, testNode, command1, command2);
 
-		Assert.assertTrue(ASTestUtils.compareStringMap(responses, clientResponses));
-
+		assertTrue(ASTestUtils.compareStringMap(responses, clientResponses));
 	}
 
 	@Test
@@ -130,13 +119,12 @@ public class InfoTests {
 		List<String>commands = Arrays.asList(realCommand, fakeCommand);
 		Map<String, String>responses = performer.performInfoAndReturn(endpoint, commands, mockMVC);
 
-		Assert.assertTrue(responses.containsKey(realCommand));
-		Assert.assertFalse(responses.containsKey(fakeCommand));
+		assertTrue(responses.containsKey(realCommand));
+		assertFalse(responses.containsKey(fakeCommand));
 
 		Map<String, String> clientResponses = Info.request(null, testNode, realCommand, fakeCommand);
 
-		Assert.assertTrue(ASTestUtils.compareStringMap(responses, clientResponses));
-
+		assertTrue(ASTestUtils.compareStringMap(responses, clientResponses));
 	}
 
 	@Test
@@ -151,15 +139,12 @@ public class InfoTests {
 
 		String clientNodeName = Info.request(null, testNode, nameCommand);
 
-		Assert.assertEquals(rcNodeName, clientNodeName);
-
+		assertEquals(rcNodeName, clientNodeName);
 	}
-
-
 }
 
 interface InfoPerformer {
-	public Map<String, String>performInfoAndReturn(String endpoint, List<String>commands, MockMvc mockMVC) throws Exception;
+	Map<String, String>performInfoAndReturn(String endpoint, List<String> commands, MockMvc mockMVC) throws Exception;
 }
 
 class JSONInfoPerformer implements InfoPerformer {
@@ -188,7 +173,6 @@ class MsgPackInfoPerformer implements InfoPerformer {
 
 	public MsgPackInfoPerformer() {
 		mapper = new ObjectMapper(new MessagePackFactory());
-
 	}
 
 	@Override

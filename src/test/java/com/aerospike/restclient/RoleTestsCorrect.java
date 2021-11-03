@@ -26,24 +26,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -59,25 +53,23 @@ import com.aerospike.restclient.domain.RestClientRole;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 public class RoleTestsCorrect {
 
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
+	private RestRoleHandler handler;
 
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
-
-	private final RestRoleHandler handler;
-
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[] {
-				new JSONRestRoleHandler(), new MsgPackRestRoleHandler()
-		};
+	private static Stream<Arguments> getParams() {
+		return Stream.of(
+				Arguments.of(new JSONRestRoleHandler(), new MsgPackRestRoleHandler())
+		);
 	}
-	public RoleTestsCorrect(RestRoleHandler handler) {
+
+	@ParameterizedTest
+	@MethodSource("getParams")
+	void addParams(RestRoleHandler handler) {
 		this.handler = handler;
 	}
 
@@ -100,12 +92,12 @@ public class RoleTestsCorrect {
 	@Autowired
 	private AerospikeClient client;
 
-	@BeforeClass
+	@BeforeAll
 	public static void okToRun() {
-		Assume.assumeTrue(ASTestUtils.runningWithAuth());
+		assumeTrue(ASTestUtils.runningWithAuth());
 	}
 
-	@Before
+	@BeforeEach
 	public void setup() throws InterruptedException {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 		readTestDemo = new Privilege();
@@ -133,7 +125,7 @@ public class RoleTestsCorrect {
 		Thread.sleep(1000);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		for (String role: createdRoles) {
 			try {
@@ -149,14 +141,14 @@ public class RoleTestsCorrect {
 	@Test
 	public void getRoles() throws Exception {
 		List<RestClientRole>roleList = handler.getRoles(mockMVC, endpoint);//objectMapper.readValue(resJson, listRoleType);
-		Assert.assertTrue(rcRolesListContainsRole(roleList, createdRole));
+		assertTrue(rcRolesListContainsRole(roleList, createdRole));
 	}
 
 
 	@Test
 	public void getRole() throws Exception {
 		RestClientRole rcRole = handler.getRole(mockMVC, endpoint + "/" + TestRoleName);//objectMapper.readValue(resJson, roleType);
-		Assert.assertTrue(roleEquals(rcRole.toRole(), createdRole));
+		assertTrue(roleEquals(rcRole.toRole(), createdRole));
 	}
 
 	@Test
@@ -174,7 +166,7 @@ public class RoleTestsCorrect {
 				exists = false;
 			}
 		}
-		Assert.assertFalse(exists);
+		assertFalse(exists);
 	}
 
 	@Test
@@ -195,7 +187,7 @@ public class RoleTestsCorrect {
 		Thread.sleep(1000);
 
 		Role fetchedRole = client.queryRole(null, testRole.name);
-		Assert.assertTrue(roleEquals(fetchedRole, testRole));
+		assertTrue(roleEquals(fetchedRole, testRole));
 	}
 
 	@Test
@@ -211,7 +203,7 @@ public class RoleTestsCorrect {
 		Thread.sleep(1000);
 
 		Role fetchedRole = client.queryRole(null, TestRoleName);
-		Assert.assertTrue(RoleHasPrivilege(fetchedRole, crPrivilege));
+		assertTrue(RoleHasPrivilege(fetchedRole, crPrivilege));
 	}
 
 	@Test
@@ -224,7 +216,7 @@ public class RoleTestsCorrect {
 
 		Thread.sleep(1000);
 		Role fetchedRole = client.queryRole(null, TestRoleName);
-		Assert.assertFalse(RoleHasPrivilege(fetchedRole, readWriteTestProd));
+		assertFalse(RoleHasPrivilege(fetchedRole, readWriteTestProd));
 	}
 
 	/*
@@ -285,7 +277,6 @@ public class RoleTestsCorrect {
 		}
 		return false;
 	}
-
 }
 
 interface RestRoleHandler {
@@ -403,5 +394,4 @@ class MsgPackRestRoleHandler implements RestRoleHandler{
 				.content(privsContent))
 		.andExpect(status().isAccepted());
 	}
-
 }

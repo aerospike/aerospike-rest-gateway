@@ -19,58 +19,62 @@ package com.aerospike.restclient;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.aerospike.client.AerospikeException;
 import com.aerospike.restclient.util.InfoResponseParser;
+import org.junit.jupiter.api.Test;
 
-public class SindexResponseParserTests {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class SIndexResponseParserTests {
+
 	@Test
 	public void
-	testSindexResponseSplitsIntoMaps() throws Exception {
+	testSIndexResponseSplitsIntoMaps() {
 		String responseString = "ns=bar:set=demo:indexname=int_index_1:bin=intbin1:type=NUMERIC:indextype=NONE:path=intbin1:state=RW;"
 				+ "ns=test:set=demo:indexname=int_index_1:bin=intbin1:type=NUMERIC:indextype=NONE:path=intbin1:state=RW;"
 				+ "ns=test:set=demo:indexname=str_index1:bin=strbin1:type=STRING:indextype=NONE:path=strbin1:state=RW;\n";
 
 		List<Map<String, String>> indexInfoAry = InfoResponseParser.getIndexInformation(responseString);
 
-		Assert.assertEquals(indexInfoAry.size(), 3);
+		assertEquals(indexInfoAry.size(), 3);
 	}
+
 	@Test
 	public void
-	testSindexResponseGetsIndexInfo() throws Exception {
+	testSIndexResponseGetsIndexInfo() {
 		String responseString = "ns=bar:set=demo:indexname=int_index_1:bin=intbin1:type=NUMERIC:indextype=NONE:path=intbin1:state=RW;";
 		List<Map<String, String>> indexInfoAry = InfoResponseParser.getIndexInformation(responseString);
 		Map<String, String> indexInfo = indexInfoAry.get(0);
 
-		Assert.assertTrue(indexInfoNameEquals(indexInfo, "int_index_1"));
-		Assert.assertTrue(indexInfoBinEquals(indexInfo, "intbin1"));
-		Assert.assertTrue(indexInfoNamespaceEquals(indexInfo, "bar"));
-		Assert.assertTrue(indexInfoSetEquals(indexInfo, "demo"));
-		Assert.assertTrue(indexInfoTypeEquals(indexInfo, "NUMERIC"));
-		Assert.assertTrue(indexInfoIndexTypeEquals(indexInfo, "NONE"));
+		assertTrue(indexInfoNameEquals(indexInfo, "int_index_1"));
+		assertTrue(indexInfoBinEquals(indexInfo, "intbin1"));
+		assertTrue(indexInfoNamespaceEquals(indexInfo, "bar"));
+		assertTrue(indexInfoSetEquals(indexInfo, "demo"));
+		assertTrue(indexInfoTypeEquals(indexInfo, "NUMERIC"));
+		assertTrue(indexInfoIndexTypeEquals(indexInfo, "NONE"));
 	}
 
 	@Test
 	public void
-	testEmptySindexResponse() throws Exception {
+	testEmptySIndexResponse() {
 		/*
 		 * If there are no indexes we expect an empty list
 		 */
 		String responseString = "";
 		List<Map<String, String>> indexInfoAry = InfoResponseParser.getIndexInformation(responseString);
-		Assert.assertEquals(0, indexInfoAry.size());
+		assertEquals(0, indexInfoAry.size());
 	}
 
-	@Test(expected=AerospikeException.class)
+	@Test()
 	public void
-	testInvalidNamespaceResponse() throws Exception {
+	testInvalidNamespaceResponse() {
 		/*
 		 * If there are no indexes we expect an empty list
 		 */
 		String responseString = "ns_type=unknown\n";
-		InfoResponseParser.getIndexInformation(responseString);
+		assertThrows(AerospikeException.class, () -> InfoResponseParser.getIndexInformation(responseString));
 	}
 
 	private boolean indexInfoNameEquals(Map<String, String>indexInfo, String name) {
@@ -96,6 +100,4 @@ public class SindexResponseParserTests {
 	private boolean indexInfoIndexTypeEquals(Map<String, String>indexInfo, String indexType) {
 		return indexType.equals(indexInfo.get("indextype"));
 	}
-
 }
-

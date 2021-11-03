@@ -3,20 +3,13 @@ package com.aerospike.restclient;
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -26,20 +19,14 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class ExpressionParserTest {
-
-    /* Needed to run as a Spring Boot test */
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     @Autowired
     private AerospikeClient client;
@@ -52,30 +39,29 @@ public class ExpressionParserTest {
     private final String currentMediaType;
     private final String expParameter;
 
-    @Parameterized.Parameters
-    public static Object[] mappers() {
-        return new Object[][]{
-                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true, "predexp"},
-                {new MsgPackRestRecordDeserializer(), "application/msgpack", true, "predexp"},
-                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false, "predexp"},
-                {new MsgPackRestRecordDeserializer(), "application/msgpack", false, "predexp"},
+    private static Stream<Arguments> mappers() {
+        return Stream.of(
+                Arguments.of(new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true, "predexp"),
+                Arguments.of(new MsgPackRestRecordDeserializer(), "application/msgpack", true, "predexp"),
+                Arguments.of(new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false, "predexp"),
+                Arguments.of(new MsgPackRestRecordDeserializer(), "application/msgpack", false, "predexp"),
 
-                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true, "filterexp"},
-                {new MsgPackRestRecordDeserializer(), "application/msgpack", true, "filterexp"},
-                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false, "filterexp"},
-                {new MsgPackRestRecordDeserializer(), "application/msgpack", false, "filterexp"},
-        };
+                Arguments.of(new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true, "filterexp"),
+                Arguments.of(new MsgPackRestRecordDeserializer(), "application/msgpack", true, "filterexp"),
+                Arguments.of(new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false, "filterexp"),
+                Arguments.of(new MsgPackRestRecordDeserializer(), "application/msgpack", false, "filterexp")
+        );
     }
 
     private final Key testKey;
     private final String noBinEndpoint;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
-    @After
+    @AfterEach
     public void clean() {
         client.delete(null, this.testKey);
     }
@@ -114,7 +100,7 @@ public class ExpressionParserTest {
                     get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType)
             ).andExpect(status().isOk()).andReturn().getResponse();
             Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
-            Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+            assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
         }
     }
 
@@ -138,7 +124,7 @@ public class ExpressionParserTest {
                     get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType)
             ).andExpect(status().isOk()).andReturn().getResponse();
             Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
-            Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+            assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
         }
     }
 
@@ -163,7 +149,7 @@ public class ExpressionParserTest {
                     get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType)
             ).andExpect(status().isOk()).andReturn().getResponse();
             Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
-            Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+            assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
         }
     }
 
@@ -191,7 +177,7 @@ public class ExpressionParserTest {
                     get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType)
             ).andExpect(status().isOk()).andReturn().getResponse();
             Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
-            Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+            assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
         }
     }
 

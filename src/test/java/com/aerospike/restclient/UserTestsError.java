@@ -27,16 +27,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -48,12 +44,13 @@ import com.aerospike.restclient.domain.RestClientUserModel;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+
 public class UserTestsError {
 
-	List<String>createdUsers;
-	List<String>createdRoles = Arrays.asList(Role.SysAdmin, Role.DataAdmin, Role.Read);
+	List<String> createdUsers;
+	List<String> createdRoles = Arrays.asList(Role.SysAdmin, Role.DataAdmin, Role.Read);
 	TypeReference<List<Map<String,Object>>> userListType= new TypeReference<List<Map<String,Object>>>() {};
 	TypeReference<Map<String,Object>> userType= new TypeReference<Map<String,Object>>() {};
 	String userName = "JunitUser";
@@ -71,18 +68,18 @@ public class UserTestsError {
 	@Autowired
 	AerospikeClient client;
 
-	@BeforeClass
+	@BeforeAll
 	public static void okToRun() {
-		Assume.assumeTrue(ASTestUtils.runningWithAuth());
+		assumeTrue(ASTestUtils.runningWithAuth());
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 		createdUsers = new ArrayList<>();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		for (String user: createdUsers) {
 			try {
@@ -94,7 +91,7 @@ public class UserTestsError {
 
 	@Test
 	public void getUserThatDoesNotExist() throws Exception {
-		Assume.assumeFalse(ClusterUtils.isSecurityEnabled(client));
+		assumeFalse(ClusterUtils.isSecurityEnabled(client));
 		/* Get information on the user we just created*/
 		mockMVC.perform(get(endpoint +"/" + "notARealUser")
 				.contentType(MediaType.APPLICATION_JSON))
@@ -103,7 +100,7 @@ public class UserTestsError {
 
 	@Test
 	public void deleteUserThatDoesNotExist() throws Exception {
-		Assume.assumeFalse(ClusterUtils.isSecurityEnabled(client));
+		assumeFalse(ClusterUtils.isSecurityEnabled(client));
 		/* Get information on the user we just created*/
 		mockMVC.perform(delete(endpoint +"/" + "notARealUser")
 				.contentType(MediaType.APPLICATION_JSON))
@@ -112,7 +109,7 @@ public class UserTestsError {
 
 	@Test
 	public void patchUserThatDoesNotExist() throws Exception {
-		Assume.assumeFalse(ClusterUtils.isSecurityEnabled(client));
+		assumeFalse(ClusterUtils.isSecurityEnabled(client));
 		String newPassword = "SuperSecret";
 		mockMVC.perform(patch(endpoint + "/" + "notARealUser")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -174,8 +171,8 @@ public class UserTestsError {
 	}
 
 	@Test
-	public void addRolesToNonExistantUser() throws Exception {
-		Assume.assumeFalse(ClusterUtils.isSecurityEnabled(client));
+	public void addRolesToNonExistentUser() throws Exception {
+		assumeFalse(ClusterUtils.isSecurityEnabled(client));
 		String[] roles = {Role.ReadWrite, Role.ReadWriteUdf};
 
 		mockMVC.perform(post(endpoint + "/notARealUser/role")
@@ -185,8 +182,8 @@ public class UserTestsError {
 	}
 
 	@Test
-	public void deleteRolesFromNonExistantUser() throws Exception {
-		Assume.assumeFalse(ClusterUtils.isSecurityEnabled(client));
+	public void deleteRolesFromNonExistentUser() throws Exception {
+		assumeFalse(ClusterUtils.isSecurityEnabled(client));
 		String[] roles = {Role.ReadWrite, Role.ReadWriteUdf};
 
 		mockMVC.perform(patch(endpoint + "/notARealUser/role/delete")
@@ -194,5 +191,4 @@ public class UserTestsError {
 				.content(objectMapper.writeValueAsString(roles)))
 		.andExpect(status().isNotFound());
 	}
-
 }

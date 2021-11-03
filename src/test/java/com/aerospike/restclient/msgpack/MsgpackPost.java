@@ -24,18 +24,14 @@ import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.msgpack.core.MessageBufferPacker;
 import org.msgpack.core.MessagePack;
 import org.msgpack.jackson.dataformat.MessagePackExtensionType;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -51,10 +47,10 @@ import com.aerospike.restclient.util.deserializers.MsgPackBinParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class MsgpackPost {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+public class MsgpackPost {
 
 	private MockMvc mockMVC;
 
@@ -64,20 +60,20 @@ public class MsgpackPost {
 	@Autowired
 	private WebApplicationContext wac;
 
-	private String mtString = "application/msgpack";
+	private final String mtString = "application/msgpack";
 	private ObjectMapper mapper;
-	private Key testKey = new Key("test", "msgpack", "post");
+	private final Key testKey = new Key("test", "msgpack", "post");
 
-	private String testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "msgpack", "post");
-	private TypeReference<Map<String, Object>> sOMapType= new TypeReference<Map<String, Object>>() {};
+	private final String testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "msgpack", "post");
+	private final TypeReference<Map<String, Object>> sOMapType = new TypeReference<Map<String, Object>>() {};
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		mapper = new ObjectMapper(new MessagePackFactory());
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
 
-	@After
+	@AfterEach
 	public void clean() {
 		client.delete(null, testKey);
 	}
@@ -88,7 +84,6 @@ public class MsgpackPost {
 		byte[] testBytes = new byte[] {1, 127, 127, 1};
 		byteBins.put("byte", testBytes);
 
-
 		mockMVC.perform(post(testEndpoint).contentType(mtString)
 				.content(mapper.writeValueAsBytes(byteBins)))
 		.andExpect(status().isCreated());
@@ -96,7 +91,7 @@ public class MsgpackPost {
 
 		Record rec = client.get(null, testKey);
 		byte[] realBytes = (byte[]) rec.bins.get("byte");
-		Assert.assertArrayEquals(testBytes, realBytes);
+		assertArrayEquals(testBytes, realBytes);
 	}
 
 	@Test
@@ -120,7 +115,7 @@ public class MsgpackPost {
 
 		Record rec = client.get(null, testKey);
 		byte[] realBytes = (byte[]) rec.bins.get("my_bytes");
-		Assert.assertArrayEquals(testBytes, realBytes);
+		assertArrayEquals(testBytes, realBytes);
 	}
 
 	@Test
@@ -138,9 +133,8 @@ public class MsgpackPost {
 
 		byte[] realBytes = (byte[]) bins.get("byte");
 
-		Assert.assertArrayEquals(testBytes, realBytes);
+		assertArrayEquals(testBytes, realBytes);
 	}
-
 
 	@Test
 	public void testStoringGeoJson() throws Exception {
@@ -157,8 +151,8 @@ public class MsgpackPost {
 
 		Record rec = client.get(null, testKey);
 		GeoJSONValue geoV = (GeoJSONValue) rec.bins.get("geo");
-		Assert.assertEquals(ParticleType.GEOJSON, geoV.getType());
-		Assert.assertEquals(geoString, geoV.toString());
+		assertEquals(ParticleType.GEOJSON, geoV.getType());
+		assertEquals(geoString, geoV.toString());
 	}
 
 	@Test
@@ -174,14 +168,14 @@ public class MsgpackPost {
 
 		@SuppressWarnings("unchecked")
 		Map<String, Object>bins = (Map<String, Object>) retRec.get("bins");
-		MessagePackExtensionType etype = (MessagePackExtensionType) bins.get("geo");
+		MessagePackExtensionType eType = (MessagePackExtensionType) bins.get("geo");
 
-		Assert.assertEquals(etype.getType(), ParticleType.GEOJSON);
-		Assert.assertEquals(new String(etype.getData(), "UTF-8"), geoString);
+		assertEquals(eType.getType(), ParticleType.GEOJSON);
+		assertEquals(new String(eType.getData(), "UTF-8"), geoString);
 	}
 
 	@Test
-	public void testStoringMapWithIntkeys() throws Exception {
+	public void testStoringMapWithIntKeys() throws Exception {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		// Store a map {map={1L=2L}}
 		packer.packMapHeader(1);
@@ -196,17 +190,16 @@ public class MsgpackPost {
 
 		Record rec = client.get(null, testKey);
 		@SuppressWarnings("unchecked")
-		Map<Long, Long>retMap = (Map<Long, Long>) rec.bins.get("map");
+		Map<Long, Long> retMap = (Map<Long, Long>) rec.bins.get("map");
 
-		Assert.assertEquals(retMap.size(), 1);
-		Assert.assertEquals(retMap.get(1L), (Long)2l);
+		assertEquals(retMap.size(), 1);
+		assertEquals(retMap.get(1L), (Long) 2L);
 	}
 
 	@Test
 	public void testGettingMapWithIntKey() throws Exception {
-
-		Map<Long, Long>iMap = new HashMap<>();
-		iMap.put(1l, 2l);
+		Map<Long, Long> iMap = new HashMap<>();
+		iMap.put(1L, 2L);
 
 		client.put(null, testKey, new Bin("map", iMap));
 
@@ -223,9 +216,8 @@ public class MsgpackPost {
 		@SuppressWarnings("unchecked")
 		Map<Object, Object>lMap = (Map<Object, Object>) bins.get("map");
 
-		Assert.assertEquals(lMap.size(), 1);
-		Assert.assertEquals(lMap.get(1L), 2l);
-
+		assertEquals(lMap.size(), 1);
+		assertEquals(lMap.get(1L), 2L);
 	}
 
 	/* Write a request with empty msgpack data */
@@ -235,7 +227,6 @@ public class MsgpackPost {
 		mockMVC.perform(post(testEndpoint).contentType(mtString)
 				.content(new byte[] {}))
 		.andExpect(status().isBadRequest());
-
 	}
 
 	/* Write a request with an incomplete msgpack map*/
@@ -249,11 +240,10 @@ public class MsgpackPost {
 		mockMVC.perform(post(testEndpoint).contentType(mtString)
 				.content(new byte[] {}))
 		.andExpect(status().isBadRequest());
-
 	}
 
 	@Test
-	public void testNonMapmsgpack() throws Exception {
+	public void testNonMapMsgPack() throws Exception {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		// Store a map {map={1L=2L}}
 		packer.packArrayHeader(2);
@@ -263,6 +253,5 @@ public class MsgpackPost {
 		mockMVC.perform(post(testEndpoint).contentType(mtString)
 				.content(new byte[] {}))
 		.andExpect(status().isBadRequest());
-
 	}
 }

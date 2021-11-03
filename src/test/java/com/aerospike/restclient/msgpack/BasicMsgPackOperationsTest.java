@@ -24,23 +24,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import com.aerospike.restclient.util.AerospikeOperation;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.core.MessageBufferPacker;
 import org.msgpack.core.MessagePack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -51,18 +47,13 @@ import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.restclient.ASTestUtils;
 import com.aerospike.restclient.MsgPackOperationPerformer;
-import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.deserializers.MsgPackBinParser;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class BasicMsgPackOperationsTest {
-
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
-
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
 	@Autowired
 	private AerospikeClient client;
@@ -70,21 +61,23 @@ public class BasicMsgPackOperationsTest {
 	@Autowired
 	private WebApplicationContext wac;
 
-	private MsgPackOperationPerformer opPerformer = new MsgPackOperationPerformer();
+	private final MsgPackOperationPerformer opPerformer = new MsgPackOperationPerformer();
 
 	private MockMvc mockMVC;
 
 	private Key testKey;
 	private String testEndpoint;
 
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[] {
-				true, false
-		};
+	private static Stream<Arguments> getParams() {
+		return Stream.of(
+				Arguments.of(true),
+				Arguments.of(false)
+		);
 	}
 
-	public BasicMsgPackOperationsTest(boolean useSet) {
+	@ParameterizedTest
+	@MethodSource("getParams")
+	void shouldUseSet(boolean useSet) {
 		if (useSet) {
 			testKey = new Key("test", "junit", "mpoperate");
 			testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "mpoperate");
@@ -92,38 +85,36 @@ public class BasicMsgPackOperationsTest {
 			testKey = new Key("test", null, "mpoperate");
 			testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "mpoperate");
 		}
-
 	}
 
-
-	@Before
+	@BeforeEach
 	public void setup() {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 		client.put(null, testKey, new Bin("a", "b"));
 	}
 
-	@After
+	@AfterEach
 	public void clean() {
 		try {
 			client.delete(null, testKey);
 		} catch(AerospikeException e) {
-			;
+
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetWithNonJson() throws Exception {
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testGetWithNonJson() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 		opMap.put(OPERATION_FIELD, AerospikeOperation.GET);
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 
 		opList.add(opMap);
 
 		Map<Object, Object>imap = new HashMap<>();
-		imap.put(1l, "long");
+		imap.put(1L, "long");
 		Bin mb = new Bin("map", imap);
 
 		client.put(null, testKey, new Bin("bytes", new byte[] {1,2,3}), mb);
@@ -134,16 +125,14 @@ public class BasicMsgPackOperationsTest {
 		Map<String, Object>opBins = (Map<String, Object>) retRec.get("bins");
 		Map<String, Object>realBins = client.get(null, testKey).bins;
 
-		Assert.assertTrue(ASTestUtils.compareMapStringObj(opBins, realBins));
+		assertTrue(ASTestUtils.compareMapStringObj(opBins, realBins));
 	}
 
 	@Test
 	public void testPutIntMapKey() throws Exception {
-
 		/*
 		 * [{OPERATION_FIELD:"PUT", OPERATION_VALUES_FIELD:{"bin":"new", "value":{1:2}}}]
 		 */
-
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		packer.packArrayHeader(1);
 
@@ -161,8 +150,6 @@ public class BasicMsgPackOperationsTest {
 		packer.packLong(1);
 		packer.packLong(2);
 
-
-
 		byte[] opBytes = packer.toByteArray();
 		opPerformer.performOperationsAndReturnRaw(mockMVC, testEndpoint, opBytes);
 
@@ -170,16 +157,15 @@ public class BasicMsgPackOperationsTest {
 		@SuppressWarnings("unchecked")
 		Map<Long, Long> expectedMap = (Map<Long, Long>) realBins.get("new");
 
-		Assert.assertEquals(expectedMap.size(), 1);
-		Assert.assertEquals((Long)2l, expectedMap.get(1l));
+		assertEquals(expectedMap.size(), 1);
+		assertEquals((Long) 2L, expectedMap.get(1L));
 	}
 
 	@Test
-	public void testPutOpBytes() throws Exception {
-
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+	public void testPutOpBytes() {
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opValues.put("bin", "new");
 		opValues.put("value", new byte[] {1,2,3});
@@ -187,29 +173,26 @@ public class BasicMsgPackOperationsTest {
 		opMap.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(opMap);
 
-
 		opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-		Map<String, Object> expectedBins = new HashMap<String, Object>();
+		Map<String, Object> expectedBins = new HashMap<>();
 		expectedBins.put("a", "b");
 		expectedBins.put("new", new byte[] {1,2,3});
 
 		Map<String, Object>realBins = client.get(null, testKey).bins;
 
-
-		Assert.assertTrue(ASTestUtils.compareMapStringObj(expectedBins, realBins));
+		assertTrue(ASTestUtils.compareMapStringObj(expectedBins, realBins));
 	}
 
 	@Test
-	public void testAppendOp() throws Exception {
-
+	public void testAppendOp() {
 		/*
 		 * Append [4,5] to a bytearray of [1,2,3] and verify that the bin ends up having [1,2,3,4,5]
 		 */
 		client.put(null, testKey, new Bin("bytes", new byte[] {1,2,3}));
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opMap.put(OPERATION_FIELD, AerospikeOperation.APPEND.name());
 		opValues.put("value", new byte[] {4,5});
@@ -222,18 +205,18 @@ public class BasicMsgPackOperationsTest {
 		Map<String, Object>realBins = client.get(null, testKey, "bytes").bins;
 
 		byte[] realBytes = (byte[]) realBins.get("bytes");
-		Assert.assertArrayEquals(realBytes, new byte[] {1,2,3,4,5});
+		assertArrayEquals(realBytes, new byte[] {1,2,3,4,5});
 	}
-	//
+
 	@Test
-	public void testPrependOp() throws Exception {
+	public void testPrependOp() {
 		/*
 		 * Prepend [1,2] to a bytearray of [3,4,5] and verify that the bin ends up having [1,2,3,4,5]
 		 */
 		client.put(null, testKey, new Bin("bytes", new byte[] {3,4,5}));
-		List<Map<String, Object>> opList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> opMap = new HashMap<String, Object>();
-		Map<String, Object> opValues = new HashMap<String, Object>();
+		List<Map<String, Object>> opList = new ArrayList<>();
+		Map<String, Object> opMap = new HashMap<>();
+		Map<String, Object> opValues = new HashMap<>();
 
 		opMap.put(OPERATION_FIELD, AerospikeOperation.PREPEND.name());
 		opValues.put("value", new byte[] {1,2});
@@ -243,14 +226,12 @@ public class BasicMsgPackOperationsTest {
 		opList.add(opMap);
 		opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-
 		/* Only read the str bin on the get*/
-		Map<String, Object> expectedBins = new HashMap<String, Object>();
+		Map<String, Object> expectedBins = new HashMap<>();
 		expectedBins.put("str", "binary");
 		Map<String, Object>realBins = client.get(null, testKey, "bytes").bins;
 
 		byte[] realBytes = (byte[]) realBins.get("bytes");
-		Assert.assertArrayEquals(realBytes, new byte[] {1,2,3,4,5});
+		assertArrayEquals(realBytes, new byte[] {1,2,3,4,5});
 	}
-
 }

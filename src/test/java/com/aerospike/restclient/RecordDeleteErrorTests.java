@@ -20,21 +20,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -43,25 +38,19 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 public class RecordDeleteErrorTests {
-
-
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
-
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
 	@Autowired
 	private ObjectMapper objectMapper;
 
 	private MockMvc mockMVC;
+
 	@Autowired
 	private WebApplicationContext wac;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
@@ -69,12 +58,13 @@ public class RecordDeleteErrorTests {
 	private String nonExistentNSEndpoint = null;
 	private String nonExistentRecordEndpoint = null;
 
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[] {true, false};
+	private static Stream<Arguments> getParams() {
+		return Stream.of(Arguments.of(true, false));
 	}
 
-	public RecordDeleteErrorTests(boolean useSet) {
+	@ParameterizedTest
+	@MethodSource("getParams")
+	void addParams(boolean useSet) {
 		if (useSet) {
 			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
 			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
@@ -83,6 +73,7 @@ public class RecordDeleteErrorTests {
 			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
 		}
 	}
+
 	@Test
 	public void DeleteFromNonExistentNS() throws Exception {
 
@@ -96,7 +87,7 @@ public class RecordDeleteErrorTests {
 		TypeReference<Map<String, Object>> sOMapType= new TypeReference<Map<String, Object>>() {};
 		Map<String, Object>resObject = objectMapper.readValue(resJson, sOMapType);
 
-		Assert.assertFalse((boolean) resObject.get("inDoubt"));
+		assertFalse((boolean) resObject.get("inDoubt"));
 	}
 
 	@Test
@@ -112,7 +103,6 @@ public class RecordDeleteErrorTests {
 		TypeReference<Map<String, Object>> sOMapType= new TypeReference<Map<String, Object>>() {};
 		Map<String, Object>resObject = objectMapper.readValue(resJson, sOMapType);
 
-		Assert.assertFalse((boolean) resObject.get("inDoubt"));
+		assertFalse((boolean) resObject.get("inDoubt"));
 	}
-
 }

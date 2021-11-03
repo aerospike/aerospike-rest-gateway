@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MsgPackOperationPerformer implements OperationPerformer {
+
 	ObjectMapper mapper;
 	private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {};
 
@@ -38,7 +39,6 @@ public class MsgPackOperationPerformer implements OperationPerformer {
 		this.mapper = new ObjectMapper(new MessagePackFactory());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public
 	Map<String, Object>performOperationsAndReturn(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>>ops) {
@@ -82,7 +82,6 @@ public class MsgPackOperationPerformer implements OperationPerformer {
 			e.printStackTrace();
 		}
 		ASTestUtils.performOperationAndExpect(mockMVC, testEndpoint, payload, matcher);
-
 	}
 
 	public
@@ -101,11 +100,9 @@ public class MsgPackOperationPerformer implements OperationPerformer {
 			e.printStackTrace();
 			return null;
 		}
-
 	}
 
-	public
-	byte[] performOperationsAndReturnRaw(MockMvc mockMVC, String testEndpoint, byte[] opsByte) {
+	public byte[] performOperationsAndReturnRaw(MockMvc mockMVC, String testEndpoint, byte[] opsByte) {
 		try {
 			return ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, opsByte);
 		} catch (Exception e) {
@@ -113,7 +110,5 @@ public class MsgPackOperationPerformer implements OperationPerformer {
 			e.printStackTrace();
 			return null;
 		}
-
 	}
-
 }

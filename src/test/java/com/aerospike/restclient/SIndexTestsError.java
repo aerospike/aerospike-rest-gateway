@@ -26,14 +26,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -46,9 +43,7 @@ import com.aerospike.restclient.domain.RestClientIndex;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class SindexTestsError {
+public class SIndexTestsError {
 
 	String endpoint = "/v1/index";
 	/* List of index [ns, name] pairs to delete after each test */
@@ -77,13 +72,13 @@ public class SindexTestsError {
 	private AerospikeClient client;
 
 	/* create and load an index*/
-	@Before
+	@BeforeEach
 	public void setup() throws InterruptedException {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-		createdIndexPairs = new ArrayList<String[]>();
+		createdIndexPairs = new ArrayList<>();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		for (String[] idxPair : createdIndexPairs) {
 			ASTestUtils.ensureDeletion(client, idxPair[0], idxPair[1]);
@@ -125,7 +120,6 @@ public class SindexTestsError {
 		.andExpect(status().isBadRequest());
 	}
 
-
 	@Test
 	public void getIndexesForNonExistentNS() throws Exception {
 		mockMVC.perform(get(endpoint + "/NotARealNS"))
@@ -134,7 +128,7 @@ public class SindexTestsError {
 
 	@Test
 	public void createIndexInvalidType() throws Exception {
-		Map<String, String> idxMap = new HashMap<String, String>();
+		Map<String, String> idxMap = new HashMap<>();
 		idxMap.put("type", "notreal");
 		idxMap.put("namespace", testNS);
 		idxMap.put("bin", testIndexBin);
@@ -178,5 +172,4 @@ public class SindexTestsError {
 
 		createdIndexPairs.add(new String[] {testNS, indexName});
 	}
-
 }

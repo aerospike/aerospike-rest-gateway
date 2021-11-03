@@ -21,21 +21,15 @@ import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.Record;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -45,25 +39,21 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 public class RecordPatchCorrectTests {
-
-    /* Needed to run as a Spring Boot test */
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    private final UpdatePerformer patchPerformer;
+    private UpdatePerformer patchPerformer;
     private MockMvc mockMVC;
 
     @Autowired
@@ -72,15 +62,15 @@ public class RecordPatchCorrectTests {
     @Autowired
     private WebApplicationContext wac;
 
-    private final Key testKey;
-    private final Key intKey;
-    private final Key bytesKey;
-    private final String testEndpoint;
-    private final String intEndpoint;
-    private final String bytesEndpoint;
-    private final String digestEndpoint;
+    private Key testKey;
+    private Key intKey;
+    private Key bytesKey;
+    private String testEndpoint;
+    private String intEndpoint;
+    private String bytesEndpoint;
+    private String digestEndpoint;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
         Bin baseBin = new Bin("initial", "bin");
@@ -89,24 +79,25 @@ public class RecordPatchCorrectTests {
         client.put(null, bytesKey, baseBin);
     }
 
-    @After
+    @AfterEach
     public void clean() {
         client.delete(null, testKey);
         client.delete(null, intKey);
         client.delete(null, bytesKey);
     }
 
-    @Parameters
-    public static Object[][] getParams() {
-        return new Object[][]{
-                {new JSONUpdatePerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), true},
-                {new MsgPackUpdatePerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())), true},
-                {new JSONUpdatePerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), false},
-                {new MsgPackUpdatePerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())), false}
-        };
+    private static Stream<Arguments> getParams() {
+        return Stream.of(
+                Arguments.of(new JSONUpdatePerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), true),
+                Arguments.of(new MsgPackUpdatePerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())), true),
+                Arguments.of(new JSONUpdatePerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), false),
+                Arguments.of(new MsgPackUpdatePerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())), false)
+        );
     }
 
-    public RecordPatchCorrectTests(UpdatePerformer performer, boolean useSet) {
+    @ParameterizedTest
+    @MethodSource("getParams")
+    void addParams(UpdatePerformer performer, boolean useSet) {
         if (useSet) {
             this.testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
             this.testKey = new Key("test", "junit", "getput");
@@ -146,8 +137,8 @@ public class RecordPatchCorrectTests {
         patchPerformer.perform(mockMVC, testEndpoint, binMap);
 
         Record record = client.get(null, this.testKey);
-        Assert.assertTrue(record.bins.containsKey("initial"));
-        Assert.assertEquals(record.bins.get("integer"), 12345L);
+        assertTrue(record.bins.containsKey("initial"));
+        assertEquals(record.bins.get("integer"), 12345L);
     }
 
     @Test
@@ -158,8 +149,8 @@ public class RecordPatchCorrectTests {
         patchPerformer.perform(mockMVC, testEndpoint, binMap);
 
         Record record = client.get(null, this.testKey);
-        Assert.assertTrue(record.bins.containsKey("initial"));
-        Assert.assertEquals(record.bins.get("string"), "Aerospike");
+        assertTrue(record.bins.containsKey("initial"));
+        assertEquals(record.bins.get("string"), "Aerospike");
     }
 
     @Test
@@ -170,8 +161,8 @@ public class RecordPatchCorrectTests {
         patchPerformer.perform(mockMVC, testEndpoint, binMap);
 
         Record record = client.get(null, this.testKey);
-        Assert.assertTrue(record.bins.containsKey("initial"));
-        Assert.assertEquals(record.bins.get("double"), 2.718);
+        assertTrue(record.bins.containsKey("initial"));
+        assertEquals(record.bins.get("double"), 2.718);
     }
 
     @Test
@@ -186,8 +177,8 @@ public class RecordPatchCorrectTests {
 
         Record record = client.get(null, this.testKey);
 
-        Assert.assertTrue(record.bins.containsKey("initial"));
-        Assert.assertTrue(ASTestUtils.compareCollection((List<?>) record.bins.get("ary"), trueList));
+        assertTrue(record.bins.containsKey("initial"));
+        assertTrue(ASTestUtils.compareCollection((List<?>) record.bins.get("ary"), trueList));
     }
 
     @SuppressWarnings("unchecked")
@@ -205,8 +196,8 @@ public class RecordPatchCorrectTests {
 
         Record record = client.get(null, this.testKey);
 
-        Assert.assertTrue(record.bins.containsKey("initial"));
-        Assert.assertTrue(ASTestUtils.compareMap((Map<Object, Object>) record.bins.get("map"), testMap));
+        assertTrue(record.bins.containsKey("initial"));
+        assertTrue(ASTestUtils.compareMap((Map<Object, Object>) record.bins.get("map"), testMap));
     }
 
     @Test
@@ -217,8 +208,8 @@ public class RecordPatchCorrectTests {
         patchPerformer.perform(mockMVC, intEndpoint, binMap);
 
         Record record = client.get(null, this.intKey);
-        Assert.assertTrue(record.bins.containsKey("initial"));
-        Assert.assertEquals(record.bins.get("integer"), 12345L);
+        assertTrue(record.bins.containsKey("initial"));
+        assertEquals(record.bins.get("integer"), 12345L);
     }
 
     @Test
@@ -229,8 +220,8 @@ public class RecordPatchCorrectTests {
         patchPerformer.perform(mockMVC, bytesEndpoint, binMap);
 
         Record record = client.get(null, this.bytesKey);
-        Assert.assertTrue(record.bins.containsKey("initial"));
-        Assert.assertEquals(record.bins.get("integer"), 12345L);
+        assertTrue(record.bins.containsKey("initial"));
+        assertEquals(record.bins.get("integer"), 12345L);
     }
 
     @Test
@@ -241,8 +232,8 @@ public class RecordPatchCorrectTests {
         patchPerformer.perform(mockMVC, digestEndpoint, binMap);
 
         Record record = client.get(null, this.testKey);
-        Assert.assertTrue(record.bins.containsKey("initial"));
-        Assert.assertEquals(record.bins.get("integer"), 12345L);
+        assertTrue(record.bins.containsKey("initial"));
+        assertEquals(record.bins.get("integer"), 12345L);
     }
 
     @Test
@@ -257,13 +248,12 @@ public class RecordPatchCorrectTests {
                 .andExpect(status().isConflict());
 
         Record record = client.get(null, this.testKey);
-        Assert.assertFalse(record.bins.containsKey("integer"));
+        assertFalse(record.bins.containsKey("integer"));
     }
 }
 
 interface UpdatePerformer {
-    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
-            throws Exception;
+    void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap) throws Exception;
 }
 
 class JSONUpdatePerformer implements UpdatePerformer {

@@ -26,13 +26,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -42,29 +39,26 @@ import com.aerospike.client.AerospikeException;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
 public class TruncateTestsError {
 
 	private MockMvc mockMVC;
 	private String truncateSplitPoint;
 	DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-	private String testEndpoint = "/v1/truncate/";
-	private Key otherKey = new Key("test", "otherset", 0);
+	private final String testEndpoint = "/v1/truncate/";
+	private final Key otherKey = new Key("test", "otherset", 0);
 	private List<Key>preCutoffKeys;
 	private List<Key>postCutoffKeys;
 	@Autowired
 	private AerospikeClient client;
 
-
 	@Autowired
 	private WebApplicationContext wac;
 
-	@Before
+	@BeforeEach
 	public void setup() throws InterruptedException {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-		preCutoffKeys = new ArrayList<Key>();
-		postCutoffKeys = new ArrayList<Key>();
+		preCutoffKeys = new ArrayList<>();
+		postCutoffKeys = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
 			Key key = new Key("test", "truncate", i);
 			preCutoffKeys.add(key);
@@ -83,20 +77,20 @@ public class TruncateTestsError {
 		client.put(null, otherKey, new Bin("a", "b"));
 	}
 
-	@After
+	@AfterEach
 	public void clean() {
 		for (Key key: preCutoffKeys) {
 			try {
 				client.delete(null, key);
 			} catch (AerospikeException e) {
-				;
+
 			}
 		}
 		for (Key key: postCutoffKeys) {
 			try {
 				client.delete(null, key);
 			} catch (AerospikeException e) {
-				;
+
 			}
 		}
 		client.delete(null, otherKey);
@@ -104,7 +98,7 @@ public class TruncateTestsError {
 
 	@Test
 	public void TruncateWithInvalidDate() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 
 		binMap.put("string", "Aerospike");
 
@@ -113,7 +107,7 @@ public class TruncateTestsError {
 
 	@Test
 	public void TruncateDateInTheFuture() throws Exception {
-		Map<String, Object> binMap = new HashMap<String, Object>();
+		Map<String, Object> binMap = new HashMap<>();
 
 		GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
 		/* This test will start failing in 2200 */
@@ -124,6 +118,5 @@ public class TruncateTestsError {
 
 		mockMVC.perform(delete(testEndpoint + "test/truncate?date=" + truncateSplitPoint))
 		.andExpect(status().isInternalServerError());
-
 	}
 }

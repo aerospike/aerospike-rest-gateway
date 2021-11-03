@@ -23,18 +23,20 @@ import com.aerospike.client.policy.Replica;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.converters.policyconverters.WritePolicyConverter;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WritePolicyConverterTests {
 
 	Map<String, String> policyMap;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		policyMap = new HashMap<>();
 	}
@@ -43,90 +45,90 @@ public class WritePolicyConverterTests {
 	public void testReplica() {
 		policyMap.put(AerospikeAPIConstants.REPLICA, Replica.MASTER.toString());
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertEquals(policy.replica, Replica.MASTER);
+		assertEquals(policy.replica, Replica.MASTER);
 	}
 
 	@Test
 	public void testTotalTimeout() {
 		policyMap.put(AerospikeAPIConstants.TOTAL_TIMEOUT, "333");
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertEquals(policy.totalTimeout, 333);
+		assertEquals(policy.totalTimeout, 333);
 	}
 
 	@Test
 	public void testSocketTimeout() {
 		policyMap.put(AerospikeAPIConstants.SOCKET_TIMEOUT, "332");
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertEquals(policy.socketTimeout, 332);
+		assertEquals(policy.socketTimeout, 332);
 	}
 
 	@Test
 	public void testSleepBetweenRetries() {
 		policyMap.put(AerospikeAPIConstants.SLEEP_BETWEEN_RETRIES, "111");
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertEquals(policy.sleepBetweenRetries, 111);
+		assertEquals(policy.sleepBetweenRetries, 111);
 	}
 
 	@Test
 	public void testMaxRetries() {
 		policyMap.put(AerospikeAPIConstants.MAX_RETRIES, "5");
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertEquals(policy.maxRetries, 5);
+		assertEquals(policy.maxRetries, 5);
 	}
 
 	@Test
 	public void testSendKey() {
 		policyMap.put(AerospikeAPIConstants.SEND_KEY, "true");
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertTrue(policy.sendKey);
+		assertTrue(policy.sendKey);
 	}
 
 	@Test
 	public void testExpiration() {
 		policyMap.put(AerospikeAPIConstants.EXPIRATION, "5");
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertEquals(policy.expiration, 5);
+		assertEquals(policy.expiration, 5);
 	}
 
 	@Test
 	public void testGeneration() {
 		policyMap.put(AerospikeAPIConstants.GENERATION, "5");
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertEquals(policy.generation, 5);
+		assertEquals(policy.generation, 5);
 	}
 
 	@Test
 	public void testDurableDelete() {
 		policyMap.put(AerospikeAPIConstants.DURABLE_DELETE, "true");
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertTrue(policy.durableDelete);
+		assertTrue(policy.durableDelete);
 	}
 
 	@Test
 	public void testrespondAllOps() {
 		policyMap.put(AerospikeAPIConstants.RESPOND_ALL_OPS, "true");
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertTrue(policy.respondAllOps);
+		assertTrue(policy.respondAllOps);
 	}
 
 	@Test
 	public void testCommitLevel() {
 		policyMap.put(AerospikeAPIConstants.COMMIT_LEVEL, CommitLevel.COMMIT_MASTER.toString());
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertEquals(policy.commitLevel, CommitLevel.COMMIT_MASTER);
+		assertEquals(policy.commitLevel, CommitLevel.COMMIT_MASTER);
 	}
 
 	@Test
 	public void testRecordExistsAction() {
 		policyMap.put(AerospikeAPIConstants.RECORD_EXISTS_ACTION, RecordExistsAction.UPDATE_ONLY.toString());
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertEquals(policy.recordExistsAction, RecordExistsAction.UPDATE_ONLY);
+		assertEquals(policy.recordExistsAction, RecordExistsAction.UPDATE_ONLY);
 	}
 
 	@Test
 	public void testGenerationPolicy() {
 		policyMap.put(AerospikeAPIConstants.GENERATION_POLICY, GenerationPolicy.EXPECT_GEN_EQUAL.toString());
 		WritePolicy policy = WritePolicyConverter.writePolicyFromMap(policyMap);
-		Assert.assertEquals(policy.generationPolicy, GenerationPolicy.EXPECT_GEN_EQUAL);
+		assertEquals(policy.generationPolicy, GenerationPolicy.EXPECT_GEN_EQUAL);
 	}
 }

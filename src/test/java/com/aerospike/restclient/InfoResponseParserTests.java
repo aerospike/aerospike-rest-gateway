@@ -16,39 +16,39 @@
  */
 package com.aerospike.restclient;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.aerospike.client.AerospikeException;
 import com.aerospike.restclient.util.InfoResponseParser;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class InfoResponseParserTests {
 
 	@Test
 	public void getNewStyleReplicationFactor() {
-		int repl_factor = 2;
-		String repl_factor_string = String.format("'ns_cluster_size=1;effective_replication_factor=%d;objects=0;", repl_factor);
-		Assert.assertEquals(repl_factor, InfoResponseParser.getReplicationFactor(repl_factor_string, "irrelevant"));
+		int replicationFactor = 2;
+		String replicationFactorString = String.format("'ns_cluster_size=1;effective_replication_factor=%d;objects=0;", replicationFactor);
+		assertEquals(replicationFactor, InfoResponseParser.getReplicationFactor(replicationFactorString, "irrelevant"));
 	}
 
 	@Test
-	public void getoldstyleReplicationFactor1() {
-		int repl_factor = 2;
-		String repl_factor_string = String.format("'ns_cluster_size=1;repl-factor=%d;objects=0;", repl_factor);
-		Assert.assertEquals(repl_factor, InfoResponseParser.getReplicationFactor(repl_factor_string, "irrelevant"));
+	public void getOldStyleReplicationFactor1() {
+		int replicationFactor = 2;
+		String replicationFactorString = String.format("'ns_cluster_size=1;repl-factor=%d;objects=0;", replicationFactor);
+		assertEquals(replicationFactor, InfoResponseParser.getReplicationFactor(replicationFactorString, "irrelevant"));
 	}
 
 	@Test
-	public void getoldstyleReplicationFactor2() {
-		int repl_factor = 2;
-		String repl_factor_string = String.format("'ns_cluster_size=1;replication-factor=%d;objects=0;", repl_factor);
-		Assert.assertEquals(repl_factor, InfoResponseParser.getReplicationFactor(repl_factor_string, "irrelevant"));
+	public void getOldStyleReplicationFactor2() {
+		int replicationFactor = 2;
+		String replicationFactorString = String.format("'ns_cluster_size=1;replication-factor=%d;objects=0;", replicationFactor);
+		assertEquals(replicationFactor, InfoResponseParser.getReplicationFactor(replicationFactorString, "irrelevant"));
 	}
 
-	@Test(expected=AerospikeException.class)
+	@Test()
 	public void invalidReplicationFactorResponse() {
-		int repl_factor = 2;
-		String repl_factor_string = "";
-		Assert.assertEquals(repl_factor, InfoResponseParser.getReplicationFactor(repl_factor_string, "irrelevant"));
+		String replicationFactorString = "";
+		assertThrows(AerospikeException.class, () -> InfoResponseParser.getReplicationFactor(replicationFactorString, "irrelevant"));
 	}
 }

@@ -42,6 +42,8 @@ bootJar {
 	version "${appVersion}"
 }
 test {
+	useJUnitPlatform()
+
 	testLogging {
 		events "passed", "skipped", "failed"
 	}
@@ -51,18 +53,18 @@ springBoot {
 }
 
 dependencies {
-	implementation('org.springframework.boot:spring-boot-starter-web')
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.aerospike:aerospike-client:${aerospikeClientVersion}")
 	implementation("com.aerospike:aerospike-document-api:1.1.1")
-	implementation('org.msgpack:jackson-dataformat-msgpack:0.9.0')
-	implementation('org.springframework.retry:spring-retry:1.3.1')
-	implementation('org.springframework:spring-aspects:5.3.11')
-	implementation('org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:2.0.2')
-	implementation('org.springdoc:springdoc-openapi-ui:1.5.11')
+	implementation("org.msgpack:jackson-dataformat-msgpack:0.9.0")
+	implementation("org.springframework.retry:spring-retry:1.3.1")
+	implementation("org.springframework:spring-aspects:5.3.11")
+	implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:2.0.2")
+	implementation("org.springdoc:springdoc-openapi-ui:1.5.11")
 	implementation("javax.inject:javax.inject:1")
 	implementation("com.google.guava:guava:31.0.1-jre")
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
-	testImplementation group: 'junit', name: 'junit', version: '4.13.2'
-	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.apache.httpcomponents:httpclient:${httpclientVersion}")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

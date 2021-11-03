@@ -19,18 +19,13 @@ package com.aerospike.restclient;
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -38,6 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,8 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * These Tests are simple tests which store a simple value via the Java Client, then retrieve it via REST
  * The expected and returned values are compared.
  */
-@RunWith(Parameterized.class)
-@SpringBootTest
 public class RecordExistsTests {
 
 	@Autowired
@@ -56,33 +50,28 @@ public class RecordExistsTests {
 	@Autowired
 	private WebApplicationContext wac;
 
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
-
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
-
 	private MockMvc mockMVC;
 
-	private final Key testKey;
-	private final Key intKey;
-	private final Key bytesKey;
+	private Key testKey;
+	private Key intKey;
+	private Key bytesKey;
 
 	private List<Key> keysToRemove;
 
 	// Endpoint to receive all requests
-	private final String testEndpoint;
-	private final String intEndpoint;
-	private final String digestEndpoint;
-	private final String bytesEndpoint;
-	private final String nonExistentEndpoint;
+	private String testEndpoint;
+	private String intEndpoint;
+	private String digestEndpoint;
+	private String bytesEndpoint;
+	private String nonExistentEndpoint;
 
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[] {true, false};
+	private static Stream<Arguments> getParams() {
+		return Stream.of(Arguments.of(true, false));
 	}
 
-	public RecordExistsTests(boolean useSet) {
+	@ParameterizedTest
+	@MethodSource("getParams")
+	void addParams(boolean useSet) {
 		if (useSet) {
 			testKey = new Key("test", "junit", "getput");
 			intKey = new Key("test", "junit", 1);
@@ -118,14 +107,14 @@ public class RecordExistsTests {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 		keysToRemove = new ArrayList<>();
 		client.put(null, testKey, new Bin("a", "b"));
 	}
 
-	@After
+	@AfterEach
 	public void clean() {
 		client.delete(null, this.testKey);
 		for (Key key: keysToRemove) {
@@ -138,7 +127,6 @@ public class RecordExistsTests {
 		mockMVC.perform(
 				head(testEndpoint)).andExpect(status().isOk());
 	}
-
 
 	@Test
 	public void testWithNonExistentRecord() throws Exception {
@@ -181,5 +169,4 @@ public class RecordExistsTests {
 		mockMVC.perform(
 				head(bytesEndpoint)).andExpect(status().isOk());
 	}
-
 }

@@ -24,8 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.aerospike.restclient.util.AerospikeOperation;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.msgpack.core.MessageBufferPacker;
 import org.msgpack.core.MessagePack;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
@@ -39,6 +38,10 @@ import com.aerospike.restclient.util.deserializers.MsgPackOperationsParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 /*
  * These tests do not actually test whether valid operations are generated.
  * They simply test that the OperationParser class works as expected.
@@ -48,7 +51,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class OperationParserTest {
 
-	private static String testOpName = AerospikeOperation.TOUCH.name();
+	private static final String testOpName = AerospikeOperation.TOUCH.name();
+
 	@Test
 	public void testStringValue() throws IOException {
 		singleOperationParseTest("aerospike");
@@ -77,7 +81,6 @@ public class OperationParserTest {
 
 	@Test
 	public void testGeoJSONValue() throws IOException {
-
 		String geoString = "{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}";
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		// Pack the List
@@ -103,14 +106,13 @@ public class OperationParserTest {
 		MsgPackOperationsParser parser = new MsgPackOperationsParser(new ByteArrayInputStream(geoMsgPackBin));
 		List<RestClientOperation>parsedOps = parser.parseOperations();
 
-		Assert.assertEquals(parsedOps.size(), 1);
+		assertEquals(parsedOps.size(), 1);
 
 		RestClientOperation convertedOp = parsedOps.get(0);
-		Map<String, Object>convertedValues = convertedOp.getOpValues();
+		Map<String, Object> convertedValues = convertedOp.getOpValues();
 		Object fetchedGeo = convertedValues.get("value");
-		Assert.assertTrue(fetchedGeo instanceof GeoJSONValue);
-		Assert.assertEquals(
-				((GeoJSONValue)fetchedGeo).toString(), geoString);
+		assertTrue(fetchedGeo instanceof GeoJSONValue);
+		assertEquals(fetchedGeo.toString(), geoString);
 	}
 
 	@Test
@@ -119,42 +121,42 @@ public class OperationParserTest {
 	}
 
 	private void singleOperationParseTest(Object value) throws IOException {
-		Map<String, Object>testOp = new HashMap<>();
+		Map<String, Object> testOp = new HashMap<>();
 		testOp.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeOperation.TOUCH.name());
-		Map<String, Object>testOpVals = new HashMap<>();
+		Map<String, Object> testOpVals = new HashMap<>();
 		testOpVals.put("value", value);
 		testOp.put(AerospikeAPIConstants.OPERATION_VALUES_FIELD, testOpVals);
 
 
 		byte[] msgpackBin = singleOperationList(testOp);
 		MsgPackOperationsParser parser = new MsgPackOperationsParser(new ByteArrayInputStream(msgpackBin));
-		List<RestClientOperation>parsedOps = parser.parseOperations();
+		List<RestClientOperation> parsedOps = parser.parseOperations();
 		RestClientOperation parsedOp = parsedOps.get(0);
 		RestClientOperation testRCOp = new RestClientOperation(testOp);
 
-		Assert.assertTrue(ASTestUtils.compareRCOperations(testRCOp, parsedOp));
+		assertTrue(ASTestUtils.compareRCOperations(testRCOp, parsedOp));
 	}
 
-	@Test(expected=MalformedMsgPackError.class)
+	@Test()
 	public void nonListOps() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		packer.packInt(5);
 		byte[] intBytes = packer.toByteArray();
 		MsgPackOperationsParser parser = new MsgPackOperationsParser(new ByteArrayInputStream(intBytes));
-		parser.parseOperations();
+		assertThrows(MalformedMsgPackError.class, parser::parseOperations);
 	}
 
-	@Test(expected=MalformedMsgPackError.class)
+	@Test()
 	public void nonMapOperationTest() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		packer.packArrayHeader(1);
 		packer.packInt(5);
 		byte[] binBytes = packer.toByteArray();
 		MsgPackOperationsParser parser = new MsgPackOperationsParser(new ByteArrayInputStream(binBytes));
-		parser.parseOperations();
+		assertThrows(MalformedMsgPackError.class, parser::parseOperations);
 	}
 
-	@Test(expected=MalformedMsgPackError.class)
+	@Test()
 	public void extraDatatest() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		packer.packArrayHeader(1);
@@ -164,10 +166,10 @@ public class OperationParserTest {
 		packer.packString("Something Extra");
 		byte[] binBytes = packer.toByteArray();
 		MsgPackOperationsParser parser = new MsgPackOperationsParser(new ByteArrayInputStream(binBytes));
-		parser.parseOperations();
+		assertThrows(MalformedMsgPackError.class, parser::parseOperations);
 	}
 
-	@Test(expected=MalformedMsgPackError.class)
+	@Test()
 	public void nonStringMapKeyTest() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		packer.packArrayHeader(1);
@@ -176,13 +178,13 @@ public class OperationParserTest {
 		packer.packInt(5);
 		byte[] binBytes = packer.toByteArray();
 		MsgPackOperationsParser parser = new MsgPackOperationsParser(new ByteArrayInputStream(binBytes));
-		parser.parseOperations();
+		assertThrows(MalformedMsgPackError.class, parser::parseOperations);
 	}
 
 	/*
 	 * Pack the header for an array, and no additional data
 	 */
-	@Test(expected=MalformedMsgPackError.class)
+	@Test()
 	public void testIncompleteOpList() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 
@@ -190,10 +192,10 @@ public class OperationParserTest {
 
 		MsgPackOperationsParser parser = new MsgPackOperationsParser(new ByteArrayInputStream(packer.toByteArray()));
 
-		parser.parseOperations();
+		assertThrows(MalformedMsgPackError.class, parser::parseOperations);
 	}
 
-	@Test(expected=MalformedMsgPackError.class)
+	@Test()
 	public void testIncompleteOp() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 
@@ -202,17 +204,13 @@ public class OperationParserTest {
 
 		MsgPackOperationsParser parser = new MsgPackOperationsParser(new ByteArrayInputStream(packer.toByteArray()));
 
-		parser.parseOperations();
+		assertThrows(MalformedMsgPackError.class, parser::parseOperations);
 	}
-	@Test(expected=MalformedMsgPackError.class)
-	public void testEmptyMapdata() throws IOException {
-
+	@Test()
+	public void testEmptyMapData() {
 		MsgPackOperationsParser parser = new MsgPackOperationsParser(new ByteArrayInputStream(new byte[] {}));
-		parser.parseOperations();
+		assertThrows(MalformedMsgPackError.class, parser::parseOperations);
 	}
-	/*
-	 * Errors
-	 */
 
 	/*
 	 * Write a basic List<Map<String, Object>> to msgpack bytearray

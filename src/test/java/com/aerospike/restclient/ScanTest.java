@@ -6,40 +6,31 @@ import com.aerospike.client.Key;
 import com.aerospike.restclient.domain.RestClientRecord;
 import com.aerospike.restclient.domain.scanmodels.RestClientScanResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 public class ScanTest {
-
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     private MockMvc mockMVC;
 
@@ -50,14 +41,15 @@ public class ScanTest {
     private WebApplicationContext wac;
 
     private static final int numberOfRecords = 101;
-    private final Key[] testKeys;
+    private Key[] testKeys;
     private String testEndpoint;
 
     private String setName;
     private String namespace;
-    private final String currentMediaType;
+    private String currentMediaType;
+    private ResponseDeserializer responseDeserializer;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
         for (int i = 0; i < numberOfRecords; i++) {
@@ -66,24 +58,23 @@ public class ScanTest {
         }
     }
 
-    @After
+    @AfterEach
     public void clean() {
         for (int i = 0; i < numberOfRecords; i++) {
             client.delete(null, testKeys[i]);
         }
     }
 
-    private final ResponseDeserializer responseDeserializer;
-
-    @Parameterized.Parameters
-    public static Object[][] getParams() {
-        return new Object[][]{
-                {new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString()},
-                {new MsgPackResponseDeserializer(), "application/msgpack"}
-        };
+    private static Stream<Arguments> getParams() {
+        return Stream.of(
+                Arguments.of(new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString()),
+                Arguments.of(new MsgPackResponseDeserializer(), "application/msgpack")
+        );
     }
 
-    public ScanTest(ResponseDeserializer deserializer, String mt) {
+    @ParameterizedTest
+    @MethodSource("getParams")
+    void addParams(ResponseDeserializer deserializer, String mt) {
         this.responseDeserializer = deserializer;
         this.namespace = "test";
         this.currentMediaType = mt;
@@ -103,7 +94,7 @@ public class ScanTest {
         ).andExpect(status().isOk()).andReturn().getResponse();
 
         RestClientScanResponse res = responseDeserializer.getResponse(response, RestClientScanResponse.class);
-        Assert.assertEquals(res.getPagination().getTotalRecords(), numberOfRecords);
+        assertEquals(res.getPagination().getTotalRecords(), numberOfRecords);
     }
 
     @Test
@@ -130,15 +121,15 @@ public class ScanTest {
             endpoint = testEndpoint + "&from=" + res.getPagination().getNextToken();
         }
 
-        Assert.assertEquals(total, numberOfRecords);
-        Assert.assertEquals(binValues.size(), numberOfRecords);
-        Assert.assertEquals(scanRequests, numberOfRecords / pageSize + 1);
-        Assert.assertNull(res.getPagination().getNextToken());
+        assertEquals(total, numberOfRecords);
+        assertEquals(binValues.size(), numberOfRecords);
+        assertEquals(scanRequests, numberOfRecords / pageSize + 1);
+        assertNull(res.getPagination().getNextToken());
     }
 }
 
 interface ResponseDeserializer {
-    public <T> T getResponse(MockHttpServletResponse res, Class<T> clazz);
+    <T> T getResponse(MockHttpServletResponse res, Class<T> clazz);
 }
 
 class MsgPackResponseDeserializer implements ResponseDeserializer {

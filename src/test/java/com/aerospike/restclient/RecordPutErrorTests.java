@@ -17,47 +17,36 @@
 package com.aerospike.restclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
 public class RecordPutErrorTests {
 
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
+	private String nonExistentNSEndpoint;
+	private String nonExistentRecordEndpoint;
 
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
-
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[] {true, false};
+	private static Stream<Arguments> getParams() {
+		return Stream.of(Arguments.of(true, false));
 	}
 
-	private final String nonExistentNSEndpoint;
-	private final String nonExistentRecordEndpoint;
-
-	public RecordPutErrorTests(boolean useSet) {
+	@ParameterizedTest
+	@MethodSource("getParams")
+	void addParams(boolean useSet) {
 		if (useSet) {
 			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
 			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
@@ -75,7 +64,7 @@ public class RecordPutErrorTests {
 	@Autowired
 	private WebApplicationContext wac;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
@@ -102,5 +91,4 @@ public class RecordPutErrorTests {
 				.content(objectMapper.writeValueAsString(binMap))
 				).andExpect(status().isNotFound());
 	}
-
 }

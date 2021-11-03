@@ -20,21 +20,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Base64;
+import java.util.stream.Stream;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -45,17 +40,13 @@ import com.aerospike.client.Key;
 import com.aerospike.client.Record;
 import com.aerospike.client.Value.BytesValue;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class RecordDeleteCorrectTests {
 
 	private MockMvc mockMVC;
 
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
-
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
 	@Autowired
 	private AerospikeClient client;
 
@@ -71,12 +62,13 @@ public class RecordDeleteCorrectTests {
 	private Key bytesKey = new Key("test", "junit", new byte[] {1, 127, 127, 1});
 	private String testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
 
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[] { true, false };
+	private static Stream<Arguments> getParams() {
+		return Stream.of(Arguments.of(true, false));
 	}
 
-	public  RecordDeleteCorrectTests(boolean useSet) {
+	@ParameterizedTest
+	@MethodSource("getParams")
+	void addParams(boolean useSet) {
 		if (useSet) {
 			testKey = new Key("test", "junit", "getput");
 			intKey = new Key("test", "junit", 1);
@@ -91,7 +83,6 @@ public class RecordDeleteCorrectTests {
 
 			String digestBytes = Base64.getUrlEncoder().encodeToString(testKey.digest);
 			digestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit",   digestBytes) + "?keytype=DIGEST";
-
 		} else {
 			testKey = new Key("test", null, "getput");
 			intKey = new Key("test", null, 1);
@@ -108,7 +99,8 @@ public class RecordDeleteCorrectTests {
 			digestEndpoint = ASTestUtils.buildEndpoint("kvs", "test",  digestBytes) + "?keytype=DIGEST";
 		}
 	}
-	@Before
+
+	@BeforeEach
 	public void setup() {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 		Bin baseBin = new Bin("initial", "bin");
@@ -117,7 +109,7 @@ public class RecordDeleteCorrectTests {
 		client.put(null, bytesKey, baseBin);
 	}
 
-	@After
+	@AfterEach
 	public void clean() {
 		client.delete(null, testKey);
 		client.delete(null, intKey);
@@ -131,7 +123,7 @@ public class RecordDeleteCorrectTests {
 		.andExpect(status().isNoContent());
 
 		Record record = client.get(null, this.testKey);
-		Assert.assertNull(record);
+		assertNull(record);
 	}
 
 	@Test
@@ -140,7 +132,7 @@ public class RecordDeleteCorrectTests {
 		.andExpect(status().isNoContent());
 
 		Record record = client.get(null, this.intKey);
-		Assert.assertNull(record);
+		assertNull(record);
 	}
 
 	@Test
@@ -149,7 +141,7 @@ public class RecordDeleteCorrectTests {
 		.andExpect(status().isNoContent());
 
 		Record record = client.get(null, this.bytesKey);
-		Assert.assertNull(record);
+		assertNull(record);
 	}
 
 	@Test
@@ -158,7 +150,7 @@ public class RecordDeleteCorrectTests {
 		.andExpect(status().isNoContent());
 
 		Record record = client.get(null, this.testKey);
-		Assert.assertNull(record);
+		assertNull(record);
 	}
 
 	@Test
@@ -168,6 +160,6 @@ public class RecordDeleteCorrectTests {
 		.andExpect(status().isConflict());
 
 		Record record = client.get(null, this.testKey);
-		Assert.assertNotNull(record);
+		assertNotNull(record);
 	}
 }

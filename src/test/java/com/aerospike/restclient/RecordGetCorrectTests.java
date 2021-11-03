@@ -22,22 +22,16 @@ import com.aerospike.client.Key;
 import com.aerospike.client.Value;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -51,25 +45,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /*
  * These Tests are simple tests which store a simple value via the Java Client, then retrieve it via REST
  * The expected and returned values are compared.
  *
  */
-@RunWith(Parameterized.class)
-@SpringBootTest
 public class RecordGetCorrectTests {
-
-    /* Needed to run as a Spring Boot test */
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     @Autowired
     private AerospikeClient client;
@@ -78,50 +65,36 @@ public class RecordGetCorrectTests {
     private WebApplicationContext wac;
 
     private MockMvc mockMVC;
-    private final RecordDeserializer recordDeserializer;
-    private final String currentMediaType;
+    private RecordDeserializer recordDeserializer;
+    private String currentMediaType;
 
-    /*
-     * Returns a two item array, of mediatype and record deserializer
-     */
-    @Parameters
-    public static Object[] mappers() {
-        return new Object[][]{
-                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true},
-                {new MsgPackRestRecordDeserializer(), "application/msgpack", true},
-                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false},
-                {new MsgPackRestRecordDeserializer(), "application/msgpack", false},
-        };
-    }
-
-    private final Key testKey;
-    private final Key intKey;
-    private final Key bytesKey;
+    private Key testKey;
+    private Key intKey;
+    private Key bytesKey;
 
     private List<Key> keysToRemove;
 
     // Endpoint to receive all requests
-    private final String noBinEndpoint;
-    private final String intEndpoint;
-    private final String bytesEndpoint;
-    private final String digestEndpoint;
+    private String noBinEndpoint;
+    private String intEndpoint;
+    private String bytesEndpoint;
+    private String digestEndpoint;
 
-
-    @Before
-    public void setup() {
-        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-        keysToRemove = new ArrayList<>();
+    /*
+     * Returns a two item array, of media type and record deserializer
+     */
+    private static Stream<Arguments> mappers() {
+        return Stream.of(
+                Arguments.of(new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true),
+                Arguments.of(new MsgPackRestRecordDeserializer(), "application/msgpack", true),
+                Arguments.of(new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false),
+                Arguments.of(new MsgPackRestRecordDeserializer(), "application/msgpack", false)
+        );
     }
 
-    @After
-    public void clean() {
-        client.delete(null, this.testKey);
-        for (Key key : keysToRemove) {
-            client.delete(null, key);
-        }
-    }
-
-    public RecordGetCorrectTests(RecordDeserializer deserializer, String mt, boolean useSet) {
+    @ParameterizedTest
+    @MethodSource("mappers")
+    void addMappers(RecordDeserializer deserializer, String mt, boolean useSet) {
         this.recordDeserializer = deserializer;
         this.currentMediaType = mt;
         byte[] keyBytes = {1, 127, 127, 1};
@@ -161,6 +134,20 @@ public class RecordGetCorrectTests {
         }
     }
 
+    @BeforeEach
+    public void setup() {
+        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+        keysToRemove = new ArrayList<>();
+    }
+
+    @AfterEach
+    public void clean() {
+        client.delete(null, this.testKey);
+        for (Key key : keysToRemove) {
+            client.delete(null, key);
+        }
+    }
+
     @Test
     public void GetInteger() throws Exception {
         Map<String, Object> binMap = new HashMap<>();
@@ -177,7 +164,7 @@ public class RecordGetCorrectTests {
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+        assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
 
     @Test
@@ -197,7 +184,7 @@ public class RecordGetCorrectTests {
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+        assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
 
     @Test
@@ -217,7 +204,7 @@ public class RecordGetCorrectTests {
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+        assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
 
     @Test
@@ -238,7 +225,7 @@ public class RecordGetCorrectTests {
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+        assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
 
     @Test
@@ -262,7 +249,7 @@ public class RecordGetCorrectTests {
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+        assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
 
     /*
@@ -296,7 +283,7 @@ public class RecordGetCorrectTests {
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+        assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
 
     /*
@@ -321,7 +308,7 @@ public class RecordGetCorrectTests {
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+        assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
 
     @Test
@@ -341,7 +328,7 @@ public class RecordGetCorrectTests {
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+        assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
 
     @Test
@@ -361,13 +348,13 @@ public class RecordGetCorrectTests {
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
+        assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
 
 }
 
 interface RecordDeserializer {
-    public Map<String, Object> getReturnedBins(MockHttpServletResponse res);
+    Map<String, Object> getReturnedBins(MockHttpServletResponse res);
 }
 
 class MsgPackRestRecordDeserializer implements RecordDeserializer {

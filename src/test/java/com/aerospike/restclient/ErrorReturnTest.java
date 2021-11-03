@@ -15,8 +15,8 @@
  * the License.
  */
 package com.aerospike.restclient;
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 
 import com.aerospike.client.AerospikeException;
@@ -24,17 +24,22 @@ import com.aerospike.client.ResultCode;
 import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.util.RestClientErrors.AerospikeRestClientError;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 public class ErrorReturnTest {
 
 	RestClientErrorHandler handler = new RestClientErrorHandler();
-
 
 	@Test
 	public void nonInDoubtErrorTest() {
 		AerospikeException notInDoubt = new AerospikeException(ResultCode.PARAMETER_ERROR, "Not In Doubt");
 		ResponseEntity<Object> retEntity = handler.handleAsError(notInDoubt);
 		RestClientError returnedError = (RestClientError)retEntity.getBody();
-		Assert.assertFalse(returnedError.getInDoubt());
+		assert returnedError != null;
+		assertFalse(returnedError.getInDoubt());
 	}
 
 	@Test
@@ -42,7 +47,8 @@ public class ErrorReturnTest {
 		AerospikeException notInDoubt = new AerospikeException(ResultCode.TIMEOUT, true);
 		ResponseEntity<Object> retEntity = handler.handleAsError(notInDoubt);
 		RestClientError returnedError = (RestClientError)retEntity.getBody();
-		Assert.assertTrue(returnedError.getInDoubt());
+		assert returnedError != null;
+		assertTrue(returnedError.getInDoubt());
 	}
 
 	@Test
@@ -50,7 +56,8 @@ public class ErrorReturnTest {
 		AerospikeException notInDoubt = new AerospikeException(ResultCode.TIMEOUT, true);
 		ResponseEntity<Object> retEntity = handler.handleAsError(notInDoubt);
 		RestClientError returnedError = (RestClientError)retEntity.getBody();
-		Assert.assertEquals((Integer)ResultCode.TIMEOUT, returnedError.getInternalErrorCode());
+		assert returnedError != null;
+		assertEquals((Integer)ResultCode.TIMEOUT, returnedError.getInternalErrorCode());
 	}
 
 	@Test
@@ -58,6 +65,7 @@ public class ErrorReturnTest {
 		AerospikeRestClientError apiError = new AerospikeRestClientError();
 		ResponseEntity<Object> retEntity = handler.handleAPIError(apiError);
 		RestClientError returnedError = (RestClientError)retEntity.getBody();
-		Assert.assertNull(returnedError.getInternalErrorCode());
+		assert returnedError != null;
+		assertNull(returnedError.getInternalErrorCode());
 	}
 }

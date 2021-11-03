@@ -25,15 +25,12 @@ import com.aerospike.restclient.controllers.KeyValueController;
 import com.aerospike.restclient.service.AerospikeRecordService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
@@ -42,8 +39,6 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
 /*
  * These methods are almost identical except they end up using a different recordExists action for the actual
  * storage
@@ -63,7 +58,7 @@ public class KVControllerV1PutPostPatchTests {
 
 	private final WritePolicyComparator existsActionComparator = (p1, p2) -> p1.recordExistsAction == p2.recordExistsAction;
 
-	@Before
+	@BeforeEach
 	public void setup() throws JsonProcessingException {
 		dummyBins = new HashMap<>();
 		dummyBins.put("bin", "a");
@@ -208,5 +203,4 @@ public class KVControllerV1PutPostPatchTests {
 				isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins), isNull(),
 				argThat(createActionMatcher));
 	}
-
 }

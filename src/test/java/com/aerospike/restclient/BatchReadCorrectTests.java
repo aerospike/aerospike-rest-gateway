@@ -23,22 +23,16 @@ import com.aerospike.client.Key;
 import com.aerospike.client.Value.BytesValue;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -51,9 +45,13 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /*
  * A batch Read sent to the server looks like:
@@ -63,20 +61,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *  "readAllBins: boolean
  * }
  */
-@RunWith(Parameterized.class)
-@SpringBootTest
 public class BatchReadCorrectTests {
 
-    private final RestBatchReadComparator batchComparator;
-    private final BatchHandler batchHandler;
-
-    /* Needed to run as a Spring Boot test */
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
-
+    private RestBatchReadComparator batchComparator;
+    private BatchHandler batchHandler;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -97,7 +85,7 @@ public class BatchReadCorrectTests {
     };
     private final String endpoint = "/v1/batch";
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
         for (int i = 0; i < keys.length; i++) {
@@ -112,7 +100,7 @@ public class BatchReadCorrectTests {
         client.put(null, bytesKey, new Bin("keytype", "bytes"));
     }
 
-    @After
+    @AfterEach
     public void clean() {
         for (Key key : keys) {
             client.delete(null, key);
@@ -121,15 +109,16 @@ public class BatchReadCorrectTests {
         client.delete(null, bytesKey);
     }
 
-    @Parameters
-    public static Object[] mappers() {
-        return new Object[][]{
-                {new RestBatchReadComparator(), new JSONBatchHandler()},
-                {new RestBatchReadComparator(), new MsgPackBatchHandler()}
-        };
+    private static Stream<Arguments> mappers() {
+        return Stream.of(
+                Arguments.of(new RestBatchReadComparator(), new JSONBatchHandler()),
+                Arguments.of(new RestBatchReadComparator(), new MsgPackBatchHandler())
+        );
     }
 
-    public BatchReadCorrectTests(RestBatchReadComparator comparator, BatchHandler handler) {
+    @ParameterizedTest
+    @MethodSource("mappers")
+    void addMappers(RestBatchReadComparator comparator, BatchHandler handler) {
         this.batchComparator = comparator;
         this.batchHandler = handler;
     }
@@ -149,10 +138,10 @@ public class BatchReadCorrectTests {
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
         List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
-        Assert.assertEquals(3, returnedRecords.size());
+        assertEquals(3, returnedRecords.size());
 
         client.get(null, batchRecs);
-        Assert.assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
+        assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
     }
 
     @Test
@@ -171,16 +160,16 @@ public class BatchReadCorrectTests {
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
         List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
-        Assert.assertEquals(3, returnedRecords.size());
+        assertEquals(3, returnedRecords.size());
 
         client.get(null, batchRecs);
-        Assert.assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
+        assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
     }
 
     @Test
     public void testBatchGetWithNonExistentRecord() throws Exception {
         List<Map<String, Object>> batchKeys = new ArrayList<>();
-        List<BatchRead> batchRecs = new ArrayList<BatchRead>();
+        List<BatchRead> batchRecs = new ArrayList<>();
         batchKeys.add(keyToBatchObject(keys[0], null));
         batchKeys.add(keyToBatchObject(keys[1], null));
         batchKeys.add(keyToBatchObject(new Key("test", "demo", "notreal"), null));
@@ -193,10 +182,10 @@ public class BatchReadCorrectTests {
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
         List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
-        Assert.assertEquals(4, returnedRecords.size());
+        assertEquals(4, returnedRecords.size());
 
         client.get(null, batchRecs);
-        Assert.assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
+        assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
     }
 
     @Test
@@ -215,10 +204,10 @@ public class BatchReadCorrectTests {
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
         List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
-        Assert.assertEquals(4, returnedRecords.size());
+        assertEquals(4, returnedRecords.size());
 
         client.get(null, batchRecs);
-        Assert.assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
+        assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
     }
 
     @Test
@@ -230,10 +219,10 @@ public class BatchReadCorrectTests {
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
         List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
-        Assert.assertEquals(1, returnedRecords.size());
+        assertEquals(1, returnedRecords.size());
 
         client.get(null, batchRecs);
-        Assert.assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
+        assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
     }
 
     @Test
@@ -245,10 +234,10 @@ public class BatchReadCorrectTests {
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
         List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
-        Assert.assertEquals(1, returnedRecords.size());
+        assertEquals(1, returnedRecords.size());
 
         client.get(null, batchRecs);
-        Assert.assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
+        assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
     }
 
     private Map<String, Object> keyToBatchObject(Key key, String[] bins) {
@@ -395,8 +384,7 @@ class RestBatchReadComparator {
  * Implementations are provided for specifying JSON and MsgPack as return formats
  */
 interface BatchHandler {
-    public List<Map<String, Object>> perform(MockMvc mockMVC, String testEndpoint, String payload)
-            throws Exception;
+    List<Map<String, Object>> perform(MockMvc mockMVC, String testEndpoint, String payload) throws Exception;
 }
 
 class MsgPackBatchHandler implements BatchHandler {
@@ -409,11 +397,11 @@ class MsgPackBatchHandler implements BatchHandler {
 
     private List<Map<String, Object>> getReturnedBatches(MockHttpServletResponse res) {
         byte[] response = res.getContentAsByteArray();
-        TypeReference<List<Map<String, Object>>> btype = new TypeReference<List<Map<String, Object>>>() {
+        TypeReference<List<Map<String, Object>>> bType = new TypeReference<List<Map<String, Object>>>() {
         };
         List<Map<String, Object>> batchResponse = null;
         try {
-            batchResponse = msgPackMapper.readValue(response, btype);
+            batchResponse = msgPackMapper.readValue(response, bType);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -450,11 +438,11 @@ class JSONBatchHandler implements BatchHandler {
             e1.printStackTrace();
         }
 
-        TypeReference<List<Map<String, Object>>> btype = new TypeReference<List<Map<String, Object>>>() {
+        TypeReference<List<Map<String, Object>>> bType = new TypeReference<List<Map<String, Object>>>() {
         };
         List<Map<String, Object>> batchResponse = null;
         try {
-            batchResponse = msgPackMapper.readValue(response, btype);
+            batchResponse = msgPackMapper.readValue(response, bType);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -7,16 +7,16 @@ import com.aerospike.restclient.domain.RestClientExecuteTask;
 import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
@@ -32,15 +33,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class ExecuteTests {
-
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     private MockMvc mockMVC;
 
@@ -51,16 +46,16 @@ public class ExecuteTests {
     private WebApplicationContext wac;
 
     private String setName;
-    private final String namespace;
-    private final String currentMediaType;
+    private String namespace;
+    private String currentMediaType;
 
     private static final int numberOfRecords = 10;
 
-    private final Key[] testKeys;
-    private final String testEndpoint;
-    private final String queryStatusEndpoint;
+    private Key[] testKeys;
+    private String testEndpoint;
+    private String queryStatusEndpoint;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
         for (int i = 0; i < testKeys.length; i++) {
@@ -69,27 +64,28 @@ public class ExecuteTests {
         }
     }
 
-    @After
+    @AfterEach
     public void clean() {
         for (Key testKey : testKeys) {
             client.delete(null, testKey);
         }
     }
 
-    private final ObjectMapper objectMapper;
-    private final ResponseDeserializer responseDeserializer;
+    private ObjectMapper objectMapper;
+    private ResponseDeserializer responseDeserializer;
 
-    @Parameterized.Parameters
-    public static Object[][] getParams() {
-        return new Object[][]{
-                {new ObjectMapper(), new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString(), true},
-                {new ObjectMapper(new MessagePackFactory()), new MsgPackResponseDeserializer(), "application/msgpack", true},
-                {new ObjectMapper(), new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString(), false},
-                {new ObjectMapper(new MessagePackFactory()), new MsgPackResponseDeserializer(), "application/msgpack", false}
-        };
+    private static Stream<Arguments> getParams() {
+        return Stream.of(
+                Arguments.of(new ObjectMapper(), new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString(), true),
+                Arguments.of(new ObjectMapper(new MessagePackFactory()), new MsgPackResponseDeserializer(), "application/msgpack", true),
+                Arguments.of(new ObjectMapper(), new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString(), false),
+                Arguments.of(new ObjectMapper(new MessagePackFactory()), new MsgPackResponseDeserializer(), "application/msgpack", false)
+        );
     }
 
-    public ExecuteTests(ObjectMapper mapper, ResponseDeserializer deserializer, String mt, boolean useSet) {
+    @ParameterizedTest
+    @MethodSource("getParams")
+    void addParams(ObjectMapper mapper, ResponseDeserializer deserializer, String mt, boolean useSet) {
         objectMapper = mapper;
         responseDeserializer = deserializer;
         currentMediaType = mt;
@@ -142,11 +138,11 @@ public class ExecuteTests {
         RestClientExecuteTaskStatus status = responseDeserializer
                 .getResponse(statusResponse, RestClientExecuteTaskStatus.class);
 
-        Assert.assertEquals(status.getStatus(), "COMPLETE");
+        assertEquals(status.getStatus(), "COMPLETE");
 
         for (int i = 0; i < numberOfRecords; i++) {
             long binValue = (long) client.get(null, testKeys[i]).bins.get("binInt");
-            Assert.assertEquals(binValue, i + 1);
+            assertEquals(binValue, i + 1);
         }
     }
 }

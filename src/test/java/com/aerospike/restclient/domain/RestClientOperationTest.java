@@ -20,12 +20,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aerospike.restclient.util.AerospikeOperation;
-import org.junit.Assert;
-import org.junit.Test;
 
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RestClientOperationTest {
 
@@ -33,46 +34,46 @@ public class RestClientOperationTest {
 	public void testEmptyConstruction(){
 		RestClientOperation op = new RestClientOperation();
 		AerospikeOperation operation = AerospikeOperation.valueOf("ADD");
-		Map<String, Object>vals = new HashMap<>();
+		Map<String, Object> values = new HashMap<>();
 
 		op.setOperation(operation);
-		op.setOpValues(vals);
+		op.setOpValues(values);
 
-		Assert.assertEquals(operation, op.getOperation());
-		Assert.assertEquals(vals, op.getOpValues());
+		assertEquals(operation, op.getOperation());
+		assertEquals(values, op.getOpValues());
 	}
 
 	@Test
 	public void testToMap(){
 		RestClientOperation op = new RestClientOperation();
 		AerospikeOperation operation = AerospikeOperation.valueOf("ADD");
-		Map<String, Object>vals = new HashMap<>();
+		Map<String, Object> values = new HashMap<>();
 
 		op.setOperation(operation);
-		op.setOpValues(vals);
+		op.setOpValues(values);
 
 		Map<String, Object>convertedMap = op.toMap();
-		Assert.assertEquals(convertedMap.get(AerospikeAPIConstants.OPERATION_FIELD), operation);
-		Assert.assertEquals(convertedMap.get(AerospikeAPIConstants.OPERATION_VALUES_FIELD), vals);
+		assertEquals(convertedMap.get(AerospikeAPIConstants.OPERATION_FIELD), operation);
+		assertEquals(convertedMap.get(AerospikeAPIConstants.OPERATION_VALUES_FIELD), values);
 	}
 
 	@Test
 	public void testObjectMapperInstantiation() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		TypeReference<RestClientOperation>rcoType = new TypeReference<RestClientOperation>(){};
+		TypeReference<RestClientOperation> rcoType = new TypeReference<RestClientOperation>(){};
 		AerospikeOperation operation = AerospikeOperation.valueOf("ADD");
-		Map<String, Object>vals = new HashMap<>();
-		Map<String, Object>opMap = new HashMap<>();
+		Map<String, Object> values = new HashMap<>();
+		Map<String, Object> opMap = new HashMap<>();
 
 		opMap.put(AerospikeAPIConstants.OPERATION_FIELD, operation);
-		opMap.put(AerospikeAPIConstants.OPERATION_VALUES_FIELD, vals);
+		opMap.put(AerospikeAPIConstants.OPERATION_VALUES_FIELD, values);
 
 		String JsonOp = mapper.writeValueAsString(opMap);
 
 		RestClientOperation rcOp = mapper.readValue(JsonOp, rcoType);
 
-		Assert.assertEquals(operation, rcOp.getOperation());
-		Assert.assertEquals(vals, rcOp.getOpValues());
+		assertEquals(operation, rcOp.getOperation());
+		assertEquals(values, rcOp.getOpValues());
 	}
 
 	@Test
@@ -80,19 +81,18 @@ public class RestClientOperationTest {
 		ObjectMapper mapper = new ObjectMapper();
 		RestClientOperation op = new RestClientOperation();
 
-		TypeReference<Map<String, Object>>somType = new TypeReference<Map<String, Object>>() {};
+		TypeReference<Map<String, Object>> somType = new TypeReference<Map<String, Object>>() {};
 		AerospikeOperation operation = AerospikeOperation.valueOf("ADD");
-		Map<String, Object>vals = new HashMap<>();
+		Map<String, Object> values = new HashMap<>();
 
 		op.setOperation(operation);
-		op.setOpValues(vals);
+		op.setOpValues(values);
 
 		String jsonOp = mapper.writeValueAsString(op);
 
 		Map<String, Object>deserializedOp = mapper.readValue(jsonOp, somType);
 
-		Assert.assertEquals(deserializedOp.get(AerospikeAPIConstants.OPERATION_FIELD), operation.name());
-		Assert.assertEquals(deserializedOp.get(AerospikeAPIConstants.OPERATION_VALUES_FIELD), vals);
+		assertEquals(deserializedOp.get(AerospikeAPIConstants.OPERATION_FIELD), operation.name());
+		assertEquals(deserializedOp.get(AerospikeAPIConstants.OPERATION_VALUES_FIELD), values);
 	}
-
 }

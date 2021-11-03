@@ -19,13 +19,14 @@ package com.aerospike.restclient.converters;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.aerospike.client.Bin;
 import com.aerospike.client.Value;
 import com.aerospike.client.Value.GeoJSONValue;
 import com.aerospike.restclient.util.converters.BinConverter;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BinConverterTests {
 
@@ -36,12 +37,12 @@ public class BinConverterTests {
 
 	@Test
 	public void testLongBin() {
-		singleObjectBinTest(5l);
+		singleObjectBinTest(5L);
 	}
 
 	@Test
 	public void testFloatBin() {
-		singleObjectBinTest(5l);
+		singleObjectBinTest(5L);
 	}
 
 	@Test
@@ -54,7 +55,7 @@ public class BinConverterTests {
 		Map<String, Object>testMap = new HashMap<>();
 		testMap.put("str", "hello");
 		testMap.put("float", 3.14);
-		testMap.put("float", 5l);
+		testMap.put("float", 5L);
 		singleObjectBinTest(testMap);
 	}
 
@@ -74,23 +75,23 @@ public class BinConverterTests {
 		Map<String, Object>binMap = new HashMap<>();
 		binMap.put("bin1", null);
 		Bin[] bins = BinConverter.binsFromMap(binMap);
-		Assert.assertTrue(binsContain(bins, testBin));
+		assertTrue(binsContain(bins, testBin));
 	}
 
 	@Test
 	public void testMultipleBins() {
 		Bin bin1 = new Bin("bin1", "str");
-		Bin bin2 = new Bin("bin2", 3l);
+		Bin bin2 = new Bin("bin2", 3L);
 
 		Map<String, Object>binMap = new HashMap<>();
 		binMap.put(bin1.name, bin1.value.getObject());
 		binMap.put(bin2.name, bin2.value.getObject());
 
 		Bin[] bins = BinConverter.binsFromMap(binMap);
-		Assert.assertEquals(2, bins.length);
+		assertEquals(2, bins.length);
 
-		Assert.assertTrue(binsContain(bins, bin1));
-		Assert.assertTrue(binsContain(bins, bin2));
+		assertTrue(binsContain(bins, bin1));
+		assertTrue(binsContain(bins, bin2));
 
 	}
 
@@ -99,7 +100,7 @@ public class BinConverterTests {
 		Map<String, Object>binMap = new HashMap<>();
 		binMap.put("bin1", binValue);
 		Bin[] bins = BinConverter.binsFromMap(binMap);
-		Assert.assertTrue(binsContain(bins, testBin));
+		assertTrue(binsContain(bins, testBin));
 	}
 
 	private boolean binsContain(Bin[] bins, Bin target) {

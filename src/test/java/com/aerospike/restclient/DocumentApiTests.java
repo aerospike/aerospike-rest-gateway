@@ -6,22 +6,17 @@ import com.aerospike.client.Key;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -32,22 +27,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.aerospike.restclient.util.AerospikeAPIConstants.JSON_PATH;
 import static com.aerospike.restclient.util.AerospikeAPIConstants.RECORD_BINS;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @AutoConfigureMockMvc
 public class DocumentApiTests {
-
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     @Autowired
     private MockMvc mockMVC;
@@ -55,16 +45,16 @@ public class DocumentApiTests {
     @Autowired
     private AerospikeClient client;
 
-    private final ObjectMapper objectMapper;
-    private final String mediaType;
+    private ObjectMapper objectMapper;
+    private String mediaType;
 
     private Map<String, Object> objectMap;
-    private final Key testKey;
+    private Key testKey;
     private final String testBinName1 = "docBin1";
     private final String testBinName2 = "docBin2";
-    private final String testEndpoint;
+    private String testEndpoint;
 
-    @Before
+    @BeforeEach
     public void setup() {
         objectMap = new HashMap<>();
         objectMap.put("example1", ImmutableMap.of("key01", Arrays.asList("A1", "B1", "C1")));
@@ -77,22 +67,23 @@ public class DocumentApiTests {
         client.put(null, testKey, docBin1, docBin2);
     }
 
-    @After
+    @AfterEach
     public void clean() {
         client.delete(null, testKey);
     }
 
-    @Parameterized.Parameters
-    public static Object[][] getParams() {
-        return new Object[][]{
-                {new ObjectMapper(), MediaType.APPLICATION_JSON.toString(), true},
-                {new ObjectMapper(new MessagePackFactory()), "application/msgpack", true},
-                {new ObjectMapper(), MediaType.APPLICATION_JSON.toString(), false},
-                {new ObjectMapper(new MessagePackFactory()), "application/msgpack", false}
-        };
+    private static Stream<Arguments> getParams() {
+        return Stream.of(
+                Arguments.of(new ObjectMapper(), MediaType.APPLICATION_JSON.toString(), true),
+                Arguments.of(new ObjectMapper(new MessagePackFactory()), "application/msgpack", true),
+                Arguments.of(new ObjectMapper(), MediaType.APPLICATION_JSON.toString(), false),
+                Arguments.of(new ObjectMapper(new MessagePackFactory()), "application/msgpack", false)
+        );
     }
 
-    public DocumentApiTests(ObjectMapper objectMapper, String mediaType, boolean useSet) {
+    @ParameterizedTest
+    @MethodSource("getParams")
+    void addParams(ObjectMapper objectMapper, String mediaType, boolean useSet) {
         if (useSet) {
             testKey = new Key("test", "junit", "doc");
             testEndpoint = "/v1/document/test/junit/doc";
@@ -121,8 +112,8 @@ public class DocumentApiTests {
         };
         Map<String, Object> pathResult = objectMapper.readValue(resJson, typeReference);
 
-        Assert.assertEquals(objectMap.get("example1"), pathResult.get(testBinName1));
-        Assert.assertEquals(objectMap.get("example1"), pathResult.get(testBinName2));
+        assertEquals(objectMap.get("example1"), pathResult.get(testBinName1));
+        assertEquals(objectMap.get("example1"), pathResult.get(testBinName2));
     }
 
     @Test
@@ -149,8 +140,8 @@ public class DocumentApiTests {
         };
         Map<String, String> pathResult = objectMapper.readValue(resJson, typeReference);
 
-        Assert.assertEquals("str3", pathResult.get(testBinName1));
-        Assert.assertEquals("str3", pathResult.get(testBinName2));
+        assertEquals("str3", pathResult.get(testBinName1));
+        assertEquals("str3", pathResult.get(testBinName2));
     }
 
     @Test
@@ -177,8 +168,8 @@ public class DocumentApiTests {
         };
         Map<String, List<String>> pathResult = objectMapper.readValue(resJson, typeReference);
 
-        Assert.assertEquals(Arrays.asList("A1", "B1", "C1", "D1"), pathResult.get(testBinName1));
-        Assert.assertEquals(Arrays.asList("A1", "B1", "C1", "D1"), pathResult.get(testBinName2));
+        assertEquals(Arrays.asList("A1", "B1", "C1", "D1"), pathResult.get(testBinName1));
+        assertEquals(Arrays.asList("A1", "B1", "C1", "D1"), pathResult.get(testBinName2));
     }
 
     @Test
@@ -209,7 +200,7 @@ public class DocumentApiTests {
                 ImmutableMap.of("key02", "E1", "key03", "F1")
         );
 
-        Assert.assertEquals(expected, pathResult.get(testBinName1));
-        Assert.assertEquals(expected, pathResult.get(testBinName2));
+        assertEquals(expected, pathResult.get(testBinName1));
+        assertEquals(expected, pathResult.get(testBinName2));
     }
 }

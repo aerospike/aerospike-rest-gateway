@@ -7,31 +7,27 @@ import com.aerospike.client.Value;
 import com.aerospike.client.operation.HLLOperation;
 import com.aerospike.client.operation.HLLPolicy;
 import com.aerospike.restclient.util.AerospikeOperation;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
 
-@RunWith(Parameterized.class)
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class OperateHLLTestsCorrect {
-
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     private MockMvc mockMVC;
 
@@ -41,35 +37,25 @@ public class OperateHLLTestsCorrect {
     @Autowired
     private WebApplicationContext wac;
 
-    private final Key testKey;
-    private final String testEndpoint;
+    private Key testKey;
+    private String testEndpoint;
 
     private final List<Object> values = Arrays.asList("a", "b", "c", "d", "e", "f", "g", "g");
     private final List<Object> values2 = Arrays.asList("a", "b", "c", "d", "e", "h", "i", "j");
 
-    @Before
-    public void setup() {
-        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-        client.operate(null, testKey, HLLOperation.init(HLLPolicy.Default, "hll", 8, 8));
-        client.operate(null, testKey, HLLOperation.init(HLLPolicy.Default, "hll2", 8, 8));
-    }
+    private OperationPerformer opPerformer;
 
-    @After
-    public void clean() {
-    }
-
-    private final OperationPerformer opPerformer;
-
-    @Parameterized.Parameters
-    public static Object[][] getParams() {
-        return new Object[][]{
-                {new JSONOperationPerformer(), true}, {new MsgPackOperationPerformer(), true},
-                {new JSONOperationPerformer(), false}, {new MsgPackOperationPerformer(), false}
-        };
+    private static Stream<Arguments> getParams() {
+        return Stream.of(
+                Arguments.of(new JSONOperationPerformer(), true, new MsgPackOperationPerformer(), true),
+                Arguments.of(new JSONOperationPerformer(), false, new MsgPackOperationPerformer(), false)
+        );
     }
 
     /* Set up the correct msgpack/json performer for this set of runs. Also decided whether to use the endpoint with a set or without */
-    public OperateHLLTestsCorrect(OperationPerformer performer, boolean useSet) {
+    @ParameterizedTest
+    @MethodSource("getParams")
+    void addParams(OperationPerformer performer, boolean useSet) {
         this.opPerformer = performer;
         if (useSet) {
             testKey = new Key("test", "junit", "hllop");
@@ -80,6 +66,17 @@ public class OperateHLLTestsCorrect {
         }
     }
 
+    @BeforeEach
+    public void setup() {
+        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+        client.operate(null, testKey, HLLOperation.init(HLLPolicy.Default, "hll", 8, 8));
+        client.operate(null, testKey, HLLOperation.init(HLLPolicy.Default, "hll2", 8, 8));
+    }
+
+    @AfterEach
+    public void clean() {
+    }
+
     @Test
     public void testHLLAdd() {
         createHLLBin("hll", values);
@@ -87,7 +84,7 @@ public class OperateHLLTestsCorrect {
         Record record = client.operate(null, testKey, HLLOperation.getCount("hll"));
         long count = (long) record.bins.get("hll");
 
-        Assert.assertEquals(7, count);
+        assertEquals(7, count);
     }
 
     @Test
@@ -112,7 +109,7 @@ public class OperateHLLTestsCorrect {
         Record record = client.operate(null, testKey, HLLOperation.getCount("hll"));
         long count = (long) record.bins.get("hll");
 
-        Assert.assertEquals(10, count);
+        assertEquals(10, count);
     }
 
     @Test
@@ -133,7 +130,7 @@ public class OperateHLLTestsCorrect {
         Record record = client.operate(null, testKey, HLLOperation.getCount("hll"));
         long count = (long) record.bins.get("hll");
 
-        Assert.assertEquals(7, count);
+        assertEquals(7, count);
     }
 
     @SuppressWarnings("unchecked")
@@ -163,7 +160,7 @@ public class OperateHLLTestsCorrect {
             expected = (byte[]) ((Map<String, Map<String, Object>>) res.get("bins")).get("hll").get("object");
         }
         Value.HLLValue value = new Value.HLLValue(expected);
-        Assert.assertNotNull(value);
+        assertNotNull(value);
     }
 
     @SuppressWarnings("unchecked")
@@ -186,7 +183,7 @@ public class OperateHLLTestsCorrect {
 
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
         Integer count = ((Map<String, Integer>) res.get("bins")).get("hll");
-        Assert.assertEquals(10, count.intValue());
+        assertEquals(10, count.intValue());
     }
 
     @SuppressWarnings("unchecked")
@@ -209,7 +206,7 @@ public class OperateHLLTestsCorrect {
 
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
         Integer count = ((Map<String, Integer>) res.get("bins")).get("hll");
-        Assert.assertEquals(5, count.intValue());
+        assertEquals(5, count.intValue());
     }
 
     @SuppressWarnings("unchecked")
@@ -232,7 +229,7 @@ public class OperateHLLTestsCorrect {
 
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
         Double count = ((Map<String, Double>) res.get("bins")).get("hll");
-        Assert.assertEquals(0.5, count, 0.005);
+        assertEquals(0.5, count, 0.005);
     }
 
     @SuppressWarnings("unchecked")
@@ -251,7 +248,7 @@ public class OperateHLLTestsCorrect {
 
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
         List<Integer> values = ((Map<String, List<Integer>>) res.get("bins")).get("hll");
-        Assert.assertEquals(Arrays.asList(8, 8), values);
+        assertEquals(Arrays.asList(8, 8), values);
     }
 
     private void createHLLBin(String binName, List<Object> values) {
@@ -267,5 +264,4 @@ public class OperateHLLTestsCorrect {
         opList.add(opMap);
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
     }
-
 }

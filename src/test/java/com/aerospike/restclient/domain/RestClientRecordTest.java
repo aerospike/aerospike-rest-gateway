@@ -19,10 +19,11 @@ package com.aerospike.restclient.domain;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.aerospike.client.Record;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class RestClientRecordTest {
 
@@ -36,21 +37,21 @@ public class RestClientRecordTest {
 		Record record = new Record(null, 2, 1000);
 		RestClientRecord rcRecord = new RestClientRecord(record);
 
-		Assert.assertNull(rcRecord.bins);
-		Assert.assertEquals(rcRecord.generation, 2);
-		Assert.assertEquals(rcRecord.ttl, record.getTimeToLive());
+		assertNull(rcRecord.bins);
+		assertEquals(rcRecord.generation, 2);
+		assertEquals(rcRecord.ttl, record.getTimeToLive());
 	}
 
 	@Test
 	public void testWithBins() {
 		Map<String, Object>bins = new HashMap<>();
-		bins.put("bin1", 5l);
+		bins.put("bin1", 5L);
 		bins.put("bin2", "hello");
 		Record record = new Record(bins, 2, 1000);
 		RestClientRecord rcRecord = new RestClientRecord(record);
 
-		Assert.assertEquals(rcRecord.bins, bins);
-		Assert.assertEquals(rcRecord.generation, 2);
-		Assert.assertEquals(rcRecord.ttl, record.getTimeToLive());
+		assertEquals(rcRecord.bins, bins);
+		assertEquals(rcRecord.generation, 2);
+		assertEquals(rcRecord.ttl, record.getTimeToLive());
 	}
 }
