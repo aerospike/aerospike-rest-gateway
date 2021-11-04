@@ -55,11 +55,6 @@ public class ExpressionParserTest {
     @Parameterized.Parameters
     public static Object[] mappers() {
         return new Object[][]{
-                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true, "predexp"},
-                {new MsgPackRestRecordDeserializer(), "application/msgpack", true, "predexp"},
-                {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false, "predexp"},
-                {new MsgPackRestRecordDeserializer(), "application/msgpack", false, "predexp"},
-
                 {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), true, "filterexp"},
                 {new MsgPackRestRecordDeserializer(), "application/msgpack", true, "filterexp"},
                 {new JSONRestRecordDeserializer(), MediaType.APPLICATION_JSON.toString(), false, "filterexp"},
