@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.ByteArrayInputStream;
@@ -43,7 +44,11 @@ import static org.mockito.Mockito.verify;
  * These methods are almost identical except they end up using a different recordExists action for the actual
  * storage
  */
+@SpringBootTest
 public class KVControllerV1PutPostPatchTests {
+
+	@Autowired KeyValueController controller;
+	@MockBean AerospikeRecordService recordService;
 
 	private final String ns = "test";
 	private final String set = "set";
@@ -65,9 +70,6 @@ public class KVControllerV1PutPostPatchTests {
 		msgpackBins = mpMapper.writeValueAsBytes(dummyBins);
 		queryParams = new HashMap<>();
 	}
-
-	@Autowired KeyValueController controller;
-	@MockBean AerospikeRecordService recordService;
 
 	/* Create/Post */
 	@Test

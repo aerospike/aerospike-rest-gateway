@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.ByteArrayInputStream;
@@ -40,7 +41,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * Test that exceptions thrown further in the chain are propagated back through these controllers
  *
  */
+@SpringBootTest
 public class KVControllerV1PutPostUpdateErrorTests {
+
+	@Autowired KeyValueController controller;
+	@MockBean AerospikeRecordService recordService;
 
 	private final String ns = "test";
 	private final String set = "set";
@@ -51,9 +56,6 @@ public class KVControllerV1PutPostUpdateErrorTests {
 	private final AerospikeException expectedException = new AerospikeException("test exception");
 	private byte[] msgpackBins;
 	private final ObjectMapper mpMapper = new ObjectMapper(new MessagePackFactory());
-
-	@Autowired KeyValueController controller;
-	@MockBean AerospikeRecordService recordService;
 
 	@SuppressWarnings("unchecked")
 	@BeforeEach
@@ -68,64 +70,64 @@ public class KVControllerV1PutPostUpdateErrorTests {
 	}
 
 	/* Create/Post */
-	@Test()
+	@Test
 	public void testCreateNSSetKey() {
 		assertThrows(AerospikeException.class, () -> controller.createRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams, null));
 	}
 
-	@Test()
+	@Test
 	public void testCreateNSKey() {
 		assertThrows(AerospikeException.class, () -> controller.createRecordNamespaceKey(ns, key, dummyBins, queryParams, null));
 	}
 
-	@Test()
+	@Test
 	public void testCreateNSSetKeyMP() {
 		assertThrows(AerospikeException.class, () -> controller.createRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams, null));
 	}
 
-	@Test()
+	@Test
 	public void testCreateNSKeyMP() {
 		assertThrows(AerospikeException.class, () -> controller.createRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams, null));
 	}
 
 	/* Update/Patch */
-	@Test()
+	@Test
 	public void testUpdateNSSetKey() {
 		assertThrows(AerospikeException.class, () -> controller.updateRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams, null));
 	}
 
-	@Test()
+	@Test
 	public void testUpdateNSKey() {
 		assertThrows(AerospikeException.class, () -> controller.updateRecordNamespaceKey(ns, key, dummyBins, queryParams, null));
 	}
 
-	@Test()
+	@Test
 	public void testUpdateNSSetKeyMP() {
 		assertThrows(AerospikeException.class, () -> controller.updateRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams, null));
 	}
 
-	@Test()
+	@Test
 	public void testUpdateNSKeyMP() {
 		assertThrows(AerospikeException.class, () -> controller.updateRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams, null));
 	}
 
 	/* Replace/Put */
-	@Test()
+	@Test
 	public void testReplaceNSSetKey() {
 		assertThrows(AerospikeException.class, () -> controller.replaceRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams, null));
 	}
 
-	@Test()
+	@Test
 	public void testReplaceNSKey() {
 		assertThrows(AerospikeException.class, () -> controller.replaceRecordNamespaceKey(ns, key, dummyBins, queryParams, null));
 	}
 
-	@Test()
+	@Test
 	public void testReplaceNSSetKeyMP() {
 		assertThrows(AerospikeException.class, () -> controller.replaceRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams, null));
 	}
 
-	@Test()
+	@Test
 	public void testReplaceNSKeyMP() {
 		assertThrows(AerospikeException.class, () -> controller.replaceRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams, null));
 	}

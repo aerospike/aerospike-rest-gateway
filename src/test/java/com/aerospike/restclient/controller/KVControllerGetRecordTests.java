@@ -27,6 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -44,6 +45,7 @@ import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SpringBootTest
 public class KVControllerGetRecordTests {
 
 	@Autowired KeyValueController controller;
@@ -154,7 +156,7 @@ public class KVControllerGetRecordTests {
 		assertTrue(recordsEqual(testRecord, actualRecord));
 	}
 
-	@Test()
+	@Test
 	public void testErrorNSSetKey() {
 		Mockito.doThrow(expectedException)
 				.when(recordService).fetchRecord(
@@ -168,7 +170,7 @@ public class KVControllerGetRecordTests {
 		assertThrows(AerospikeException.class, () -> controller.getRecordNamespaceSetKey(ns, set, key, queryParams, null));
 	}
 
-	@Test()
+	@Test
 	public void testErrorNSKey() {
 		Mockito.doThrow(expectedException)
 		.when(recordService).fetchRecord(

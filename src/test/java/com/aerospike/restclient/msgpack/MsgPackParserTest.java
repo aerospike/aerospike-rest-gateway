@@ -223,7 +223,7 @@ public class MsgPackParserTest {
 		assertEquals(val.toString(), geoString);
 	}
 
-	@Test()
+	@Test
 	public void testUnknownExtension() throws IOException {
 
 		String geoString = "{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}";
@@ -238,7 +238,7 @@ public class MsgPackParserTest {
 		assertThrows(MalformedMsgPackError.class, parser::unpackValue);
 	}
 
-	@Test()
+	@Test
 	public void testIncompleteArray() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 
@@ -252,7 +252,7 @@ public class MsgPackParserTest {
 	/*
 	 * We can only safely handle numbers up to 2 ^ 63 - 1, this tests that we get an error outside of that range
 	 */
-	@Test()
+	@Test
 	public void testValueOutsideOfLongRange() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		/* 2 ^ 64 -2  This is outside the range of a long*/

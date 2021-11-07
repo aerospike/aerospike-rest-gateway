@@ -166,7 +166,7 @@ public class BinParserTest {
 		assertTrue(ASTestUtils.compareMapStringObj(parsedBins, realBins));
 	}
 
-	@Test()
+	@Test
 	public void nonMapBinsTest() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		packer.packInt(5);
@@ -175,7 +175,7 @@ public class BinParserTest {
 		assertThrows(MalformedMsgPackError.class, parser::parseBins);
 	}
 
-	@Test()
+	@Test
 	public void nonStringMapKeyTest() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		packer.packMapHeader(1);
@@ -186,7 +186,7 @@ public class BinParserTest {
 		assertThrows(MalformedMsgPackError.class, parser::parseBins);
 	}
 
-	@Test()
+	@Test
 	public void testIncompleteMapBins() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		packer.packMapHeader(3);
@@ -194,7 +194,7 @@ public class BinParserTest {
 		assertThrows(MalformedMsgPackError.class, parser::parseBins);
 	}
 
-	@Test()
+	@Test
 	public void testEmptyMapData() {
 		MsgPackBinParser parser = new MsgPackBinParser(new ByteArrayInputStream(new byte[] {}));
 		assertThrows(MalformedMsgPackError.class, parser::parseBins);

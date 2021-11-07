@@ -55,7 +55,7 @@ public class ParamHandlerTests {
 		assertEquals(expectedType, actualType);
 	}
 
-	@Test()
+	@Test
 	public void getInvalidKeyTypeFromMultiMapTest() {
 		String fakeKeyType = "FAKE_KEY_TYPE";
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -73,7 +73,7 @@ public class ParamHandlerTests {
 		assertEquals(expectedType, actualType);
 	}
 
-	@Test()
+	@Test
 	public void getInvalidKeyTypeFromMapTest() {
 		String fakeKeyType = "FAKE_KEY_TYPE";
 		Map<String, String> params = new HashMap<>();

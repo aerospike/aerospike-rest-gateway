@@ -43,17 +43,11 @@ public class RestClientBatchReadBodyTest {
 	private static final String ns = "test";
 	private static final String set = "set";
 
-	private static Stream<Arguments> getParams() {
+	private static Stream<Arguments> getMapper() {
 		return Stream.of(
 				Arguments.of(new JsonBatchReadBodyMapper(new ObjectMapper())),
 				Arguments.of(new MsgPackBatchReadBodyMapper(new ObjectMapper(new MessagePackFactory())))
 		);
-	}
-
-	@ParameterizedTest
-	@MethodSource("getParams")
-	void addMappers(BatchReadBodyMapper mapper) {
-		this.mapper = mapper;
 	}
 
 	@Test
@@ -61,8 +55,9 @@ public class RestClientBatchReadBodyTest {
 		new RestClientBatchReadBody();
 	}
 
-	@Test
-	public void testObjectMappedConstructionStringKey() throws Exception {
+	@ParameterizedTest
+	@MethodSource("getMapper")
+	public void testObjectMappedConstructionStringKey(BatchReadBodyMapper mapper) throws Exception {
 		Map<String, Object>keyMap = getKeyMap("key", RecordKeyType.STRING);
 		Map<String, Object>batchMap = getBatchReadBase();
 		batchMap.put("key", keyMap);
@@ -76,8 +71,9 @@ public class RestClientBatchReadBodyTest {
 		assertEquals(RecordKeyType.STRING, rcKey.keyType);
 	}
 
-	@Test
-	public void testObjectMappedConstructionWithBins() throws Exception {
+	@ParameterizedTest
+	@MethodSource("getMapper")
+	public void testObjectMappedConstructionWithBins(BatchReadBodyMapper mapper) throws Exception {
 		Map<String, Object>keyMap = getKeyMap("key", RecordKeyType.STRING);
 		Map<String, Object>batchMap = getBatchReadBase();
 		batchMap.put("key", keyMap);
@@ -93,8 +89,9 @@ public class RestClientBatchReadBodyTest {
 		assertEquals(RecordKeyType.STRING, rcKey.keyType);
 	}
 
-	@Test
-	public void testObjectMappedConstructionIntegerKey() throws Exception {
+	@ParameterizedTest
+	@MethodSource("getMapper")
+	public void testObjectMappedConstructionIntegerKey(BatchReadBodyMapper mapper) throws Exception {
 		Map<String, Object>keyMap = getKeyMap(5, RecordKeyType.INTEGER);
 		Map<String, Object>batchMap = getBatchReadBase();
 		batchMap.put("key", keyMap);
@@ -108,8 +105,9 @@ public class RestClientBatchReadBodyTest {
 		assertEquals(RecordKeyType.INTEGER, rcKey.keyType);
 	}
 
-	@Test
-	public void testObjectMappedConstructionBytesKey() throws Exception {
+	@ParameterizedTest
+	@MethodSource("getMapper")
+	public void testObjectMappedConstructionBytesKey(BatchReadBodyMapper mapper) throws Exception {
 		Map<String, Object>keyMap = getKeyMap("lookslikebytes", RecordKeyType.BYTES);
 		Map<String, Object>batchMap = getBatchReadBase();
 		batchMap.put("key", keyMap);
@@ -123,8 +121,9 @@ public class RestClientBatchReadBodyTest {
 		assertEquals(RecordKeyType.BYTES, rcKey.keyType);
 	}
 
-	@Test
-	public void testObjectMappedConstructionDigestKey() throws Exception {
+	@ParameterizedTest
+	@MethodSource("getMapper")
+	public void testObjectMappedConstructionDigestKey(BatchReadBodyMapper mapper) throws Exception {
 		Map<String, Object>keyMap = getKeyMap("digest", RecordKeyType.DIGEST);
 		Map<String, Object>batchMap = getBatchReadBase();
 		batchMap.put("key", keyMap);
@@ -189,7 +188,7 @@ public class RestClientBatchReadBodyTest {
 		assertNull(convertedBatchRead.binNames);
 	}
 
-	@Test()
+	@Test
 	public void testConversionWithNullKey() {
 		RestClientBatchReadBody rCBRB = new RestClientBatchReadBody();
 		rCBRB.key = null;
@@ -219,7 +218,7 @@ public class RestClientBatchReadBodyTest {
 }
 
 interface BatchReadBodyMapper {
-	RestClientBatchReadBody mapToBatchReadBody(Map<String, Object>brMap) throws Exception;
+	RestClientBatchReadBody mapToBatchReadBody(Map<String, Object> brMap) throws Exception;
 }
 
 class JsonBatchReadBodyMapper implements BatchReadBodyMapper {

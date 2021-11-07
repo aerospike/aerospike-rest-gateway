@@ -67,7 +67,7 @@ public class SIndexResponseParserTests {
 		assertEquals(0, indexInfoAry.size());
 	}
 
-	@Test()
+	@Test
 	public void
 	testInvalidNamespaceResponse() {
 		/*

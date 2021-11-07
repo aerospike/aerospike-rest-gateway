@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.HashMap;
@@ -38,10 +39,12 @@ import static org.mockito.Mockito.verify;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SpringBootTest
 public class KVControllerV1DeleteRecordTests {
 
 	@Autowired KeyValueController controller;
 	@MockBean AerospikeRecordService recordService;
+
 	private final AerospikeException expectedException = new AerospikeException("test exception");
 
 	private final WritePolicyComparator existsActionComparator = (p1, p2) -> p1.recordExistsAction == p2.recordExistsAction;
@@ -114,7 +117,8 @@ public class KVControllerV1DeleteRecordTests {
 				isNull(),
 				argThat(matcher));
 	}
-	@Test()
+
+	@Test
 	public void testErrorNSSetKey() {
 		Mockito.doThrow(expectedException)
 		.when(recordService).deleteRecord(
@@ -127,7 +131,7 @@ public class KVControllerV1DeleteRecordTests {
 		assertThrows(AerospikeException.class, () -> controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams, null));
 	}
 
-	@Test()
+	@Test
 	public void testErrorNSKey() {
 		Mockito.doThrow(expectedException)
 		.when(recordService).deleteRecord(

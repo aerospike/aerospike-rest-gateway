@@ -46,7 +46,7 @@ public class InfoResponseParserTests {
 		assertEquals(replicationFactor, InfoResponseParser.getReplicationFactor(replicationFactorString, "irrelevant"));
 	}
 
-	@Test()
+	@Test
 	public void invalidReplicationFactorResponse() {
 		String replicationFactorString = "";
 		assertThrows(AerospikeException.class, () -> InfoResponseParser.getReplicationFactor(replicationFactorString, "irrelevant"));

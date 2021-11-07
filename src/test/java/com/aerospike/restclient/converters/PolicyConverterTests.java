@@ -36,7 +36,7 @@ public class PolicyConverterTests {
 		assertEquals(Replica.SEQUENCE, PolicyValueConverter.getReplica("SEQUENCE"));
 	}
 
-	@Test()
+	@Test
 	public void testInvalidReplica() {
 		assertThrows(InvalidPolicyValueError.class, () -> PolicyValueConverter.getReplica("none"));
 	}
@@ -53,7 +53,7 @@ public class PolicyConverterTests {
 		assertTrue(PolicyValueConverter.getCompress("TRUE"));
 	}
 
-	@Test()
+	@Test
 	public void testInvalidCommitLevel() {
 		assertThrows(InvalidPolicyValueError.class, () -> PolicyValueConverter.getCommitLevel("commited_enough"));
 	}
@@ -65,7 +65,7 @@ public class PolicyConverterTests {
 		assertEquals(GenerationPolicy.NONE, PolicyValueConverter.getGenerationPolicy("NONE"));
 	}
 
-	@Test()
+	@Test
 	public void testInvalidGenerationPolicy() {
 		assertThrows(InvalidPolicyValueError.class, () -> PolicyValueConverter.getGenerationPolicy("lt"));
 	}
@@ -79,12 +79,12 @@ public class PolicyConverterTests {
 		assertEquals(RecordExistsAction.UPDATE_ONLY, PolicyValueConverter.getRecordExistsAction("UPDATE_ONLY"));
 	}
 
-	@Test()
+	@Test
 	public void testInvalidRecordExistsAction() {
 		assertThrows(InvalidPolicyValueError.class, () -> PolicyValueConverter.getRecordExistsAction("nothing"));
 	}
 
-	@Test()
+	@Test
 	public void testIntValue() {
 		assertThrows(InvalidPolicyValueError.class, () -> PolicyValueConverter.getIntValue("five"));
 	}

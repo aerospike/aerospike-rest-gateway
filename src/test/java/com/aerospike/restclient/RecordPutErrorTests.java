@@ -23,6 +23,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -35,26 +36,8 @@ import java.util.stream.Stream;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest
 public class RecordPutErrorTests {
-
-	private String nonExistentNSEndpoint;
-	private String nonExistentRecordEndpoint;
-
-	private static Stream<Arguments> getParams() {
-		return Stream.of(Arguments.of(true, false));
-	}
-
-	@ParameterizedTest
-	@MethodSource("getParams")
-	void addParams(boolean useSet) {
-		if (useSet) {
-			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
-			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
-		} else {
-			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
-			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
-		}
-	}
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -64,13 +47,32 @@ public class RecordPutErrorTests {
 	@Autowired
 	private WebApplicationContext wac;
 
+	private String nonExistentNSEndpoint;
+	private String nonExistentRecordEndpoint;
+
+	private static Stream<Arguments> getParams() {
+		return Stream.of(Arguments.of(true, false));
+	}
+
+	private void setParams(boolean useSet) {
+		if (useSet) {
+			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
+			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
+		} else {
+			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
+			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
+		}
+	}
+
 	@BeforeEach
 	public void setup() {
 		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
 
-	@Test
-	public void putToNonExistentNS() throws Exception {
+	@ParameterizedTest
+	@MethodSource("getParams")
+	public void putToNonExistentNS(boolean useSet) throws Exception {
+		setParams(useSet);
 		Map<String, Object> binMap = new HashMap<>();
 		binMap.put("integer", 12345);
 
@@ -80,8 +82,10 @@ public class RecordPutErrorTests {
 		.andExpect(status().isInternalServerError());
 	}
 
-	@Test
-	public void putToNonExistentRecord() throws Exception {
+	@ParameterizedTest
+	@MethodSource("getParams")
+	public void putToNonExistentRecord(boolean useSet) throws Exception {
+		setParams(useSet);
 		Map<String, Object> binMap = new HashMap<>();
 
 		binMap.put("string", "Aerospike");

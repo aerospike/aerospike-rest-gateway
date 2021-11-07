@@ -29,6 +29,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -48,6 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@SpringBootTest
 public class RecordPutCorrectTests {
 
     @Autowired
@@ -95,9 +97,7 @@ public class RecordPutCorrectTests {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("getParams")
-    void addParams(PutPerformer performer, boolean useSet) {
+    private void setParams(PutPerformer performer, boolean useSet) {
         if (useSet) {
             this.testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
             this.testKey = new Key("test", "junit", "getput");
@@ -129,8 +129,10 @@ public class RecordPutCorrectTests {
         this.putPerformer = performer;
     }
 
-    @Test
-    public void PutInteger() throws Exception {
+    @ParameterizedTest
+    @MethodSource("getParams")
+    public void PutInteger(PutPerformer performer, boolean useSet) throws Exception {
+        setParams(performer, useSet);
         Map<String, Object> binMap = new HashMap<>();
 
         binMap.put("integer", 12345);

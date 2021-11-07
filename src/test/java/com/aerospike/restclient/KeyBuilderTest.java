@@ -92,7 +92,7 @@ public class KeyBuilderTest {
 		assertTrue(keysEqual(testKey, realKey));
 	}
 
-	@Test()
+	@Test
 	public void testWithInvalidIntegerKey() {
 		assertThrows(RestClientErrors.InvalidKeyError.class, () -> KeyBuilder.buildKey(testNS, testSet, "five", RecordKeyType.INTEGER));
 	}

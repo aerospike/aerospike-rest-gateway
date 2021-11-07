@@ -137,7 +137,7 @@ public class OperationParserTest {
 		assertTrue(ASTestUtils.compareRCOperations(testRCOp, parsedOp));
 	}
 
-	@Test()
+	@Test
 	public void nonListOps() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		packer.packInt(5);
@@ -146,7 +146,7 @@ public class OperationParserTest {
 		assertThrows(MalformedMsgPackError.class, parser::parseOperations);
 	}
 
-	@Test()
+	@Test
 	public void nonMapOperationTest() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		packer.packArrayHeader(1);
@@ -156,8 +156,8 @@ public class OperationParserTest {
 		assertThrows(MalformedMsgPackError.class, parser::parseOperations);
 	}
 
-	@Test()
-	public void extraDatatest() throws IOException {
+	@Test
+	public void extraDataTest() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		packer.packArrayHeader(1);
 		packer.packMapHeader(1);
@@ -169,7 +169,7 @@ public class OperationParserTest {
 		assertThrows(MalformedMsgPackError.class, parser::parseOperations);
 	}
 
-	@Test()
+	@Test
 	public void nonStringMapKeyTest() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 		packer.packArrayHeader(1);
@@ -184,7 +184,7 @@ public class OperationParserTest {
 	/*
 	 * Pack the header for an array, and no additional data
 	 */
-	@Test()
+	@Test
 	public void testIncompleteOpList() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 
@@ -195,7 +195,7 @@ public class OperationParserTest {
 		assertThrows(MalformedMsgPackError.class, parser::parseOperations);
 	}
 
-	@Test()
+	@Test
 	public void testIncompleteOp() throws IOException {
 		MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
 
@@ -206,7 +206,7 @@ public class OperationParserTest {
 
 		assertThrows(MalformedMsgPackError.class, parser::parseOperations);
 	}
-	@Test()
+	@Test
 	public void testEmptyMapData() {
 		MsgPackOperationsParser parser = new MsgPackOperationsParser(new ByteArrayInputStream(new byte[] {}));
 		assertThrows(MalformedMsgPackError.class, parser::parseOperations);

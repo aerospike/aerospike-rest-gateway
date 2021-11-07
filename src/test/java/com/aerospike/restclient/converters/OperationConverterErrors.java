@@ -30,20 +30,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OperationConverterErrors {
 
-	@Test()
+	@Test
 	public void testUnknownOp() {
 		Map<String, Object> op = new HashMap<>();
 		op.put(AerospikeAPIConstants.OPERATION_FIELD, "the_board_game");
 		assertThrows(InvalidOperationError.class, () -> OperationConverter.convertMapToOperation(op));
 	}
 
-	@Test()
+	@Test
 	public void testOperationWithoutOperationKey() {
 		Map<String, Object> op = new HashMap<>();
 		assertThrows(InvalidOperationError.class, () -> OperationConverter.convertMapToOperation(op));
 	}
 
-	@Test()
+	@Test
 	public void testMissingOpValues() {
 		Map<String, Object> op = new HashMap<>();
 		op.put(AerospikeAPIConstants.OPERATION_FIELD, AerospikeOperation.READ);
@@ -53,7 +53,7 @@ public class OperationConverterErrors {
 	/*
 	 * If the user accidentally provides an extra key at the top level, we should error out.
 	 */
-	@Test()
+	@Test
 	public void testAdditionalTopLevelValue() {
 		Map<String, Object> opValues = new HashMap<>();
 		Map<String, Object> op = new HashMap<>();
@@ -64,7 +64,7 @@ public class OperationConverterErrors {
 		assertThrows(InvalidOperationError.class, () -> OperationConverter.convertMapToOperation(op));
 	}
 
-	@Test()
+	@Test
 	public void testMissingValueInOpValue() {
 		/*
 		 * This should look like {
@@ -81,7 +81,7 @@ public class OperationConverterErrors {
 		assertThrows(InvalidOperationError.class, () -> OperationConverter.convertMapToOperation(op));
 	}
 
-	@Test()
+	@Test
 	public void testExtraValueInOpValue() {
 		/*
 		 * This should look like {
@@ -100,7 +100,7 @@ public class OperationConverterErrors {
 		assertThrows(InvalidOperationError.class, () -> OperationConverter.convertMapToOperation(op));
 	}
 
-	@Test()
+	@Test
 	public void testStringValueIsNonString() {
 		/*
 		 * This should look like {
@@ -118,7 +118,7 @@ public class OperationConverterErrors {
 		assertThrows(InvalidOperationError.class, () -> OperationConverter.convertMapToOperation(op));
 	}
 
-	@Test()
+	@Test
 	public void testIntegerValueIsNonInt() {
 		/*
 		 * This should look like {
