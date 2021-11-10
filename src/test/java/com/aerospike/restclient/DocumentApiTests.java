@@ -137,7 +137,7 @@ public class DocumentApiTests {
                 .contentType(mediaType)
                 .content(payload)
                 .accept(mediaType))
-                .andExpect(status().isOk());
+                .andExpect(status().isAccepted());
 
         MvcResult result = mockMVC.perform(
                 get(testEndpoint + binParam + jsonPathParam)
@@ -165,7 +165,7 @@ public class DocumentApiTests {
                 .contentType(mediaType)
                 .content(payload)
                 .accept(mediaType))
-                .andExpect(status().isOk());
+                .andExpect(status().isAccepted());
 
         MvcResult result = mockMVC.perform(
                 get(testEndpoint + binParam + jsonPathParam)
