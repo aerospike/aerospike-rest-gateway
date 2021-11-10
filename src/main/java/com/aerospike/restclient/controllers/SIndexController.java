@@ -73,7 +73,7 @@ public class SIndexController {
     })
     @DefaultRestClientAPIResponses
     @GetMapping(produces = {"application/json", "application/msgpack"})
-    List<RestClientIndex> indexInformation(
+    public List<RestClientIndex> indexInformation(
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -105,7 +105,7 @@ public class SIndexController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @PostMapping(consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
-    void createIndex(
+    public void createIndex(
             @RequestBody RestClientIndex indexModel,
             @Parameter(hidden = true) @RequestParam Map<String, String> policyMap,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
@@ -133,7 +133,7 @@ public class SIndexController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @DeleteMapping(value = "/{namespace}/{name}", produces = {"application/json", "application/msgpack"})
-    void dropIndex(
+    public void dropIndex(
             @Parameter(required = true, description = "The namespace containing the index") @PathVariable(value = "namespace") String namespace,
             @Parameter(required = true, description = "The name of the index") @PathVariable(value = "name") String name,
             @Parameter(hidden = true) @RequestParam Map<String, String> policyMap,
@@ -162,7 +162,7 @@ public class SIndexController {
     @DefaultRestClientAPIResponses
     @GetMapping(value = "/{namespace}/{name}", produces = {"application/json", "application/msgpack"})
     @ASRestClientInfoPolicyQueryParams
-    Map<String, String> getIndexStats(
+    public Map<String, String> getIndexStats(
             @Parameter(required = true, description = "The namespace containing the index") @PathVariable(value = "namespace") String namespace,
             @Parameter(required = true, description = "The name of the index") @PathVariable(value = "name") String name,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
