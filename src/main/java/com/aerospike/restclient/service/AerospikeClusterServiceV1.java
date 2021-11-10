@@ -33,7 +33,7 @@ public class AerospikeClusterServiceV1 implements AerospikeClusterService {
     private AerospikeClientPool clientPool;
 
     /*
-     * Returns an object showing clusterinformation
+     * Returns an object showing cluster information
      * {
      *  "nodes": [
      *  		{"name": "node1"},
@@ -59,5 +59,4 @@ public class AerospikeClusterServiceV1 implements AerospikeClusterService {
 
         return clusterInfo;
     }
-
 }

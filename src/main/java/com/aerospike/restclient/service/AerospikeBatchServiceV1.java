@@ -44,5 +44,4 @@ public class AerospikeBatchServiceV1 implements AerospikeBatchService {
 
         return batchReads.stream().map(RestClientBatchReadResponse::new).collect(Collectors.toList());
     }
-
 }

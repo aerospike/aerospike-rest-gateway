@@ -22,5 +22,5 @@ import java.util.Map;
 
 public interface AerospikeClusterService {
 
-    public Map<String, Object> getClusterInfo(AuthDetails authDetails);
+    Map<String, Object> getClusterInfo(AuthDetails authDetails);
 }

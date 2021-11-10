@@ -21,7 +21,7 @@ import com.aerospike.client.policy.Policy;
 import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.RestClientIndex;
 import com.aerospike.restclient.domain.auth.AuthDetails;
-import com.aerospike.restclient.service.AerospikeSindexService;
+import com.aerospike.restclient.service.AerospikeSIndexService;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.annotations.ASRestClientInfoPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
@@ -49,7 +49,7 @@ import java.util.Map;
 public class SIndexController {
 
     @Autowired
-    private AerospikeSindexService service;
+    private AerospikeSIndexService service;
 
     @Parameters(value = {
             @Parameter(name = "namespace",

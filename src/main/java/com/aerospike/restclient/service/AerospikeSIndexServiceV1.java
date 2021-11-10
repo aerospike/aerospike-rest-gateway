@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class AerospikeSindexServiceV1 implements AerospikeSindexService {
+public class AerospikeSIndexServiceV1 implements AerospikeSIndexService {
 
     @Autowired
     private AerospikeClientPool clientPool;
@@ -85,5 +85,4 @@ public class AerospikeSindexServiceV1 implements AerospikeSindexService {
     private String getSindexListCommand(String namespace) {
         return (namespace == null || namespace.equals("")) ? "sindex" : "sindex/" + namespace;
     }
-
 }

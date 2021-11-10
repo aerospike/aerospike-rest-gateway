@@ -40,5 +40,4 @@ public class AerospikeInfoServiceV1 implements AerospikeInfoService {
     public Map<String, String> infoNodeName(AuthDetails authDetails, String nodeName, String[] requests, InfoPolicy policy) {
         return InfoHandler.create(clientPool.getClient(authDetails)).multiInfoRequest(policy, nodeName, requests);
     }
-
 }

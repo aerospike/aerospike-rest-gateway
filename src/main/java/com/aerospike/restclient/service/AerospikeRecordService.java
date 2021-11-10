@@ -25,18 +25,15 @@ import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import java.util.Map;
 
 public interface AerospikeRecordService {
-    public void
-    storeRecord(AuthDetails authDetails, String namespace, String set, String key, Map<String, Object> binMap,
+
+    void storeRecord(AuthDetails authDetails, String namespace, String set, String key, Map<String, Object> binMap,
                 RecordKeyType keyType, WritePolicy policy);
 
-    public RestClientRecord
-    fetchRecord(AuthDetails authDetails, String namespace, String set, String key, String[] bins,
+    RestClientRecord fetchRecord(AuthDetails authDetails, String namespace, String set, String key, String[] bins,
                 RecordKeyType keyType, Policy policy);
 
-    public void
-    deleteRecord(AuthDetails authDetails, String namespace, String set, String key,
+    void deleteRecord(AuthDetails authDetails, String namespace, String set, String key,
                  RecordKeyType keyType, WritePolicy policy);
 
-    public boolean
-    recordExists(AuthDetails authDetails, String namespace, String set, String key, RecordKeyType keyType);
+    boolean recordExists(AuthDetails authDetails, String namespace, String set, String key, RecordKeyType keyType);
 }

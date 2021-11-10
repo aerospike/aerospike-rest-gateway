@@ -25,6 +25,6 @@ import java.util.List;
 
 public interface AerospikeBatchService {
 
-    public List<RestClientBatchReadResponse> batchGet(AuthDetails authDetails, List<RestClientBatchReadBody> batchKeys,
-                                                      BatchPolicy policy);
+    List<RestClientBatchReadResponse> batchGet(AuthDetails authDetails, List<RestClientBatchReadBody> batchKeys,
+                                               BatchPolicy policy);
 }

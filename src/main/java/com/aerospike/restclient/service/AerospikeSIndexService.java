@@ -24,13 +24,13 @@ import com.aerospike.restclient.domain.auth.AuthDetails;
 import java.util.List;
 import java.util.Map;
 
-public interface AerospikeSindexService {
+public interface AerospikeSIndexService {
 
-    public List<RestClientIndex> getIndexList(AuthDetails authDetails, String namespace, InfoPolicy policy);
+    List<RestClientIndex> getIndexList(AuthDetails authDetails, String namespace, InfoPolicy policy);
 
-    public void createIndex(AuthDetails authDetails, RestClientIndex indexModel, Policy policy);
+    void createIndex(AuthDetails authDetails, RestClientIndex indexModel, Policy policy);
 
-    public void dropIndex(AuthDetails authDetails, String namespace, String indexName, Policy policy);
+    void dropIndex(AuthDetails authDetails, String namespace, String indexName, Policy policy);
 
-    public Map<String, String> indexStats(AuthDetails authDetails, String namespace, String name, InfoPolicy policy);
+    Map<String, String> indexStats(AuthDetails authDetails, String namespace, String name, InfoPolicy policy);
 }
