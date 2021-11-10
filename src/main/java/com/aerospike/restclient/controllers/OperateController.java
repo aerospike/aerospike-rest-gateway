@@ -66,27 +66,19 @@ public class OperateController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Namespace or set does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation conflict.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{set}/{key}",
@@ -137,27 +129,19 @@ public class OperateController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Namespace or set does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation conflict.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{key}",
@@ -209,27 +193,19 @@ public class OperateController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Namespace or set does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation conflict.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.POST, value = "/read/{namespace}/{set}",
@@ -280,27 +256,19 @@ public class OperateController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Namespace or set does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation conflict.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.POST, value = "/read/{namespace}",

@@ -30,7 +30,7 @@ public class RestClientBatchReadBody {
 	@Schema(description = "Whether all bins should be returned with this record.")
 	public boolean readAllBins;
 
-	@Schema(description = "List of bins to limit the record response to.")
+	@Schema(description = "List of bins to limit the record response to.", example = "[\"bin1\"]")
 	public String[] binNames;
 
 	public RestClientBatchReadBody() {}

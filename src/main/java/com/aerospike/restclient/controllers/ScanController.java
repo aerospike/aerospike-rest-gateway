@@ -26,6 +26,7 @@ import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.annotations.ASRestClientScanPolicyQueryParams;
+import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -52,25 +53,18 @@ public class ScanController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Namespace or set does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{set}",
-            produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(HttpStatus.OK)
+    @DefaultRestClientAPIResponses
+    @GetMapping(value = "/{namespace}/{set}", produces = {"application/json", "application/msgpack"})
     @ASRestClientScanPolicyQueryParams
     public RestClientScanResponse performScan(
             @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -90,25 +84,18 @@ public class ScanController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Namespace or set does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}",
-            produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(HttpStatus.OK)
+    @DefaultRestClientAPIResponses
+    @GetMapping(value = "/{namespace}", produces = {"application/json", "application/msgpack"})
     @ASRestClientScanPolicyQueryParams
     public RestClientScanResponse performScan(
             @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,

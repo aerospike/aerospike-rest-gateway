@@ -20,6 +20,7 @@ import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.domain.swaggermodels.RestClientClusterInfoResponse;
 import com.aerospike.restclient.service.AerospikeClusterService;
 import com.aerospike.restclient.util.HeaderHandler;
+import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,10 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -41,13 +39,16 @@ class ClusterController {
     @Autowired
     private AerospikeClusterService service;
 
-    @Operation(summary = "Return an object containing information about the Aerospike cluster.",
-            operationId = "getClusterInfo",
-            responses = @ApiResponse(content = @Content(schema = @Schema(implementation = RestClientClusterInfoResponse.class))))
-    @ApiResponses
-    @RequestMapping(method = RequestMethod.GET, produces = {"application/json", "application/msgpack"})
+    @Operation(summary = "Return an object containing information about the Aerospike cluster.", operationId = "getClusterInfo")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Cluster information read successfully.",
+                    content = @Content(schema = @Schema(implementation = RestClientClusterInfoResponse.class)))
+    })
+    @DefaultRestClientAPIResponses
+    @GetMapping(produces = {"application/json", "application/msgpack"})
     public Map<String, Object> getClusterInfo(@RequestHeader(value = "Authorization", required = false) String basicAuth) {
-
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         return service.getClusterInfo(authDetails);
     }

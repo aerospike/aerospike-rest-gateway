@@ -39,6 +39,6 @@ public class RestClientRecord {
 	public int ttl;
 
 	@Schema(name = "bins", description = "A mapping from binName to binValue",
-			example="{\"bin1\": \"val1\", \"pi\": \"3.14\"}")
-	public Map<String, Object>bins;
+			example = "{\"bin1\": \"val1\", \"pi\": \"3.14\"}")
+	public Map<String, Object> bins;
 }

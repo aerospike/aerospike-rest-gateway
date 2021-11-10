@@ -26,8 +26,10 @@ import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.annotations.ASRestClientBatchPolicyQueryParams;
+import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -51,26 +53,24 @@ public class BatchController {
     @Operation(summary = "Return multiple records from the server in a single request.", operationId = "performBatchGet")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "200",
+                    description = "Batch read completed successfully.",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestClientBatchReadResponse.class)))),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Non existent namespace used in one or more key.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.POST, consumes = {"application/json", "application/msgpack"},
-            produces = {"application/json", "application/msgpack"})
+    @DefaultRestClientAPIResponses
+    @PostMapping(consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
     @ASRestClientBatchPolicyQueryParams
     public List<RestClientBatchReadResponse> performBatchGet(@RequestBody List<RestClientBatchReadBody> batchKeys,
                                                              @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,

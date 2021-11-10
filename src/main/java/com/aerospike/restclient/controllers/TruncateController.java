@@ -20,11 +20,10 @@ import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeTruncateService;
 import com.aerospike.restclient.util.HeaderHandler;
-import com.aerospike.restclient.util.ResponseExamples;
+import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -46,22 +45,22 @@ public class TruncateController {
     private AerospikeTruncateService truncateService;
 
     @Operation(summary = "Truncate records in a specified namespace.", operationId = "truncateNamespace")
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}", produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
     @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "202",
+                    description = "Request to truncate record has been accepted."),
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
+    @DefaultRestClientAPIResponses
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @DeleteMapping(value = "/{namespace}", produces = {"application/json", "application/msgpack"})
     public void truncateNamespace(
             @Parameter(description = "The namespace whose records will be truncated.", required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = DATE_QUERY_PARAM_NOTES, example = DATE_QUERY_PARAM_EXAMPLE) @RequestParam(value = "date", required = false) String dateString,
@@ -73,22 +72,22 @@ public class TruncateController {
     }
 
     @Operation(summary = "Truncate records in a specified namespace and set.", operationId = "truncateSet")
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{set}", produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
     @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "202",
+                    description = "Request to truncate record has been accepted."),
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
+    @DefaultRestClientAPIResponses
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @DeleteMapping(value = "/{namespace}/{set}", produces = {"application/json", "application/msgpack"})
     public void truncateSet(
             @Parameter(description = "The namespace whose records will be truncated", required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = "The set, in the specified namespace, whose records will be truncated", required = true) @PathVariable(value = "set") String set,
