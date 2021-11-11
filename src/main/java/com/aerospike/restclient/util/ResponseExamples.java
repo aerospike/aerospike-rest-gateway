@@ -39,4 +39,25 @@ public final class ResponseExamples {
     public static final String REQUESTS_PARAM_INFO_VALUE = "[\"build\", \"edition\"]";
     public static final String SUCCESS_INFO_NAME = "Info response example";
     public static final String SUCCESS_INFO_VALUE = "{\"edition\": \"Aerospike Enterprise Edition\", \"name\":\"BB9DE9B1B270008\"}";
+
+    // secondary indexes
+    public static final String SINDEX_STATS_NAME = "Secondary index response example";
+    public static final String SINDEX_STATS_VALUE = "{\n" +
+            "   \"loadtime\": 0,\n" +
+            "   \"delete_success\": 0,\n" +
+            "   \"keys\": 0,\n" +
+            "   \"nbtr_memory_used\": 0,\n" +
+            "   \"delete_error\": 0,\n" +
+            "   \"load_pct\": 100,\n" +
+            "   \"stat_gc_recs\": 0,\n" +
+            "   \"query_basic_abort\": 0,\n" +
+            "   \"histogram\": false,\n" +
+            "   \"entries\": 0,\n" +
+            "   \"query_basic_error\": 0,\n" +
+            "   \"query_basic_complete\": 0,\n" +
+            "   \"ibtr_memory_used\": 18432,\n" +
+            "   \"write_error\": 0,\n" +
+            "   \"query_basic_avg_rec_count\": 0,\n" +
+            "   \"write_success\": 0\n" +
+            "}";
 }

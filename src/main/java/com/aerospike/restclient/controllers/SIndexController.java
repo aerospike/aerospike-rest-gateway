@@ -23,6 +23,7 @@ import com.aerospike.restclient.domain.RestClientIndex;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeSIndexService;
 import com.aerospike.restclient.util.HeaderHandler;
+import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.annotations.ASRestClientInfoPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import com.aerospike.restclient.util.converters.policyconverters.InfoPolicyConverter;
@@ -32,6 +33,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -149,7 +151,8 @@ public class SIndexController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Information about secondary index read successfully."),
+                    description = "Information about secondary index read successfully.",
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.SINDEX_STATS_NAME, value = ResponseExamples.SINDEX_STATS_VALUE))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
