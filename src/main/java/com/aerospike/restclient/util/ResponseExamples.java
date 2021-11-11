@@ -34,6 +34,55 @@ public final class ResponseExamples {
             "  }\n" +
             "]";
 
+    // cluster
+    public static final String CLUSTER_INFO_RESPONSE_NAME = "Cluster info response example";
+    public static final String CLUSTER_INFO_RESPONSE_VALUE = "{\n" +
+            "   \"nodes\": [\n" +
+            "      {\n" +
+            "         \"name\": \"BB9020011AC4202\"\n" +
+            "      }\n" +
+            "   ],\n" +
+            "   \"namespaces\": [\n" +
+            "      {\n" +
+            "         \"sets\": [\n" +
+            "            {\n" +
+            "               \"objectCount\": 1,\n" +
+            "               \"name\": \"junit\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "               \"objectCount\": 0,\n" +
+            "               \"name\": \"msgpack\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "               \"objectCount\": 0,\n" +
+            "               \"name\": \"executeSet\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "               \"objectCount\": 0,\n" +
+            "               \"name\": \"scanSet\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "               \"objectCount\": 0,\n" +
+            "               \"name\": \"auth\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "               \"objectCount\": 0,\n" +
+            "               \"name\": \"idxDemo\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "               \"objectCount\": 0,\n" +
+            "               \"name\": \"truncate\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "               \"objectCount\": 0,\n" +
+            "               \"name\": \"otherset\"\n" +
+            "            }\n" +
+            "         ],\n" +
+            "         \"name\": \"test\"\n" +
+            "      }\n" +
+            "   ]\n" +
+            "}";
+
     // info
     public static final String REQUESTS_PARAM_INFO_NAME = "Array of info commands example";
     public static final String REQUESTS_PARAM_INFO_VALUE = "[\"build\", \"edition\"]";

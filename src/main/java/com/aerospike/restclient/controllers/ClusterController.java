@@ -17,13 +17,13 @@
 package com.aerospike.restclient.controllers;
 
 import com.aerospike.restclient.domain.auth.AuthDetails;
-import com.aerospike.restclient.domain.swaggermodels.RestClientClusterInfoResponse;
 import com.aerospike.restclient.service.AerospikeClusterService;
 import com.aerospike.restclient.util.HeaderHandler;
+import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,7 +44,8 @@ class ClusterController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Cluster information read successfully.",
-                    content = @Content(schema = @Schema(implementation = RestClientClusterInfoResponse.class)))
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.CLUSTER_INFO_RESPONSE_NAME,
+                            value = ResponseExamples.CLUSTER_INFO_RESPONSE_VALUE)))
     })
     @DefaultRestClientAPIResponses
     @GetMapping(produces = {"application/json", "application/msgpack"})
