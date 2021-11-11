@@ -58,7 +58,7 @@ public class ExecuteController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Invalid parameters or request."),
+                    description = "Multiple operations in background scan/query run successfully."),
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
@@ -100,7 +100,7 @@ public class ExecuteController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Invalid parameters or request."),
+                    description = "Multiple operations in background scan/query run successfully."),
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
@@ -141,7 +141,7 @@ public class ExecuteController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Invalid parameters or request."),
+                    description = "Status of background scan read successfully."),
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",

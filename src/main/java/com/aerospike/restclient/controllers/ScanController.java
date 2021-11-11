@@ -24,19 +24,16 @@ import com.aerospike.restclient.service.AerospikeScanService;
 import com.aerospike.restclient.util.APIParamDescriptors;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;
-import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.annotations.ASRestClientScanPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +47,9 @@ public class ScanController {
 
     @Operation(summary = "Return multiple records from the server in a scan request.", operationId = "performScan")
     @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Scan multiple records successfully."),
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
@@ -81,6 +81,9 @@ public class ScanController {
 
     @Operation(summary = "Return multiple records from the server in a scan request.", operationId = "performScan")
     @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Scan multiple records successfully."),
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
