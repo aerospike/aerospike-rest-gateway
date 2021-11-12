@@ -83,6 +83,23 @@ public final class ResponseExamples {
             "   ]\n" +
             "}";
 
+    // document api
+    public static final String GET_DOCUMENT_OBJECT_RESPONSE_NAME = "Get document object response example";
+    public static final String GET_DOCUMENT_OBJECT_RESPONSE_VALUE = "{\n" +
+            "   \"docBin2\": [\n" +
+            "      \"A1\",\n" +
+            "      \"B1\",\n" +
+            "      \"C1\",\n" +
+            "      \"D1\"\n" +
+            "   ],\n" +
+            "   \"docBin1\": [\n" +
+            "      \"A1\",\n" +
+            "      \"B1\",\n" +
+            "      \"C1\",\n" +
+            "      \"D1\"\n" +
+            "   ]\n" +
+            "}";
+
     // info
     public static final String REQUESTS_PARAM_INFO_NAME = "Array of info commands example";
     public static final String REQUESTS_PARAM_INFO_VALUE = "[\"build\", \"edition\"]";

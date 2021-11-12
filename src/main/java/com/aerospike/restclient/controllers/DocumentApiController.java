@@ -20,17 +20,18 @@ import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.auth.AuthDetails;
-import com.aerospike.restclient.domain.swaggermodels.RestClientClusterInfoResponse;
 import com.aerospike.restclient.service.AerospikeDocumentService;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;
+import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.annotations.ASRestDocumentPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.ASRestDocumentWritePolicyQueryParams;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -75,7 +76,9 @@ public class DocumentApiController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Document read successfully."),
+                    description = "Document read successfully.",
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.GET_DOCUMENT_OBJECT_RESPONSE_NAME,
+                        value = ResponseExamples.GET_DOCUMENT_OBJECT_RESPONSE_VALUE))),
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
@@ -111,7 +114,9 @@ public class DocumentApiController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Document read successfully."),
+                    description = "Document read successfully.",
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.GET_DOCUMENT_OBJECT_RESPONSE_NAME,
+                        value = ResponseExamples.GET_DOCUMENT_OBJECT_RESPONSE_VALUE))),
             @ApiResponse(responseCode = "400",
                     description = "Invalid parameters or request.",
                     content = @Content(schema = @Schema(implementation = RestClientError.class))),
