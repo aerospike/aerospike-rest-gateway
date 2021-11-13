@@ -44,8 +44,8 @@ class ClusterController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Cluster information read successfully.",
-                    content = @Content(examples = @ExampleObject(name = ResponseExamples.CLUSTER_INFO_RESPONSE_NAME,
-                            value = ResponseExamples.CLUSTER_INFO_RESPONSE_VALUE)))
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.CLUSTER_INFO_NAME,
+                            value = ResponseExamples.CLUSTER_INFO_VALUE)))
     })
     @DefaultRestClientAPIResponses
     @GetMapping(produces = {"application/json", "application/msgpack"})

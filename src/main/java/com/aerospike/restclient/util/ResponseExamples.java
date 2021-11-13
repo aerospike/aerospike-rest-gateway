@@ -35,8 +35,8 @@ public final class ResponseExamples {
             "]";
 
     // cluster
-    public static final String CLUSTER_INFO_RESPONSE_NAME = "Cluster info response example";
-    public static final String CLUSTER_INFO_RESPONSE_VALUE = "{\n" +
+    public static final String CLUSTER_INFO_NAME = "Cluster info response example";
+    public static final String CLUSTER_INFO_VALUE = "{\n" +
             "   \"nodes\": [\n" +
             "      {\n" +
             "         \"name\": \"BB9020011AC4202\"\n" +
@@ -84,8 +84,8 @@ public final class ResponseExamples {
             "}";
 
     // document api
-    public static final String GET_DOCUMENT_OBJECT_RESPONSE_NAME = "Get document object response example";
-    public static final String GET_DOCUMENT_OBJECT_RESPONSE_VALUE = "{\n" +
+    public static final String GET_DOCUMENT_OBJECT_NAME = "Get document object response example";
+    public static final String GET_DOCUMENT_OBJECT_VALUE = "{\n" +
             "   \"docBin2\": [\n" +
             "      \"A1\",\n" +
             "      \"B1\",\n" +
@@ -101,8 +101,6 @@ public final class ResponseExamples {
             "}";
 
     // info
-    public static final String REQUESTS_PARAM_INFO_NAME = "Array of info commands example";
-    public static final String REQUESTS_PARAM_INFO_VALUE = "[\"build\", \"edition\"]";
     public static final String SUCCESS_INFO_NAME = "Info response example";
     public static final String SUCCESS_INFO_VALUE = "{\"edition\": \"Aerospike Enterprise Edition\", \"name\":\"BB9DE9B1B270008\"}";
 

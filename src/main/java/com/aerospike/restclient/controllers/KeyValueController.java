@@ -26,8 +26,8 @@ import com.aerospike.restclient.service.AerospikeRecordService;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.QueryParamDescriptors;
+import com.aerospike.restclient.util.RequestBodyExamples;
 import com.aerospike.restclient.util.RequestParamHandler;
-import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.annotations.ASRestClientPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.ASRestClientWritePolicyQueryParams;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
@@ -263,7 +263,10 @@ public class KeyValueController {
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = STORE_BINS_NOTES, required = true) @RequestBody Map<String, Object> bins,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = STORE_BINS_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE))) @RequestBody Map<String, Object> bins,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -329,7 +332,10 @@ public class KeyValueController {
     public void replaceRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = STORE_BINS_NOTES, required = true) @RequestBody Map<String, Object> bins,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = STORE_BINS_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE))) @RequestBody Map<String, Object> bins,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -395,7 +401,10 @@ public class KeyValueController {
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = STORE_BINS_NOTES, required = true) @RequestBody Map<String, Object> bins,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = STORE_BINS_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE))) @RequestBody Map<String, Object> bins,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -456,7 +465,10 @@ public class KeyValueController {
     public void createRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = STORE_BINS_NOTES, required = true) @RequestBody Map<String, Object> bins,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = STORE_BINS_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE))) @RequestBody Map<String, Object> bins,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -522,7 +534,10 @@ public class KeyValueController {
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = STORE_BINS_NOTES, required = true) @RequestBody Map<String, Object> bins,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = STORE_BINS_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE))) @RequestBody Map<String, Object> bins,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -583,7 +598,10 @@ public class KeyValueController {
     public void updateRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = STORE_BINS_NOTES, required = true) @RequestBody Map<String, Object> bins,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = STORE_BINS_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE))) @RequestBody Map<String, Object> bins,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 

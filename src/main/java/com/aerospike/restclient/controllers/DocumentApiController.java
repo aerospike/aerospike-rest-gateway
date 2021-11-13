@@ -21,10 +21,7 @@ import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeDocumentService;
-import com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.aerospike.restclient.util.HeaderHandler;
-import com.aerospike.restclient.util.RequestParamHandler;
-import com.aerospike.restclient.util.ResponseExamples;
+import com.aerospike.restclient.util.*;
 import com.aerospike.restclient.util.annotations.ASRestDocumentPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.ASRestDocumentWritePolicyQueryParams;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
@@ -77,8 +74,8 @@ public class DocumentApiController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Document read successfully.",
-                    content = @Content(examples = @ExampleObject(name = ResponseExamples.GET_DOCUMENT_OBJECT_RESPONSE_NAME,
-                        value = ResponseExamples.GET_DOCUMENT_OBJECT_RESPONSE_VALUE))),
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.GET_DOCUMENT_OBJECT_NAME,
+                        value = ResponseExamples.GET_DOCUMENT_OBJECT_VALUE))),
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
@@ -115,8 +112,8 @@ public class DocumentApiController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Document read successfully.",
-                    content = @Content(examples = @ExampleObject(name = ResponseExamples.GET_DOCUMENT_OBJECT_RESPONSE_NAME,
-                        value = ResponseExamples.GET_DOCUMENT_OBJECT_RESPONSE_VALUE))),
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.GET_DOCUMENT_OBJECT_NAME,
+                        value = ResponseExamples.GET_DOCUMENT_OBJECT_VALUE))),
             @ApiResponse(responseCode = "400",
                     description = "Invalid parameters or request.",
                     content = @Content(schema = @Schema(implementation = RestClientError.class))),
@@ -176,7 +173,10 @@ public class DocumentApiController {
     public void putDocumentObject(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = JSON_OBJECT_NOTES, required = true) @RequestBody Object jsonObject,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = JSON_OBJECT_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE))) @RequestBody Object jsonObject,
             @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -215,7 +215,10 @@ public class DocumentApiController {
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = JSON_OBJECT_NOTES, required = true) @RequestBody Object jsonObject,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = JSON_OBJECT_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE))) @RequestBody Object jsonObject,
             @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -258,7 +261,10 @@ public class DocumentApiController {
     public void appendDocumentObject(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = JSON_OBJECT_NOTES, required = true) @RequestBody Object jsonObject,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = JSON_OBJECT_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE))) @RequestBody Object jsonObject,
             @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -297,7 +303,10 @@ public class DocumentApiController {
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = JSON_OBJECT_NOTES, required = true) @RequestBody Object jsonObject,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = JSON_OBJECT_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE))) @RequestBody Object jsonObject,
             @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 

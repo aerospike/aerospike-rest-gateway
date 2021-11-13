@@ -24,6 +24,7 @@ import com.aerospike.restclient.domain.RestClientRoleQuota;
 import com.aerospike.restclient.domain.RestClientUserModel;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeAdminService;
+import com.aerospike.restclient.util.RequestBodyExamples;
 import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
@@ -198,7 +199,9 @@ public class AdminController {
     @PostMapping(value = "/user/{user}/role",
             consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
     public void grantRoles(@Parameter(required = true) @PathVariable(value = "user") String user,
-                           @Parameter(required = true) @RequestBody List<String> roles,
+                           @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                   required = true,
+                                   content = @Content(examples = @ExampleObject(name = RequestBodyExamples.ROLES_NAME, value = RequestBodyExamples.ROLES_VALUE))) @RequestBody List<String> roles,
                            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
@@ -229,7 +232,9 @@ public class AdminController {
             consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
     public void revokeRoles(
             @PathVariable(value = "user") @Parameter(description = "The user from which to revoke roles", required = true) String user,
-            @RequestBody @Parameter(description = "A list of names to revoke from the user", required = true) List<String> roles,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.ROLES_NAME, value = RequestBodyExamples.ROLES_VALUE))) @RequestBody List<String> roles,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
