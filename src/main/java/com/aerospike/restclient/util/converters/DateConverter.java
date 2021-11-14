@@ -16,18 +16,18 @@
  */
 package com.aerospike.restclient.util.converters;
 
+import com.aerospike.restclient.util.RestClientErrors.InvalidDateFormat;
+
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.aerospike.restclient.util.RestClientErrors.InvalidDateFormat;
-
 public class DateConverter {
 	public static Calendar iso8601StringToCalendar(String dateString) {
 		Calendar calendar = null;
-		if (dateString != null && !dateString.equals("")) {
+		if (dateString != null && !dateString.isEmpty()) {
 			ZonedDateTime zdt;
 			/* Parse a date like 2000 12 31 T 23 59 59 Z  With the spaces omitted*/
 			DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;

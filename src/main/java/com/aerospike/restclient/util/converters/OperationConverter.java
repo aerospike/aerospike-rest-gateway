@@ -965,6 +965,7 @@ public class OperationConverter {
 		return MapOperation.clear(binName, extractCTX(opValues));
 	}
 
+	@SuppressWarnings("deprecation")
 	private static Operation mapToMapDecrementOp(Map<String, Object> opValues) {
 		hasAllRequiredKeys(opValues, BIN_KEY, DECR_KEY, MAP_KEY_KEY);
 		onlyHasAllowedKeys(opValues, BIN_KEY, MAP_POLICY_KEY, DECR_KEY, MAP_KEY_KEY);

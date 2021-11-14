@@ -16,15 +16,15 @@
  */
 package com.aerospike.restclient.util;
 
+import com.aerospike.client.AerospikeException;
+import com.aerospike.client.ResultCode;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.aerospike.client.AerospikeException;
-import com.aerospike.client.ResultCode;
 
 public class InfoResponseParser {
 
@@ -38,20 +38,22 @@ public class InfoResponseParser {
 	static String nsNotFound = "ns_type=unknown";
 
 	public static int getReplicationFactor(String response, String namespace) {
-
-		Matcher newMatcher = newReplicationFactorPattern.matcher(response);
-		if (newMatcher.matches()) {
-			return Integer.parseInt(newMatcher.group(1));
-		}
-		Matcher replMatcher = replicationFactorPattern.matcher(response);
-		if (replMatcher.matches()) {
-			return Integer.parseInt(replMatcher.group(1));
+		try {
+			Matcher newMatcher = newReplicationFactorPattern.matcher(response);
+			if (newMatcher.matches()) {
+				return Integer.parseInt(newMatcher.group(1));
+			}
+			Matcher replMatcher = replicationFactorPattern.matcher(response);
+			if (replMatcher.matches()) {
+				return Integer.parseInt(replMatcher.group(1));
+			}
+		} catch (NumberFormatException ignore) {
 		}
 		throw new AerospikeException(ResultCode.INVALID_NAMESPACE, String.format("Failed to fetch replication factor for namespace: %s ", namespace));
 	}
 
 	public static String[] getSetsFromResponse(String response) {
-		List<String> allMatches = new ArrayList<String>();
+		List<String> allMatches = new ArrayList<>();
 		Matcher setMatcher = setPattern.matcher(response);
 		while(setMatcher.find()) {
 			String m = setMatcher.group();
@@ -78,9 +80,9 @@ public class InfoResponseParser {
 	}
 
 	public static List<Map<String,String>> getIndexInformation(String response) {
-		List<Map<String,String>>indexMaps = new ArrayList<Map<String,String>>();
+		List<Map<String,String>>indexMaps = new ArrayList<>();
 		// Split the response into substrings for each individual index
-		if (response.trim().equals("")){
+		if (response.trim().isEmpty()){
 			return indexMaps;
 		}
 		if (response.trim().startsWith("ns_type=unknown")) {
@@ -102,7 +104,7 @@ public class InfoResponseParser {
 		if (response.trim().startsWith("ns_type=unknown")) {
 			throw new AerospikeException(ResultCode.INVALID_NAMESPACE, "Namespace for Index does not exist");
 		}
-		Map<String, String> indexStatMap = new HashMap<String, String>();
+		Map<String, String> indexStatMap = new HashMap<>();
 		String[] statEntryStrings = response.trim().split(";");
 
 		for (String statEntryString : statEntryStrings) {
@@ -114,7 +116,7 @@ public class InfoResponseParser {
 
 	public static Map<String, String> getKeyValueMap(String keyValueString) {
 		// These strings are formatted as "k1=v1:k2=v2:k3=v3:..." Split them into a map {k1: v1, k2:v2, ...}
-		Map<String, String> indexMap = new HashMap<String, String>();
+		Map<String, String> indexMap = new HashMap<>();
 		String[] kvPairs = keyValueString.split(":");
 
 		for (String kvPair: kvPairs) {
