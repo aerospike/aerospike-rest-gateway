@@ -21,10 +21,11 @@ import com.aerospike.client.policy.Policy;
 import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.RestClientIndex;
 import com.aerospike.restclient.domain.auth.AuthDetails;
-import com.aerospike.restclient.service.AerospikeSindexService;
+import com.aerospike.restclient.service.AerospikeSIndexService;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.annotations.ASRestClientInfoPolicyQueryParams;
+import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import com.aerospike.restclient.util.converters.policyconverters.InfoPolicyConverter;
 import com.aerospike.restclient.util.converters.policyconverters.PolicyConverter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,10 +48,10 @@ import java.util.Map;
 @Tag(name = "Secondary Index methods", description = "Manage secondary indexes.")
 @RestController
 @RequestMapping("/v1/index")
-class SIndexController {
+public class SIndexController {
 
     @Autowired
-    private AerospikeSindexService service;
+    private AerospikeSIndexService service;
 
     @Parameters(value = {
             @Parameter(name = "namespace",
@@ -58,23 +59,23 @@ class SIndexController {
                     schema = @Schema(type = "string"),
                     in = ParameterIn.QUERY)
     })
-    @Operation(summary = "Return information about multiple secondary indices.", operationId = "indexInformation")
+    @Operation(summary = "Return information about multiple secondary indexes.", operationId = "indexInformation")
     @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Information about secondary indexes read successfully."),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Specified namespace not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.GET, produces = {"application/json", "application/msgpack"})
-    List<RestClientIndex> indexInformation(
+    @DefaultRestClientAPIResponses
+    @GetMapping(produces = {"application/json", "application/msgpack"})
+    public List<RestClientIndex> indexInformation(
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -88,27 +89,25 @@ class SIndexController {
     @Operation(summary = "Create a secondary index.", operationId = "createIndex")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "202",
+                    description = "Request to create a secondary index has been accepted."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid index creation parameters.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Index with the same name already exists, or equivalent index exists.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
+    @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @RequestMapping(method = RequestMethod.POST, consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
-    void createIndex(
+    @PostMapping(consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
+    public void createIndex(
             @RequestBody RestClientIndex indexModel,
             @Parameter(hidden = true) @RequestParam Map<String, String> policyMap,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
@@ -122,21 +121,21 @@ class SIndexController {
     @Operation(summary = "Remove a secondary Index", operationId = "dropIndex")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "202",
+                    description = "Request to remove a secondary index has been accepted."),
+            @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Specified Index does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
+    @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{name}", produces = {"application/json", "application/msgpack"})
-    void dropIndex(
+    @DeleteMapping(value = "/{namespace}/{name}", produces = {"application/json", "application/msgpack"})
+    public void dropIndex(
             @Parameter(required = true, description = "The namespace containing the index") @PathVariable(value = "namespace") String namespace,
             @Parameter(required = true, description = "The name of the index") @PathVariable(value = "name") String name,
             @Parameter(hidden = true) @RequestParam Map<String, String> policyMap,
@@ -151,21 +150,22 @@ class SIndexController {
     @Operation(summary = "Get Information about a single secondary index.", operationId = "getIndexStats")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "200",
+                    description = "Information about secondary index read successfully.",
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.SINDEX_STATS_NAME, value = ResponseExamples.SINDEX_STATS_VALUE))),
+            @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Specified Index does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{name}", produces = {"application/json", "application/msgpack"})
+    @DefaultRestClientAPIResponses
+    @GetMapping(value = "/{namespace}/{name}", produces = {"application/json", "application/msgpack"})
     @ASRestClientInfoPolicyQueryParams
-    Map<String, String> getIndexStats(
+    public Map<String, String> getIndexStats(
             @Parameter(required = true, description = "The namespace containing the index") @PathVariable(value = "namespace") String namespace,
             @Parameter(required = true, description = "The name of the index") @PathVariable(value = "name") String name,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,

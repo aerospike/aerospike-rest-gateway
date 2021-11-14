@@ -146,7 +146,7 @@ public class InfoTests {
 		// If this becomes a real command, the test will fail.
 		List<String>commands = Arrays.asList(nameCommand);
 		String singleNodeEndpoint = endpoint + "/" + nodeName;
-		Map<String, String>responses = performer.performInfoAndReturn(singleNodeEndpoint, commands, mockMVC);
+		Map<String, String> responses = performer.performInfoAndReturn(singleNodeEndpoint, commands, mockMVC);
 		String rcNodeName = responses.get(nameCommand);
 
 		String clientNodeName = Info.request(null, testNode, nameCommand);

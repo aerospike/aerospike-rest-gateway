@@ -27,9 +27,9 @@ import java.util.List;
 
 public interface AerospikeOperateService {
 
-    public RestClientRecord operate(AuthDetails authDetails, String namespace, String set, String key,
+    RestClientRecord operate(AuthDetails authDetails, String namespace, String set, String key,
                                     List<RestClientOperation> opsList, RecordKeyType keyType, WritePolicy policy);
 
-    public RestClientRecord[] operate(AuthDetails authDetails, String namespace, String set, String[] keys,
+    RestClientRecord[] operate(AuthDetails authDetails, String namespace, String set, String[] keys,
                                       List<RestClientOperation> opsList, RecordKeyType keyType, BatchPolicy policy);
 }

@@ -26,10 +26,11 @@ import com.aerospike.restclient.service.AerospikeRecordService;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.QueryParamDescriptors;
+import com.aerospike.restclient.util.RequestBodyExamples;
 import com.aerospike.restclient.util.RequestParamHandler;
-import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.annotations.ASRestClientPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.ASRestClientWritePolicyQueryParams;
+import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import com.aerospike.restclient.util.deserializers.MsgPackBinParser;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
@@ -79,27 +80,23 @@ public class KeyValueController {
     @Operation(summary = GET_RECORD_NOTES, operationId = "getRecordNamespaceSetKey")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "200",
+                    description = "Metadata and bins for a record returned successfully."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{set}/{key}",
-            produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(HttpStatus.OK)
+    @DefaultRestClientAPIResponses
+    @GetMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestClientPolicyQueryParams
     public RestClientRecord getRecordNamespaceSetKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -119,27 +116,23 @@ public class KeyValueController {
     @Operation(summary = GET_RECORD_NOTES, operationId = "getRecordNamespaceKey")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "200",
+                    description = "Metadata and bins for a record returned successfully."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{key}",
-            produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(HttpStatus.OK)
+    @DefaultRestClientAPIResponses
+    @GetMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestClientPolicyQueryParams
     public RestClientRecord getRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -163,33 +156,28 @@ public class KeyValueController {
     @Operation(summary = DELETE_RECORD_NOTES, operationId = "deleteRecordNamespaceSetKey")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "204",
+                    description = "Deleted a record successfully, no content expected."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation mismatch for operation.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{set}/{key}",
-            produces = {"application/json", "application/msgpack"})
+    @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestClientWritePolicyQueryParams
     public void deleteRecordNamespaceSetKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -208,33 +196,28 @@ public class KeyValueController {
     @Operation(summary = DELETE_RECORD_NOTES, operationId = "deleteRecordNamespaceKey")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "204",
+                    description = "Deleted a record successfully, no content expected."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation mismatch for operation.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{key}",
-            produces = {"application/json", "application/msgpack"})
+    @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestClientWritePolicyQueryParams
     public void deleteRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -249,47 +232,41 @@ public class KeyValueController {
         service.deleteRecord(authDetails, namespace, null, key, keyType, policy);
     }
 
-    /*
-     **************************************************
-     *                     PUT                        *
-     **************************************************
-     */
     @Operation(summary = REPLACE_RECORD_NOTES, operationId = "replaceRecordNamespaceSetKey")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "204",
+                    description = "Modified record successfully, no content expected."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation mismatch for operation.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{set}/{key}",
-            consumes = "application/json", produces = {"application/json", "application/msgpack"})
+    @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PutMapping(value = "/{namespace}/{set}/{key}",
+            consumes = "application/json", produces = {"application/json", "application/msgpack"})
     @ASRestClientWritePolicyQueryParams
     public void replaceRecordNamespaceSetKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = STORE_BINS_NOTES, required = true) @RequestBody Map<String, Object> bins,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = STORE_BINS_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE))) @RequestBody Map<String, Object> bins,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -300,10 +277,15 @@ public class KeyValueController {
         service.storeRecord(authDetails, namespace, set, key, bins, keyType, policy);
     }
 
+    /*
+     **************************************************
+     *                     PUT                        *
+     **************************************************
+     */
     @Hidden
-    @RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{set}/{key}",
-            consumes = "application/msgpack", produces = {"application/json", "application/msgpack"})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PutMapping(value = "/{namespace}/{set}/{key}",
+            consumes = "application/msgpack", produces = {"application/json", "application/msgpack"})
     public void replaceRecordNamespaceSetKeyMP(
             @PathVariable(value = "namespace") String namespace,
             @PathVariable(value = "set") String set,
@@ -323,38 +305,37 @@ public class KeyValueController {
     @Operation(summary = REPLACE_RECORD_NOTES, operationId = "replaceRecordNamespaceKey")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "204",
+                    description = "Modified record successfully, no content expected."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation mismatch for operation.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{key}",
-            consumes = "application/json", produces = {"application/json", "application/msgpack"})
+    @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PutMapping(value = "/{namespace}/{key}",
+            consumes = "application/json", produces = {"application/json", "application/msgpack"})
     @ASRestClientWritePolicyQueryParams
     public void replaceRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = STORE_BINS_NOTES, required = true) @RequestBody Map<String, Object> bins,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = STORE_BINS_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE))) @RequestBody Map<String, Object> bins,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -366,9 +347,9 @@ public class KeyValueController {
     }
 
     @Hidden
-    @RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{key}",
-            consumes = "application/msgpack", produces = {"application/json", "application/msgpack"})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PutMapping(value = "/{namespace}/{key}",
+            consumes = "application/msgpack", produces = {"application/json", "application/msgpack"})
     public void replaceRecordNamespaceKeyMP(
             @PathVariable(value = "namespace") String namespace,
             @PathVariable(value = "key") String key,
@@ -392,39 +373,38 @@ public class KeyValueController {
     @Operation(summary = CREATE_RECORD_NOTES, operationId = "createRecordNamespaceSetKey")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "201",
+                    description = "Created a new record successfully."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Namespace does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Record Already exists.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{set}/{key}",
-            consumes = {"application/json"}, produces = {"application/json", "application/msgpack"})
+    @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.CREATED)
+    @PostMapping(value = "/{namespace}/{set}/{key}",
+            consumes = {"application/json"}, produces = {"application/json", "application/msgpack"})
     @ASRestClientWritePolicyQueryParams
     public void createRecordNamespaceSetKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = STORE_BINS_NOTES, required = true) @RequestBody Map<String, Object> bins,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = STORE_BINS_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE))) @RequestBody Map<String, Object> bins,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -437,7 +417,7 @@ public class KeyValueController {
 
     @Hidden
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{set}/{key}",
+    @PostMapping(value = "/{namespace}/{set}/{key}",
             consumes = {"application/msgpack"}, produces = {"application/json", "application/msgpack"})
     public void createRecordNamespaceSetKeyMP(
             @PathVariable(value = "namespace") String namespace,
@@ -456,40 +436,39 @@ public class KeyValueController {
     }
 
     @Operation(summary = CREATE_RECORD_NOTES, operationId = "createRecordNamespaceKey")
-    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{key}",
-            consumes = {"application/json"}, produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(value = HttpStatus.CREATED)
     @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Created a new record successfully."),
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Namespace does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Record Already exists.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
+    @DefaultRestClientAPIResponses
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @PostMapping(value = "/{namespace}/{key}",
+            consumes = {"application/json"}, produces = {"application/json", "application/msgpack"})
     @ASRestClientWritePolicyQueryParams
     public void createRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = STORE_BINS_NOTES, required = true) @RequestBody Map<String, Object> bins,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = STORE_BINS_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE))) @RequestBody Map<String, Object> bins,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -502,7 +481,7 @@ public class KeyValueController {
 
     @Hidden
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{key}",
+    @PostMapping(value = "/{namespace}/{key}",
             consumes = {"application/msgpack"}, produces = {"application/json", "application/msgpack"})
     public void createRecordNamespaceKeyMP(
             @PathVariable(value = "namespace") String namespace,
@@ -525,41 +504,40 @@ public class KeyValueController {
      **************************************************
      */
     @Operation(summary = UPDATE_RECORD_NOTES, operationId = "updateRecordNamespaceSetKey")
-    @RequestMapping(method = RequestMethod.PATCH, value = "/{namespace}/{set}/{key}",
-            consumes = {"application/json"}, produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Modified record successfully, no content expected."),
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record does not exists.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation mismatch for operation.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
+    @DefaultRestClientAPIResponses
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PatchMapping(value = "/{namespace}/{set}/{key}",
+            consumes = {"application/json"}, produces = {"application/json", "application/msgpack"})
     @ASRestClientWritePolicyQueryParams
     public void updateRecordNamespaceSetKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = STORE_BINS_NOTES, required = true) @RequestBody Map<String, Object> bins,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = STORE_BINS_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE))) @RequestBody Map<String, Object> bins,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -571,9 +549,9 @@ public class KeyValueController {
     }
 
     @Hidden
-    @RequestMapping(method = RequestMethod.PATCH, value = "/{namespace}/{set}/{key}",
-            consumes = "application/msgpack", produces = {"application/json", "application/msgpack"})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PatchMapping(value = "/{namespace}/{set}/{key}",
+            consumes = "application/msgpack", produces = {"application/json", "application/msgpack"})
     public void updateRecordNamespaceSetKeyMP(
             @PathVariable(value = "namespace") String namespace,
             @PathVariable(value = "set") String set,
@@ -593,38 +571,37 @@ public class KeyValueController {
     @Operation(summary = UPDATE_RECORD_NOTES, operationId = "updateRecordNamespaceKey")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "204",
+                    description = "Modified record successfully, no content expected."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record does not exists.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation mismatch for operation.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.PATCH, value = "/{namespace}/{key}",
-            consumes = "application/json", produces = {"application/json", "application/msgpack"})
+    @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PatchMapping(value = "/{namespace}/{key}",
+            consumes = "application/json", produces = {"application/json", "application/msgpack"})
     @ASRestClientWritePolicyQueryParams
     public void updateRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = STORE_BINS_NOTES, required = true) @RequestBody Map<String, Object> bins,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = STORE_BINS_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE))) @RequestBody Map<String, Object> bins,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -636,9 +613,9 @@ public class KeyValueController {
     }
 
     @Hidden
-    @RequestMapping(method = RequestMethod.PATCH, value = "/{namespace}/{key}",
-            consumes = "application/msgpack", produces = {"application/json", "application/msgpack"})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PatchMapping(value = "/{namespace}/{key}",
+            consumes = "application/msgpack", produces = {"application/json", "application/msgpack"})
     public void updateRecordNamespaceKeyMP(
             @PathVariable(value = "namespace") String namespace,
             @PathVariable(value = "key") String key,
@@ -660,9 +637,17 @@ public class KeyValueController {
      **************************************************
      */
     @Operation(summary = "recordExistsNamespaceSetKey", operationId = "Check if a record exists")
-    @ApiResponse(responseCode = "404", description = "Record does not exist.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Record exists indication returned successfully."),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Record does not exists.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
+    })
+    @DefaultRestClientAPIResponses
     @RequestMapping(method = RequestMethod.HEAD, value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(value = HttpStatus.OK)
     public void recordExistsNamespaceSetKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
@@ -688,9 +673,18 @@ public class KeyValueController {
      **************************************************
      */
     @Operation(summary = "Check if a record exists", operationId = "recordExistsNamespaceKey")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Record exists indication returned successfully."),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Record does not exists.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
+    })
     @ApiResponse(responseCode = "404", description = "Record does not exist.")
+    @DefaultRestClientAPIResponses
     @RequestMapping(method = RequestMethod.HEAD, value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(value = HttpStatus.OK)
     public void recordExistsNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,

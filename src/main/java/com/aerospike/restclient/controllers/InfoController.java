@@ -21,7 +21,9 @@ import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeInfoService;
 import com.aerospike.restclient.util.HeaderHandler;
+import com.aerospike.restclient.util.RequestBodyExamples;
 import com.aerospike.restclient.util.ResponseExamples;
+import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import com.aerospike.restclient.util.converters.policyconverters.InfoPolicyConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,21 +51,19 @@ public class InfoController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Commands sent successfully.",
-                    content = @Content(examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.SUCCESS_INFO_VALUE))),
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.SUCCESS_INFO_NAME, value = ResponseExamples.SUCCESS_INFO_VALUE))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to perform the info command.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.POST, consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
+    @DefaultRestClientAPIResponses
+    @PostMapping(consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
     Map<String, String> infoAny(
-            @Parameter(
-                    name = "infoRequests",
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.",
                     required = true,
-                    examples = @ExampleObject(name = "application/json", value = "['build', 'edition']")) @RequestBody String[] requests,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.REQUESTS_INFO_NAME, value = RequestBodyExamples.REQUESTS_INFO_VALUE))) @RequestBody String[] requests,
             @Parameter(hidden = true) @RequestParam Map<String, String> infoMap,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -78,28 +78,24 @@ public class InfoController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Commands sent successfully.",
-                    content = @Content(examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.SUCCESS_INFO_VALUE))),
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.SUCCESS_INFO_NAME, value = ResponseExamples.SUCCESS_INFO_VALUE))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to perform the info command",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "The specified Node does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.POST, value = "/{node}", consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
+    @DefaultRestClientAPIResponses
+    @PostMapping(value = "/{node}", consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
     Map<String, String> infoNode(
             @Parameter(name = "node", description = "The node ID for the node which will receive the info commands.", required = true) @PathVariable(value = "node") String node,
-            @Parameter(
-                    name = "infoRequests",
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.",
                     required = true,
-                    examples = @ExampleObject(name = "application/json", value = "['build', 'edition']")) @RequestBody String[] requests,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.REQUESTS_INFO_NAME, value = RequestBodyExamples.REQUESTS_INFO_VALUE))) @RequestBody String[] requests,
             @Parameter(hidden = true) @RequestParam Map<String, String> infoMap,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 

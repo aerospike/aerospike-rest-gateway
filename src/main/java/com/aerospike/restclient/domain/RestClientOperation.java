@@ -42,7 +42,7 @@ public class RestClientOperation {
 	@Schema(required = true, description = "Aerospike operation to perform on the record", example = "LIST_APPEND_ITEMS")
 	private AerospikeOperation operation;
 
-	@Schema(required = true, example = "{\"bin\":\"listbin\",\"values\":[1,2,3]}")
+	@Schema(required = true, example = "{\"bin\":\"listbin\", \"values\":[1,2,3]}")
 	private Map<String, Object> opValues;
 
 	public AerospikeOperation getOperation() {

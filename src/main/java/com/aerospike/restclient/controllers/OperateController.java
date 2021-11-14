@@ -27,21 +27,20 @@ import com.aerospike.restclient.util.APIParamDescriptors;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;
-import com.aerospike.restclient.util.ResponseExamples;
 import com.aerospike.restclient.util.annotations.ASRestClientOperateReadQueryParams;
 import com.aerospike.restclient.util.annotations.ASRestClientWritePolicyQueryParams;
+import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import com.aerospike.restclient.util.deserializers.MsgPackOperationsParser;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,32 +63,27 @@ public class OperateController {
     @Operation(summary = OPERATE_NOTES, operationId = "operateNamespaceSetKey")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "200",
+                    description = "Multiple operations on a record performed successfully."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Namespace or set does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation conflict.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{set}/{key}",
+    @DefaultRestClientAPIResponses
+    @PostMapping(value = "/{namespace}/{set}/{key}",
             consumes = "application/json",
             produces = {"application/json", "application/msgpack"}
     )
@@ -111,8 +105,7 @@ public class OperateController {
     }
 
     @Hidden
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{set}/{key}",
+    @PostMapping(value = "/{namespace}/{set}/{key}",
             consumes = "application/msgpack",
             produces = {"application/json", "application/msgpack"}
     )
@@ -126,7 +119,7 @@ public class OperateController {
 
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
-        List<RestClientOperation> operations = operationsFromIstream(dataStream);
+        List<RestClientOperation> operations = operationsFromIStream(dataStream);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
         return service.operate(authDetails, namespace, set, key, operations, keyType, policy);
@@ -135,32 +128,27 @@ public class OperateController {
     @Operation(summary = OPERATE_NOTES, operationId = "operateNamespaceKey")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "200",
+                    description = "Multiple operations on a record performed successfully."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Namespace or set does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation conflict.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{key}",
+    @DefaultRestClientAPIResponses
+    @PostMapping(value = "/{namespace}/{key}",
             consumes = "application/json",
             produces = {"application/json", "application/msgpack"})
     @ASRestClientWritePolicyQueryParams
@@ -180,8 +168,7 @@ public class OperateController {
     }
 
     @Hidden
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{key}",
+    @PostMapping(value = "/{namespace}/{key}",
             consumes = "application/msgpack",
             produces = {"application/json", "application/msgpack"})
     public RestClientRecord operateNamespaceKeyMP(
@@ -193,13 +180,13 @@ public class OperateController {
 
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
-        List<RestClientOperation> operations = operationsFromIstream(dataStream);
+        List<RestClientOperation> operations = operationsFromIStream(dataStream);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
         return service.operate(authDetails, namespace, null, key, operations, keyType, policy);
     }
 
-    private List<RestClientOperation> operationsFromIstream(InputStream dataStream) {
+    private List<RestClientOperation> operationsFromIStream(InputStream dataStream) {
         MsgPackOperationsParser parser = new MsgPackOperationsParser(dataStream);
         return parser.parseOperations();
     }
@@ -207,32 +194,28 @@ public class OperateController {
     @Operation(summary = BATCH_OPERATE_NOTES, operationId = "operateBatchNamespaceSet")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "200",
+                    description = "Read operations on multiple records performed successfully.",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestClientRecord.class)))),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Namespace or set does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation conflict.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.POST, value = "/read/{namespace}/{set}",
+    @DefaultRestClientAPIResponses
+    @PostMapping(value = "/read/{namespace}/{set}",
             consumes = "application/json",
             produces = {"application/json", "application/msgpack"}
     )
@@ -254,8 +237,7 @@ public class OperateController {
     }
 
     @Hidden
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.POST, value = "/read/{namespace}/{set}",
+    @PostMapping(value = "/read/{namespace}/{set}",
             consumes = "application/msgpack",
             produces = {"application/json", "application/msgpack"}
     )
@@ -269,7 +251,7 @@ public class OperateController {
         BatchPolicy policy = RequestParamHandler.getBatchPolicy(requestParams.toSingleValueMap());
         String[] keys = RequestParamHandler.getKeysFromMap(requestParams);
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
-        List<RestClientOperation> operations = operationsFromIstream(dataStream);
+        List<RestClientOperation> operations = operationsFromIStream(dataStream);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
         return service.operate(authDetails, namespace, set, keys, operations, keyType, policy);
@@ -278,32 +260,28 @@ public class OperateController {
     @Operation(summary = BATCH_OPERATE_NOTES, operationId = "operateBatchNamespace")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "200",
+                    description = "Read operations on multiple records performed successfully.",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestClientRecord.class)))),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Namespace or set does not exist.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "409",
                     description = "Generation conflict.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.POST, value = "/read/{namespace}",
+    @DefaultRestClientAPIResponses
+    @PostMapping(value = "/read/{namespace}",
             consumes = "application/json",
             produces = {"application/json", "application/msgpack"})
     @ASRestClientOperateReadQueryParams
@@ -323,8 +301,7 @@ public class OperateController {
     }
 
     @Hidden
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.POST, value = "/read/{namespace}",
+    @PostMapping(value = "/read/{namespace}",
             consumes = "application/msgpack",
             produces = {"application/json", "application/msgpack"})
     public RestClientRecord[] operateBatchNamespaceMP(
@@ -336,7 +313,7 @@ public class OperateController {
         BatchPolicy policy = RequestParamHandler.getBatchPolicy(requestParams.toSingleValueMap());
         String[] keys = RequestParamHandler.getKeysFromMap(requestParams);
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
-        List<RestClientOperation> operations = operationsFromIstream(dataStream);
+        List<RestClientOperation> operations = operationsFromIStream(dataStream);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
         return service.operate(authDetails, namespace, null, keys, operations, keyType, policy);

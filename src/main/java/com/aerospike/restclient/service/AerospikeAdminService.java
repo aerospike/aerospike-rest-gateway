@@ -28,35 +28,34 @@ import java.util.List;
 public interface AerospikeAdminService {
 
     /* Users Methods*/
-    public User[] getUsers(AuthDetails authDetails);
+    User[] getUsers(AuthDetails authDetails);
 
-    public void createUser(AuthDetails authDetails, RestClientUserModel userInfo);
+    void createUser(AuthDetails authDetails, RestClientUserModel userInfo);
 
-    public User getUser(AuthDetails authDetails, String username);
+    User getUser(AuthDetails authDetails, String username);
 
-    public void dropUser(AuthDetails authDetails, String userName);
+    void dropUser(AuthDetails authDetails, String userName);
 
-    public void changePassword(AuthDetails authDetails, String username, String password);
+    void changePassword(AuthDetails authDetails, String username, String password);
 
-    public void grantRoles(AuthDetails authDetails, String username, List<String> roles);
+    void grantRoles(AuthDetails authDetails, String username, List<String> roles);
 
-    public void revokeRoles(AuthDetails authDetails, String username, List<String> roles);
+    void revokeRoles(AuthDetails authDetails, String username, List<String> roles);
 
     /* Roles Methods */
-    public int getRoleCount(AuthDetails authDetails);
+    int getRoleCount(AuthDetails authDetails);
 
-    public List<RestClientRole> getRoles(AuthDetails authDetails);
+    List<RestClientRole> getRoles(AuthDetails authDetails);
 
-    public void createRole(AuthDetails authDetails, RestClientRole rcRole);
+    void createRole(AuthDetails authDetails, RestClientRole rcRole);
 
-    public void setRoleQuotas(AuthDetails authDetails, String roleName, RestClientRoleQuota roleQuota);
+    void setRoleQuotas(AuthDetails authDetails, String roleName, RestClientRoleQuota roleQuota);
 
-    public RestClientRole getRole(AuthDetails authDetails, String roleName);
+    RestClientRole getRole(AuthDetails authDetails, String roleName);
 
-    public void dropRole(AuthDetails authDetails, String roleName);
+    void dropRole(AuthDetails authDetails, String roleName);
 
-    public void grantPrivileges(AuthDetails authDetails, String roleName, List<RestClientPrivilege> rcPrivileges);
+    void grantPrivileges(AuthDetails authDetails, String roleName, List<RestClientPrivilege> rcPrivileges);
 
-    public void revokePrivileges(AuthDetails authDetails, String roleName, List<RestClientPrivilege> rcPrivileges);
-
+    void revokePrivileges(AuthDetails authDetails, String roleName, List<RestClientPrivilege> rcPrivileges);
 }

@@ -23,7 +23,7 @@ import java.util.Map;
 
 public interface AerospikeInfoService {
 
-    public Map<String, String> infoAny(AuthDetails authDetails, String[] requests, InfoPolicy policy);
+    Map<String, String> infoAny(AuthDetails authDetails, String[] requests, InfoPolicy policy);
 
-    public Map<String, String> infoNodeName(AuthDetails authDetails, String nodeName, String[] requests, InfoPolicy policy);
+    Map<String, String> infoNodeName(AuthDetails authDetails, String nodeName, String[] requests, InfoPolicy policy);
 }

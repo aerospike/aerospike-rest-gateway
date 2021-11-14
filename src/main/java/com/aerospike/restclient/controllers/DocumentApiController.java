@@ -21,12 +21,10 @@ import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeDocumentService;
-import com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.aerospike.restclient.util.ResponseExamples;
-import com.aerospike.restclient.util.HeaderHandler;
-import com.aerospike.restclient.util.RequestParamHandler;
+import com.aerospike.restclient.util.*;
 import com.aerospike.restclient.util.annotations.ASRestDocumentPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.ASRestDocumentWritePolicyQueryParams;
+import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -74,27 +72,25 @@ public class DocumentApiController {
     @Operation(summary = GET_DOCUMENT_NOTES, operationId = "getDocumentObject")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "200",
+                    description = "Document read successfully.",
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.GET_DOCUMENT_OBJECT_NAME,
+                        value = ResponseExamples.GET_DOCUMENT_OBJECT_VALUE))),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{key}",
-            produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(HttpStatus.OK)
+    @DefaultRestClientAPIResponses
+    @GetMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestDocumentPolicyQueryParams
     public Map<String, Object> getDocumentObject(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -113,25 +109,23 @@ public class DocumentApiController {
 
     @Operation(summary = GET_DOCUMENT_NOTES, operationId = "getDocumentObjectSet")
     @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Document read successfully.",
+                    content = @Content(examples = @ExampleObject(name = ResponseExamples.GET_DOCUMENT_OBJECT_NAME,
+                        value = ResponseExamples.GET_DOCUMENT_OBJECT_VALUE))),
             @ApiResponse(responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{set}/{key}",
-            produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(HttpStatus.OK)
+    @DefaultRestClientAPIResponses
+    @GetMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestDocumentPolicyQueryParams
     public Map<String, Object> getDocumentObjectSet(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -157,32 +151,32 @@ public class DocumentApiController {
     @Operation(summary = PUT_DOCUMENT_NOTES, operationId = "putDocumentObject")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "202",
+                    description = "Request to put a document has been accepted."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{key}",
-            produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(HttpStatus.OK)
+    @DefaultRestClientAPIResponses
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PutMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestDocumentWritePolicyQueryParams
     public void putDocumentObject(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = JSON_OBJECT_NOTES, required = true) @RequestBody Object jsonObject,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = JSON_OBJECT_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE))) @RequestBody Object jsonObject,
             @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -198,33 +192,33 @@ public class DocumentApiController {
     @Operation(summary = PUT_DOCUMENT_NOTES, operationId = "putDocumentObjectSet")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "202",
+                    description = "Request to put a document has been accepted."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{set}/{key}",
-            produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(HttpStatus.OK)
+    @DefaultRestClientAPIResponses
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PutMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestDocumentWritePolicyQueryParams
     public void putDocumentObjectSet(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = JSON_OBJECT_NOTES, required = true) @RequestBody Object jsonObject,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = JSON_OBJECT_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE))) @RequestBody Object jsonObject,
             @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -245,32 +239,32 @@ public class DocumentApiController {
     @Operation(summary = APPEND_DOCUMENT_NOTES, operationId = "appendDocumentObject")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "202",
+                    description = "Request to append an object to a list in a document has been accepted."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{key}",
-            produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(HttpStatus.OK)
+    @DefaultRestClientAPIResponses
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PostMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestDocumentWritePolicyQueryParams
     public void appendDocumentObject(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = JSON_OBJECT_NOTES, required = true) @RequestBody Object jsonObject,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = JSON_OBJECT_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE))) @RequestBody Object jsonObject,
             @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -286,33 +280,33 @@ public class DocumentApiController {
     @Operation(summary = APPEND_DOCUMENT_NOTES, operationId = "appendDocumentObjectSet")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "202",
+                    description = "Request to append an object to a list in a document has been accepted."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{set}/{key}",
-            produces = {"application/json", "application/msgpack"})
-    @ResponseStatus(HttpStatus.OK)
+    @DefaultRestClientAPIResponses
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PostMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestDocumentWritePolicyQueryParams
     public void appendDocumentObjectSet(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(description = JSON_OBJECT_NOTES, required = true) @RequestBody Object jsonObject,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = JSON_OBJECT_NOTES,
+                    required = true,
+                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE))) @RequestBody Object jsonObject,
             @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -333,27 +327,24 @@ public class DocumentApiController {
     @Operation(summary = DELETE_DOCUMENT_NOTES, operationId = "deleteDocumentObject")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "204",
+                    description = "Deleted an object in a document successfully, no content expected."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{key}",
-            produces = {"application/json", "application/msgpack"})
+    @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestDocumentWritePolicyQueryParams
     public void deleteDocumentObject(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -373,27 +364,24 @@ public class DocumentApiController {
     @Operation(summary = DELETE_DOCUMENT_NOTES, operationId = "deleteDocumentObjectSet")
     @ApiResponses(value = {
             @ApiResponse(
+                    responseCode = "204",
+                    description = "Deleted an object in a document successfully, no content expected."),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE))),
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(
-                            schema = @Schema(implementation = RestClientError.class),
-                            examples = @ExampleObject(name = ResponseExamples.DEFAULT_NAME, value = ResponseExamples.DEFAULT_VALUE)))
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{set}/{key}",
-            produces = {"application/json", "application/msgpack"})
+    @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestDocumentWritePolicyQueryParams
     public void deleteDocumentObjectSet(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,

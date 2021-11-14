@@ -101,5 +101,4 @@ public class AerospikeRecordServiceV1 implements AerospikeRecordService {
         return circuitBreaker.run(() -> RecordHandler.create(clientPool.getClient(authDetails))
                 .existsRecord(null, asKey));
     }
-
 }

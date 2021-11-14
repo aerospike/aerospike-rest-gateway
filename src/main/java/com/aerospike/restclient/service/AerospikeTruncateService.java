@@ -20,6 +20,5 @@ import com.aerospike.restclient.domain.auth.AuthDetails;
 
 public interface AerospikeTruncateService {
 
-    public void truncate(AuthDetails authDetails, String namespace, String set, String dateString);
-
+    void truncate(AuthDetails authDetails, String namespace, String set, String dateString);
 }

@@ -27,9 +27,9 @@ import java.util.Map;
 
 public interface AerospikeExecuteService {
 
-    public RestClientExecuteTask executeScan(AuthDetails authDetails, String namespace, String set,
+    RestClientExecuteTask executeScan(AuthDetails authDetails, String namespace, String set,
                                              List<RestClientOperation> opsList, WritePolicy policy,
                                              Map<String, String> requestParams);
 
-    public RestClientExecuteTaskStatus queryScanStatus(AuthDetails authDetails, String taskId);
+    RestClientExecuteTaskStatus queryScanStatus(AuthDetails authDetails, String taskId);
 }

@@ -140,5 +140,4 @@ class AerospikeAdminServiceV1 implements AerospikeAdminService {
 
         AdminHandler.create(clientPool.getClient(authDetails)).revokePrivileges(null, roleName, privileges);
     }
-
 }
