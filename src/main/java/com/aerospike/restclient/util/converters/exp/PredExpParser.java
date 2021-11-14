@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+@SuppressWarnings("deprecation")
 public class PredExpParser extends BaseExpressionParser<List<PredExp>>
         implements ExpressionParser<PredExp[]> {
 

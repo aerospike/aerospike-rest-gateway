@@ -83,6 +83,6 @@ public class AerospikeSIndexServiceV1 implements AerospikeSIndexService {
     }
 
     private String getSindexListCommand(String namespace) {
-        return (namespace == null || namespace.equals("")) ? "sindex" : "sindex/" + namespace;
+        return (namespace == null || namespace.isEmpty()) ? "sindex" : "sindex/" + namespace;
     }
 }

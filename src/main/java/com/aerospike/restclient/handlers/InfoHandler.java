@@ -41,7 +41,7 @@ public class InfoHandler {
         this.client = client;
     }
 
-    public List<String> infoRequestAll(InfoPolicy policy, String request) {
+    public List<String> infoRequestAll(String request) {
         List<String> responses = new ArrayList<>();
         for (Node node : client.getNodes()) {
             responses.add(Info.request(node, request));
@@ -131,10 +131,10 @@ public class InfoHandler {
         boolean found = false;
 
         String setInfoRequest = "sets/" + namespace + "/" + set;
-        List<String> responses = infoRequestAll(null, setInfoRequest);
+        List<String> responses = infoRequestAll(setInfoRequest);
 
         for (String response : responses) {
-            if (!response.trim().equals("")) {
+            if (!response.trim().isEmpty()) {
                 found = true;
             }
             objects += InfoResponseParser.getSetObjectCountFromResponse(response);
