@@ -72,8 +72,8 @@ allow you to automatically generate a server/client that integrates with Aerospi
 3. Click on Generate Server/Generate Client and choose the desired language/framework.
 4. A .zip file that contains all the necessary files for a server/client will be downloaded.
 
-* Note: when generating a server the implementation of the APIs is missing since the server generator only
-    generates the boilerplate server code.
+* Note: when generating a server the implementations/logic of the APIs are missing since the server generator only
+    generates stub methods (to reduce boilerplate server code).
 
 ## License
 Licensed under the [Apache 2.0 License](./LICENSE).
