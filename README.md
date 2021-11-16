@@ -62,5 +62,18 @@ The Swagger `.JSON` specification of the API is available at: `http://<API_ENDPO
 
 So if the REST Client is running on localhost these URLs would be `http://localhost:8080/swagger-ui.html` and `http://localhost:8080/v2/api-docs`.
 
+## Generate Servers/Clients
+Swagger tools such as [Swagger Codegen](https://swagger.io/tools/swagger-codegen/) and [Swagger Editor](https://editor.swagger.io/)
+allow you to automatically generate a server/client that integrates with Aerospike REST Client in a variety of different languages.
+
+### Generate Servers/Clients using the Swagger Editor
+1. Go to [Swagger Editor](https://editor.swagger.io/).
+2. Import the Aerospike REST Client [openapi.json](https://github.com/aerospike/aerospike-client-rest/blob/master/docs/openapi.json) file.
+3. Click on Generate Server/Generate Client and choose the desired language/framework.
+4. A .zip file that contains all the necessary files for a server/client will be downloaded.
+
+* Note: when generating a server the implementations/logic of the APIs are missing since the server generator only
+    generates stub methods (to reduce boilerplate server code).
+
 ## License
 Licensed under the [Apache 2.0 License](./LICENSE).
