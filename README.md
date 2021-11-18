@@ -6,6 +6,10 @@ The Aerospike REST client provides a server which translates Restful API request
 
 It can be used as a bridge between applications written in languages without an existing Aerospike Client library, or as a pluggable component in a pre-existing architecture.
 
+## API Documentation
+
+Swagger UI API documentation for this project can be found here [Aerospike REST Client API Documentation](https://docs.aerospike.com/apidocs/rest).
+
 ## Getting Started blog posts
 
 1. [Aerospike REST Client Introduction](https://medium.com/aerospike-developer-blog/aerospike-rest-client-cb7e5967f423?source=friends_link&sk=0d6d69703e8a77da13ec0c6c012d1c29)
@@ -48,19 +52,9 @@ Please note that only Aerospike Enterprise Edition supports the [security featur
 
 For example, having the default `admin:admin` credentials, send the `Authorization: Basic YWRtaW46YWRtaW4=` header with the request to make an authenticated query.
 
-## Data Formats and API
-
-### Formats
+## Formats
 
 The Aerospike REST client allows communication utilizing `JSON` and `MessagePack` formats. For more information about how to specify the format, and recommended usages of each, see [Data Formats](./docs/data-formats.md).
-
-### Interactive UI and Swagger Specification
-
-After installing and starting the REST client, you can try out the API using an interactive frontend powered by Swagger UI. The interactive documentation is located at: `http://<API_ENDPOINT>:8080/swagger-ui.html`.
-
-The Swagger `.JSON` specification of the API is available at: `http://<API_ENDPOINT>:8080/v2/api-docs` .
-
-So if the REST Client is running on localhost these URLs would be `http://localhost:8080/swagger-ui.html` and `http://localhost:8080/v2/api-docs`.
 
 ## Generate Servers/Clients
 Swagger tools such as [Swagger Codegen](https://swagger.io/tools/swagger-codegen/) and [Swagger Editor](https://editor.swagger.io/)
