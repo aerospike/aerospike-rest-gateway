@@ -50,6 +50,9 @@ springBoot {
 	buildInfo()
 }
 
+// remove after upgrading to Spring Boot version with the fix.
+ext['log4j2.version'] = '2.15.0'
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.aerospike:aerospike-client:${aerospikeClientVersion}")
