@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "REST Interface for Aerospike Database.",
-        "version": "1.6.3",
+        "version": "1.6.4",
         "title": "Aerospike REST Client",
         "contact": {
             "name": "Aerospike, Inc.",
