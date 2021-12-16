@@ -51,6 +51,9 @@ springBoot {
 	buildInfo()
 }
 
+// Fixes CVE-2021-44228.
+ext['log4j2.version'] = '2.16.0'
+
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile("com.aerospike:aerospike-client:${aerospikeClientVersion}")
