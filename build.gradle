@@ -51,7 +51,7 @@ springBoot {
 }
 
 // remove after upgrading to Spring Boot version with the fix.
-ext['log4j2.version'] = '2.15.0'
+ext['log4j2.version'] = '2.16.0'
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
