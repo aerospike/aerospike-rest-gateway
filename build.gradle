@@ -52,7 +52,7 @@ springBoot {
 }
 
 // Fixes CVE-2021-44228.
-ext['log4j2.version'] = '2.16.0'
+ext['log4j2.version'] = '2.17.0'
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
