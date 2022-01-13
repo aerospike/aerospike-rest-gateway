@@ -28,6 +28,12 @@ More information at the following links:
 * [Installation as an init.d service](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment-service)
 * [Installation as a systemd service](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment-systemd-service)
 
+#### Complete example of running the REST client using a jar
+```
+java -server -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8082 -Dcom.sun.management.jmxremote.rmi.port=8082 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -XX:+UseG1GC -Xms2048m -Xmx2048m -jar ./as-rest-client-X.X.X.jar --aerospike.restclient.hostname=localhost --aerospike.restclient.clientpolicy.user=*** --aerospike.restclient.clientpolicy.password=*** --logging.file.name=/var/log/restclient/asproxy.log
+```
+For more JVM command-line options, see the [documentation](https://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html).
+
 ### Run using Docker
 * Build the docker image
 ```
