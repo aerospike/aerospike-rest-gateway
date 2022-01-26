@@ -16,7 +16,7 @@
  */
 package com.aerospike.restclient.domain.scanmodels;
 
-import com.aerospike.restclient.domain.RestClientRecord;
+import com.aerospike.restclient.domain.RestClientKeyRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.List;
 public class RestClientScanResponse {
 
     @Schema(description = "List of records for current page.")
-    private final List<RestClientRecord> records;
+    private final List<RestClientKeyRecord> records;
 
     @Schema(description = "Pagination details.")
     private final Pagination pagination;
@@ -39,11 +39,11 @@ public class RestClientScanResponse {
         this(0);
     }
 
-    public List<RestClientRecord> getRecords() {
+    public List<RestClientKeyRecord> getRecords() {
         return records;
     }
 
-    public void addRecord(RestClientRecord record) {
+    public void addRecord(RestClientKeyRecord record) {
         records.add(record);
     }
 

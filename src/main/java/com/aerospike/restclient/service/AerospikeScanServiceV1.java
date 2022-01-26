@@ -48,6 +48,13 @@ public class AerospikeScanServiceV1 implements AerospikeScanService {
         }
 
         return ScanHandler.create(clientPool.getClient(authDetails))
-                .scanPartition(policy, namespace, set, maxRecords, fromToken, binNames);
+                .scanPartition(checkSendKey(policy, requestParams), namespace, set, maxRecords, fromToken, binNames);
+    }
+
+    private ScanPolicy checkSendKey(ScanPolicy policy, Map<String, String> requestParams) {
+        if (!requestParams.containsKey(AerospikeAPIConstants.SEND_KEY)) {
+            policy.sendKey = true;
+        }
+        return policy;
     }
 }

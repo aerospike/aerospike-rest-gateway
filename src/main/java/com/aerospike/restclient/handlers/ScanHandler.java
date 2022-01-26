@@ -23,7 +23,7 @@ import com.aerospike.client.cluster.Node;
 import com.aerospike.client.cluster.Partition;
 import com.aerospike.client.policy.ScanPolicy;
 import com.aerospike.client.query.PartitionFilter;
-import com.aerospike.restclient.domain.RestClientRecord;
+import com.aerospike.restclient.domain.RestClientKeyRecord;
 import com.aerospike.restclient.domain.scanmodels.RestClientScanResponse;
 
 import java.util.Base64;
@@ -81,8 +81,8 @@ public class ScanHandler {
 
     private final ScanCallback callback = ((key, record) -> {
         lastKey = key;
-        RestClientRecord rec = new RestClientRecord(record);
-        result.addRecord(rec);
+        RestClientKeyRecord keyRecord = new RestClientKeyRecord(key, record);
+        result.addRecord(keyRecord);
     });
 
     public static ScanHandler create(AerospikeClient client) {
