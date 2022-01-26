@@ -3,7 +3,8 @@ package com.aerospike.restclient;
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
-import com.aerospike.restclient.domain.RestClientRecord;
+import com.aerospike.client.policy.WritePolicy;
+import com.aerospike.restclient.domain.RestClientKeyRecord;
 import com.aerospike.restclient.domain.scanmodels.RestClientScanResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
@@ -53,16 +54,18 @@ public class ScanTest {
     private final Key[] testKeys;
     private String testEndpoint;
 
-    private String setName;
-    private String namespace;
+    private final String setName;
+    private final String namespace;
     private final String currentMediaType;
 
     @Before
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+        WritePolicy writePolicy = new WritePolicy();
+        writePolicy.sendKey = true;
         for (int i = 0; i < numberOfRecords; i++) {
             Bin bin = new Bin("binInt", i);
-            client.add(null, testKeys[i], bin);
+            client.add(writePolicy, testKeys[i], bin);
         }
     }
 
@@ -121,7 +124,7 @@ public class ScanTest {
             ).andExpect(status().isOk()).andReturn().getResponse();
 
             res = responseDeserializer.getResponse(response, RestClientScanResponse.class);
-            for (RestClientRecord r : res.getRecords()) {
+            for (RestClientKeyRecord r : res.getRecords()) {
                 binValues.add((int) r.bins.get("binInt"));
             }
             total += res.getPagination().getTotalRecords();
