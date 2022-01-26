@@ -3,7 +3,7 @@ WORKDIR /workspace/app
 
 COPY . /workspace/app
 RUN ./gradlew clean build -x test
-RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
+RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*[^plain].jar)
 
 FROM openjdk:8-jdk-alpine
 VOLUME /tmp
