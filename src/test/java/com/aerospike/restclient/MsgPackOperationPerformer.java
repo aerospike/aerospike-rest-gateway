@@ -16,104 +16,57 @@
  */
 package com.aerospike.restclient;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.Map;
 
 public class MsgPackOperationPerformer implements OperationPerformer {
-	ObjectMapper mapper;
-	private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {};
 
-	public MsgPackOperationPerformer() {
-		this.mapper = new ObjectMapper(new MessagePackFactory());
-	}
+    private static final Logger logger = LogManager.getLogger(MsgPackOperationPerformer.class);
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public
-	Map<String, Object>performOperationsAndReturn(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>>ops) {
-		byte[] payload = null;
-		try {
-			payload = mapper.writeValueAsBytes(ops);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		byte[] response = null;
-		try {
-			response = ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, payload);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			return (Map<String, Object>)mapper.readValue(response, recordType);
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
+    private final ObjectMapper mapper;
+    private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {
+    };
 
-	@Override
-	public void
-	performOperationsAndExpect(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>>ops, ResultMatcher matcher) throws Exception {
-		byte[] payload = null;
-		try {
-			payload = mapper.writeValueAsBytes(ops);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ASTestUtils.performOperationAndExpect(mockMVC, testEndpoint, payload, matcher);
+    public MsgPackOperationPerformer() {
+        this.mapper = new ObjectMapper(new MessagePackFactory());
+    }
 
-	}
+    @Override
+    public Map<String, Object> performOperationsAndReturn(MockMvc mockMVC, String testEndpoint,
+                                                          List<Map<String, Object>> ops) {
+        try {
+            byte[] payload = mapper.writeValueAsBytes(ops);
+            byte[] response = ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, payload);
+            return mapper.readValue(response, recordType);
+        } catch (Exception e) {
+            logger.error("Error performing operation", e);
+        }
+        return null;
+    }
 
-	public
-	byte[] performOperationsAndReturnRaw(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>>ops) {
-		byte[] payload = null;
-		try {
-			payload = mapper.writeValueAsBytes(ops);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			return ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, payload);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+    @Override
+    public void performOperationsAndExpect(MockMvc mockMVC, String testEndpoint,
+                                           List<Map<String, Object>> ops, ResultMatcher matcher) throws Exception {
+        byte[] payload = mapper.writeValueAsBytes(ops);
+        ASTestUtils.performOperationAndExpect(mockMVC, testEndpoint, payload, matcher);
+    }
 
-	}
+    public byte[] performOperationsAndReturnRaw(MockMvc mockMVC, String testEndpoint,
+                                                List<Map<String, Object>> ops) throws Exception {
+        byte[] payload = mapper.writeValueAsBytes(ops);
+        return ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, payload);
+    }
 
-	public
-	byte[] performOperationsAndReturnRaw(MockMvc mockMVC, String testEndpoint, byte[] opsByte) {
-		try {
-			return ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, opsByte);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-
-	}
+    public byte[] performOperationsAndReturnRaw(MockMvc mockMVC, String testEndpoint, byte[] opsByte) throws Exception {
+        return ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, opsByte);
+    }
 
 }
