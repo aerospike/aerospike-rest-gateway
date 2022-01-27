@@ -27,6 +27,7 @@ import com.aerospike.restclient.domain.RestClientKeyRecord;
 import com.aerospike.restclient.domain.scanmodels.RestClientScanResponse;
 
 import java.util.Base64;
+import java.util.Objects;
 
 public class ScanHandler {
 
@@ -45,11 +46,15 @@ public class ScanHandler {
 
     public RestClientScanResponse scanPartition(ScanPolicy policy, String namespace, String setName,
                                                 final long maxRecords, String fromToken, String[] binNames) {
-        PartitionFilter filter = getPartitionFilter(namespace, setName, fromToken);
-        while (isScanRequired(maxRecords)) {
-            client.scanPartitions(policy, filter, namespace, setName, callback, binNames);
-            policy.maxRecords = maxRecords > 0 ? maxRecords - result.getRecords().size() : maxRecords;
-            filter = PartitionFilter.id(++currentPartition);
+        if (maxRecords == 0 && Objects.isNull(fromToken)) {
+            client.scanAll(policy, namespace, setName, callback, binNames);
+        } else {
+            PartitionFilter filter = getPartitionFilter(namespace, setName, fromToken);
+            while (isScanRequired(maxRecords)) {
+                client.scanPartitions(policy, filter, namespace, setName, callback, binNames);
+                policy.maxRecords = maxRecords > 0 ? maxRecords - result.getRecords().size() : maxRecords;
+                filter = PartitionFilter.id(++currentPartition);
+            }
         }
         setPaginationDetails(maxRecords);
         return result;
