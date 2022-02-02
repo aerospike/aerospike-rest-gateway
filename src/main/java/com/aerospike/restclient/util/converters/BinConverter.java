@@ -19,11 +19,15 @@ package com.aerospike.restclient.util.converters;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Value;
 import gnu.crypto.util.Base64;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 import java.util.Optional;
 
 public class BinConverter {
+
+    private static final Logger logger = LogManager.getLogger(BinConverter.class);
 
     @SuppressWarnings("unchecked")
     public static Bin[] binsFromMap(Map<String, Object> binMap) {
@@ -60,6 +64,7 @@ public class BinConverter {
                         return Optional.of(Value.getAsGeoJSON(new String(byteArr)));
                 }
             } catch (Exception e) {
+                logger.error("Error parsing typed bin parameter", e);
             }
         return Optional.empty();
     }
