@@ -230,9 +230,6 @@ public class BasicMsgPackOperationsTest {
         opList.add(opMap);
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        /* Only read the str bin on the get*/
-        Map<String, Object> expectedBins = new HashMap<>();
-        expectedBins.put("str", "binary");
         Map<String, Object> realBins = client.get(null, testKey, "bytes").bins;
 
         byte[] realBytes = (byte[]) realBins.get("bytes");
