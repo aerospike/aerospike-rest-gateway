@@ -18,7 +18,9 @@ package com.aerospike.restclient.config;
 
 import com.aerospike.client.AerospikeException;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
+import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreaker;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
@@ -47,7 +49,11 @@ public class ServiceConfig {
                 id -> new Resilience4JConfigBuilder(id).circuitBreakerConfig(circuitBreakerConfig)
                         .timeLimiterConfig(timeLimiterConfig).build();
 
-        Resilience4JCircuitBreakerFactory circuitBreakerFactory = new Resilience4JCircuitBreakerFactory();
+        Resilience4JCircuitBreakerFactory circuitBreakerFactory = new Resilience4JCircuitBreakerFactory(
+                CircuitBreakerRegistry.ofDefaults(),
+                TimeLimiterRegistry.ofDefaults(),
+                null
+        );
         circuitBreakerFactory.configureDefault(defaultConfiguration);
 
         return circuitBreakerFactory.create("rest-client");
