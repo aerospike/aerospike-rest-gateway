@@ -11,7 +11,7 @@ openApiSpec = {
       "name":"Apache 2.0 License",
       "url":"http://www.apache.org/licenses/LICENSE-2.0"
     },
-    "version":"1.10.4"
+    "version":"1.11.0"
   },
   "servers":[
     {
