@@ -31,6 +31,8 @@ import com.aerospike.restclient.util.RestClientErrors;
 import com.aerospike.restclient.util.converters.BinConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -42,13 +44,14 @@ public class AerospikeRecordServiceV1 implements AerospikeRecordService {
     private AerospikeClientPool clientPool;
 
     @Autowired
-    private Resilience4JCircuitBreaker circuitBreaker;
+    private CircuitBreakerFactory circuitBreakerFactory;
 
     @Override
     public RestClientRecord fetchRecord(AuthDetails authDetails, String namespace, String set, String key,
                                         String[] bins, RecordKeyType keyType, Policy policy) {
         Record fetchedRecord;
         Key asKey = KeyBuilder.buildKey(namespace, set, key, keyType);
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("rest-client");
 
         if (bins != null && bins.length > 0) {
             fetchedRecord = circuitBreaker.run(() -> RecordHandler.create(clientPool.getClient(authDetails))
@@ -70,6 +73,7 @@ public class AerospikeRecordServiceV1 implements AerospikeRecordService {
     public void deleteRecord(AuthDetails authDetails, String namespace, String set, String key,
                              RecordKeyType keyType, WritePolicy policy) {
         Key asKey = KeyBuilder.buildKey(namespace, set, key, keyType);
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("rest-client");
 
         boolean recordExisted = circuitBreaker.run(() -> RecordHandler.create(clientPool.getClient(authDetails))
                 .deleteRecord(policy, asKey));
@@ -86,6 +90,7 @@ public class AerospikeRecordServiceV1 implements AerospikeRecordService {
             Object> binMap, RecordKeyType keyType, WritePolicy policy) {
         Key asKey = KeyBuilder.buildKey(namespace, set, key, keyType);
         Bin[] recordBins = BinConverter.binsFromMap(binMap);
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("rest-client");
 
         circuitBreaker.run(() -> {
             RecordHandler.create(clientPool.getClient(authDetails))
@@ -98,6 +103,7 @@ public class AerospikeRecordServiceV1 implements AerospikeRecordService {
     public boolean
     recordExists(AuthDetails authDetails, String namespace, String set, String key, RecordKeyType keyType) {
         Key asKey = KeyBuilder.buildKey(namespace, set, key, keyType);
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("rest-client");
         return circuitBreaker.run(() -> RecordHandler.create(clientPool.getClient(authDetails))
                 .existsRecord(null, asKey));
     }
