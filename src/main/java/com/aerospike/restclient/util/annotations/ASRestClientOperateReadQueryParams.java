@@ -110,7 +110,8 @@ import java.lang.annotation.Target;
                 name = AerospikeAPIConstants.SEND_SET_NAME,
                 description = QueryParamDescriptors.BATCH_POLICY_SEND_SET_NAME_NOTES,
                 schema = @Schema(type = "boolean"),
-                in = ParameterIn.QUERY),
+                in = ParameterIn.QUERY,
+                deprecated = true),
         @Parameter(
                 name = AerospikeAPIConstants.RECORD_KEY,
                 description = QueryParamDescriptors.RECORD_KEY_NOTES,

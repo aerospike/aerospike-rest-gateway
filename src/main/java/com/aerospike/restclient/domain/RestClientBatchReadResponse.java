@@ -19,22 +19,15 @@ package com.aerospike.restclient.domain;
 import com.aerospike.client.BatchRead;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class RestClientBatchReadResponse {
+public class RestClientBatchReadResponse extends RestClientBatchRecordResponse {
 
 	public RestClientBatchReadResponse() {}
 
 	public RestClientBatchReadResponse(BatchRead batchRead) {
+		super(batchRead);
 		readAllBins = batchRead.readAllBins;
-		record = batchRead.record != null ? new RestClientRecord(batchRead.record) : null;
-		key = new RestClientKey(batchRead.key);
 		binNames = batchRead.binNames;
 	}
-
-	@Schema(description = "Record associated with the key. Null if the record was not found")
-	public RestClientRecord record;
-
-	@Schema(description = "Key to retrieve a record")
-	public RestClientKey key;
 
 	@Schema(description = "Whether all bins should be returned with this record")
 	public boolean readAllBins;

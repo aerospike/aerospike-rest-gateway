@@ -17,25 +17,38 @@
 package com.aerospike.restclient.domain;
 
 import com.aerospike.client.BatchRead;
+import com.aerospike.client.BatchRecord;
+import com.aerospike.client.policy.BatchReadPolicy;
 import com.aerospike.restclient.util.RestClientErrors;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class RestClientBatchReadBody {
-
-	@Schema(description = "Key to retrieve a record.", required = true)
-	@JsonProperty(required=true)
-	public RestClientKey key;
-
+public class RestClientBatchReadBody extends RestClientBatchRecordBody {
 	@Schema(description = "Whether all bins should be returned with this record.")
 	public boolean readAllBins;
 
 	@Schema(description = "List of bins to limit the record response to.", example = "[\"bin1\"]")
 	public String[] binNames;
 
+	// TODO
+	@Schema(description = "TODO")
+	public BatchReadPolicy policy;
+
 	public RestClientBatchReadBody() {}
 
+	// TODO: Can likely be removed after addition.
 	public BatchRead toBatchRead() {
+		if (key == null) {
+			throw new RestClientErrors.InvalidKeyError("Key for a batch read may not be null");
+		}
+		if (readAllBins) {
+			return new BatchRead(key.toKey(), true);
+		} else {
+			return new BatchRead(key.toKey(), binNames);
+		}
+	}
+
+	public BatchRecord toBatchRecord() {
 		if (key == null) {
 			throw new RestClientErrors.InvalidKeyError("Key for a batch read may not be null");
 		}

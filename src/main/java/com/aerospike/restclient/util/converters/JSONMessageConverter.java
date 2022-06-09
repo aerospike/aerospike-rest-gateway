@@ -16,6 +16,7 @@
  */
 package com.aerospike.restclient.util.converters;
 
+import com.aerospike.restclient.domain.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import com.fasterxml.jackson.core.JsonFactory;

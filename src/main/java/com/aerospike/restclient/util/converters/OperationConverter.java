@@ -445,6 +445,16 @@ public class OperationConverter {
 		return Operation.add(bin);
 	}
 
+	private static Map<String, Object> addOpToMap(Operation operation) {
+		Map<String, Object> opValues = new HashMap<String, Object>() {};
+		int valType = operation.value.getType();
+
+		opValues.put(BIN_KEY, operation.binName);
+		opValues.put(INCR_KEY, operation.value); // TODO: Need to convert to primitive type.
+
+		return opValues;
+	}
+
 	private static Operation mapToAppendOp(Map<String, Object> opValues) {
 		hasAllRequiredKeys(opValues, BIN_KEY, VALUE_KEY);
 		onlyHasAllowedKeys(opValues, BIN_KEY, VALUE_KEY);

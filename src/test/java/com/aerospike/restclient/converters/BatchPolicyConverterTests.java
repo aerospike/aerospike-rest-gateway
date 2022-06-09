@@ -86,13 +86,6 @@ public class BatchPolicyConverterTests {
 	}
 
 	@Test
-	public void testSendSetName() {
-		policyMap.put(AerospikeAPIConstants.SEND_SET_NAME, "true");
-		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertTrue(policy.sendSetName);
-	}
-
-	@Test
 	public void testMaxConcurrentThreads() {
 		policyMap.put(AerospikeAPIConstants.MAX_CONCURRENT_THREADS, "7");
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);

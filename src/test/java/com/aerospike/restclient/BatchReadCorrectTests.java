@@ -16,10 +16,7 @@
  */
 package com.aerospike.restclient;
 
-import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.BatchRead;
-import com.aerospike.client.Bin;
-import com.aerospike.client.Key;
+import com.aerospike.client.*;
 import com.aerospike.client.Value.BytesValue;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -137,7 +134,7 @@ public class BatchReadCorrectTests {
     @Test
     public void testGetExistingRecords() throws Exception {
         List<Map<String, Object>> batchKeys = new ArrayList<>();
-        List<BatchRead> batchRecs = new ArrayList<>();
+        List<BatchRecord> batchRecs = new ArrayList<>();
 
         batchKeys.add(keyToBatchObject(keys[0], null));
         batchKeys.add(keyToBatchObject(keys[1], null));
@@ -151,14 +148,14 @@ public class BatchReadCorrectTests {
         List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
         Assert.assertEquals(3, returnedRecords.size());
 
-        client.get(null, batchRecs);
-        Assert.assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
+        client.operate(null, batchRecs);
+        Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
     @Test
     public void testGetExistingRecordsBinFilter() throws Exception {
         List<Map<String, Object>> batchKeys = new ArrayList<>();
-        List<BatchRead> batchRecs = new ArrayList<>();
+        List<BatchRecord> batchRecs = new ArrayList<>();
         String[] bins = new String[]{"bin1", "bin3"};
 
         batchKeys.add(keyToBatchObject(keys[0], bins));
@@ -173,14 +170,14 @@ public class BatchReadCorrectTests {
         List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
         Assert.assertEquals(3, returnedRecords.size());
 
-        client.get(null, batchRecs);
-        Assert.assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
+        client.operate(null, batchRecs);
+        Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
     @Test
     public void testBatchGetWithNonExistentRecord() throws Exception {
         List<Map<String, Object>> batchKeys = new ArrayList<>();
-        List<BatchRead> batchRecs = new ArrayList<BatchRead>();
+        List<BatchRecord> batchRecs = new ArrayList<BatchRecord>();
         batchKeys.add(keyToBatchObject(keys[0], null));
         batchKeys.add(keyToBatchObject(keys[1], null));
         batchKeys.add(keyToBatchObject(new Key("test", "demo", "notreal"), null));
@@ -195,14 +192,14 @@ public class BatchReadCorrectTests {
         List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
         Assert.assertEquals(4, returnedRecords.size());
 
-        client.get(null, batchRecs);
-        Assert.assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
+        client.operate(null, batchRecs);
+        Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
     @Test
     public void testGetExistingRecordsWithIntKey() throws Exception {
         List<Map<String, Object>> batchKeys = new ArrayList<>();
-        List<BatchRead> batchRecs = new ArrayList<>();
+        List<BatchRecord> batchRecs = new ArrayList<>();
         batchKeys.add(keyToBatchObject(keys[0], null));
         batchKeys.add(keyToBatchObject(keys[1], null));
         batchKeys.add(keyToBatchObject(keys[2], null));
@@ -217,14 +214,14 @@ public class BatchReadCorrectTests {
         List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
         Assert.assertEquals(4, returnedRecords.size());
 
-        client.get(null, batchRecs);
-        Assert.assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
+        client.operate(null, batchRecs);
+        Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
     @Test
     public void testGetExistingRecordsWithBytesKey() throws Exception {
         List<Map<String, Object>> batchKeys = new ArrayList<>();
-        List<BatchRead> batchRecs = new ArrayList<>();
+        List<BatchRecord> batchRecs = new ArrayList<>();
         batchKeys.add(bytesKeyToBatchObject(bytesKey, null));
         batchRecs.add(new BatchRead(bytesKey, true));
 
@@ -232,14 +229,14 @@ public class BatchReadCorrectTests {
         List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
         Assert.assertEquals(1, returnedRecords.size());
 
-        client.get(null, batchRecs);
-        Assert.assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
+        client.operate(null, batchRecs);
+        Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
     @Test
     public void testGetExistingRecordsWithDigestKey() throws Exception {
         List<Map<String, Object>> batchKeys = new ArrayList<>();
-        List<BatchRead> batchRecs = new ArrayList<>();
+        List<BatchRecord> batchRecs = new ArrayList<>();
         batchKeys.add(digestKeyToBatchObject(keys[0], null));
         batchRecs.add(new BatchRead(keys[0], true));
 
@@ -247,8 +244,8 @@ public class BatchReadCorrectTests {
         List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
         Assert.assertEquals(1, returnedRecords.size());
 
-        client.get(null, batchRecs);
-        Assert.assertTrue(compareRestRecordsToBatchReads(returnedRecords, batchRecs));
+        client.operate(null, batchRecs);
+        Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
     private Map<String, Object> keyToBatchObject(Key key, String[] bins) {
@@ -336,6 +333,20 @@ public class BatchReadCorrectTests {
         }
         return true;
     }
+
+    private boolean compareRestRecordsToBatchRecords(List<Map<String, Object>> returnedRecords,
+                                                   List<BatchRecord> batchRecords) {
+        if (batchRecords.size() != returnedRecords.size()) {
+            return false;
+        }
+        for (int i = 0; i < batchRecords.size(); i++) {
+            if (!batchComparator.compareRestBatchRecordToBatchRecord(returnedRecords.get(i),
+                    batchRecords.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 class RestBatchReadComparator {
@@ -368,6 +379,47 @@ class RestBatchReadComparator {
             return ASTestUtils.compareRCRecordToASRecord((Map<String, Object>) restRecord.get("record"), batchRead.record);
         } else {
             return batchRead.record == null;
+        }
+    }
+
+    // TODO: Should determine subtype of batchRecord and check equality of subtype members.
+    public boolean compareRestBatchRecordToBatchRecord(Map<String, Object> restRecord, BatchRecord batchRecord) {
+        Map<String, Object> restKey = (Map<String, Object>) restRecord.get("key");
+
+        if (restKey.get("userKey") != null) {
+            if (!compareKey(batchRecord.key, restKey.get("userKey").toString(), (String) restKey.get("keytype"))) {
+                return false;
+            }
+        } else {
+            if (!compareDigests((String) restKey.get("digest"), batchRecord.key)) {
+                return false;
+            }
+        }
+
+        if (!restKey.get("namespace").equals(batchRecord.key.namespace)) {
+            return false;
+        }
+
+        if (restKey.get("setName") != null) {
+            if (!restKey.get("setName").equals(batchRecord.key.setName)) {
+                return false;
+            }
+        } else if (batchRecord.key.setName != null) {
+            return false;
+        }
+
+        if (!restRecord.get("inDoubt").equals(batchRecord.inDoubt)) {
+            return false;
+        }
+
+        if (!restRecord.get("resultCode").equals(batchRecord.resultCode)) {
+            return false;
+        }
+
+        if (restRecord.get("record") != null) {
+            return ASTestUtils.compareRCRecordToASRecord((Map<String, Object>) restRecord.get("record"), batchRecord.record);
+        } else {
+            return batchRecord.record == null;
         }
     }
 

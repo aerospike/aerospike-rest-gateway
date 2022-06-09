@@ -60,10 +60,6 @@ public class PolicyConverter {
             policy.readModeSC = PolicyValueConverter.getReadModeSC(
                     policyMap.get(AerospikeAPIConstants.READ_MODE_SC));
         }
-        if (policyMap.containsKey(AerospikeAPIConstants.PRED_EXP)) {
-            policy.predExp = PolicyValueConverter.getPredExp(
-                    policyMap.get(AerospikeAPIConstants.PRED_EXP));
-        }
         if (policyMap.containsKey(AerospikeAPIConstants.FILTER_EXP)) {
             policy.filterExp = PolicyValueConverter.getFilterExp(
                     policyMap.get(AerospikeAPIConstants.FILTER_EXP));

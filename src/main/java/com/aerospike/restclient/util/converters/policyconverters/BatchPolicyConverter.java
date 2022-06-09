@@ -39,11 +39,6 @@ public class BatchPolicyConverter {
 					policyMap.get(AerospikeAPIConstants.MAX_CONCURRENT_THREADS));
 		}
 
-		if (policyMap.containsKey(AerospikeAPIConstants.SEND_SET_NAME)) {
-			batchPolicy.sendSetName = PolicyValueConverter.getBoolValue(
-					policyMap.get(AerospikeAPIConstants.SEND_SET_NAME));
-		}
-
 		return batchPolicy;
 	}
 }
