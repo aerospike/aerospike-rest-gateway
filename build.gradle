@@ -2,7 +2,7 @@ buildscript {
 	ext {
 		springBootVersion = "2.5.12"
 		httpclientVersion = "4.5.13"
-		aerospikeClientVersion = findProperty("aerospikeClientVersion") ?:"5.1.11"
+		aerospikeClientVersion = findProperty("aerospikeClientVersion") ?:"6.0.1"
 	}
     if (findProperty("aerospikeUseLocal")) {
     print("using Local repo")
@@ -52,7 +52,7 @@ springBoot {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.aerospike:aerospike-client:${aerospikeClientVersion}")
+	implementation(files("/Users/jesseschmidt/Developer/aerospike-client-java/client/target/aerospike-client-6.0.2-jar-with-dependencies.jar"))
 	implementation("com.aerospike:aerospike-document-api:1.1.1")
 	implementation("org.msgpack:jackson-dataformat-msgpack:0.9.0")
 	implementation("org.springframework.retry:spring-retry:1.3.1")

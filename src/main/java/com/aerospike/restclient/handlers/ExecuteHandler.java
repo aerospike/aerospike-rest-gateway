@@ -71,7 +71,7 @@ public class ExecuteHandler {
         Statement statement = new Statement();
         statement.setTaskId(id);
 
-        ExecuteTask task = new ExecuteTask(client.getCluster(), new Policy(), statement);
+        ExecuteTask task = new ExecuteTask(client.getCluster(), new Policy(), statement, id);
         int status = task.queryStatus();
 
         return new RestClientExecuteTaskStatus(

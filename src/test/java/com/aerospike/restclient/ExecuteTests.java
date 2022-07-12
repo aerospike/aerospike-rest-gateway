@@ -133,7 +133,7 @@ public class ExecuteTests {
 
         RestClientExecuteTask task = responseDeserializer.getResponse(response, RestClientExecuteTask.class);
 
-        Thread.sleep(100);
+        Thread.sleep(300);
         String endpoint = queryStatusEndpoint + task.getTaskId();
         MockHttpServletResponse statusResponse = mockMVC.perform(
                 get(endpoint).accept(currentMediaType)
@@ -142,11 +142,11 @@ public class ExecuteTests {
         RestClientExecuteTaskStatus status = responseDeserializer
                 .getResponse(statusResponse, RestClientExecuteTaskStatus.class);
 
-        Assert.assertEquals(status.getStatus(), "COMPLETE");
+        Assert.assertEquals("COMPLETE", status.getStatus());
 
         for (int i = 0; i < numberOfRecords; i++) {
             long binValue = (long) client.get(null, testKeys[i]).bins.get("binInt");
-            Assert.assertEquals(binValue, i + 1);
+            Assert.assertEquals(i + 1,binValue);
         }
     }
 }

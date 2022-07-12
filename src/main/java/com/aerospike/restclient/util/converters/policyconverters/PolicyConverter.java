@@ -18,13 +18,13 @@ package com.aerospike.restclient.util.converters.policyconverters;
 
 import com.aerospike.client.policy.Policy;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
+import com.aerospike.restclient.util.RestClientErrors;
 import com.aerospike.restclient.util.converters.PolicyValueConverter;
 
 import java.util.Map;
 
 public class PolicyConverter {
 
-    @SuppressWarnings("deprecation")
     public static Policy policyFromMap(Map<String, String> policyMap) {
         Policy policy = new Policy();
 
@@ -61,8 +61,7 @@ public class PolicyConverter {
                     policyMap.get(AerospikeAPIConstants.READ_MODE_SC));
         }
         if (policyMap.containsKey(AerospikeAPIConstants.PRED_EXP)) {
-            policy.predExp = PolicyValueConverter.getPredExp(
-                    policyMap.get(AerospikeAPIConstants.PRED_EXP));
+            throw new RestClientErrors.InvalidPolicyValueError("Predicate expressions are deprecated");
         }
         if (policyMap.containsKey(AerospikeAPIConstants.FILTER_EXP)) {
             policy.filterExp = PolicyValueConverter.getFilterExp(

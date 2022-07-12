@@ -35,7 +35,7 @@ import org.springframework.retry.annotation.Retryable;
 public class AerospikeClientConfig {
     private static final Logger logger = LoggerFactory.getLogger(AerospikeClientConfig.class);
 
-    @Value("${aerospike.restclient.hostname:localhost}")
+    @Value("${aerospike.restclient.hostname:192.168.173.203}")
     String hostname;
 
     @Value("${aerospike.restclient.port:3000}")

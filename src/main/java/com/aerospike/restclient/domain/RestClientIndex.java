@@ -16,6 +16,7 @@
  */
 package com.aerospike.restclient.domain;
 
+import java.util.Locale;
 import java.util.Map;
 
 import com.aerospike.client.query.IndexCollectionType;
@@ -128,13 +129,13 @@ public class RestClientIndex {
 		if (idxType.equals("GEOJSON")) {
 			return IndexType.GEO2DSPHERE;
 		}
-		return IndexType.valueOf(idxType);
+		return IndexType.valueOf(idxType.toUpperCase());
 	}
 
 	static IndexCollectionType normalizeCollectionType(String collType) {
 		if (collType.equals("NONE")) {
 			return IndexCollectionType.DEFAULT;
 		}
-		return IndexCollectionType.valueOf(collType);
+		return IndexCollectionType.valueOf(collType.toUpperCase());
 	}
 }

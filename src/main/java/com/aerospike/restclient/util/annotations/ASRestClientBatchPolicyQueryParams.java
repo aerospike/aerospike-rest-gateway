@@ -84,7 +84,8 @@ import java.lang.annotation.Target;
                 name = AerospikeAPIConstants.PRED_EXP,
                 description = QueryParamDescriptors.POLICY_PRED_EXP_NOTES,
                 schema = @Schema(type = "string"),
-                in = ParameterIn.QUERY),
+                in = ParameterIn.QUERY,
+                deprecated = true),
         @Parameter(
                 name = AerospikeAPIConstants.FILTER_EXP,
                 description = QueryParamDescriptors.POLICY_FILTER_EXP_NOTES,
