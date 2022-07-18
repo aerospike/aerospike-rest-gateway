@@ -19,6 +19,7 @@ package com.aerospike.restclient.converters;
 import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.Replica;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
+import com.aerospike.restclient.util.RestClientErrors;
 import com.aerospike.restclient.util.converters.policyconverters.PolicyConverter;
 import org.junit.Assert;
 import org.junit.Before;
@@ -76,5 +77,11 @@ public class BasePolicyConverterTests {
 		policyMap.put(AerospikeAPIConstants.SEND_KEY, "true");
 		Policy policy = PolicyConverter.policyFromMap(policyMap);
 		Assert.assertTrue(policy.sendKey);
+	}
+
+	@Test(expected=RestClientErrors.InvalidPolicyValueError .class)
+	public void testPredExp() {
+		policyMap.put(AerospikeAPIConstants.PRED_EXP, "true");
+		PolicyConverter.policyFromMap(policyMap);
 	}
 }
