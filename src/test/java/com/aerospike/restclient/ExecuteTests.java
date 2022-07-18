@@ -133,7 +133,7 @@ public class ExecuteTests {
 
         RestClientExecuteTask task = responseDeserializer.getResponse(response, RestClientExecuteTask.class);
 
-        Thread.sleep(300);
+        Thread.sleep(500);
         String endpoint = queryStatusEndpoint + task.getTaskId();
         MockHttpServletResponse statusResponse = mockMVC.perform(
                 get(endpoint).accept(currentMediaType)
