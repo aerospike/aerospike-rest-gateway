@@ -90,44 +90,6 @@ public class SindexTestsError {
 		}
 	}
 
-// No longer an error as of 6.1
-//	@Test
-//	public void createIndexThatAlreadyExists() throws Exception {
-//		addIndexForTest("postTestIdx", "postTestBin");
-//		RestClientIndex postTestIdx = new RestClientIndex();
-//		postTestIdx.setNamespace(testNS);
-//		postTestIdx.setSet(testIndexSet);
-//		postTestIdx.setBin("postTestBin");
-//		postTestIdx.setName("postTestIdx");
-//		postTestIdx.setIndexType(testIndexType);
-//		postTestIdx.setCollectionType(testIndexCollectionType);
-//
-//		String indexPayload = objectMapper.writeValueAsString(postTestIdx);
-//		mockMVC.perform(post(endpoint).
-//				contentType(MediaType.APPLICATION_JSON)
-//				.content(indexPayload))
-//		.andExpect(status().isConflict());
-//	}
-
-// No longer an error as of 6.1
-//	@Test
-//	public void createIndexOnNonExistentNamespace() throws Exception {
-//		RestClientIndex postTestIdx = new RestClientIndex();
-//		postTestIdx.setNamespace("notrealns");
-//		postTestIdx.setSet(testIndexSet);
-//		postTestIdx.setBin("postTestBin");
-//		postTestIdx.setName("postTestIdx");
-//		postTestIdx.setIndexType(testIndexType);
-//		postTestIdx.setCollectionType(testIndexCollectionType);
-//
-//		String indexPayload = objectMapper.writeValueAsString(postTestIdx);
-//		mockMVC.perform(post(endpoint).
-//				contentType(MediaType.APPLICATION_JSON)
-//				.content(indexPayload))
-//		.andExpect(status().isBadRequest());
-//	}
-//
-
 	@Test
 	public void getIndexesForNonExistentNS() throws Exception {
 		mockMVC.perform(get(endpoint + "/NotARealNS"))
@@ -154,13 +116,6 @@ public class SindexTestsError {
 		mockMVC.perform(get(endpoint + "/" + testNS + "/" + "NOTREALIDX"))
 		.andExpect(status().isNotFound());
 	}
-
-// No longer an error as of 6.1
-//	@Test
-//	public void deleteIndexThatDoesNotExist() throws Exception {
-//		mockMVC.perform(delete(endpoint + "/" + testNS + "/" + "NOTREALIDX"))
-//		.andExpect(status().isNotFound());
-//	}
 
 	private void addIndexForTest(String indexName, String binName) {
 		testIndexName = indexName;

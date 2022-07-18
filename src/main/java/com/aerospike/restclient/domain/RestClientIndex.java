@@ -129,7 +129,7 @@ public class RestClientIndex {
 		if (idxType.equals("GEOJSON")) {
 			return IndexType.GEO2DSPHERE;
 		}
-		return IndexType.valueOf(idxType.toUpperCase());
+		return IndexType.valueOf(idxType.toUpperCase(Locale.ENGLISH));
 	}
 
 	static IndexCollectionType normalizeCollectionType(String collType) {
