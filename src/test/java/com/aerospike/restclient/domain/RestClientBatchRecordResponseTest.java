@@ -19,22 +19,19 @@ package com.aerospike.restclient.domain;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aerospike.client.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.aerospike.client.BatchRead;
-import com.aerospike.client.Key;
-import com.aerospike.client.Record;
 import com.aerospike.restclient.ASTestUtils;
 
-public class BatchReadResponseTest {
+public class RestClientBatchRecordResponseTest {
 
-	private static String ns = "test";
-	private static String set = "set";
-	private static String[] testBins = {"b1", "b2", "b3"};
+	private final static String ns = "test";
+	private final static String set = "set";
 	private Record testRecord;
-	private Key testKey = new Key(ns, set, "key");
+	private final Key testKey = new Key(ns, set, "key");
 
 	@Before
 	public void setUpRecord() {
@@ -45,59 +42,61 @@ public class BatchReadResponseTest {
 
 	@Test
 	public void testNoArgConstructor() {
-		new RestClientBatchReadResponse();
+		new RestClientBatchRecordResponse();
 	}
 
+	// Ensures backwards compatibility with older BatchRead API
 	@Test
 	public void constructionWithBinNames() {
+		String[] testBins = {"b1", "b2", "b3"};
 		BatchRead nullRecordRead = getBatchRead(testKey, testBins, false,  null);
 
-		RestClientBatchReadResponse response = new RestClientBatchReadResponse(nullRecordRead);
+		RestClientBatchRecordResponse response = new RestClientBatchRecordResponse(nullRecordRead);
 
-		Assert.assertArrayEquals(testBins, response.binNames);
 		Assert.assertNull(response.record);
-		Assert.assertFalse(response.readAllBins);
 	}
 
 	@Test
 	public void constructionWithoutBinNamesReadAllBins() {
 		BatchRead nullRecordRead = getBatchRead(testKey, null, true, null);
 
-		RestClientBatchReadResponse response = new RestClientBatchReadResponse(nullRecordRead);
+		RestClientBatchRecordResponse response = new RestClientBatchRecordResponse(nullRecordRead);
 
-		Assert.assertNull(response.binNames);
 		Assert.assertNull(response.record);
-		Assert.assertTrue(response.readAllBins);
 	}
 
 	@Test
 	public void constructionWithoutBinNamesReadAllBinsFalse() {
 		BatchRead nullRecordRead = getBatchRead(testKey, null, false, null);
 
-		RestClientBatchReadResponse response = new RestClientBatchReadResponse(nullRecordRead);
+		RestClientBatchRecordResponse response = new RestClientBatchRecordResponse(nullRecordRead);
 
-		Assert.assertNull(response.binNames);
 		Assert.assertNull(response.record);
-		Assert.assertFalse(response.readAllBins);
 	}
 
 	@Test
 	public void constructionOfUserKey() {
-		BatchRead nullRecordRead = getBatchRead(testKey, null, false, null);
-		RestClientBatchReadResponse response = new RestClientBatchReadResponse(nullRecordRead);
+		BatchRecord nullRecordRead = new BatchRecord(testKey, null, ResultCode.MAX_ERROR_RATE, true, true);
+		RestClientBatchRecordResponse response = new RestClientBatchRecordResponse(nullRecordRead);
 		Key convertedKey = response.key.toKey();
 		Assert.assertTrue(ASTestUtils.compareKeys(testKey, convertedKey));
+		Assert.assertEquals(response.resultCode, ResultCode.MAX_ERROR_RATE);
+		Assert.assertEquals(response.resultCodeString, ResultCode.getResultString(ResultCode.MAX_ERROR_RATE));
+		Assert.assertTrue(response.inDoubt);
 	}
 
 	@Test
 	public void constructionOfRecord() {
-		BatchRead nullRecordRead = getBatchRead(testKey, null, false, testRecord);
-		RestClientBatchReadResponse response = new RestClientBatchReadResponse(nullRecordRead);
+		BatchRecord batchRecord = new BatchRecord(testKey, testRecord, ResultCode.MAX_ERROR_RATE, false, false);
+		RestClientBatchRecordResponse response = new RestClientBatchRecordResponse(batchRecord);
 
 		RestClientRecord convertedRecord = response.record;
 		Assert.assertEquals(convertedRecord.bins, testRecord.bins);
 		Assert.assertEquals(convertedRecord.ttl, testRecord.getTimeToLive());
 		Assert.assertEquals(convertedRecord.generation, testRecord.generation);
+		Assert.assertEquals(response.resultCode, ResultCode.MAX_ERROR_RATE);
+		Assert.assertEquals(response.resultCodeString, ResultCode.getResultString(ResultCode.MAX_ERROR_RATE));
+		Assert.assertFalse(response.inDoubt);
 	}
 
 	private BatchRead getBatchRead(Key key, String[] bins, boolean readAllbins, Record record) {
@@ -110,5 +109,9 @@ public class BatchReadResponseTest {
 		read.record = record;
 
 		return read;
+	}
+
+	private BatchRecord getBatchRecord(Key key, Record record, int resultCode, boolean hasWrite) {
+		return new BatchRecord(key, record, resultCode, false, hasWrite);
 	}
 }

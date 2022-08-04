@@ -17,12 +17,7 @@
 package com.aerospike.restclient.util.converters;
 
 import com.aerospike.client.exp.Expression;
-import com.aerospike.client.policy.CommitLevel;
-import com.aerospike.client.policy.GenerationPolicy;
-import com.aerospike.client.policy.ReadModeAP;
-import com.aerospike.client.policy.ReadModeSC;
-import com.aerospike.client.policy.RecordExistsAction;
-import com.aerospike.client.policy.Replica;
+import com.aerospike.client.policy.*;
 import com.aerospike.restclient.util.RestClientErrors;
 import com.aerospike.restclient.util.converters.exp.FilterExpParser;
 
@@ -48,6 +43,10 @@ public class PolicyValueConverter {
     }
 
     public static Expression getFilterExp(String filterExp) {
+        if (filterExp == null) {
+            return null;
+        }
+
         try {
             try {
                 return filterExpParser.parse(filterExp);

@@ -16,18 +16,9 @@
  */
 package com.aerospike.restclient.util;
 
-import com.aerospike.client.policy.BatchPolicy;
-import com.aerospike.client.policy.InfoPolicy;
-import com.aerospike.client.policy.Policy;
-import com.aerospike.client.policy.RecordExistsAction;
-import com.aerospike.client.policy.ScanPolicy;
-import com.aerospike.client.policy.WritePolicy;
+import com.aerospike.client.policy.*;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
-import com.aerospike.restclient.util.converters.policyconverters.BatchPolicyConverter;
-import com.aerospike.restclient.util.converters.policyconverters.InfoPolicyConverter;
-import com.aerospike.restclient.util.converters.policyconverters.PolicyConverter;
-import com.aerospike.restclient.util.converters.policyconverters.ScanPolicyConverter;
-import com.aerospike.restclient.util.converters.policyconverters.WritePolicyConverter;
+import com.aerospike.restclient.util.converters.policyconverters.*;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;

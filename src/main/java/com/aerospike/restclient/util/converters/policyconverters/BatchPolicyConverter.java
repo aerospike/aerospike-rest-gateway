@@ -16,29 +16,39 @@
  */
 package com.aerospike.restclient.util.converters.policyconverters;
 
-import java.util.Map;
-
 import com.aerospike.client.policy.BatchPolicy;
 import com.aerospike.client.policy.Policy;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.converters.PolicyValueConverter;
 
+import java.util.Map;
+
 public class BatchPolicyConverter {
 
-	public static BatchPolicy batchPolicyFromMap(Map<String, String>policyMap) {
-		Policy basePolicy = PolicyConverter.policyFromMap(policyMap);
-		BatchPolicy batchPolicy = new BatchPolicy(basePolicy);
+    public static BatchPolicy batchPolicyFromMap(Map<String, String> policyMap) {
+        Policy basePolicy = PolicyConverter.policyFromMap(policyMap);
+        BatchPolicy batchPolicy = new BatchPolicy(basePolicy);
 
-		if (policyMap.containsKey(AerospikeAPIConstants.ALLOW_INLINE)) {
-			batchPolicy.allowInline = PolicyValueConverter.getBoolValue(
-					policyMap.get(AerospikeAPIConstants.ALLOW_INLINE));
-		}
+        if (policyMap.containsKey(AerospikeAPIConstants.ALLOW_INLINE)) {
+            batchPolicy.allowInline = PolicyValueConverter.getBoolValue(
+                    policyMap.get(AerospikeAPIConstants.ALLOW_INLINE));
+        }
 
-		if (policyMap.containsKey(AerospikeAPIConstants.MAX_CONCURRENT_THREADS)) {
-			batchPolicy.maxConcurrentThreads = PolicyValueConverter.getIntValue(
-					policyMap.get(AerospikeAPIConstants.MAX_CONCURRENT_THREADS));
-		}
+        if (policyMap.containsKey(AerospikeAPIConstants.ALLOW_INLINE_SSD)) {
+            batchPolicy.allowInlineSSD = PolicyValueConverter.getBoolValue(
+                    policyMap.get(AerospikeAPIConstants.ALLOW_INLINE_SSD));
+        }
 
-		return batchPolicy;
-	}
+        if (policyMap.containsKey(AerospikeAPIConstants.MAX_CONCURRENT_THREADS)) {
+            batchPolicy.maxConcurrentThreads = PolicyValueConverter.getIntValue(
+                    policyMap.get(AerospikeAPIConstants.MAX_CONCURRENT_THREADS));
+        }
+
+        if (policyMap.containsKey(AerospikeAPIConstants.RESPOND_ALL_KEYS)) {
+            batchPolicy.respondAllKeys = PolicyValueConverter.getBoolValue(
+                    policyMap.get(AerospikeAPIConstants.RESPOND_ALL_KEYS));
+        }
+
+        return batchPolicy;
+    }
 }

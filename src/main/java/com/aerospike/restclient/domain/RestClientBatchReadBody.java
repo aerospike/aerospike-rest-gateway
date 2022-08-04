@@ -17,45 +17,45 @@
 package com.aerospike.restclient.domain;
 
 import com.aerospike.client.BatchRead;
-import com.aerospike.client.BatchRecord;
-import com.aerospike.client.policy.BatchReadPolicy;
+import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.RestClientErrors;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RestClientBatchReadBody extends RestClientBatchRecordBody {
-	@Schema(description = "Whether all bins should be returned with this record.")
-	public boolean readAllBins;
+    @Schema(description = "Whether all bins should be returned with this record.")
+    public boolean readAllBins;
 
-	@Schema(description = "List of bins to limit the record response to.", example = "[\"bin1\"]")
-	public String[] binNames;
+    @Schema(description = "List of bins to limit the record response to.", example = "[\"bin1\"]")
+    public String[] binNames;
 
-	// TODO
-	@Schema(description = "TODO")
-	public BatchReadPolicy policy;
+    @Schema(description = "Policy attributes used for this batch read operation.")
+    public RestClientBatchReadPolicy policy;
 
-	public RestClientBatchReadBody() {}
+    @Schema(description = "List of bins to limit the record response to.", allowableValues = AerospikeAPIConstants.BATCH_TYPE_READ, required = true)
+    @JsonProperty(required = true)
+    public final String batchType = AerospikeAPIConstants.BATCH_TYPE_READ;
 
-	// TODO: Can likely be removed after addition.
-	public BatchRead toBatchRead() {
-		if (key == null) {
-			throw new RestClientErrors.InvalidKeyError("Key for a batch read may not be null");
-		}
-		if (readAllBins) {
-			return new BatchRead(key.toKey(), true);
-		} else {
-			return new BatchRead(key.toKey(), binNames);
-		}
-	}
+    public RestClientBatchReadBody() {
+    }
 
-	public BatchRecord toBatchRecord() {
-		if (key == null) {
-			throw new RestClientErrors.InvalidKeyError("Key for a batch read may not be null");
-		}
-		if (readAllBins) {
-			return new BatchRead(key.toKey(), true);
-		} else {
-			return new BatchRead(key.toKey(), binNames);
-		}
-	}
+    public BatchRead toBatchRecord() {
+        if (key == null) {
+            throw new RestClientErrors.InvalidKeyError("Key for a batch read may not be null");
+        }
+
+        if (readAllBins) {
+            if (policy == null) {
+                return new BatchRead(key.toKey(), true);
+            }
+
+            return new BatchRead(policy.toBatchReadPolicy(), key.toKey(), true);
+        } else {
+            if (policy == null) {
+                return new BatchRead(key.toKey(), binNames);
+            }
+
+            return new BatchRead(policy.toBatchReadPolicy(), key.toKey(), binNames);
+        }
+    }
 }

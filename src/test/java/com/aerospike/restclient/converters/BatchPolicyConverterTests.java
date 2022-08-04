@@ -77,6 +77,12 @@ public class BatchPolicyConverterTests {
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
 		Assert.assertTrue(policy.sendKey);
 	}
+	@Test
+	public void testMaxConcurrentThreads() {
+		policyMap.put(AerospikeAPIConstants.MAX_CONCURRENT_THREADS, "7");
+		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
+		Assert.assertEquals(policy.maxConcurrentThreads, 7);
+	}
 
 	@Test
 	public void testAllowInline() {
@@ -86,10 +92,16 @@ public class BatchPolicyConverterTests {
 	}
 
 	@Test
-	public void testMaxConcurrentThreads() {
-		policyMap.put(AerospikeAPIConstants.MAX_CONCURRENT_THREADS, "7");
+	public void testAllowInlineSSD() {
+		policyMap.put(AerospikeAPIConstants.ALLOW_INLINE_SSD, "true");
 		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.maxConcurrentThreads, 7);
+		Assert.assertTrue(policy.allowInline);
 	}
 
+	@Test
+	public void testRespondAllKeys() {
+		policyMap.put(AerospikeAPIConstants.RESPOND_ALL_KEYS, "false");
+		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
+		Assert.assertFalse(policy.respondAllKeys);
+	}
 }

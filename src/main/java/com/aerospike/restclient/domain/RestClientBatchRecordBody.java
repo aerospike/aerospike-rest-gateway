@@ -16,26 +16,25 @@
  */
 package com.aerospike.restclient.domain;
 
-import com.aerospike.client.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.aerospike.client.BatchRecord;
+import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-// TODO: Should this be an interface or a abstract class. RE: RestClientBatchRecordResponse is an abstract class but
-// TODO: functions?
-@JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "batchType")
 @JsonSubTypes({
-        @JsonSubTypes.Type(RestClientBatchReadBody.class),
-        @JsonSubTypes.Type(RestClientBatchWriteBody.class),
-        @JsonSubTypes.Type(RestClientBatchDeleteBody.class),
-        @JsonSubTypes.Type(RestClientBatchUdfBody.class),
+        @JsonSubTypes.Type(value = RestClientBatchDeleteBody.class, name = AerospikeAPIConstants.BATCH_TYPE_DELETE),
+        @JsonSubTypes.Type(value = RestClientBatchWriteBody.class, name = AerospikeAPIConstants.BATCH_TYPE_WRITE),
+        @JsonSubTypes.Type(value = RestClientBatchReadBody.class, name = AerospikeAPIConstants.BATCH_TYPE_READ),
+        @JsonSubTypes.Type(value = RestClientBatchUDFBody.class, name = AerospikeAPIConstants.BATCH_TYPE_UDF),
 })
 public abstract class RestClientBatchRecordBody {
-
-    @Schema(description = "Key to write a record.", required = true)
+    @Schema(description = "Key to a record.", required = true)
     @JsonProperty(required = true)
     public RestClientKey key;
+
     abstract public BatchRecord toBatchRecord();
 }
+

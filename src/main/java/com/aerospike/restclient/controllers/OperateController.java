@@ -28,6 +28,7 @@ import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.annotations.ASRestClientOperateReadQueryParams;
+import com.aerospike.restclient.util.annotations.ASRestClientParams;
 import com.aerospike.restclient.util.annotations.ASRestClientWritePolicyQueryParams;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import com.aerospike.restclient.util.deserializers.MsgPackOperationsParser;
@@ -87,6 +88,7 @@ public class OperateController {
             consumes = "application/json",
             produces = {"application/json", "application/msgpack"}
     )
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public RestClientRecord operateNamespaceSetKey(
             @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -151,6 +153,7 @@ public class OperateController {
     @PostMapping(value = "/{namespace}/{key}",
             consumes = "application/json",
             produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public RestClientRecord operateNamespaceKey(
             @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -219,6 +222,7 @@ public class OperateController {
             consumes = "application/json",
             produces = {"application/json", "application/msgpack"}
     )
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientOperateReadQueryParams
     public RestClientRecord[] operateBatchNamespaceSet(
             @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -284,6 +288,7 @@ public class OperateController {
     @PostMapping(value = "/read/{namespace}",
             consumes = "application/json",
             produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientOperateReadQueryParams
     public RestClientRecord[] operateBatchNamespace(
             @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -319,3 +324,4 @@ public class OperateController {
         return service.operate(authDetails, namespace, null, keys, operations, keyType, policy);
     }
 }
+

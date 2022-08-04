@@ -23,6 +23,7 @@ import com.aerospike.restclient.service.AerospikeInfoService;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestBodyExamples;
 import com.aerospike.restclient.util.ResponseExamples;
+import com.aerospike.restclient.util.annotations.ASRestClientInfoPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import com.aerospike.restclient.util.converters.policyconverters.InfoPolicyConverter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,6 +59,7 @@ public class InfoController {
                     content = @Content(schema = @Schema(implementation = RestClientError.class)))
     })
     @DefaultRestClientAPIResponses
+    @ASRestClientInfoPolicyQueryParams
     @PostMapping(consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
     Map<String, String> infoAny(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(

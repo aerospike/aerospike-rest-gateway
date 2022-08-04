@@ -22,6 +22,7 @@ import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeDocumentService;
 import com.aerospike.restclient.util.*;
+import com.aerospike.restclient.util.annotations.ASRestClientParams;
 import com.aerospike.restclient.util.annotations.ASRestDocumentPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.ASRestDocumentWritePolicyQueryParams;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
@@ -91,6 +92,7 @@ public class DocumentApiController {
     })
     @DefaultRestClientAPIResponses
     @GetMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentPolicyQueryParams
     public Map<String, Object> getDocumentObject(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -126,6 +128,7 @@ public class DocumentApiController {
     })
     @DefaultRestClientAPIResponses
     @GetMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentPolicyQueryParams
     public Map<String, Object> getDocumentObjectSet(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -169,6 +172,7 @@ public class DocumentApiController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentWritePolicyQueryParams
     public void putDocumentObject(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -210,6 +214,7 @@ public class DocumentApiController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentWritePolicyQueryParams
     public void putDocumentObjectSet(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -257,6 +262,7 @@ public class DocumentApiController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentWritePolicyQueryParams
     public void appendDocumentObject(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -298,6 +304,7 @@ public class DocumentApiController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentWritePolicyQueryParams
     public void appendDocumentObjectSet(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -345,6 +352,7 @@ public class DocumentApiController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentWritePolicyQueryParams
     public void deleteDocumentObject(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -382,6 +390,7 @@ public class DocumentApiController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentWritePolicyQueryParams
     public void deleteDocumentObjectSet(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,

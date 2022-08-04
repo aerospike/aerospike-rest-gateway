@@ -81,9 +81,17 @@ public final class AerospikeAPIConstants {
 
 	// BATCH POLICY KEYS
 	public static final String ALLOW_INLINE = "allowInline";
+	public static final String ALLOW_INLINE_SSD = "allowInlineSSD";
 	public static final String MAX_CONCURRENT_THREADS = "maxConcurrentThreads";
-	public static final String SEND_SET_NAME = "sendSetName";
-	public static final String USE_BATCH_DIRECT = "useBatchDirect";
+	public static final String RESPOND_ALL_KEYS = "respondAllKeys";
+
+	// BATCH TYPE KEYS
+	public static final String BATCH_TYPE_READ = "READ";
+	public static final String BATCH_TYPE_WRITE = "WRITE";
+	public static final String BATCH_TYPE_UDF = "UDF";
+	public static final String BATCH_TYPE_DELETE = "DELETE";
+
+
 
 	// SCAN POLICY KEYS
 	public static final String MAX_RECORDS = "maxRecords";

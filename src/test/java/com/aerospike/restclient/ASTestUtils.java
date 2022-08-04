@@ -92,8 +92,8 @@ public class ASTestUtils {
 			return false;
 		if (list1.size() != list2.size())
 			return false;
-		Map<Object, Integer>counts1 = new HashMap<Object, Integer>();
-		Map<Object, Integer>counts2 = new HashMap<Object, Integer>();
+		Map<Object, Integer>counts1 = new HashMap<>();
+		Map<Object, Integer>counts2 = new HashMap<>();
 
 		for (Object obj: list1) {
 			if (counts1.containsKey(obj)) {
@@ -233,6 +233,10 @@ public class ASTestUtils {
 			Number nv1 = (Number)value1;
 			Number nv2 = (Number)value2;
 			return nv1.longValue() == nv2.longValue();
+		} else if (value1 == null && value2 == null) {
+			return true;
+		} else if (value1 == null || value2 == null) {
+				return true;
 		} else {
 			if (value1 instanceof Value) {
 				value1 = ((Value)value1).getObject();
@@ -498,9 +502,7 @@ public class ASTestUtils {
 		String response = null;
 		try {
 			response = Info.request(client.getNodes()[0], "build");
-		}catch (Exception e) {
-			;
-		}
+		} catch (Exception e) {}
 		String[] v_numbers = response.split("\\.");
 		int major = Integer.parseInt(v_numbers[0]);
 		int minor = Integer.parseInt(v_numbers[1]);
@@ -598,3 +600,4 @@ public class ASTestUtils {
 		return otherOpVals == null;
 	}
 }
+
