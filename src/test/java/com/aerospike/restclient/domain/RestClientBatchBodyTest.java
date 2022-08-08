@@ -23,6 +23,7 @@ import com.aerospike.restclient.ASJsonTestMapper;
 import com.aerospike.restclient.ASMsgPackTestMapper;
 import com.aerospike.restclient.ASTestMapper;
 import com.aerospike.restclient.ASTestUtils;
+import com.aerospike.restclient.domain.batchmodels.*;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.aerospike.restclient.util.AerospikeOperation;

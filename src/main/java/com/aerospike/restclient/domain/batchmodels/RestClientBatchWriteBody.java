@@ -1,7 +1,8 @@
-package com.aerospike.restclient.domain;
+package com.aerospike.restclient.domain.batchmodels;
 
 import com.aerospike.client.BatchWrite;
 import com.aerospike.client.Operation;
+import com.aerospike.restclient.domain.RestClientOperation;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.RestClientErrors;
 import com.aerospike.restclient.util.converters.OperationsConverter;

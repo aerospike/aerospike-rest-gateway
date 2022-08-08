@@ -19,6 +19,8 @@ package com.aerospike.restclient.controllers;
 import com.aerospike.client.policy.BatchPolicy;
 import com.aerospike.restclient.domain.*;
 import com.aerospike.restclient.domain.auth.AuthDetails;
+import com.aerospike.restclient.domain.batchmodels.RestClientBatchRecordBody;
+import com.aerospike.restclient.domain.batchmodels.RestClientBatchRecordResponse;
 import com.aerospike.restclient.service.AerospikeBatchService;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;

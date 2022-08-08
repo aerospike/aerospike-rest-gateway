@@ -9,6 +9,7 @@ import com.aerospike.client.policy.RecordExistsAction;
 import com.aerospike.restclient.ASJsonTestMapper;
 import com.aerospike.restclient.ASMsgPackTestMapper;
 import com.aerospike.restclient.ASTestMapper;
+import com.aerospike.restclient.domain.batchmodels.RestClientBatchWritePolicy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;

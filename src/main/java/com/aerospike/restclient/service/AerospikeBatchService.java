@@ -17,8 +17,8 @@
 package com.aerospike.restclient.service;
 
 import com.aerospike.client.policy.BatchPolicy;
-import com.aerospike.restclient.domain.RestClientBatchRecordBody;
-import com.aerospike.restclient.domain.RestClientBatchRecordResponse;
+import com.aerospike.restclient.domain.batchmodels.RestClientBatchRecordBody;
+import com.aerospike.restclient.domain.batchmodels.RestClientBatchRecordResponse;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 
 import java.util.List;

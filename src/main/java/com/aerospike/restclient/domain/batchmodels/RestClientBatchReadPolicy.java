@@ -1,4 +1,4 @@
-package com.aerospike.restclient.domain;
+package com.aerospike.restclient.domain.batchmodels;
 
 import com.aerospike.client.policy.BatchReadPolicy;
 import com.aerospike.client.policy.ReadModeAP;

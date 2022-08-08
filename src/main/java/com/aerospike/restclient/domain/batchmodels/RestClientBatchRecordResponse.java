@@ -1,7 +1,9 @@
-package com.aerospike.restclient.domain;
+package com.aerospike.restclient.domain.batchmodels;
 
 import com.aerospike.client.BatchRecord;
 import com.aerospike.client.ResultCode;
+import com.aerospike.restclient.domain.RestClientKey;
+import com.aerospike.restclient.domain.RestClientRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RestClientBatchRecordResponse {

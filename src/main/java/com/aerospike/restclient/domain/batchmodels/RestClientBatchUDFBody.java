@@ -1,4 +1,4 @@
-package com.aerospike.restclient.domain;
+package com.aerospike.restclient.domain.batchmodels;
 
 import com.aerospike.client.BatchUDF;
 import com.aerospike.client.Value;

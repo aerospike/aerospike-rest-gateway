@@ -8,6 +8,7 @@ import com.aerospike.client.policy.GenerationPolicy;
 import com.aerospike.restclient.ASJsonTestMapper;
 import com.aerospike.restclient.ASMsgPackTestMapper;
 import com.aerospike.restclient.ASTestMapper;
+import com.aerospike.restclient.domain.batchmodels.RestClientBatchDeletePolicy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aerospike.client.*;
+import com.aerospike.restclient.domain.batchmodels.RestClientBatchRecordResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
