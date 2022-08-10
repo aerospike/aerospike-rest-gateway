@@ -27,8 +27,10 @@ import java.util.Map;
 import com.aerospike.client.policy.ClientPolicy;
 import com.aerospike.client.policy.TlsPolicy;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
+import org.junit.Assert;
 import org.mockito.ArgumentMatcher;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
@@ -453,11 +455,17 @@ public class ASTestUtils {
 
 	public static String performOperationAndReturn(MockMvc mockMVC, String endpoint, String payload) throws Exception {
 
-		return mockMVC.perform(post(endpoint)
+		MockHttpServletResponse res = mockMVC.perform(post(endpoint)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(payload))
-				.andExpect(status().isOk())
-				.andReturn().getResponse().getContentAsString();
+				.andReturn().getResponse();
+
+		int status = res.getStatus();
+		if (status != 200) {
+			Assert.fail(String.format("Status expected:200 but was:%d\n Response: %s", status, res.getContentAsString()));
+		}
+
+		return res.getContentAsString();
 	}
 
 	public static void performOperationAndExpect(MockMvc mockMVC, String endpoint, String payload, ResultMatcher matcher) throws Exception {

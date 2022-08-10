@@ -111,8 +111,4 @@ public class RestClientBatchRecordResponseTest {
 
 		return read;
 	}
-
-	private BatchRecord getBatchRecord(Key key, Record record, int resultCode, boolean hasWrite) {
-		return new BatchRecord(key, record, resultCode, false, hasWrite);
-	}
 }

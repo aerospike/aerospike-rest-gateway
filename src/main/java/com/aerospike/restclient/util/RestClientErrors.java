@@ -132,6 +132,42 @@ public class RestClientErrors {
 		}
 	}
 
+	public static class InvalidQueryFilterError extends AerospikeRestClientError {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public HttpStatus getStatusCode() {
+			return HttpStatus.BAD_REQUEST;
+		}
+
+		public InvalidQueryFilterError() {
+			this("Invalid query filter");
+		}
+
+		public InvalidQueryFilterError(String reason) {
+			super(reason);
+			this.message = reason;
+		}
+	}
+
+	public static class InvalidCTXError extends AerospikeRestClientError {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public HttpStatus getStatusCode() {
+			return HttpStatus.BAD_REQUEST;
+		}
+
+		public InvalidCTXError() {
+			this("Invalid CTX item");
+		}
+
+		public InvalidCTXError(String reason) {
+			super(reason);
+			this.message = reason;
+		}
+	}
+
 	public static class RecordNotFoundError extends AerospikeRestClientError {
 		private static final long serialVersionUID = 1L;
 

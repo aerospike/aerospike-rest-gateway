@@ -32,7 +32,7 @@ public class RestClientBatchReadBody extends RestClientBatchRecordBody {
     @Schema(description = "Policy attributes used for this batch read operation.")
     public RestClientBatchReadPolicy policy;
 
-    @Schema(description = "List of bins to limit the record response to.", allowableValues = AerospikeAPIConstants.BATCH_TYPE_READ, required = true)
+    @Schema(description = "TODO", allowableValues = AerospikeAPIConstants.BATCH_TYPE_READ, required = true)
     @JsonProperty(required = true)
     public final String batchType = AerospikeAPIConstants.BATCH_TYPE_READ;
 

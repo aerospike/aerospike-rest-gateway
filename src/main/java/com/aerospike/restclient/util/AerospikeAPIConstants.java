@@ -37,12 +37,11 @@ public final class AerospikeAPIConstants {
 	public static final String DIGEST = "digest";
 	public static final String TYPE = "type";
 
-	// Key types
-	public static final String STRING_KEY = "string";
-	public static final String INT_KEY = "integer";
-	public static final String BYTES_KEY = "bytes";
-	public static final String DIGEST_KEY = "digest";
 	public static final String KEY_TYPE = "keytype";
+
+	public enum RecordKeyType {
+		STRING, INTEGER, BYTES, DIGEST
+	}
 
 	// Index Types
 	public static final String NUMERIC_INDEX = "numeric";
@@ -92,8 +91,7 @@ public final class AerospikeAPIConstants {
 	public static final String BATCH_TYPE_DELETE = "DELETE";
 
 
-
-	// SCAN POLICY KEYS
+	// SCAN POLICY KEYS (Merged into Query subsystem in 6.0)
 	public static final String MAX_RECORDS = "maxRecords";
 	public static final String RECORDS_PER_SECOND = "recordsPerSecond";
 	public static final String MAX_CONCURRENT_NODES = "maxConcurrentNodes";
@@ -102,14 +100,19 @@ public final class AerospikeAPIConstants {
 
 	public static final String FROM_TOKEN = "from";
 
+	// QUERY POLICY KEYS
+	public static final String RECORD_QUEUE_SIZE = "recordsQueueSize";
+	public static final String FAIL_ON_CLUSTER_CHANGE = "failOnClusterChange";
+	public static final String SHORT_QUERY = "shortQuery";
+
+	// QUERY STATEMENT KEYS
+	public static final String INDEX_NAME = "indexName";
+
+
 	// INFO POLICY KEYS
 	public static final String TIMEOUT = "timeout";
 
 	// Operation Fields
 	public static final String OPERATION_FIELD = "operation";
 	public static final String OPERATION_VALUES_FIELD = "opValues";
-
-	public enum RecordKeyType {
-		STRING, INTEGER, BYTES, DIGEST
-	}
 }

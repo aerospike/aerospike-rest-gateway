@@ -47,7 +47,7 @@ public class NestedCdtOperationsTest {
     private final String testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "nested");
 
     private List<Object> l1, l2, l3, objectList;
-    private Map<Object, Object> m1, m2, objectMap;
+    private Map<Object, Object> m1, m2, m3, objectMap;
 
     @Before
     public void setup() {
@@ -81,10 +81,17 @@ public class NestedCdtOperationsTest {
         m1.put("two", 2);
         m1.put("three", 3);
 
+        m3 = new HashMap<>();
+        m3.put("one", 1);
+        m3.put("two", 2);
+        m3.put("three", 3);
+
         m2 = new HashMap<>();
         m2.put("one", 1);
         m2.put("two", 2);
         m2.put("three", 3);
+        m2.put("m3", m3);
+
 
         objectMap = new HashMap<>();
         objectMap.put("m1", m1);
@@ -193,4 +200,27 @@ public class NestedCdtOperationsTest {
 
         Assert.assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
     }
+
+    @SuppressWarnings("unchecked")
+//    @Test
+//    public void testMapPutCdtMultipuleCTX() {
+//        List<Map<String, Object>> opList = new ArrayList<>();
+//        Map<String, Object> operation = new HashMap<>();
+//        Map<String, Object> opValues = new HashMap<>();
+//        opValues.put("bin", "map");
+//        opValues.put("key", "two");
+//        opValues.put("value", 11);
+//        opValues.put("mapKey", "m2");
+//        opValues.put("mapKey", "four");
+//        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
+//        operation.put(OPERATION_VALUES_FIELD, opValues);
+//        opList.add(operation);
+//
+//        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+//        Map<String, Object> bins = client.get(null, testKey).bins;
+//        Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get("map");
+//        m3.put("two", 11);
+//
+//        Assert.assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
+//    }
 }
