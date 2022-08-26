@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @ASRestClientParams.ASRestClientRecordBinsQueryParam
 @Parameters(value = {
         @Parameter(
-                name = AerospikeAPIConstants.INDEX_NAME,
+                name = AerospikeAPIConstants.QUERY_INDEX_NAME,
                 description = "TODO",
                 schema = @Schema(type = "string"),
                 in = ParameterIn.QUERY),
@@ -29,9 +29,19 @@ import java.lang.annotation.Target;
                 description = APIDescriptors.SCAN_POLICY_INCLUDE_BIN_DATA_NOTES,
                 schema = @Schema(type = "boolean"),
                 in = ParameterIn.QUERY),
+        @Parameter(
+                name = AerospikeAPIConstants.QUERY_PARTITION_BEGIN,
+                description = "TODO",
+                schema = @Schema(type = "integer"),
+                in = ParameterIn.QUERY),
+        @Parameter(
+                name = AerospikeAPIConstants.QUERY_PARTITION_COUNT,
+                description = "TODO",
+                schema = @Schema(type = "integer"),
+                in = ParameterIn.QUERY),
 })
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @ASRestClientPolicyQueryParams
-public @interface ASRestClientQueryStatementQueryParams {
+public @interface ASRestClientQueryQueryParams {
 }

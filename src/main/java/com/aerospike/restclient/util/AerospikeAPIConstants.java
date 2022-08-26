@@ -51,7 +51,6 @@ public final class AerospikeAPIConstants {
 	// Collection Types
 	public static final String MAPKEYS_INDEX = "mapkeys";
 	public static final String MAPVALUES_INDEX = "mapvalues";
-	public static final String LIST_INDEX = "list";
 
 	// POLICY KEYS
 	public static final String TOTAL_TIMEOUT = "totalTimeout";
@@ -99,6 +98,7 @@ public final class AerospikeAPIConstants {
 	public static final String INCLUDE_BIN_DATA = "includeBinData";
 
 	public static final String FROM_TOKEN = "from";
+	public static final String GET_TOKEN = "getToken";
 
 	// QUERY POLICY KEYS
 	public static final String RECORD_QUEUE_SIZE = "recordsQueueSize";
@@ -106,7 +106,9 @@ public final class AerospikeAPIConstants {
 	public static final String SHORT_QUERY = "shortQuery";
 
 	// QUERY STATEMENT KEYS
-	public static final String INDEX_NAME = "indexName";
+	public static final String QUERY_INDEX_NAME = "indexName";
+	public static final String QUERY_PARTITION_BEGIN = "begin";
+	public static final String QUERY_PARTITION_COUNT = "count";
 
 
 	// INFO POLICY KEYS
@@ -115,4 +117,17 @@ public final class AerospikeAPIConstants {
 	// Operation Fields
 	public static final String OPERATION_FIELD = "operation";
 	public static final String OPERATION_VALUES_FIELD = "opValues";
+
+	// CTX Types
+	public static final String LIST_INDEX = "listIndex";
+	public static final String LIST_INDEX_CREATE = "listIndexCreate";
+	public static final String LIST_RANK = "listRank";
+	public static final String LIST_VALUE = "listValue";
+	public static final String MAP_INDEX = "mapIndex";
+	public static final String MAP_RANK = "mapRank";
+	public static final String MAP_KEY = "mapKey";
+	public static final String MAP_KEY_CREATE = "mapKeyCreate";
+	public static final String MAP_VALUE = "mapValue";
+
+
 }

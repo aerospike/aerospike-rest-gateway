@@ -17,20 +17,10 @@
 package com.aerospike.restclient.util.converters;
 
 import com.aerospike.restclient.domain.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-public class JSONMessageConverter{
-
-	public static MappingJackson2HttpMessageConverter getConverter(){
-
-		ObjectMapper jsonMapper = new ObjectMapper(new JsonFactory());
-		SimpleModule recordModule = new SimpleModule();
-		jsonMapper.registerModule(recordModule);
-
-		return new MappingJackson2HttpMessageConverter(jsonMapper);
-	}
-}

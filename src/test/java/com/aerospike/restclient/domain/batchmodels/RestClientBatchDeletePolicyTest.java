@@ -1,14 +1,12 @@
-package com.aerospike.restclient.domain;
+package com.aerospike.restclient.domain.batchmodels;
 
 import com.aerospike.client.exp.Exp;
 import com.aerospike.client.exp.Expression;
 import com.aerospike.client.policy.BatchDeletePolicy;
 import com.aerospike.client.policy.CommitLevel;
 import com.aerospike.client.policy.GenerationPolicy;
-import com.aerospike.restclient.ASJsonTestMapper;
-import com.aerospike.restclient.ASMsgPackTestMapper;
 import com.aerospike.restclient.ASTestMapper;
-import com.aerospike.restclient.domain.batchmodels.RestClientBatchDeletePolicy;
+import com.aerospike.restclient.IASTestMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,17 +19,17 @@ import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class RestClientBatchDeletePolicyTest {
-    private final ASTestMapper mapper;
+    private final IASTestMapper mapper;
 
     @Parameterized.Parameters
     public static Object[] getParams() {
         return new Object[] {
-                new JsonRestClientBatchDeletePolicyMapper(new ObjectMapper()),
-                new MsgPackRestClientBatchDeletePolicyMapper(new ObjectMapper(new MessagePackFactory()))
+                new JsonBatchDeletePolicyMapper(new ObjectMapper()),
+                new MsgPackBatchDeletePolicyMapper(new ObjectMapper(new MessagePackFactory()))
         };
     }
 
-    public RestClientBatchDeletePolicyTest(ASTestMapper mapper) {
+    public RestClientBatchDeletePolicyTest(IASTestMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -50,7 +48,7 @@ public class RestClientBatchDeletePolicyTest {
         policyMap.put("durableDelete", true);
         policyMap.put("sendKey", true);
 
-        RestClientBatchDeletePolicy mappedBody = (RestClientBatchDeletePolicy) mapper.mapToObject(policyMap);
+        RestClientBatchDeletePolicy mappedBody = (RestClientBatchDeletePolicy) mapper.bytesToObject(mapper.objectToBytes(policyMap));
 
         Assert.assertEquals("a filter", mappedBody.filterExp);
         Assert.assertEquals(CommitLevel.COMMIT_MASTER, mappedBody.commitLevel);
@@ -83,16 +81,16 @@ public class RestClientBatchDeletePolicyTest {
     }
 }
 
-class JsonRestClientBatchDeletePolicyMapper extends ASJsonTestMapper {
+class JsonBatchDeletePolicyMapper extends ASTestMapper {
 
-    public JsonRestClientBatchDeletePolicyMapper(ObjectMapper mapper) {
+    public JsonBatchDeletePolicyMapper(ObjectMapper mapper) {
         super(mapper, RestClientBatchDeletePolicy.class);
     }
 }
 
-class MsgPackRestClientBatchDeletePolicyMapper extends ASMsgPackTestMapper {
+class MsgPackBatchDeletePolicyMapper extends ASTestMapper {
 
-    public MsgPackRestClientBatchDeletePolicyMapper(ObjectMapper mapper) {
+    public MsgPackBatchDeletePolicyMapper(ObjectMapper mapper) {
         super(mapper, RestClientBatchDeletePolicy.class);
     }
 }

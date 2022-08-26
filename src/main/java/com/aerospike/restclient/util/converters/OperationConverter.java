@@ -21,8 +21,10 @@ import com.aerospike.client.Operation;
 import com.aerospike.client.Value;
 import com.aerospike.client.cdt.*;
 import com.aerospike.client.operation.*;
+import com.aerospike.restclient.domain.ctxmodels.RestClientCTX;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.aerospike.restclient.util.RestClientErrors.InvalidOperationError;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -99,6 +101,10 @@ public class OperationConverter {
             CTX_MAP_KEY_CREATE_KEY,
             CTX_MAP_VALUE_KEY
     );
+
+    private static ObjectMapper mapper = new ObjectMapper();
+
+
 
     @SuppressWarnings("unchecked")
     public static Operation convertMapToOperation(Map<String, Object> operationMap) {
@@ -2163,43 +2169,13 @@ public class OperationConverter {
     }
 
     private static CTX[] extractCTX(Map<String, Object> opValues) {
-        List<CTX> rt = new ArrayList<>();
-        for (String key : CTX_KEYS) {
-            if (opValues.containsKey(key)) {
-                switch (key) {
-                    case CTX_LIST_INDEX_KEY:
-                        rt.add(CTX.listIndex(getIntValue(opValues, key)));
-                        break;
-                    case CTX_LIST_INDEX_CREATE_KEY:
-                        ListOrder listOrder = getListOrder(opValues);
-                        rt.add(CTX.listIndexCreate(getIntValue(opValues, key),
-                                listOrder, getBoolValue(opValues, PAD_KEY)));
-                        break;
-                    case CTX_LIST_RANK_KEY:
-                        rt.add(CTX.listRank(getIntValue(opValues, key)));
-                        break;
-                    case CTX_LIST_VALUE_KEY:
-                        rt.add(CTX.listValue(Value.get(opValues.get(key))));
-                        break;
-                    case CTX_MAP_INDEX_KEY:
-                        rt.add(CTX.mapIndex(getIntValue(opValues, key)));
-                        break;
-                    case CTX_MAP_KEY_KEY:
-                        rt.add(CTX.mapKey(Value.get(opValues.get(key))));
-                        break;
-                    case CTX_MAP_KEY_CREATE_KEY:
-                        MapOrder mapOrder = getMapOrder(opValues);
-                        rt.add(CTX.mapKeyCreate(Value.get(opValues.get(key)), mapOrder));
-                        break;
-                    case CTX_MAP_RANK_KEY:
-                        rt.add(CTX.mapRank(getIntValue(opValues, key)));
-                        break;
-                    case CTX_MAP_VALUE_KEY:
-                        rt.add(CTX.mapValue(Value.get(opValues.get(key))));
-                        break;
-                }
-            }
-        }
-        return rt.isEmpty() ? null : rt.toArray(new CTX[0]);
+        // TODO: Turn all the Operations.  They can then be automatically deserialized and documented via swagger
+        List<Map<String, Object>> ctxList = (List<Map<String, Object>>) opValues.get("ctx");
+        return ctxList.stream().map(OperationConverter::mapToCTX).toArray(CTX[]::new);
+    }
+
+    private static CTX mapToCTX(Map<String, Object> ctxMao) {
+        RestClientCTX restCTX = mapper.convertValue(ctxMao, RestClientCTX.class);
+        return restCTX.toCTX();
     }
 }

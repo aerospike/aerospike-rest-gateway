@@ -1,12 +1,10 @@
-package com.aerospike.restclient.domain;
+package com.aerospike.restclient.domain.batchmodels;
 
 import com.aerospike.client.exp.Exp;
 import com.aerospike.client.exp.Expression;
 import com.aerospike.client.policy.*;
-import com.aerospike.restclient.ASJsonTestMapper;
-import com.aerospike.restclient.ASMsgPackTestMapper;
 import com.aerospike.restclient.ASTestMapper;
-import com.aerospike.restclient.domain.batchmodels.RestClientBatchUDFPolicy;
+import com.aerospike.restclient.IASTestMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +17,7 @@ import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class RestClientBatchUDFPolicyTest {
-    private final ASTestMapper mapper;
+    private final IASTestMapper mapper;
 
     @Parameterized.Parameters
     public static Object[] getParams() {
@@ -29,7 +27,7 @@ public class RestClientBatchUDFPolicyTest {
         };
     }
 
-    public RestClientBatchUDFPolicyTest(ASTestMapper mapper) {
+    public RestClientBatchUDFPolicyTest(IASTestMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -47,7 +45,7 @@ public class RestClientBatchUDFPolicyTest {
         policyMap.put("durableDelete", true);
         policyMap.put("sendKey", true);
 
-        RestClientBatchUDFPolicy mappedBody = (RestClientBatchUDFPolicy) mapper.mapToObject(policyMap);
+        RestClientBatchUDFPolicy mappedBody = (RestClientBatchUDFPolicy) mapper.bytesToObject(mapper.objectToBytes(policyMap));
 
         Assert.assertEquals("a filter", mappedBody.filterExp);
         Assert.assertEquals(CommitLevel.COMMIT_MASTER, mappedBody.commitLevel);
@@ -77,14 +75,14 @@ public class RestClientBatchUDFPolicyTest {
     }
 }
 
-class JsonRestClientBatchUDFPolicyMapper extends ASJsonTestMapper {
+class JsonRestClientBatchUDFPolicyMapper extends ASTestMapper {
 
     public JsonRestClientBatchUDFPolicyMapper(ObjectMapper mapper) {
         super(mapper, RestClientBatchUDFPolicy.class);
     }
 }
 
-class MsgPackRestClientBatchUDFPolicyMapper extends ASMsgPackTestMapper {
+class MsgPackRestClientBatchUDFPolicyMapper extends ASTestMapper {
 
     public MsgPackRestClientBatchUDFPolicyMapper(ObjectMapper mapper) {
         super(mapper, RestClientBatchUDFPolicy.class);

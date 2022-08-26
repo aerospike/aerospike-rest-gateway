@@ -150,7 +150,7 @@ public class RestClientErrors {
 		}
 	}
 
-	public static class InvalidCTXError extends AerospikeRestClientError {
+	public static class InvalidQueryError extends AerospikeRestClientError {
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -158,11 +158,11 @@ public class RestClientErrors {
 			return HttpStatus.BAD_REQUEST;
 		}
 
-		public InvalidCTXError() {
-			this("Invalid CTX item");
+		public InvalidQueryError() {
+			this("Invalid query statement");
 		}
 
-		public InvalidCTXError(String reason) {
+		public InvalidQueryError(String reason) {
 			super(reason);
 			this.message = reason;
 		}
@@ -220,4 +220,21 @@ public class RestClientErrors {
 		}
 	}
 
+    public static class InvalidCTXError extends AerospikeRestClientError {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public HttpStatus getStatusCode() {
+			return HttpStatus.BAD_REQUEST;
+		}
+
+		public InvalidCTXError() {
+			this("Invalid context");
+		}
+
+		public InvalidCTXError(String reason) {
+			super(reason);
+			this.message = reason;
+		}
+    }
 }

@@ -1,4 +1,4 @@
-package com.aerospike.restclient.domain.querymodels;
+package com.aerospike.restclient.domain.ctxmodels;
 
 import com.aerospike.client.cdt.CTX;
 

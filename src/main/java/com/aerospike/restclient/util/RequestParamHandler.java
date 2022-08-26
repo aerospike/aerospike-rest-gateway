@@ -101,6 +101,10 @@ public final class RequestParamHandler {
         return ScanPolicyConverter.scanPolicyFromMap(requestParams);
     }
 
+    public static QueryPolicy getQueryPolicy(Map<String, String> requestParams) {
+        return QueryPolicyConverter.queryPolicyFromMap(requestParams);
+    }
+
     public static InfoPolicy getInfoPolicy(Map<String, String> requestParams) {
         return InfoPolicyConverter.policyFromMap(requestParams);
     }

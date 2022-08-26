@@ -7,9 +7,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 public class RestClientQueryBody {
-    @Schema(description = "List of operation.")
-    @JsonProperty(required = true)
-    public List<RestClientOperation> opsList;
+    @Schema(description = "Query Filter.")
+    public IRestClientQueryFilter filter;
 
-    IRestClientQueryFilter filter;
+    @Schema(description = "TODO")
+    public String from;
+
+    public RestClientQueryBody() {};
 }

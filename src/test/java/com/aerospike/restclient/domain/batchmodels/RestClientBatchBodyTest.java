@@ -14,16 +14,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.aerospike.restclient.domain;
+package com.aerospike.restclient.domain.batchmodels;
 
 import com.aerospike.client.*;
 import com.aerospike.client.policy.CommitLevel;
 import com.aerospike.client.policy.RecordExistsAction;
-import com.aerospike.restclient.ASJsonTestMapper;
-import com.aerospike.restclient.ASMsgPackTestMapper;
 import com.aerospike.restclient.ASTestMapper;
+import com.aerospike.restclient.IASTestMapper;
 import com.aerospike.restclient.ASTestUtils;
-import com.aerospike.restclient.domain.batchmodels.*;
+import com.aerospike.restclient.config.JSONMessageConverter;
+import com.aerospike.restclient.config.MsgPackConverter;
+import com.aerospike.restclient.domain.RestClientKey;
+import com.aerospike.restclient.domain.RestClientOperation;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.aerospike.restclient.util.AerospikeOperation;
@@ -46,19 +48,19 @@ import java.util.stream.Collectors;
 @RunWith(Parameterized.class)
 public class RestClientBatchBodyTest {
 
-    private final ASTestMapper mapper;
+    private final IASTestMapper mapper;
     private final static String ns = "test";
     private final static String set = "set";
 
     @Parameters
     public static Object[] getParams() {
         return new Object[]{
-                new JsonRestClientBatchRecordBodyMapper(new ObjectMapper(new JsonFactory())),
-                new MsgPackRestClientBatchRecordBodyMapper(new ObjectMapper(new MessagePackFactory()))
+                new JsonRestClientBatchRecordBodyMapper(),
+                new MsgPackRestClientBatchRecordBodyMapper()
         };
     }
 
-    public RestClientBatchBodyTest(ASTestMapper mapper) {
+    public RestClientBatchBodyTest(IASTestMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -76,7 +78,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchReadBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchReadBody mappedBody = (RestClientBatchReadBody) mapper.mapToObject(batchMap);
+        RestClientBatchReadBody mappedBody = (RestClientBatchReadBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         Assert.assertTrue(mappedBody.readAllBins);
         Assert.assertArrayEquals(mappedBody.binNames, new String[]{});
@@ -93,7 +95,7 @@ public class RestClientBatchBodyTest {
         String[] bins = {"a", "b", "c"};
         batchMap.put("binNames", bins);
 
-        RestClientBatchReadBody mappedBody = (RestClientBatchReadBody) mapper.mapToObject(batchMap);
+        RestClientBatchReadBody mappedBody = (RestClientBatchReadBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         Assert.assertTrue(mappedBody.readAllBins);
         Assert.assertArrayEquals(mappedBody.binNames, bins);
@@ -108,7 +110,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchReadBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchReadBody mappedBody = (RestClientBatchReadBody) mapper.mapToObject(batchMap);
+        RestClientBatchReadBody mappedBody = (RestClientBatchReadBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         Assert.assertTrue(mappedBody.readAllBins);
         Assert.assertArrayEquals(mappedBody.binNames, new String[]{});
@@ -123,7 +125,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchReadBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchReadBody mappedBody = (RestClientBatchReadBody) mapper.mapToObject(batchMap);
+        RestClientBatchReadBody mappedBody = (RestClientBatchReadBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         Assert.assertTrue(mappedBody.readAllBins);
         Assert.assertArrayEquals(mappedBody.binNames, new String[]{});
@@ -138,7 +140,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchReadBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchReadBody mappedBody = (RestClientBatchReadBody) mapper.mapToObject(batchMap);
+        RestClientBatchReadBody mappedBody = (RestClientBatchReadBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         Assert.assertTrue(mappedBody.readAllBins);
         Assert.assertArrayEquals(mappedBody.binNames, new String[]{});
@@ -220,7 +222,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchWriteBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchWriteBody mappedBody = (RestClientBatchWriteBody) mapper.mapToObject(batchMap);
+        RestClientBatchWriteBody mappedBody = (RestClientBatchWriteBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -253,7 +255,7 @@ public class RestClientBatchBodyTest {
         expectedBatchMap.put("key", keyMap);
         expectedBatchMap.put("opsList", expectedOpsListMap);
 
-        RestClientBatchWriteBody actualBody = (RestClientBatchWriteBody) mapper.mapToObject(expectedBatchMap);
+        RestClientBatchWriteBody actualBody = (RestClientBatchWriteBody) mapper.bytesToObject(mapper.objectToBytes(expectedBatchMap));
         List<Map<String, Object>> actualBodyOpsList = actualBody.opsList.stream().map(RestClientOperation::toMap)
                 .collect(Collectors.toList());
         RestClientKey actualKey = actualBody.key;
@@ -275,7 +277,7 @@ public class RestClientBatchBodyTest {
         expectedBatchMap.put("key", keyMap);
         expectedBatchMap.put("policy", batchWritePolicy);
 
-        RestClientBatchWriteBody actualBody = (RestClientBatchWriteBody) mapper.mapToObject(expectedBatchMap);
+        RestClientBatchWriteBody actualBody = (RestClientBatchWriteBody) mapper.bytesToObject(mapper.objectToBytes(expectedBatchMap));
         List<Map<String, Object>> actualBodyOpsList = actualBody.opsList.stream().map(RestClientOperation::toMap)
                 .collect(Collectors.toList());
         RestClientKey actualKey = actualBody.key;
@@ -291,7 +293,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchWriteBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchWriteBody mappedBody = (RestClientBatchWriteBody) mapper.mapToObject(batchMap);
+        RestClientBatchWriteBody mappedBody = (RestClientBatchWriteBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -305,7 +307,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchWriteBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchWriteBody mappedBody = (RestClientBatchWriteBody) mapper.mapToObject(batchMap);
+        RestClientBatchWriteBody mappedBody = (RestClientBatchWriteBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -319,7 +321,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchWriteBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchWriteBody mappedBody = (RestClientBatchWriteBody) mapper.mapToObject(batchMap);
+        RestClientBatchWriteBody mappedBody = (RestClientBatchWriteBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -354,8 +356,6 @@ public class RestClientBatchBodyTest {
         Assert.assertTrue(ASTestUtils.compareKeys(realKey, convertedBatchWrite.key));
         Assert.assertNull(convertedBatchWrite.policy);
 
-        Operation op1 = convertedBatchWrite.ops[0];
-        Operation op2 = convertedBatchWrite.ops[1];
         Assert.assertEquals(convertedBatchWrite.ops[0].type, Operation.Type.ADD);
         Assert.assertEquals(convertedBatchWrite.ops[0].binName, "bin1");
         Assert.assertEquals(convertedBatchWrite.ops[0].value, Value.get(1));
@@ -382,7 +382,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchUDFBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchUDFBody mappedBody = (RestClientBatchUDFBody) mapper.mapToObject(batchMap);
+        RestClientBatchUDFBody mappedBody = (RestClientBatchUDFBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -406,7 +406,7 @@ public class RestClientBatchBodyTest {
         batchMap.put("key", keyMap);
         batchMap.put("functionArgs", expectedFunctionArgs);
 
-        RestClientBatchUDFBody mappedBody = (RestClientBatchUDFBody) mapper.mapToObject(batchMap);
+        RestClientBatchUDFBody mappedBody = (RestClientBatchUDFBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -421,14 +421,13 @@ public class RestClientBatchBodyTest {
     public void testObjectMappedBatchUDFConstructionWithPolicy() throws Exception {
         Map<String, Object> keyMap = getKeyMap("key", RecordKeyType.STRING);
         Map<String, Object> batchUDFPolicy = new HashMap<>();
-        List<Map<String, Object>> expectedOpsListMap = new ArrayList<Map<String, Object>>();
         Map<String, Object> expectedBatchMap = getBatchUDFBase();
 
         batchUDFPolicy.put("sendKey", true);
         expectedBatchMap.put("key", keyMap);
         expectedBatchMap.put("policy", batchUDFPolicy);
 
-        RestClientBatchUDFBody actualBody = (RestClientBatchUDFBody) mapper.mapToObject(expectedBatchMap);
+        RestClientBatchUDFBody actualBody = (RestClientBatchUDFBody) mapper.bytesToObject(mapper.objectToBytes(expectedBatchMap));
         RestClientKey actualKey = actualBody.key;
 
         Assert.assertTrue(actualBody.policy.sendKey);
@@ -441,7 +440,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchUDFBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchUDFBody mappedBody = (RestClientBatchUDFBody) mapper.mapToObject(batchMap);
+        RestClientBatchUDFBody mappedBody = (RestClientBatchUDFBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -454,7 +453,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchUDFBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchUDFBody mappedBody = (RestClientBatchUDFBody) mapper.mapToObject(batchMap);
+        RestClientBatchUDFBody mappedBody = (RestClientBatchUDFBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -467,7 +466,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchUDFBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchUDFBody mappedBody = (RestClientBatchUDFBody) mapper.mapToObject(batchMap);
+        RestClientBatchUDFBody mappedBody = (RestClientBatchUDFBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -485,7 +484,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchDeleteBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchDeleteBody mappedBody = (RestClientBatchDeleteBody) mapper.mapToObject(batchMap);
+        RestClientBatchDeleteBody mappedBody = (RestClientBatchDeleteBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -500,7 +499,7 @@ public class RestClientBatchBodyTest {
 
         batchMap.put("key", keyMap);
 
-        RestClientBatchDeleteBody mappedBody = (RestClientBatchDeleteBody) mapper.mapToObject(batchMap);
+        RestClientBatchDeleteBody mappedBody = (RestClientBatchDeleteBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -518,7 +517,7 @@ public class RestClientBatchBodyTest {
         expectedBatchMap.put("key", keyMap);
         expectedBatchMap.put("policy", batchDeletePolicy);
 
-        RestClientBatchDeleteBody actualBody = (RestClientBatchDeleteBody) mapper.mapToObject(expectedBatchMap);
+        RestClientBatchDeleteBody actualBody = (RestClientBatchDeleteBody) mapper.bytesToObject(mapper.objectToBytes(expectedBatchMap));
         RestClientKey actualKey = actualBody.key;
 
         Assert.assertEquals(actualBody.policy.commitLevel, CommitLevel.COMMIT_MASTER);
@@ -531,7 +530,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchDeleteBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchDeleteBody mappedBody = (RestClientBatchDeleteBody) mapper.mapToObject(batchMap);
+        RestClientBatchDeleteBody mappedBody = (RestClientBatchDeleteBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -544,7 +543,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchDeleteBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchDeleteBody mappedBody = (RestClientBatchDeleteBody) mapper.mapToObject(batchMap);
+        RestClientBatchDeleteBody mappedBody = (RestClientBatchDeleteBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -557,7 +556,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchDeleteBase();
         batchMap.put("key", keyMap);
 
-        RestClientBatchDeleteBody mappedBody = (RestClientBatchDeleteBody) mapper.mapToObject(batchMap);
+        RestClientBatchDeleteBody mappedBody = (RestClientBatchDeleteBody) mapper.bytesToObject(mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
 
@@ -609,16 +608,16 @@ public class RestClientBatchBodyTest {
     }
 }
 
-class JsonRestClientBatchRecordBodyMapper extends ASJsonTestMapper {
+class JsonRestClientBatchRecordBodyMapper extends ASTestMapper {
 
-    public JsonRestClientBatchRecordBodyMapper(ObjectMapper mapper) {
-        super(mapper, RestClientBatchRecordBody.class);
+    public JsonRestClientBatchRecordBodyMapper() {
+        super(JSONMessageConverter.getJSONObjectMapper(), RestClientBatchRecordBody.class);
     }
 }
 
-class MsgPackRestClientBatchRecordBodyMapper extends ASMsgPackTestMapper {
+class MsgPackRestClientBatchRecordBodyMapper extends ASTestMapper {
 
-    public MsgPackRestClientBatchRecordBodyMapper(ObjectMapper mapper) {
-        super(mapper, RestClientBatchRecordBody.class);
+    public MsgPackRestClientBatchRecordBodyMapper() {
+        super(MsgPackConverter.getASMsgPackObjectMapper(), RestClientBatchRecordBody.class);
     }
 }

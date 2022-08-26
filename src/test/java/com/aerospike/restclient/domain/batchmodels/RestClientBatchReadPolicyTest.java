@@ -1,13 +1,10 @@
-package com.aerospike.restclient.domain;
+package com.aerospike.restclient.domain.batchmodels;
 
 import com.aerospike.client.exp.Exp;
 import com.aerospike.client.exp.Expression;
 import com.aerospike.client.policy.*;
-import com.aerospike.restclient.ASJsonTestMapper;
-import com.aerospike.restclient.ASMsgPackTestMapper;
 import com.aerospike.restclient.ASTestMapper;
-import com.aerospike.restclient.domain.batchmodels.RestClientBatchReadPolicy;
-import com.aerospike.restclient.domain.batchmodels.RestClientBatchWritePolicy;
+import com.aerospike.restclient.IASTestMapper;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
@@ -20,7 +17,7 @@ import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class RestClientBatchReadPolicyTest {
-    private final ASTestMapper mapper;
+    private final IASTestMapper mapper;
 
     @Parameterized.Parameters
     public static Object[] getParams() {
@@ -30,7 +27,7 @@ public class RestClientBatchReadPolicyTest {
         };
     }
 
-    public RestClientBatchReadPolicyTest(ASTestMapper mapper) {
+    public RestClientBatchReadPolicyTest(IASTestMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -46,7 +43,7 @@ public class RestClientBatchReadPolicyTest {
         policyMap.put("readModeAP", "ALL");
         policyMap.put("readModeSC", "ALLOW_REPLICA");
 
-        RestClientBatchReadPolicy mappedBody = (RestClientBatchReadPolicy) mapper.mapToObject(policyMap);
+        RestClientBatchReadPolicy mappedBody = (RestClientBatchReadPolicy) mapper.bytesToObject(mapper.objectToBytes(policyMap));
 
         Assert.assertEquals("a filter", mappedBody.filterExp);
         Assert.assertEquals(ReadModeAP.ALL, mappedBody.readModeAP);
@@ -70,14 +67,14 @@ public class RestClientBatchReadPolicyTest {
     }
 }
 
-class JsonRestClientBatchReadPolicyMapper extends ASJsonTestMapper {
+class JsonRestClientBatchReadPolicyMapper extends ASTestMapper {
 
     public JsonRestClientBatchReadPolicyMapper(ObjectMapper mapper) {
         super(mapper, RestClientBatchReadPolicy.class);
     }
 }
 
-class MsgPackRestClientBatchReadPolicyMapper extends ASMsgPackTestMapper {
+class MsgPackRestClientBatchReadPolicyMapper extends ASTestMapper {
 
     public MsgPackRestClientBatchReadPolicyMapper(ObjectMapper mapper) {
         super(mapper, RestClientBatchReadPolicy.class);

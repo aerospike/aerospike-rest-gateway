@@ -1,4 +1,4 @@
-package com.aerospike.restclient.domain;
+package com.aerospike.restclient.domain.batchmodels;
 
 import com.aerospike.client.exp.Exp;
 import com.aerospike.client.exp.Expression;
@@ -6,10 +6,8 @@ import com.aerospike.client.policy.BatchWritePolicy;
 import com.aerospike.client.policy.CommitLevel;
 import com.aerospike.client.policy.GenerationPolicy;
 import com.aerospike.client.policy.RecordExistsAction;
-import com.aerospike.restclient.ASJsonTestMapper;
-import com.aerospike.restclient.ASMsgPackTestMapper;
 import com.aerospike.restclient.ASTestMapper;
-import com.aerospike.restclient.domain.batchmodels.RestClientBatchWritePolicy;
+import com.aerospike.restclient.IASTestMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,7 +20,7 @@ import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class RestClientBatchWritePolicyTest {
-    private final ASTestMapper mapper;
+    private final IASTestMapper mapper;
 
     @Parameterized.Parameters
     public static Object[] getParams() {
@@ -32,7 +30,7 @@ public class RestClientBatchWritePolicyTest {
         };
     }
 
-    public RestClientBatchWritePolicyTest(ASTestMapper mapper) {
+    public RestClientBatchWritePolicyTest(IASTestMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -53,7 +51,7 @@ public class RestClientBatchWritePolicyTest {
         policyMap.put("durableDelete", true);
         policyMap.put("sendKey", true);
 
-        RestClientBatchWritePolicy mappedBody = (RestClientBatchWritePolicy) mapper.mapToObject(policyMap);
+        RestClientBatchWritePolicy mappedBody = (RestClientBatchWritePolicy) mapper.bytesToObject(mapper.objectToBytes(policyMap));
 
         Assert.assertEquals("a filter", mappedBody.filterExp);
         Assert.assertEquals(RecordExistsAction.CREATE_ONLY, mappedBody.recordExistsAction);
@@ -93,14 +91,14 @@ public class RestClientBatchWritePolicyTest {
 }
 
 
-class JsonRestClientBatchWritePolicyMapper extends ASJsonTestMapper {
+class JsonRestClientBatchWritePolicyMapper extends ASTestMapper {
 
     public JsonRestClientBatchWritePolicyMapper(ObjectMapper mapper) {
         super(mapper, RestClientBatchWritePolicy.class);
     }
 }
 
-class MsgPackRestClientBatchWritePolicyMapper extends ASMsgPackTestMapper {
+class MsgPackRestClientBatchWritePolicyMapper extends ASTestMapper {
 
     public MsgPackRestClientBatchWritePolicyMapper(ObjectMapper mapper) {
         super(mapper, RestClientBatchWritePolicy.class);

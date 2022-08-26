@@ -51,6 +51,7 @@ springBoot {
 }
 
 dependencies {
+	implementation('org.msgpack:msgpack-core:0.9.3')
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.aerospike:aerospike-client:${aerospikeClientVersion}")
 	implementation("com.aerospike:aerospike-document-api:1.1.1")

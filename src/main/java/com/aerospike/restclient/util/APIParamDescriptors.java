@@ -8,4 +8,7 @@ public class APIParamDescriptors {
 			+ "Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can "
 			+ "only be sent using MessagePack\n "
 			+ "example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}";
+
+	public static final String QUERY_PARTITION_BEGIN_NOTES = "TODO";
+	public static final String QUERY_PARTITION_COUNT_NOTES = "TODO";
 }

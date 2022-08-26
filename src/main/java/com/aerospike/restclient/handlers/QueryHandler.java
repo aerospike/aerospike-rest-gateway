@@ -1,0 +1,192 @@
+/*
+ * Copyright 2020 Aerospike, Inc.
+ *
+ * Portions may be licensed to Aerospike, Inc. under one or more contributor
+ * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package com.aerospike.restclient.handlers;
+
+import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.policy.QueryPolicy;
+import com.aerospike.client.query.*;
+import com.aerospike.restclient.domain.RestClientKeyRecord;
+import com.aerospike.restclient.domain.querymodels.RestClientQueryResponse;
+import com.aerospike.restclient.domain.scanmodels.Pagination;
+import org.apache.commons.codec.binary.Hex;
+import org.msgpack.core.MessageBufferPacker;
+import org.msgpack.core.MessagePack;
+import org.msgpack.core.MessageUnpacker;
+
+import java.io.*;
+import java.util.Base64;
+
+public class QueryHandler {
+
+    private final AerospikeClient client;
+
+    private RestClientQueryResponse response;
+
+    private static final int PARTITION_STATE_NONE = 0;
+    private static final int PARTITION_STATE_NOT_STARTED = 1;
+    private static final int PARTITION_STATE_STARTED = 2;
+    private static final int PARTITION_STATE_FINISHED = 3;
+
+    public QueryHandler(AerospikeClient client) {
+        this.client = client;
+        this.response = new RestClientQueryResponse();
+    }
+
+    public RestClientQueryResponse queryPartition(QueryPolicy policy, Statement stmt, String fromToken, Boolean getToken, int beginPart, int partCount) throws IOException {
+        PartitionFilter partitionFilter;
+        partitionFilter = getPartitionFilter(fromToken, beginPart, partCount);
+        return queryPartition(policy, stmt, partitionFilter, getToken);
+    }
+
+    public RestClientQueryResponse queryPartition(QueryPolicy policy, Statement stmt, String fromToken, Boolean getToken) throws IOException {
+        PartitionFilter partitionFilter;
+        partitionFilter = getPartitionFilter(fromToken);
+        return queryPartition(policy, stmt, partitionFilter, getToken);
+    }
+
+    public RestClientQueryResponse queryPartition(QueryPolicy policy, Statement stmt, PartitionFilter partitionFilter, Boolean getToken) throws IOException {
+        client.query(policy, stmt, partitionFilter, callback);
+
+        Pagination page = response.getPagination();
+        page.setTotalRecords(response.size());
+
+        if (getToken && !partitionFilter.isDone()) {
+            byte[] token = encodePartitionFilter(partitionFilter);
+            String tokenStr = Base64.getEncoder().encodeToString(token);
+            page.setNextToken(tokenStr);
+        }
+
+        return response;
+    }
+
+    private PartitionFilter getPartitionFilter(String fromToken) throws IOException {
+        if (fromToken == null) {
+            return PartitionFilter.all();
+        } else {
+            byte[] tokenOut = Base64.getDecoder().decode(fromToken);
+            return decodePartitionFilter(tokenOut);
+        }
+    }
+
+    private PartitionFilter getPartitionFilter(String fromToken, int begin, int count) throws IOException {
+        if (fromToken == null) {
+            return PartitionFilter.range(begin, count);
+        } else {
+            byte[] tokenOut = Base64.getDecoder().decode(fromToken);
+            return decodePartitionFilter(tokenOut);
+        }
+    }
+
+    // TODO remove, for development
+    private void printContentsOfPatitionList(PartitionFilter partitionFilter, String fileName) {
+        try {
+            FileWriter partitionListTxt = new FileWriter(fileName, false);
+
+            for (PartitionStatus status : partitionFilter.getPartitions()) {
+                String digest = "null";
+                int len = 0;
+                if (status.digest != null) {
+                    digest = Hex.encodeHexString(status.digest);
+                    len = status.digest.length;
+                }
+                partitionListTxt.write(String.format("id: %d bval: %d retry: %b digest: len(%d) %s\n", status.id, status.bval, status.retry, len, digest));
+            }
+            partitionListTxt.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private byte[] encodePartitionFilter(PartitionFilter partitionFilter) throws IOException {
+        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
+        int begin = partitionFilter.getBegin();
+        int count = partitionFilter.getCount();
+
+        if (count == 0) {
+            return null;
+        }
+
+        packer.packInt(begin);
+        packer.packInt(count);
+
+        for (PartitionStatus part : partitionFilter.getPartitions()) {
+            int status = 0;
+            byte[] digest = part.digest;
+
+            if (part.retry) {
+                if (digest == null) {
+                    status = PARTITION_STATE_NOT_STARTED;
+                } else {
+                    status = PARTITION_STATE_STARTED;
+                }
+            } else {
+                status = PARTITION_STATE_FINISHED;
+            }
+
+            packer.packInt(status);
+
+            if (status == PARTITION_STATE_STARTED) {
+                packer
+                        .packBinaryHeader(digest.length)
+                        .writePayload(digest);
+            }
+        }
+
+        packer.close();
+        return packer.toByteArray();
+    }
+
+    private PartitionFilter decodePartitionFilter(byte[] token) throws IOException {
+        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(token);
+
+        int begin = unpacker.unpackInt();
+        int count = unpacker.unpackInt();
+
+        PartitionFilter partitionFilter = PartitionFilter.range(begin, count);
+        PartitionStatus[] partitionStatuses = new PartitionStatus[count];
+
+        for (int i = begin; i < begin + count; i++) {
+            int status = unpacker.unpackInt();
+            PartitionStatus part = new PartitionStatus(i);
+
+            if (status == PARTITION_STATE_STARTED) {
+                int digestLen = unpacker.unpackBinaryHeader(); // Investigate removing this since we know it is 20 bytes
+                part.digest = unpacker.readPayload(digestLen);
+            }
+
+            if (status == PARTITION_STATE_NONE || status == PARTITION_STATE_FINISHED) {
+                part.retry = false;
+            }
+
+            partitionStatuses[i] = part;
+        }
+
+        unpacker.close();
+        partitionFilter.setPartitions(partitionStatuses);
+        return partitionFilter;
+    }
+
+    private final QueryListener callback = ((key, record) -> {
+        RestClientKeyRecord keyRecord = new RestClientKeyRecord(key, record);
+        response.addRecord(keyRecord);
+    });
+
+    public static QueryHandler create(AerospikeClient client) {
+        return new QueryHandler(client);
+    }
+
+}

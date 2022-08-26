@@ -201,7 +201,7 @@ public class NestedCdtOperationsTest {
         Assert.assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
     }
 
-    @SuppressWarnings("unchecked")
+//    @SuppressWarnings("unchecked")
 //    @Test
 //    public void testMapPutCdtMultipuleCTX() {
 //        List<Map<String, Object>> opList = new ArrayList<>();

@@ -234,7 +234,8 @@
                 "schema": {
                   "$ref": "#/components/schemas/RestClientRecord"
                 }
-              }
+              },
+
             }
           },
           "404": {

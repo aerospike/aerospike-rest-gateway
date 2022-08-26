@@ -8,12 +8,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RestClientBatchDeleteBody extends RestClientBatchRecordBody {
 
-    @Schema(description = "Policy attributes used for this batch delete operation.")
-    public RestClientBatchDeletePolicy policy;
-
     @Schema(description = "List of bins to limit the record response to.", allowableValues = AerospikeAPIConstants.BATCH_TYPE_DELETE, required = true)
     @JsonProperty(required = true)
     public final String batchType = AerospikeAPIConstants.BATCH_TYPE_DELETE;
+
+    @Schema(description = "Policy attributes used for this batch delete operation.")
+    public RestClientBatchDeletePolicy policy;
 
     public RestClientBatchDeleteBody() {
     }
