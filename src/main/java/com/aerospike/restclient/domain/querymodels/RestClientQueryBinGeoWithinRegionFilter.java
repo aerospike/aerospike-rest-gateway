@@ -4,18 +4,21 @@ import com.aerospike.client.cdt.CTX;
 import com.aerospike.client.query.Filter;
 import com.aerospike.client.query.IndexCollectionType;
 import com.aerospike.restclient.domain.ctxmodels.IRestClientCTX;
+import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class RestClientQueryGeoWithinRegionBinFilter extends RestClientQueryBinFilter {
+public class RestClientQueryBinGeoWithinRegionFilter extends RestClientQueryBinFilter {
+    @Schema(description = "TODO", required = true, allowableValues = AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_GEOWITHIN_REGION)
+    final public String filterType = AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_GEOWITHIN_REGION;
     @Schema(description = "TODO", required = true)
     @JsonProperty(required = true)
-    String region;
+    public String region;
 
-    @Schema(description = "TODO")
-    IndexCollectionType collectionType = IndexCollectionType.DEFAULT;
+    @Schema(description = "TODO", defaultValue = "DEFAULT")
+    public IndexCollectionType collectionType = IndexCollectionType.DEFAULT;
 
-    public RestClientQueryGeoWithinRegionBinFilter() {
+    public RestClientQueryBinGeoWithinRegionFilter() {
     }
 
     @Override

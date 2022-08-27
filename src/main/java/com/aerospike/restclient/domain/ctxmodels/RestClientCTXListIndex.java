@@ -18,7 +18,11 @@ public class RestClientCTXListIndex extends RestClientCTX {
     @JsonProperty(required = true, value = "index")
     public Integer index;
 
-    RestClientCTXListIndex() {};
+    public RestClientCTXListIndex() {};
+
+    public RestClientCTXListIndex(int index) {
+        this.index = index;
+    };
 
     @Override
     public CTX toCTX()

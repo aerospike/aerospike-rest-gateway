@@ -105,10 +105,21 @@ public final class AerospikeAPIConstants {
 	public static final String FAIL_ON_CLUSTER_CHANGE = "failOnClusterChange";
 	public static final String SHORT_QUERY = "shortQuery";
 
-	// QUERY STATEMENT KEYS
+	// QUERY KEYS
 	public static final String QUERY_INDEX_NAME = "indexName";
 	public static final String QUERY_PARTITION_BEGIN = "begin";
 	public static final String QUERY_PARTITION_COUNT = "count";
+
+	// QUERY FILTER TYPES
+	public static class QueryFilterTypes {
+		public static final String QUERY_FILTER_TYPE_EQUAL = "equal";
+		public static final String QUERY_FILTER_TYPE_RANGE = "range";
+		public static final String QUERY_FILTER_TYPE_CONTAINS = "contains";
+		public static final String QUERY_FILTER_TYPE_GEOWITHIN_REGION = "geoWithinRegion";
+		public static final String QUERY_FILTER_TYPE_GEOWITHIN_RADIUS = "geoWithinRadius";
+		public static final String QUERY_FILTER_TYPE_GEOCONTAINS_POINT = "geoContainsPoint";
+	}
+
 
 
 	// INFO POLICY KEYS

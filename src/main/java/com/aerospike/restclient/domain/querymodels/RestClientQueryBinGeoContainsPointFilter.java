@@ -4,17 +4,19 @@ import com.aerospike.client.cdt.CTX;
 import com.aerospike.client.query.Filter;
 import com.aerospike.client.query.IndexCollectionType;
 import com.aerospike.restclient.domain.ctxmodels.IRestClientCTX;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.aerospike.restclient.util.AerospikeAPIConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class RestClientQueryGeoContainsBinFilter extends RestClientQueryBinFilter {
+public class RestClientQueryBinGeoContainsPointFilter extends RestClientQueryBinFilter {
+    @Schema(description = "TODO", required = true, allowableValues = AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_GEOCONTAINS_POINT)
+    final public String filterType = AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_GEOCONTAINS_POINT;
     @Schema(description = "TODO", required = true)
-    String point;
+    public String point;
 
     @Schema(description = "TODO")
-    IndexCollectionType collectionType = IndexCollectionType.DEFAULT;
+    public IndexCollectionType collectionType = IndexCollectionType.DEFAULT;
 
-    public RestClientQueryGeoContainsBinFilter() {
+    public RestClientQueryBinGeoContainsPointFilter() {
     }
 
     @Override

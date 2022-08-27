@@ -4,20 +4,22 @@ import com.aerospike.client.cdt.CTX;
 import com.aerospike.client.query.Filter;
 import com.aerospike.client.query.IndexCollectionType;
 import com.aerospike.restclient.domain.ctxmodels.IRestClientCTX;
+import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.RestClientErrors;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class RestClientQueryContainsBinFilter extends RestClientQueryBinFilter {
+public class RestClientQueryBinContainsFilter extends RestClientQueryBinFilter {
+    @Schema(description = "TODO", required = true, allowableValues = AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_CONTAINS)
+    final public String filterType = AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_CONTAINS;
     @Schema(description = "TODO", required = true, oneOf = {String.class, Long.class})
     @JsonProperty(required = true)
-    Object value;
+    public Object value;
 
-    @Schema(description = "TODO")
-    IndexCollectionType collectionType = IndexCollectionType.DEFAULT;
+    @Schema(description = "TODO", defaultValue = "DEFAULT")
+    public IndexCollectionType collectionType = IndexCollectionType.DEFAULT;
 
-    public RestClientQueryContainsBinFilter() {
+    public RestClientQueryBinContainsFilter() {
     }
 
     @Override

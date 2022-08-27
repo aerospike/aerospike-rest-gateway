@@ -5,6 +5,7 @@ import com.aerospike.client.cdt.CTX;
 import com.aerospike.client.cdt.ListOrder;
 import com.aerospike.client.cdt.MapOrder;
 import com.aerospike.restclient.ASTestMapper;
+import com.aerospike.restclient.ASTestUtils;
 import com.aerospike.restclient.IASTestMapper;
 import com.aerospike.restclient.config.JSONMessageConverter;
 import com.aerospike.restclient.config.MsgPackConverter;
@@ -70,7 +71,7 @@ public class RestClientCTXTest {
         RestClientCTXListIndex listIndex = new RestClientCTXListIndex();
         listIndex.index = 5;
 
-        assertEquals(expected, listIndex.toCTX());
+        ASTestUtils.compareCTX(expected, listIndex.toCTX());
     }
 
     @Test
@@ -102,7 +103,7 @@ public class RestClientCTXTest {
         restCTX.order = ListOrder.UNORDERED;
         restCTX.pad = false;
 
-        assertEquals(expected, restCTX.toCTX());
+        ASTestUtils.compareCTX(expected, restCTX.toCTX());
     }
 
     @Test
@@ -128,7 +129,7 @@ public class RestClientCTXTest {
         RestClientCTXListRank restCTX = new RestClientCTXListRank();
         restCTX.rank = 5;
 
-        assertEquals(expected, restCTX.toCTX());
+        ASTestUtils.compareCTX(expected, restCTX.toCTX());
     }
 
     // Checking all value types for ListValue. Will assume it works for the rest of the ctx types
@@ -138,7 +139,7 @@ public class RestClientCTXTest {
         Map<String, Object> ctxMap = new HashMap<>();
         ctxMap.put("ctxType", AerospikeAPIConstants.LIST_VALUE);
         ctxMap.put("value", "abc");
-        
+
         try {
             RestClientCTXListValue restCTX = (RestClientCTXListValue) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
             Assert.assertEquals(restCTX.ctxType, AerospikeAPIConstants.LIST_VALUE);
@@ -200,7 +201,7 @@ public class RestClientCTXTest {
         RestClientCTXListValue restCTX = new RestClientCTXListValue();
         restCTX.value = 3.14159;
 
-        assertEquals(expected, restCTX.toCTX());
+        ASTestUtils.compareCTX(expected, restCTX.toCTX());
     }
 
     @Test
@@ -226,7 +227,7 @@ public class RestClientCTXTest {
         RestClientCTXMapIndex mapIndex = new RestClientCTXMapIndex();
         mapIndex.index = 99;
 
-        assertEquals(expected, mapIndex.toCTX());
+        ASTestUtils.compareCTX(expected, mapIndex.toCTX());
     }
 
     @Test
@@ -252,7 +253,7 @@ public class RestClientCTXTest {
         RestClientCTXMapRank mapIndex = new RestClientCTXMapRank();
         mapIndex.rank = 99;
 
-        assertEquals(expected, mapIndex.toCTX());
+        ASTestUtils.compareCTX(expected, mapIndex.toCTX());
     }
 
     @Test
@@ -277,7 +278,7 @@ public class RestClientCTXTest {
         RestClientCTXMapKey restCTX = new RestClientCTXMapKey();
         restCTX.key = 3.14159;
 
-        assertEquals(expected, restCTX.toCTX());
+        ASTestUtils.compareCTX(expected, restCTX.toCTX());
     }
 
     @Test
@@ -305,7 +306,7 @@ public class RestClientCTXTest {
         restCTX.key = 3.14159;
         restCTX.order = MapOrder.KEY_VALUE_ORDERED;
 
-        assertEquals(expected, restCTX.toCTX());
+        ASTestUtils.compareCTX(expected, restCTX.toCTX());
     }
 
     @Test
@@ -330,13 +331,9 @@ public class RestClientCTXTest {
         RestClientCTXMapValue restCTX = new RestClientCTXMapValue();
         restCTX.value = 3.14159;
 
-        assertEquals(expected, restCTX.toCTX());
+        ASTestUtils.compareCTX(expected, restCTX.toCTX());
     }
-
-    public static void assertEquals(CTX expected, CTX actual) {
-        Assert.assertEquals(expected.id, actual.id);
-        Assert.assertEquals(expected.value, actual.value);
-    }
+    
 }
 
 class JsonCTXMapper extends ASTestMapper {

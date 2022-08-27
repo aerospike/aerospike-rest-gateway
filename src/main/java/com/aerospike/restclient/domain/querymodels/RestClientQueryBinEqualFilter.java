@@ -8,14 +8,13 @@ import com.aerospike.restclient.util.RestClientErrors;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.Arrays;
-
-public class RestClientQueryEqualBinFilter extends RestClientQueryBinFilter {
+public class RestClientQueryBinEqualFilter extends RestClientQueryBinFilter {
+    @Schema(description = "TODO", required = true, allowableValues = AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_EQUAL)
+    final public String filterType = AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_EQUAL;
     @Schema(description = "TODO", required = true, oneOf = {String.class, Long.class})
-    @JsonProperty(required = true)
-    Object value;
+    public Object value;
 
-    public RestClientQueryEqualBinFilter() {}
+    public RestClientQueryBinEqualFilter() {}
 
     @Override
     public Filter toFilter() {

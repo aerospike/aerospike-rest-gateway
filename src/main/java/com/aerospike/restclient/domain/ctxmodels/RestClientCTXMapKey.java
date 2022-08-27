@@ -20,7 +20,10 @@ public class RestClientCTXMapKey extends RestClientCTX {
     @JsonDeserialize(using = ObjectDeserializer.class)
     public Object key;
 
-    RestClientCTXMapKey() {};
+    public RestClientCTXMapKey() {};
+    public RestClientCTXMapKey(Object key) {
+        this.key = key;
+    };
 
     @Override
     public CTX toCTX() {

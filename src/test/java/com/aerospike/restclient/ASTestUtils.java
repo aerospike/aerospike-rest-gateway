@@ -24,8 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.aerospike.client.cdt.CTX;
 import com.aerospike.client.policy.ClientPolicy;
 import com.aerospike.client.policy.TlsPolicy;
+import com.aerospike.client.query.Filter;
+import com.aerospike.client.util.Pack;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import org.junit.Assert;
 import org.mockito.ArgumentMatcher;
@@ -293,6 +296,16 @@ public class ASTestUtils {
 		}
 
 		return Arrays.equals(actual.digest, expected.digest);
+	}
+
+	public static void compareCTX(CTX expected, CTX actual) {
+		Assert.assertEquals(expected.id, actual.id);
+		Assert.assertEquals(expected.value, actual.value);
+	}
+
+	public static void compareFilter(Filter expected, Filter actual) {
+		Assert.assertEquals(expected, actual);
+		Assert.assertArrayEquals(expected.getPackedCtx(), actual.getPackedCtx()); // At this time, equal() does not check CTX
 	}
 
 

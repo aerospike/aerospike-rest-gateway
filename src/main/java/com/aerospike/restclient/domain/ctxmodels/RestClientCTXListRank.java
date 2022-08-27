@@ -16,6 +16,10 @@ public class RestClientCTXListRank extends RestClientCTX {
 
     RestClientCTXListRank() {};
 
+    public RestClientCTXListRank(int rank) {
+        this.rank = rank;
+    };
+
     @Override
     public CTX toCTX() {
         return CTX.listRank(rank);

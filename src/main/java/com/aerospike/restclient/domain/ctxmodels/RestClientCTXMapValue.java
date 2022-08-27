@@ -20,6 +20,10 @@ public class RestClientCTXMapValue extends RestClientCTX {
 
     RestClientCTXMapValue() {};
 
+    public RestClientCTXMapValue(Object value) {
+        this.value = value;
+    };
+
     @Override
     public CTX toCTX() {
         Value asVal = Value.get(value);
