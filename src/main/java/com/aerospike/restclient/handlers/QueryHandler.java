@@ -159,9 +159,9 @@ public class QueryHandler {
         PartitionFilter partitionFilter = PartitionFilter.range(begin, count);
         PartitionStatus[] partitionStatuses = new PartitionStatus[count];
 
-        for (int i = begin; i < begin + count; i++) {
+        for (int i = 0; i < count; i++) {
             int status = unpacker.unpackInt();
-            PartitionStatus part = new PartitionStatus(i);
+            PartitionStatus part = new PartitionStatus(i + begin);
 
             if (status == PARTITION_STATE_STARTED) {
                 int digestLen = unpacker.unpackBinaryHeader(); // Investigate removing this since we know it is 20 bytes

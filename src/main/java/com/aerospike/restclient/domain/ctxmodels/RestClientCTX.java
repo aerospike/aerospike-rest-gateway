@@ -1,5 +1,6 @@
 package com.aerospike.restclient.domain.ctxmodels;
 
+import com.aerospike.client.cdt.CTX;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
         @JsonSubTypes.Type(value = RestClientCTXMapKeyCreate.class, name = AerospikeAPIConstants.MAP_KEY_CREATE),
         @JsonSubTypes.Type(value = RestClientCTXListIndexCreate.class, name = AerospikeAPIConstants.LIST_INDEX_CREATE),
 })
-abstract public class RestClientCTX implements IRestClientCTX {
+abstract public class RestClientCTX {
     public final String ctxType = null;
+    abstract public CTX toCTX();
 }

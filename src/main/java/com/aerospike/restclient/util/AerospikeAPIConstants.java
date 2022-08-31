@@ -112,12 +112,12 @@ public final class AerospikeAPIConstants {
 
 	// QUERY FILTER TYPES
 	public static class QueryFilterTypes {
-		public static final String QUERY_FILTER_TYPE_EQUAL = "equal";
-		public static final String QUERY_FILTER_TYPE_RANGE = "range";
-		public static final String QUERY_FILTER_TYPE_CONTAINS = "contains";
-		public static final String QUERY_FILTER_TYPE_GEOWITHIN_REGION = "geoWithinRegion";
-		public static final String QUERY_FILTER_TYPE_GEOWITHIN_RADIUS = "geoWithinRadius";
-		public static final String QUERY_FILTER_TYPE_GEOCONTAINS_POINT = "geoContainsPoint";
+		public static final String EQUAL = "equal";
+		public static final String RANGE = "range";
+		public static final String CONTAINS = "contains";
+		public static final String GEOWITHIN_REGION = "geoWithinRegion";
+		public static final String GEOWITHIN_RADIUS = "geoWithinRadius";
+		public static final String GEOCONTAINS_POINT = "geoContainsPoint";
 	}
 
 
@@ -140,5 +140,18 @@ public final class AerospikeAPIConstants {
 	public static final String MAP_KEY_CREATE = "mapKeyCreate";
 	public static final String MAP_VALUE = "mapValue";
 
+	// GEOJSON TYPES
+	public static class GeoJSON {
+		public static class Types {
+			public static final String POINT = "Point";
+			public static final String POLYGON = "Polygon";
+			public static final String MULTI_POLYGON = "MultiPolygon";
+			public static final String AERO_CIRCLE = "AeroCircle";
+		}
 
+		public static class Keys {
+			public static final String TYPE = "type";
+			public static final String COORDINATES = "coordinates";
+		}
+	}
 }

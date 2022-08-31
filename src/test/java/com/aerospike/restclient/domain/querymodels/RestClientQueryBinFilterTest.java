@@ -54,17 +54,17 @@ public class RestClientQueryBinFilterTest {
     @Test
     public void testMapsToRestClientQueryBinEqualFilter() {
         Map<String, Object> filterMap = new HashMap<>();
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_EQUAL);
+        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.EQUAL);
         filterMap.put("binName", bin);
-        filterMap.put("ctx", new ArrayList<IRestClientCTX>(){});
+        filterMap.put("ctx", new ArrayList<RestClientCTX>(){});
         filterMap.put("value", 1);
 
         try {
             RestClientQueryBinEqualFilter restCTX = (RestClientQueryBinEqualFilter) mapper.bytesToObject(mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_EQUAL, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.EQUAL, restCTX.filterType);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals(1, restCTX.value);
-            ASTestUtils.compareCollection(new ArrayList<IRestClientCTX>(){}, restCTX.ctx);
+            ASTestUtils.compareCollection(new ArrayList<RestClientCTX>(){}, restCTX.ctx);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientQueryBinFilter %s", e));
         }
@@ -77,7 +77,7 @@ public class RestClientQueryBinFilterTest {
         RestClientQueryBinEqualFilter restClientFilter = new RestClientQueryBinEqualFilter();
         restClientFilter.binName = bin;
         restClientFilter.value = 5;
-        restClientFilter.ctx = new ArrayList<IRestClientCTX>();
+        restClientFilter.ctx = new ArrayList<RestClientCTX>();
         restClientFilter.ctx.add(new RestClientCTXListIndex(-1));
         restClientFilter.ctx.add(new RestClientCTXMapKey("key"));
 
@@ -91,7 +91,7 @@ public class RestClientQueryBinFilterTest {
         RestClientQueryBinEqualFilter restClientFilter = new RestClientQueryBinEqualFilter();
         restClientFilter.binName = bin;
         restClientFilter.value = "str-val";
-        restClientFilter.ctx = new ArrayList<IRestClientCTX>();
+        restClientFilter.ctx = new ArrayList<RestClientCTX>();
         restClientFilter.ctx.add(new RestClientCTXListIndex(-1));
         restClientFilter.ctx.add(new RestClientCTXMapKey("key"));
 
@@ -101,20 +101,20 @@ public class RestClientQueryBinFilterTest {
     @Test
     public void testMapsToRestClientQueryBinRangeFilter() {
         Map<String, Object> filterMap = new HashMap<>();
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_RANGE);
+        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.RANGE);
         filterMap.put("binName", bin);
-        filterMap.put("ctx", new ArrayList<IRestClientCTX>(){});
+        filterMap.put("ctx", new ArrayList<RestClientCTX>(){});
         filterMap.put("begin", 1);
         filterMap.put("end", 99);
 
         try {
             RestClientQueryBinRangeFilter restCTX = (RestClientQueryBinRangeFilter) mapper.bytesToObject(mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_RANGE, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.RANGE, restCTX.filterType);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals(1, restCTX.begin);
             Assert.assertEquals(99, restCTX.end);
             Assert.assertEquals(IndexCollectionType.DEFAULT, restCTX.collectionType);
-            ASTestUtils.compareCollection(new ArrayList<IRestClientCTX>(){}, restCTX.ctx);
+            ASTestUtils.compareCollection(new ArrayList<RestClientCTX>(){}, restCTX.ctx);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientQueryBinFilter %s", e));
         }
@@ -129,7 +129,7 @@ public class RestClientQueryBinFilterTest {
         restClientFilter.collectionType = IndexCollectionType.LIST;
         restClientFilter.begin = 10;
         restClientFilter.end = 100;
-        restClientFilter.ctx = new ArrayList<IRestClientCTX>();
+        restClientFilter.ctx = new ArrayList<RestClientCTX>();
         restClientFilter.ctx.add(new RestClientCTXListRank(-1));
         restClientFilter.ctx.add(new RestClientCTXMapValue(3.14159));
 
@@ -139,18 +139,18 @@ public class RestClientQueryBinFilterTest {
     @Test
     public void testMapsToRestClientQueryBinContainsFilter() {
         Map<String, Object> filterMap = new HashMap<>();
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_CONTAINS);
+        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.CONTAINS);
         filterMap.put("binName", bin);
-        filterMap.put("ctx", new ArrayList<IRestClientCTX>(){});
+        filterMap.put("ctx", new ArrayList<RestClientCTX>(){});
         filterMap.put("value", 1);
 
         try {
             RestClientQueryBinContainsFilter restCTX = (RestClientQueryBinContainsFilter) mapper.bytesToObject(mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_CONTAINS, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.CONTAINS, restCTX.filterType);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals(1, restCTX.value);
             Assert.assertEquals(IndexCollectionType.DEFAULT, restCTX.collectionType);
-            ASTestUtils.compareCollection(new ArrayList<IRestClientCTX>(){}, restCTX.ctx);
+            ASTestUtils.compareCollection(new ArrayList<RestClientCTX>(){}, restCTX.ctx);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientQueryBinFilter %s", e));
         }
@@ -163,7 +163,7 @@ public class RestClientQueryBinFilterTest {
         RestClientQueryBinContainsFilter restClientFilter = new RestClientQueryBinContainsFilter();
         restClientFilter.binName = bin;
         restClientFilter.value = 5;
-        restClientFilter.ctx = new ArrayList<IRestClientCTX>();
+        restClientFilter.ctx = new ArrayList<RestClientCTX>();
         restClientFilter.ctx.add(new RestClientCTXListIndex(-1));
         restClientFilter.ctx.add(new RestClientCTXMapKey("key"));
         restClientFilter.collectionType = IndexCollectionType.MAPKEYS;
@@ -178,7 +178,7 @@ public class RestClientQueryBinFilterTest {
         RestClientQueryBinContainsFilter restClientFilter = new RestClientQueryBinContainsFilter();
         restClientFilter.binName = bin;
         restClientFilter.value = "str-val";
-        restClientFilter.ctx = new ArrayList<IRestClientCTX>();
+        restClientFilter.ctx = new ArrayList<RestClientCTX>();
         restClientFilter.ctx.add(new RestClientCTXListIndex(-1));
         restClientFilter.ctx.add(new RestClientCTXMapKey("key"));
         restClientFilter.collectionType = IndexCollectionType.LIST;
@@ -189,18 +189,18 @@ public class RestClientQueryBinFilterTest {
     @Test
     public void testMapsToRestClientQueryBinGeoWithinRegionFilter() {
         Map<String, Object> filterMap = new HashMap<>();
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_GEOWITHIN_REGION);
+        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION);
         filterMap.put("binName", bin);
-        filterMap.put("ctx", new ArrayList<IRestClientCTX>(){});
+        filterMap.put("ctx", new ArrayList<RestClientCTX>(){});
         filterMap.put("region", "this-is-json-region");
 
         try {
             RestClientQueryBinGeoWithinRegionFilter restCTX = (RestClientQueryBinGeoWithinRegionFilter) mapper.bytesToObject(mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_GEOWITHIN_REGION, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION, restCTX.filterType);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals("this-is-json-region", restCTX.region);
             Assert.assertEquals(IndexCollectionType.DEFAULT, restCTX.collectionType);
-            ASTestUtils.compareCollection(new ArrayList<IRestClientCTX>(){}, restCTX.ctx);
+            ASTestUtils.compareCollection(new ArrayList<RestClientCTX>(){}, restCTX.ctx);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientQueryBinFilter %s", e));
         }
@@ -213,7 +213,7 @@ public class RestClientQueryBinFilterTest {
         RestClientQueryBinGeoWithinRegionFilter restClientFilter = new RestClientQueryBinGeoWithinRegionFilter();
         restClientFilter.binName = bin;
         restClientFilter.region = "this-is-json-region";
-        restClientFilter.ctx = new ArrayList<IRestClientCTX>();
+        restClientFilter.ctx = new ArrayList<RestClientCTX>();
         restClientFilter.ctx.add(new RestClientCTXListIndex(-1));
         restClientFilter.ctx.add(new RestClientCTXMapKey("key"));
         restClientFilter.collectionType = IndexCollectionType.MAPKEYS;
@@ -224,22 +224,22 @@ public class RestClientQueryBinFilterTest {
     @Test
     public void testMapsToRestClientQueryBinGeoWithinRadiusFilter() {
         Map<String, Object> filterMap = new HashMap<>();
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_GEOWITHIN_RADIUS);
+        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS);
         filterMap.put("binName", bin);
-        filterMap.put("ctx", new ArrayList<IRestClientCTX>(){});
+        filterMap.put("ctx", new ArrayList<RestClientCTX>(){});
         filterMap.put("latitude", 1.2345);
         filterMap.put("longitude", 6.789);
         filterMap.put("radius", 3.14159);
 
         try {
             RestClientQueryBinGeoWithinRadiusFilter restCTX = (RestClientQueryBinGeoWithinRadiusFilter) mapper.bytesToObject(mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_GEOWITHIN_RADIUS, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS, restCTX.filterType);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals(1.2345, restCTX.latitude, 0);
             Assert.assertEquals(6.789, restCTX.longitude, 0);
             Assert.assertEquals(3.14159, restCTX.radius, 0);
             Assert.assertEquals(IndexCollectionType.DEFAULT, restCTX.collectionType);
-            ASTestUtils.compareCollection(new ArrayList<IRestClientCTX>(){}, restCTX.ctx);
+            ASTestUtils.compareCollection(new ArrayList<RestClientCTX>(){}, restCTX.ctx);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientQueryBinFilter %s", e));
         }
@@ -254,7 +254,7 @@ public class RestClientQueryBinFilterTest {
         restClientFilter.latitude = 1.2345;
         restClientFilter.longitude = 6.789;
         restClientFilter.radius = 3.14159;
-        restClientFilter.ctx = new ArrayList<IRestClientCTX>();
+        restClientFilter.ctx = new ArrayList<RestClientCTX>();
         restClientFilter.ctx.add(new RestClientCTXListIndex(-1));
         restClientFilter.ctx.add(new RestClientCTXMapKey("key"));
         restClientFilter.collectionType = IndexCollectionType.MAPKEYS;
@@ -265,18 +265,18 @@ public class RestClientQueryBinFilterTest {
     @Test
     public void testMapsToRestClientQueryBinGeoContainsPointFilter() {
         Map<String, Object> filterMap = new HashMap<>();
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_GEOCONTAINS_POINT);
+        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT);
         filterMap.put("binName", bin);
-        filterMap.put("ctx", new ArrayList<IRestClientCTX>(){});
+        filterMap.put("ctx", new ArrayList<RestClientCTX>(){});
         filterMap.put("point", "abcdef");
 
         try {
             RestClientQueryBinGeoContainsPointFilter restCTX = (RestClientQueryBinGeoContainsPointFilter) mapper.bytesToObject(mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.QUERY_FILTER_TYPE_GEOCONTAINS_POINT, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT, restCTX.filterType);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals("abcdef", restCTX.point);
             Assert.assertEquals(IndexCollectionType.DEFAULT, restCTX.collectionType);
-            ASTestUtils.compareCollection(new ArrayList<IRestClientCTX>(){}, restCTX.ctx);
+            ASTestUtils.compareCollection(new ArrayList<RestClientCTX>(){}, restCTX.ctx);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientQueryBinFilter %s", e));
         }
@@ -289,7 +289,7 @@ public class RestClientQueryBinFilterTest {
         RestClientQueryBinGeoContainsPointFilter restClientFilter = new RestClientQueryBinGeoContainsPointFilter();
         restClientFilter.binName = bin;
         restClientFilter.point = "abcdef";
-        restClientFilter.ctx = new ArrayList<IRestClientCTX>();
+        restClientFilter.ctx = new ArrayList<RestClientCTX>();
         restClientFilter.ctx.add(new RestClientCTXListIndex(-1));
         restClientFilter.ctx.add(new RestClientCTXMapKey("key"));
         restClientFilter.collectionType = IndexCollectionType.MAPKEYS;
@@ -301,13 +301,13 @@ public class RestClientQueryBinFilterTest {
 class JsonQueryBinFilterMapper extends ASTestMapper {
 
     public JsonQueryBinFilterMapper() {
-        super(JSONMessageConverter.getJSONObjectMapper(), RestClientQueryBinFilter.class);
+        super(JSONMessageConverter.getJSONObjectMapper(), RestClientQueryFilter.class);
     }
 }
 
 class MsgPackQueryBinFilterMapper extends ASTestMapper {
 
     public MsgPackQueryBinFilterMapper() {
-        super(MsgPackConverter.getASMsgPackObjectMapper(), RestClientQueryBinFilter.class);
+        super(MsgPackConverter.getASMsgPackObjectMapper(), RestClientQueryFilter.class);
     }
 }

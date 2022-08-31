@@ -361,6 +361,10 @@ public class ASTestUtils {
 		return "/v1/" + prefix + "/" + namespace + "/" + key;
 	}
 
+	public static String buildEndpoint(String... path) {
+		return String.join("/", path);
+	}
+
 	public static boolean runningWithAuth() {
 		String password = System.getenv("aerospike.restclient.clientpolicy.password");
 		if (password == null) {

@@ -237,4 +237,40 @@ public class RestClientErrors {
 			this.message = reason;
 		}
     }
+
+	public static class InvalidGeoJSON extends AerospikeRestClientError {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public HttpStatus getStatusCode() {
+			return HttpStatus.BAD_REQUEST;
+		}
+
+		public InvalidGeoJSON() {
+			this("Invalid GeoJSON");
+		}
+
+		public InvalidGeoJSON(String reason) {
+			super(reason);
+			this.message = reason;
+		}
+	}
+
+	public static class InvalidBinValue extends AerospikeRestClientError {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public HttpStatus getStatusCode() {
+			return HttpStatus.BAD_REQUEST;
+		}
+
+		public InvalidBinValue() {
+			this("Invalid bin value");
+		}
+
+		public InvalidBinValue(String reason) {
+			super(reason);
+			this.message = reason;
+		}
+	}
 }

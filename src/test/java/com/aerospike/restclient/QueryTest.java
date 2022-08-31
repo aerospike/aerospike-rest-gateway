@@ -4,10 +4,13 @@ import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.policy.WritePolicy;
+import com.aerospike.client.query.IndexType;
 import com.aerospike.restclient.config.JSONMessageConverter;
 import com.aerospike.restclient.config.MsgPackConverter;
 import com.aerospike.restclient.domain.RestClientKeyRecord;
+import com.aerospike.restclient.domain.querymodels.RestClientQueryBinEqualFilter;
 import com.aerospike.restclient.domain.querymodels.RestClientQueryBody;
+import com.aerospike.restclient.domain.querymodels.RestClientQueryFilter;
 import com.aerospike.restclient.domain.querymodels.RestClientQueryResponse;
 import com.aerospike.restclient.domain.scanmodels.RestClientScanResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -63,13 +66,17 @@ public class QueryTest {
 
     private final String setName;
     private final String namespace;
-    private final String currentMediaType;
 
     @Before
-    public void setup() {
+    public void setup() throws InterruptedException {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
         WritePolicy writePolicy = new WritePolicy();
         writePolicy.sendKey = true;
+
+
+        client.createIndex(null, namespace, setName, "binInt-index", "binInt", IndexType.NUMERIC);
+        Thread.sleep(3000);
+
         for (int i = 0; i < numberOfRecords; i++) {
             Bin bin = new Bin("binInt", i);
             client.add(writePolicy, testKeys[i], bin);
@@ -77,10 +84,13 @@ public class QueryTest {
     }
 
     @After
-    public void clean() {
+    public void clean() throws InterruptedException {
         for (int i = 0; i < numberOfRecords; i++) {
             client.delete(null, testKeys[i]);
         }
+
+        client.dropIndex(null, namespace, setName, "binInt-index");
+        Thread.sleep(5000);
     }
 
     private final QueryHandler queryHandler;
@@ -88,15 +98,14 @@ public class QueryTest {
     @Parameterized.Parameters
     public static Object[][] getParams() {
         return new Object[][]{
-                {new JSONQueryHandler(), MediaType.APPLICATION_JSON.toString()},
-                {new MsgPackQueryHandler(), "application/msgpack"}
+                {new JSONQueryHandler()},
+                {new MsgPackQueryHandler()},
         };
     }
 
-    public QueryTest(QueryHandler handler, String mt) {
+    public QueryTest(QueryHandler handler) {
         this.queryHandler = handler;
         this.namespace = "test";
-        this.currentMediaType = mt;
         this.testKeys = new Key[numberOfRecords];
         this.setName = "queryset";
         testEndpoint = "/v1/query";
@@ -114,6 +123,7 @@ public class QueryTest {
         Assert.assertEquals(numberOfRecords, res.getPagination().getTotalRecords());
     }
 
+
     @Test
     public void testNamespaceSetPIQueryAllPartitions() throws Exception {
         String endpoint = testEndpoint + "/" + namespace + "/" + setName;
@@ -122,7 +132,25 @@ public class QueryTest {
     }
 
     @Test
-    public void testNamespacePIQueryQueryPaginated() throws Exception {
+    public void testNamespacePIQueryPartitionRange() throws Exception {
+        int startPartitions = 100;
+        int partitionCount = 2048;
+        String endpoint = String.join("/", testEndpoint, namespace, String.valueOf(startPartitions), String.valueOf(partitionCount));
+        RestClientQueryResponse res = queryHandler.perform(mockMVC, endpoint, new RestClientQueryBody());
+        Assert.assertTrue(res.getPagination().getTotalRecords() < (numberOfRecords / 2) + 100);
+    }
+
+    @Test
+    public void testNamespaceSetPIQueryPartitionRange() throws Exception {
+        int startPartitions = 100;
+        int partitionCount = 2048;
+        String endpoint = String.join("/", testEndpoint, namespace, setName, String.valueOf(startPartitions), String.valueOf(partitionCount));
+        RestClientQueryResponse res = queryHandler.perform(mockMVC, endpoint, new RestClientQueryBody());
+        Assert.assertTrue(res.getPagination().getTotalRecords() < (numberOfRecords / 2) + 100);
+    }
+
+    @Test
+    public void testNamespacePIQueryAllPaginated() throws Exception {
         int pageSize = 100;
         int queryRequests = 0;
         int total = 0;
@@ -150,7 +178,7 @@ public class QueryTest {
     }
 
     @Test
-    public void testNamespaceSetPIQueryQueryPaginated() throws Exception {
+    public void testNamespaceSetPIQueryAllPaginated() throws Exception {
         int pageSize = 100;
         int queryRequests = 0;
         int total = 0;
@@ -175,6 +203,78 @@ public class QueryTest {
         Assert.assertEquals(numberOfRecords, total);
         Assert.assertEquals(numberOfRecords / pageSize + 1, queryRequests);
         Assert.assertNull(res.getPagination().getNextToken());
+    }
+
+    @Test
+    public void testNamespacePIQueryPartitionRangePaginated() throws Exception {
+        int startPartitions = 100;
+        int partitionCount = 2048;
+        int pageSize = 100;
+        int queryRequests = 0;
+        int total = 0;
+        RestClientQueryResponse res = null;
+        Set<Integer> binValues = new HashSet<>();
+        String endpoint = String.join("/", testEndpoint, namespace, String.valueOf(startPartitions), String.valueOf(partitionCount) + "?maxRecords=" + pageSize + "&getToken=True");
+        String fromToken = null;
+
+        do {
+            RestClientQueryBody requestBody = new RestClientQueryBody();
+            requestBody.from = fromToken;
+            res = queryHandler.perform(mockMVC, endpoint, requestBody);
+            for (RestClientKeyRecord r : res.getRecords()) {
+                binValues.add((int) r.bins.get("binInt"));
+            }
+            total += res.getPagination().getTotalRecords();
+            queryRequests++;
+            fromToken = res.getPagination().getNextToken();
+        } while (fromToken != null);
+
+        Assert.assertEquals((numberOfRecords / 2) / pageSize, queryRequests);
+        Assert.assertNull(res.getPagination().getNextToken());
+        Assert.assertTrue(total < (numberOfRecords / 2) + 100);  // estimate of number of records
+        Assert.assertTrue(binValues.size() < (numberOfRecords / 2) + 100); // estimate of number of records
+    }
+
+    @Test
+    public void testNamespaceSetPIQueryPartitionRangePaginated() throws Exception {
+        int startPartitions = 100;
+        int partitionCount = 2048;
+        int pageSize = 100;
+        int queryRequests = 0;
+        int total = 0;
+        RestClientQueryResponse res = null;
+        Set<Integer> binValues = new HashSet<>();
+        String endpoint = String.join("/", testEndpoint, namespace, setName, String.valueOf(startPartitions), String.valueOf(partitionCount) + "?maxRecords=" + pageSize + "&getToken=True");
+        String fromToken = null;
+
+        do {
+            RestClientQueryBody requestBody = new RestClientQueryBody();
+            requestBody.from = fromToken;
+            res = queryHandler.perform(mockMVC, endpoint, requestBody);
+            for (RestClientKeyRecord r : res.getRecords()) {
+                binValues.add((int) r.bins.get("binInt"));
+            }
+            total += res.getPagination().getTotalRecords();
+            queryRequests++;
+            fromToken = res.getPagination().getNextToken();
+        } while (fromToken != null);
+
+        Assert.assertEquals((numberOfRecords / 2) / pageSize, queryRequests);
+        Assert.assertNull(res.getPagination().getNextToken());
+        Assert.assertTrue(total < (numberOfRecords / 2) + 100);  // estimate of number of records
+        Assert.assertTrue(binValues.size() < (numberOfRecords / 2) + 100); // estimate of number of records
+    }
+
+    @Test
+    public void testNamespacePIQueryAllFiltered() throws Exception {
+        String endpoint = String.join("/", testEndpoint, namespace, setName);
+        RestClientQueryBody queryBody = new RestClientQueryBody();
+        RestClientQueryBinEqualFilter filter = new RestClientQueryBinEqualFilter();
+        filter.binName = "binInt";
+        filter.value = 100;
+        queryBody.filter = filter;
+        RestClientQueryResponse res = queryHandler.perform(mockMVC, endpoint, queryBody);
+        Assert.assertEquals(1, res.getPagination().getTotalRecords());
     }
 }
 

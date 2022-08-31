@@ -30,7 +30,7 @@ import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.RestClientErrors;
 
-public class ParamHandlerTests {
+public class RequestParamHandlerTests {
 
 	@Test
 	public void getBinsFromMultiMapTest() {
@@ -39,7 +39,7 @@ public class ParamHandlerTests {
 		params.put(AerospikeAPIConstants.RECORD_BINS, Arrays.asList(expectedBins));
 
 		String[] actualBins = RequestParamHandler.getBinsFromMap(params);
-		Assert.assertTrue(Arrays.equals(expectedBins, actualBins));
+		Assert.assertArrayEquals(expectedBins, actualBins);
 	}
 
 	@Test

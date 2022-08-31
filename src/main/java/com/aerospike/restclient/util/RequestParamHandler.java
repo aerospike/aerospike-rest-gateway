@@ -17,7 +17,9 @@
 package com.aerospike.restclient.util;
 
 import com.aerospike.client.policy.*;
+import com.aerospike.client.query.Statement;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
+import com.aerospike.restclient.util.converters.StatementConverter;
 import com.aerospike.restclient.util.converters.policyconverters.*;
 import org.springframework.util.MultiValueMap;
 
@@ -103,6 +105,10 @@ public final class RequestParamHandler {
 
     public static QueryPolicy getQueryPolicy(Map<String, String> requestParams) {
         return QueryPolicyConverter.queryPolicyFromMap(requestParams);
+    }
+
+    public static Statement getStatement(MultiValueMap<String, String> requestParams) {
+        return StatementConverter.statementFromMultiMap(requestParams);
     }
 
     public static InfoPolicy getInfoPolicy(Map<String, String> requestParams) {

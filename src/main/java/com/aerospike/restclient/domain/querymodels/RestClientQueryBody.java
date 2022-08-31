@@ -8,7 +8,7 @@ import java.util.List;
 
 public class RestClientQueryBody {
     @Schema(description = "Query Filter.")
-    public IRestClientQueryFilter filter;
+    public RestClientQueryFilter filter;
 
     @Schema(description = "TODO")
     public String from;

@@ -67,7 +67,7 @@ public class QueryController {
 
         QueryPolicy policy = RequestParamHandler.getQueryPolicy(requestParams.toSingleValueMap());
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
-        Statement stmt = StatementConverter.statementFromMultiMap(requestParams);
+        Statement stmt = RequestParamHandler.getStatement(requestParams);
 
         stmt.setNamespace(namespace);
         stmt.setSetName(set);
@@ -109,7 +109,7 @@ public class QueryController {
 
         QueryPolicy policy = RequestParamHandler.getQueryPolicy(requestParams.toSingleValueMap());
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
-        Statement stmt = StatementConverter.statementFromMultiMap(requestParams);
+        Statement stmt = RequestParamHandler.getStatement(requestParams);
         stmt.setNamespace(namespace);
 
         // Should this happen in the service or controller?
@@ -153,7 +153,7 @@ public class QueryController {
 
         QueryPolicy policy = RequestParamHandler.getQueryPolicy(requestParams.toSingleValueMap());
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
-        Statement stmt = StatementConverter.statementFromMultiMap(requestParams);
+        Statement stmt = RequestParamHandler.getStatement(requestParams);
 
         stmt.setNamespace(namespace);
         stmt.setSetName(set);
@@ -197,7 +197,7 @@ public class QueryController {
 
         QueryPolicy policy = RequestParamHandler.getQueryPolicy(requestParams.toSingleValueMap());
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
-        Statement stmt = StatementConverter.statementFromMultiMap(requestParams);
+        Statement stmt = RequestParamHandler.getStatement(requestParams);
         stmt.setNamespace(namespace);
 
         if (body.filter != null) {

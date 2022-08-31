@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.aerospike.restclient.converters;
+package com.aerospike.restclient.converters.policyConverters;
 
 import com.aerospike.client.policy.CommitLevel;
 import com.aerospike.client.policy.GenerationPolicy;

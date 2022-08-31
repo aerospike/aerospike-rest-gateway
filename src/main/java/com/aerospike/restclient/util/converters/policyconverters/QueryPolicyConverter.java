@@ -31,7 +31,7 @@ public class QueryPolicyConverter {
                     policyMap.get(AerospikeAPIConstants.FAIL_ON_CLUSTER_CHANGE));
         }
         if (policyMap.containsKey(AerospikeAPIConstants.SHORT_QUERY)) {
-            queryPolicy.failOnClusterChange = PolicyValueConverter.getBoolValue(
+            queryPolicy.shortQuery = PolicyValueConverter.getBoolValue(
                     policyMap.get(AerospikeAPIConstants.SHORT_QUERY));
         }
 
