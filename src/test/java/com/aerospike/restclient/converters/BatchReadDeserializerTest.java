@@ -16,139 +16,133 @@
  */
 package com.aerospike.restclient.converters;
 
-import java.util.Arrays;
+import com.aerospike.restclient.domain.batchmodels.BatchReadRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Base64;
 import java.util.Base64.Encoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.msgpack.jackson.dataformat.MessagePackFactory;
-
-import com.aerospike.client.Key;
-import com.aerospike.client.Value;
-import com.aerospike.restclient.domain.batchmodels.RestClientBatchReadBody;
-import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-
 interface BatchReadBodyMapperTester {
-	public RestClientBatchReadBody getBatchRead(String ns, String set, String key, List<String>bins, String keytype) throws Exception;
-	public RestClientBatchReadBody getBatchRead(String ns, byte[] digest) throws Exception;
+    public BatchReadRequest getBatchRead(String ns, String set, String key, List<String> bins,
+                                         String keytype) throws Exception;
+
+    public BatchReadRequest getBatchRead(String ns, byte[] digest) throws Exception;
 }
 
 class JSONBatchReadTester implements BatchReadBodyMapperTester {
-	ObjectMapper mapper = null;
-	public JSONBatchReadTester(ObjectMapper mapper) {
-		this.mapper = mapper;
-	}
+    ObjectMapper mapper = null;
 
-	@Override
-	public RestClientBatchReadBody getBatchRead(String ns, String set, String key, List<String> bins, String keytype) throws Exception {
-		Map<String, Object>batchReadBody = new HashMap<>();
-		Map<String, String>keyMap = new HashMap<>();
+    public JSONBatchReadTester(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
-		if (bins != null) {
-			batchReadBody.put("binNames", bins);
-		}
-		if (ns != null) {
-			keyMap.put("namespace", ns);
-		}
-		if (set != null) {
-			keyMap.put("setName", set);
-		}
+    @Override
+    public BatchReadRequest getBatchRead(String ns, String set, String key, List<String> bins,
+                                         String keytype) throws Exception {
+        Map<String, Object> batchReadBody = new HashMap<>();
+        Map<String, String> keyMap = new HashMap<>();
 
-		if (key != null) {
-			keyMap.put("userKey", key);
-		}
+        if (bins != null) {
+            batchReadBody.put("binNames", bins);
+        }
+        if (ns != null) {
+            keyMap.put("namespace", ns);
+        }
+        if (set != null) {
+            keyMap.put("setName", set);
+        }
 
-		if(keytype != null) {
-			keyMap.put("keytype", keytype);
-		}
+        if (key != null) {
+            keyMap.put("userKey", key);
+        }
 
-		batchReadBody.put("key", keyMap);
+        if (keytype != null) {
+            keyMap.put("keytype", keytype);
+        }
+
+        batchReadBody.put("key", keyMap);
 
 
-		String batchReadStr =  mapper.writeValueAsString(batchReadBody);
-		return mapper.readValue(batchReadStr, RestClientBatchReadBody.class);
-	}
+        String batchReadStr = mapper.writeValueAsString(batchReadBody);
+        return mapper.readValue(batchReadStr, BatchReadRequest.class);
+    }
 
-	@Override
-	public RestClientBatchReadBody getBatchRead(String ns, byte[] digest) throws Exception{
-		Map<String, Object>batchReadBody = new HashMap<>();
-		Map<String, String>keyMap = new HashMap<>();
-		Encoder urlEncoder  = Base64.getUrlEncoder();
-		String strBytes = urlEncoder.encodeToString(digest);
+    @Override
+    public BatchReadRequest getBatchRead(String ns, byte[] digest) throws Exception {
+        Map<String, Object> batchReadBody = new HashMap<>();
+        Map<String, String> keyMap = new HashMap<>();
+        Encoder urlEncoder = Base64.getUrlEncoder();
+        String strBytes = urlEncoder.encodeToString(digest);
 
-		if (ns != null) {
-			keyMap.put("namespace", ns);
-		}
-		keyMap.put("digest", strBytes);
-		batchReadBody.put("key", keyMap);
+        if (ns != null) {
+            keyMap.put("namespace", ns);
+        }
+        keyMap.put("digest", strBytes);
+        batchReadBody.put("key", keyMap);
 
-		String batchReadStr = mapper.writeValueAsString(batchReadBody);
-		return mapper.readValue(batchReadStr, RestClientBatchReadBody.class);
+        String batchReadStr = mapper.writeValueAsString(batchReadBody);
+        return mapper.readValue(batchReadStr, BatchReadRequest.class);
 
-	}
+    }
 }
 
 class MsgPackBatchReadTester implements BatchReadBodyMapperTester {
-	ObjectMapper mapper = null;
-	public MsgPackBatchReadTester(ObjectMapper mapper) {
-		this.mapper = mapper;
-	}
+    ObjectMapper mapper = null;
 
-	@Override
-	public RestClientBatchReadBody getBatchRead(String ns, String set, String key, List<String> bins, String keytype) throws Exception{
-		Map<String, Object>batchReadBody = new HashMap<>();
-		Map<String, String>keyMap = new HashMap<>();
+    public MsgPackBatchReadTester(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
-		if (bins != null) {
-			batchReadBody.put("binNames", bins);
-		}
-		if (ns != null) {
-			keyMap.put("namespace", ns);
-		}
-		if (set != null) {
-			keyMap.put("setName", set);
-		}
+    @Override
+    public BatchReadRequest getBatchRead(String ns, String set, String key, List<String> bins,
+                                         String keytype) throws Exception {
+        Map<String, Object> batchReadBody = new HashMap<>();
+        Map<String, String> keyMap = new HashMap<>();
 
-		if (key != null) {
-			keyMap.put("userKey", key);
-		}
+        if (bins != null) {
+            batchReadBody.put("binNames", bins);
+        }
+        if (ns != null) {
+            keyMap.put("namespace", ns);
+        }
+        if (set != null) {
+            keyMap.put("setName", set);
+        }
 
-		if(keytype != null) {
-			keyMap.put("keytype", keytype);
-		}
+        if (key != null) {
+            keyMap.put("userKey", key);
+        }
 
-		batchReadBody.put("key", keyMap);
+        if (keytype != null) {
+            keyMap.put("keytype", keytype);
+        }
+
+        batchReadBody.put("key", keyMap);
 
 
-		byte[] batchReadBytes =  mapper.writeValueAsBytes(batchReadBody);
-		return mapper.readValue(batchReadBytes, RestClientBatchReadBody.class);
-	}
-	@Override
-	public RestClientBatchReadBody getBatchRead(String ns, byte[] digest) throws Exception{
-		Map<String, Object>batchReadBody = new HashMap<>();
-		Map<String, String>keyMap = new HashMap<>();
-		Encoder urlEncoder  = Base64.getUrlEncoder();
-		String strBytes = urlEncoder.encodeToString(digest);
+        byte[] batchReadBytes = mapper.writeValueAsBytes(batchReadBody);
+        return mapper.readValue(batchReadBytes, BatchReadRequest.class);
+    }
 
-		if (ns != null) {
-			keyMap.put("namespace", ns);
-		}
-		keyMap.put("digest", strBytes);
-		batchReadBody.put("key", keyMap);
+    @Override
+    public BatchReadRequest getBatchRead(String ns, byte[] digest) throws Exception {
+        Map<String, Object> batchReadBody = new HashMap<>();
+        Map<String, String> keyMap = new HashMap<>();
+        Encoder urlEncoder = Base64.getUrlEncoder();
+        String strBytes = urlEncoder.encodeToString(digest);
 
-		byte[] batchReadBytes = mapper.writeValueAsBytes(batchReadBody);
-		return mapper.readValue(batchReadBytes, RestClientBatchReadBody.class);
+        if (ns != null) {
+            keyMap.put("namespace", ns);
+        }
+        keyMap.put("digest", strBytes);
+        batchReadBody.put("key", keyMap);
 
-	}
+        byte[] batchReadBytes = mapper.writeValueAsBytes(batchReadBody);
+        return mapper.readValue(batchReadBytes, BatchReadRequest.class);
+
+    }
 
 }

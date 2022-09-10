@@ -18,9 +18,10 @@ package com.aerospike.restclient.service;
 
 import com.aerospike.client.BatchRecord;
 import com.aerospike.client.policy.BatchPolicy;
-import com.aerospike.restclient.domain.batchmodels.RestClientBatchRecordBody;
-import com.aerospike.restclient.domain.batchmodels.RestClientBatchRecordResponse;
 import com.aerospike.restclient.domain.auth.AuthDetails;
+import com.aerospike.restclient.domain.batchmodels.BatchRecordRequest;
+import com.aerospike.restclient.domain.batchmodels.BatchRecordResponse;
+import com.aerospike.restclient.domain.batchmodels.BatchResponseBody;
 import com.aerospike.restclient.handlers.BatchHandler;
 import com.aerospike.restclient.util.AerospikeClientPool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +37,13 @@ public class AerospikeBatchServiceV1 implements AerospikeBatchService {
     private AerospikeClientPool clientPool;
 
     @Override
-    public List<RestClientBatchRecordResponse> batch(AuthDetails authDetails, List<RestClientBatchRecordBody> batchKeys,
-                                                     BatchPolicy policy) {
-        List<BatchRecord> batchRecords = batchKeys.stream().map(RestClientBatchRecordBody::toBatchRecord)
+    public BatchResponseBody batch(AuthDetails authDetails, List<BatchRecordRequest> batchKeys,
+                                   BatchPolicy policy) {
+        BatchResponseBody resp = new BatchResponseBody();
+        List<BatchRecord> batchRecords = batchKeys.stream().map(BatchRecordRequest::toBatchRecord)
                 .collect(Collectors.toList());
         BatchHandler.create(clientPool.getClient(authDetails)).batchRecord(policy, batchRecords);
-
-        return batchRecords.stream().map(RestClientBatchRecordResponse::new).collect(Collectors.toList());
+        resp.batchRecords = batchRecords.stream().map(BatchRecordResponse::new).collect(Collectors.toList());
+        return resp;
     }
 }

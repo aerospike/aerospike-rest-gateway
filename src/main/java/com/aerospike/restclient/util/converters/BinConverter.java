@@ -32,14 +32,16 @@ import java.util.Map;
 import java.util.Optional;
 
 public class BinConverter {
-
-    private static final Logger logger = LogManager.getLogger(BinConverter.class);
     private static final ObjectMapper mapper = JSONMessageConverter.getJSONObjectMapper();
+
 
     @SuppressWarnings("unchecked")
     public static Bin[] binsFromMap(Map<String, Object> binMap) {
+        // We may need a more explicit "Bins" model for better swagger documentation.
+        // through the CDT and translate.
         int index = 0;
         Bin[] binArray = new Bin[binMap.size()];
+
         for (Map.Entry<String, Object> entry : binMap.entrySet()) {
             /* Let the user pass null, to delete a bin */
             Object value = entry.getValue();
@@ -57,20 +59,21 @@ public class BinConverter {
                     }
                 } else if (isBytes(mapVal)) {
                     try {
-                        SpecifiedType type = SpecifiedType.valueOf((String) mapVal.get(specifiedTypeKey));
-                        byte[] byteArr = Base64.decode((String) mapVal.get(specifiedValueKey));
+                        AerospikeAPIConstants.SpecifiedType.Type type = AerospikeAPIConstants.SpecifiedType.Type.valueOf((String) mapVal.get(AerospikeAPIConstants.SpecifiedType.Keys.specifiedTypeKey));
+                        byte[] byteArr = Base64.decode((String) mapVal.get(AerospikeAPIConstants.SpecifiedType.Keys.specifiedValueKey));
                         switch (type) {
                             case BYTE_ARRAY:
                                 asVal = Value.get(byteArr);
                                 break;
                             case GEO_JSON:
+                                // GEO_JSON is deprecated but only documented here https://stackoverflow.com/questions/70945453/how-to-insert-geojson-using-aerospike-rest-client
                                 asVal = Value.getAsGeoJSON(new String(byteArr));
                                 break;
                             default:
                                 asVal = Value.get(mapVal);
                         }
                     } catch (Exception e) {
-                        throw new RestClientErrors.InvalidBinValue("Error parsing typed bin parameter");
+                        throw new RestClientErrors.InvalidBinValue(String.format("Error parsing typed bin parameter: %s", e));
                     }
                 } else {
                     asVal = Value.get(mapVal);
@@ -86,50 +89,32 @@ public class BinConverter {
         return binArray;
     }
 
-    private static final String specifiedTypeKey = "type";
-    private static final String specifiedValueKey = "value";
-
-//    private static Value optSpecified(Map<String, Object> value) {
-//        if (isGeoJSON(value)) {
-//            try {
-//                return Value.getAsGeoJSON(mapper.writeValueAsString(value));
-//            } catch (JsonProcessingException e) {
-//                throw new RestClientErrors.InvalidGeoJSON(String.format("Unable to parse GeoJSON: %s", e));
-//            }
-//        }
-//
-//        // Specifying GEOJSON this way is now deprecated.  Providing bytes is still supported.
-//        if (value.size() == 2)
-//            try {
-//                SpecifiedType type = SpecifiedType.valueOf((String) value.get(specifiedTypeKey));
-//                byte[] byteArr = Base64.decode((String) value.get(specifiedValueKey));
-//                switch (type) {
-//                    case BYTE_ARRAY:
-//                        return Value.get(byteArr);
-//                    case GEO_JSON:
-//                        return Value.getAsGeoJSON(new String(byteArr));
-//                }
-//            } catch (Exception e) {
-//                throw new RestClientErrors.Invalid "Error parsing typed bin parameter", e);
-//            }
-//    }
-
     private static boolean isGeoJSON(Map<String, Object> value) {
+        return (isGeoJSONGeometry(value) && isGeoJSONFeature(value));
+    }
+
+    // Only checks keys to determine if is supported geojson.
+    private static boolean isGeoJSONGeometry(Map<String, Object> value) {
+        // TODO: Make the Bins model more expressive.
         return (value.size() == 2 &&
                 value.containsKey(AerospikeAPIConstants.GeoJSON.Keys.TYPE) &&
                 value.containsKey(AerospikeAPIConstants.GeoJSON.Keys.COORDINATES)
         );
     }
 
-    private static boolean isBytes(Map<String, Object> value) {
-        return (value.size() == 2 &&
-                value.containsKey(specifiedTypeKey) &&
-                value.containsKey(specifiedValueKey)
+    // Only checks keys to determine if is supported geojson.
+    private static boolean isGeoJSONFeature(Map<String, Object> value) {
+        return (value.size() == 3 &&
+                value.containsKey(AerospikeAPIConstants.GeoJSON.Keys.TYPE) &&
+                value.containsKey(AerospikeAPIConstants.GeoJSON.Keys.GEOMETRY) &&
+                value.containsKey(AerospikeAPIConstants.GeoJSON.Keys.PROPERTIES)
         );
     }
-}
 
-// GEO_JSON is deprecated but only documented here https://stackoverflow.com/questions/70945453/how-to-insert-geojson-using-aerospike-rest-client
-enum SpecifiedType {
-    BYTE_ARRAY, GEO_JSON
+    private static boolean isBytes(Map<String, Object> value) {
+        return (value.size() == 2 &&
+                value.containsKey(AerospikeAPIConstants.SpecifiedType.Keys.specifiedTypeKey) &&
+                value.containsKey(AerospikeAPIConstants.SpecifiedType.Keys.specifiedValueKey)
+        );
+    }
 }

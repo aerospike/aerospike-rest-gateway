@@ -2,15 +2,15 @@ package com.aerospike.restclient.domain.batchmodels;
 
 import com.aerospike.client.exp.Exp;
 import com.aerospike.client.exp.Expression;
-import com.aerospike.client.policy.*;
+import com.aerospike.client.policy.CommitLevel;
 import com.aerospike.restclient.ASTestMapper;
 import com.aerospike.restclient.IASTestMapper;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.aerospike.restclient.config.JSONMessageConverter;
+import com.aerospike.restclient.config.MsgPackConverter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,9 +21,9 @@ public class RestClientBatchUDFPolicyTest {
 
     @Parameterized.Parameters
     public static Object[] getParams() {
-        return new Object[] {
-                new JsonRestClientBatchUDFPolicyMapper(new ObjectMapper()),
-                new MsgPackRestClientBatchUDFPolicyMapper(new ObjectMapper(new MessagePackFactory()))
+        return new Object[]{
+                new JsonRestClientBatchUDFPolicyMapper(),
+                new MsgPackRestClientBatchUDFPolicyMapper()
         };
     }
 
@@ -33,7 +33,7 @@ public class RestClientBatchUDFPolicyTest {
 
     @Test
     public void testNoArgConstructor() {
-        new RestClientBatchUDFPolicy();
+        new BatchUDFPolicy();
     }
 
     @Test
@@ -45,7 +45,7 @@ public class RestClientBatchUDFPolicyTest {
         policyMap.put("durableDelete", true);
         policyMap.put("sendKey", true);
 
-        RestClientBatchUDFPolicy mappedBody = (RestClientBatchUDFPolicy) mapper.bytesToObject(mapper.objectToBytes(policyMap));
+        BatchUDFPolicy mappedBody = (BatchUDFPolicy) mapper.bytesToObject(mapper.objectToBytes(policyMap));
 
         Assert.assertEquals("a filter", mappedBody.filterExp);
         Assert.assertEquals(CommitLevel.COMMIT_MASTER, mappedBody.commitLevel);
@@ -58,14 +58,14 @@ public class RestClientBatchUDFPolicyTest {
     public void testToBatchUDFPolicy() {
         Expression expectedExp = Exp.build(Exp.ge(Exp.bin("a", Exp.Type.INT), Exp.bin("b", Exp.Type.INT)));
         String expectedExpStr = expectedExp.getBase64();
-        RestClientBatchUDFPolicy restPolicy = new RestClientBatchUDFPolicy();
+        BatchUDFPolicy restPolicy = new BatchUDFPolicy();
         restPolicy.filterExp = expectedExpStr;
         restPolicy.commitLevel = CommitLevel.COMMIT_MASTER;
         restPolicy.expiration = 101;
         restPolicy.durableDelete = true;
         restPolicy.sendKey = true;
 
-        BatchUDFPolicy actualPolicy = restPolicy.toBatchUDFPolicy();
+        com.aerospike.client.policy.BatchUDFPolicy actualPolicy = restPolicy.toBatchUDFPolicy();
 
         Assert.assertEquals(expectedExp, actualPolicy.filterExp);
         Assert.assertEquals(CommitLevel.COMMIT_MASTER, actualPolicy.commitLevel);
@@ -77,15 +77,15 @@ public class RestClientBatchUDFPolicyTest {
 
 class JsonRestClientBatchUDFPolicyMapper extends ASTestMapper {
 
-    public JsonRestClientBatchUDFPolicyMapper(ObjectMapper mapper) {
-        super(mapper, RestClientBatchUDFPolicy.class);
+    public JsonRestClientBatchUDFPolicyMapper() {
+        super(JSONMessageConverter.getJSONObjectMapper(), BatchUDFPolicy.class);
     }
 }
 
 class MsgPackRestClientBatchUDFPolicyMapper extends ASTestMapper {
 
-    public MsgPackRestClientBatchUDFPolicyMapper(ObjectMapper mapper) {
-        super(mapper, RestClientBatchUDFPolicy.class);
+    public MsgPackRestClientBatchUDFPolicyMapper() {
+        super(MsgPackConverter.getASMsgPackObjectMapper(), BatchUDFPolicy.class);
     }
 }
 

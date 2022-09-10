@@ -1434,11 +1434,18 @@ public class OperateListTestsCorrect {
         List<Map<String, Object>> opList = new ArrayList<>();
         Map<String, Object> opMap = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
+        Map<String, Object> item = new HashMap<>();
+        List<Map<String, Object>> ctx = new ArrayList<>();
 
         opValues.put("bin", "list");
+        opValues.put("ctx", ctx);
         opValues.put("listOrder", "UNORDERED");
         opValues.put("pad", true);
-        opValues.put("listIndexCreate", 7);
+
+        item.put("ctxType", "listIndex");
+        item.put("index", 7);
+        ctx.add(item);
+
         opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_CREATE);
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);

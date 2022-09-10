@@ -41,12 +41,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,7 +72,7 @@ public class BatchCorrectTests {
     private WebApplicationContext wac;
 
     private final String ns = "test";
-    private final String set = "junit";
+    private final String set = "batch";
     private final Key[] keys = new Key[100];
     private final Key intKey = new Key(ns, set, 1);
     private final Key bytesKey = new Key(ns, set, new byte[]{1, 127, 127, 1});
@@ -145,7 +140,8 @@ public class BatchCorrectTests {
         batchRecs.add(new BatchRead(keys[2], true));
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(3, returnedRecords.size());
 
         client.operate(null, batchRecs);
@@ -168,7 +164,8 @@ public class BatchCorrectTests {
         batchRecs.add(new BatchRead(keys[2], true));
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(3, returnedRecords.size());
 
         client.get(null, batchRecs);
@@ -190,7 +187,8 @@ public class BatchCorrectTests {
         batchRecs.add(new BatchRead(keys[2], bins));
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(3, returnedRecords.size());
 
         client.operate(null, batchRecs);
@@ -212,7 +210,8 @@ public class BatchCorrectTests {
         batchRecs.add(new BatchRead(keys[2], true));
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(4, returnedRecords.size());
 
         client.operate(null, batchRecs);
@@ -234,7 +233,8 @@ public class BatchCorrectTests {
         batchRecs.add(new BatchRead(intKey, true));
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(4, returnedRecords.size());
 
         client.operate(null, batchRecs);
@@ -249,7 +249,8 @@ public class BatchCorrectTests {
         batchRecs.add(new BatchRead(bytesKey, true));
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(1, returnedRecords.size());
 
         client.operate(null, batchRecs);
@@ -264,7 +265,8 @@ public class BatchCorrectTests {
         batchRecs.add(new BatchRead(keys[0], true));
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(1, returnedRecords.size());
 
         client.operate(null, batchRecs);
@@ -295,10 +297,12 @@ public class BatchCorrectTests {
         expectedOpsListMap.add(op2);
 
         batchKeys.add(keyToBatchWriteObject(null, keys[3], null, expectedOpsListMap));
-        batchRecs.add(new BatchWrite(keys[3], new Operation[] {Operation.add(new Bin("bin1", 1)), Operation.put(new Bin("bin2", "new val"))}));
+        batchRecs.add(new BatchWrite(keys[3],
+                new Operation[]{Operation.add(new Bin("bin1", 1)), Operation.put(new Bin("bin2", "new val"))}));
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
 
         Record actualRecord = client.get(null, keys[3]);
         client.operate(null, batchRecs);
@@ -330,7 +334,8 @@ public class BatchCorrectTests {
         batchKeys.add(keyToBatchWriteObject(policy, key, null, expectedOpsListMap));
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
 
         Assert.assertEquals(1, returnedRecords.size());
         Map<String, Object> returnedRecord = returnedRecords.get(0);
@@ -363,7 +368,8 @@ public class BatchCorrectTests {
         batchKeys.add(keyToBatchWriteObject(policy, key, null, expectedOpsListMap));
 
         String payLoad = objectMapper.writeValueAsString(batchKeys);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
 
         Assert.assertEquals(1, returnedRecords.size());
         Map<String, Object> returnedRecord = returnedRecords.get(0);
@@ -390,11 +396,13 @@ public class BatchCorrectTests {
         functionArgs.add(bin);
         functionArgs.add(binVal);
 
-        Map<String, Object> batchUDFMapReq = keyToBatchUDFObject(policy, keys[0], null, recordUDFPkg, "writeBin", functionArgs);
+        Map<String, Object> batchUDFMapReq = keyToBatchUDFObject(policy, keys[0], null, recordUDFPkg, "writeBin",
+                functionArgs);
         batchRecReq.add(batchUDFMapReq);
 
         String payLoad = objectMapper.writeValueAsString(batchRecReq);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
 
         Record record = client.get(null, keys[0]);
         Assert.assertEquals(1, returnedRecords.size());
@@ -411,7 +419,8 @@ public class BatchCorrectTests {
         batchRecReq.add(batchUDFMapReq);
 
         String payLoad = objectMapper.writeValueAsString(batchRecReq);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
 
         boolean recordStillExists = client.exists(null, keys[0]);
         Assert.assertEquals(1, returnedRecords.size());
@@ -422,12 +431,14 @@ public class BatchCorrectTests {
     @Test
     public void testSingleDeleteNonExistingRecord() throws Exception {
         List<Map<String, Object>> batchRecReq = new ArrayList<>();
-        Map<String, Object> batchUDFMapReq = keyToBatchDeleteObject(null, new Key("test", "testset", "does not exist"), null);
+        Map<String, Object> batchUDFMapReq = keyToBatchDeleteObject(null, new Key("test", "testset", "does not exist"),
+                null);
 
         batchRecReq.add(batchUDFMapReq);
 
         String payLoad = objectMapper.writeValueAsString(batchRecReq);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Map<String, Object> returnedRecord = returnedRecords.get(0);
 
         Assert.assertEquals(2, returnedRecord.get("resultCode"));
@@ -448,7 +459,8 @@ public class BatchCorrectTests {
         batchRecReq.add(batchUDFMapReq);
 
         String payLoad = objectMapper.writeValueAsString(batchRecReq);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Map<String, Object> returnedRecord = returnedRecords.get(0);
 
         Assert.assertEquals(3, returnedRecord.get("resultCode"));
@@ -505,10 +517,11 @@ public class BatchCorrectTests {
         batchRecReq.add(keyToBatchUDFObject(null, keys[5], null, recordUDFPkg, "processRecord", functionArgs));
 
         String payLoad = objectMapper.writeValueAsString(batchRecReq);
-        List<Map<String, Object>> returnedRecords = batchHandler.perform(mockMVC, endpoint, payLoad);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
 
         Assert.assertEquals(4, returnedRecords.size());
-        for (Map<String, Object> record: returnedRecords) {
+        for (Map<String, Object> record : returnedRecords) {
             Assert.assertEquals(0, record.get("resultCode"));
 //            Assert.assertNull(returnedRecord.get("record"));
 //            Assert.assertFalse((boolean) returnedRecord.get("inDoubt"));
@@ -516,7 +529,8 @@ public class BatchCorrectTests {
 //        Assert.assertEquals("Generation error", returnedRecord.get("resultCodeString"));
     }
 
-    private Map<String, Object> keyToBatchReadObject(BatchReadPolicy policy, Key key, AerospikeAPIConstants.RecordKeyType keyType, String[] bins) {
+    private Map<String, Object> keyToBatchReadObject(BatchReadPolicy policy, Key key,
+                                                     AerospikeAPIConstants.RecordKeyType keyType, String[] bins) {
         Map<String, Object> batchObj = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -535,7 +549,9 @@ public class BatchCorrectTests {
         return batchObj;
     }
 
-    private Map<String, Object> keyToBatchWriteObject(BatchWritePolicy policy, Key key, AerospikeAPIConstants.RecordKeyType keyType, List<Map<String, Object>> opsList) throws Exception {
+    private Map<String, Object> keyToBatchWriteObject(BatchWritePolicy policy, Key key,
+                                                      AerospikeAPIConstants.RecordKeyType keyType,
+                                                      List<Map<String, Object>> opsList) throws Exception {
         Map<String, Object> batchObj = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -549,7 +565,9 @@ public class BatchCorrectTests {
         return batchObj;
     }
 
-    private Map<String, Object> keyToBatchUDFObject(BatchUDFPolicy policy, Key key, AerospikeAPIConstants.RecordKeyType keyType, String packageName, String functionName, List<Object> functionArgs) throws Exception {
+    private Map<String, Object> keyToBatchUDFObject(BatchUDFPolicy policy, Key key,
+                                                    AerospikeAPIConstants.RecordKeyType keyType, String packageName,
+                                                    String functionName, List<Object> functionArgs) throws Exception {
         Map<String, Object> batchObj = new HashMap<>();
 
         if (policy != null) {
@@ -564,7 +582,8 @@ public class BatchCorrectTests {
         return batchObj;
     }
 
-    private Map<String, Object> keyToBatchDeleteObject(BatchDeletePolicy policy, Key key, AerospikeAPIConstants.RecordKeyType keyType) throws Exception {
+    private Map<String, Object> keyToBatchDeleteObject(BatchDeletePolicy policy, Key key,
+                                                       AerospikeAPIConstants.RecordKeyType keyType) throws Exception {
         Map<String, Object> batchObj = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -572,7 +591,7 @@ public class BatchCorrectTests {
             batchObj.put("policy", mapper.convertValue(policy, Map.class));
         }
 
-        batchObj.put("key", keyToMap(key , keyType));
+        batchObj.put("key", keyToMap(key, keyType));
         batchObj.put("batchType", "DELETE");
         return batchObj;
     }
@@ -631,7 +650,7 @@ public class BatchCorrectTests {
     }
 
     private boolean compareRestRecordsToBatchRecords(List<Map<String, Object>> returnedRecords,
-                                                   List<BatchRecord> batchRecords) {
+                                                     List<BatchRecord> batchRecords) {
         if (batchRecords.size() != returnedRecords.size()) {
             return false;
         }
@@ -672,7 +691,8 @@ class RestBatchComparator {
             return false;
         }
         if (restRecord.get("record") != null) {
-            return ASTestUtils.compareRCRecordToASRecord((Map<String, Object>) restRecord.get("record"), batchRead.record);
+            return ASTestUtils.compareRCRecordToASRecord((Map<String, Object>) restRecord.get("record"),
+                    batchRead.record);
         } else {
             return batchRead.record == null;
         }
@@ -716,7 +736,8 @@ class RestBatchComparator {
         }
 
         if (restRecord.get("record") != null) {
-            return ASTestUtils.compareRCRecordToASRecord((Map<String, Object>) restRecord.get("record"), batchRecord.record);
+            return ASTestUtils.compareRCRecordToASRecord((Map<String, Object>) restRecord.get("record"),
+                    batchRecord.record);
         } else {
             return batchRecord.record == null;
         }
@@ -748,7 +769,7 @@ class RestBatchComparator {
  * Implementations are provided for specifying JSON and MsgPack as return formats
  */
 interface BatchHandler {
-    List<Map<String, Object>> perform(MockMvc mockMVC, String testEndpoint, String payload)
+    Map<String, Object> perform(MockMvc mockMVC, String testEndpoint, String payload)
             throws Exception;
 }
 
@@ -760,11 +781,11 @@ class MsgPackBatchHandler implements BatchHandler {
         msgPackMapper = new ObjectMapper(new MessagePackFactory());
     }
 
-    private List<Map<String, Object>> getReturnedBatches(MockHttpServletResponse res) {
+    private Map<String, Object> getReturnedBatches(MockHttpServletResponse res) {
         byte[] response = res.getContentAsByteArray();
-        TypeReference<List<Map<String, Object>>> btype = new TypeReference<List<Map<String, Object>>>() {
+        TypeReference<Map<String, Object>> btype = new TypeReference<Map<String, Object>>() {
         };
-        List<Map<String, Object>> batchResponse = null;
+        Map<String, Object> batchResponse = null;
         try {
             batchResponse = msgPackMapper.readValue(response, btype);
         } catch (IOException e) {
@@ -774,13 +795,13 @@ class MsgPackBatchHandler implements BatchHandler {
     }
 
     @Override
-    public List<Map<String, Object>> perform(MockMvc mockMVC, String testEndpoint, String payload)
+    public Map<String, Object> perform(MockMvc mockMVC, String testEndpoint, String payload)
             throws Exception {
 
         MockHttpServletResponse res = mockMVC.perform(post(testEndpoint)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept("application/msgpack")
-                .content(payload)).andExpect(status().isOk())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept("application/msgpack")
+                        .content(payload)).andExpect(status().isOk())
                 .andReturn().getResponse();
 
         return getReturnedBatches(res);
@@ -796,7 +817,7 @@ class JSONBatchHandler implements BatchHandler {
         msgPackMapper = new ObjectMapper();
     }
 
-    private List<Map<String, Object>> getReturnedBatches(MockHttpServletResponse res) {
+    private Map<String, Object> getReturnedBatches(MockHttpServletResponse res) {
         String response = null;
         try {
             response = res.getContentAsString();
@@ -804,9 +825,9 @@ class JSONBatchHandler implements BatchHandler {
             e1.printStackTrace();
         }
 
-        TypeReference<List<Map<String, Object>>> btype = new TypeReference<List<Map<String, Object>>>() {
+        TypeReference<Map<String, Object>> btype = new TypeReference<Map<String, Object>>() {
         };
-        List<Map<String, Object>> batchResponse = null;
+        Map<String, Object> batchResponse = null;
         try {
             batchResponse = msgPackMapper.readValue(response, btype);
         } catch (IOException e) {
@@ -817,18 +838,19 @@ class JSONBatchHandler implements BatchHandler {
 
 
     @Override
-    public List<Map<String, Object>> perform(MockMvc mockMVC, String testEndpoint, String payload)
+    public Map<String, Object> perform(MockMvc mockMVC, String testEndpoint, String payload)
             throws Exception {
 
         MockHttpServletResponse res = mockMVC.perform(post(testEndpoint)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(payload))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(payload))
                 .andReturn().getResponse();
 
         int status = res.getStatus();
         if (status != 200) {
-            Assert.fail(String.format("Status expected:200 but was:%d\n Response: %s", status, res.getContentAsString()));
+            Assert.fail(
+                    String.format("Status expected:200 but was:%d\n Response: %s", status, res.getContentAsString()));
         }
 
         return getReturnedBatches(res);

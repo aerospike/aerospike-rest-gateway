@@ -18,48 +18,60 @@ package com.aerospike.restclient.domain;
 
 import com.aerospike.client.AerospikeException;
 import com.aerospike.restclient.util.RestClientErrors.AerospikeRestClientError;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RestClientError {
 
-	@Schema(description = "A message describing the cause of the error.", example = "Error Message")
-	private final String message;
+    @Schema(description = "A message describing the cause of the error.", example = "Error Message")
+    private final String message;
 
-	@Schema(description = "A boolean specifying whether it was possible that the operation succeeded. This is only included if true.",
-			required = true,
-			example = "false")
-	private final Boolean inDoubt;
+    @Schema(
+            description = "A boolean specifying whether it was possible that the operation succeeded. This is only included if true.",
+            required = true,
+            example = "false"
+    )
+    private final Boolean inDoubt;
 
-	@Schema(description = "An internal error code for diagnostic purposes. This may be null", example = "-3")
-	private final Integer internalErrorCode;
+    @Schema(description = "An internal error code for diagnostic purposes. This may be null", example = "-3")
+    private final Integer internalErrorCode;
 
-	public String getMessage() {
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public Boolean getInDoubt() {
-		return inDoubt;
-	}
+    public Boolean getInDoubt() {
+        return inDoubt;
+    }
 
-	public Integer getInternalErrorCode() {
-		return internalErrorCode;
-	}
+    public Integer getInternalErrorCode() {
+        return internalErrorCode;
+    }
 
-	public RestClientError(AerospikeException ex) {
-		this.message = ex.getMessage();
-		this.inDoubt = ex.getInDoubt();
-		this.internalErrorCode = ex.getResultCode();
-	}
+    public RestClientError(AerospikeException ex) {
+        this.message = ex.getMessage();
+        this.inDoubt = ex.getInDoubt();
+        this.internalErrorCode = ex.getResultCode();
+    }
 
-	public RestClientError(AerospikeRestClientError ex) {
-		this.message = ex.getErrorMessage();
-		this.inDoubt = false;
-		this.internalErrorCode = null;
-	}
+    public RestClientError(AerospikeRestClientError ex) {
+        this.message = ex.getErrorMessage();
+        this.inDoubt = false;
+        this.internalErrorCode = null;
+    }
 
-	public RestClientError(String message) {
-		this.message = message;
-		this.inDoubt = false;
-		this.internalErrorCode = null;
-	}
+    public RestClientError(String message) {
+        this.message = message;
+        this.inDoubt = false;
+        this.internalErrorCode = null;
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public RestClientError(@JsonProperty("message") String message, @JsonProperty("inDoubt") boolean inDoubt,
+                           @JsonProperty("internalErrorCode") int internalErrorCode) {
+        this.message = message;
+        this.inDoubt = inDoubt;
+        this.internalErrorCode = internalErrorCode;
+    }
 }

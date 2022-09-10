@@ -1,24 +1,21 @@
 package com.aerospike.restclient;
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.lang.reflect.Type;
-import java.util.Map;
 
 
 public class ASTestMapper implements IASTestMapper {
     private final ObjectMapper mapper;
-    private final JavaType t;
+    private final Class<?> t;
 
-    public ASTestMapper(ObjectMapper mapper, Type t) {
+    @SuppressWarnings("unchecked")
+    public ASTestMapper(ObjectMapper mapper, Class<?> type) {
         this.mapper = mapper;
-        this.t = this.mapper.constructType(t);
+        t = type;
     }
 
     @Override
     public Object bytesToObject(byte[] bytes) throws Exception {
-        return mapper.readValue(bytes, this.t);
+        return mapper.readValue(bytes, t);
     }
 
     @Override

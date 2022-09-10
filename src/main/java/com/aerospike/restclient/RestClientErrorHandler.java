@@ -43,7 +43,8 @@ public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
         logger.warn(ex.getMessage());
-        return new ResponseEntity<>(new RestClientError(ex.getMostSpecificCause().getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new RestClientError(ex.getMostSpecificCause().getMessage()),
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({RestClientErrors.AerospikeRestClientError.class})
@@ -78,6 +79,7 @@ public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
             case ResultCode.BIN_TYPE_ERROR:
             case ResultCode.PARAMETER_ERROR:
             case ResultCode.INVALID_PRIVILEGE:
+            case ResultCode.INVALID_NAMESPACE:
                 return HttpStatus.BAD_REQUEST;
 
             case ResultCode.ROLE_VIOLATION:
@@ -95,7 +97,6 @@ public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
                 return HttpStatus.UNAUTHORIZED;
 
             case ResultCode.INVALID_NODE_ERROR:
-            case ResultCode.INVALID_NAMESPACE:
                 return HttpStatus.INTERNAL_SERVER_ERROR;
 
             default:

@@ -125,6 +125,10 @@ public class APIDescriptors {
     // Scan parameters
     public static final String SCAN_FROM_TOKEN_NOTES = "Next page token parameter.";
 
+    // Query Operation Policy
+    public static final String QUERY_POLICY_FAIL_ON_CLUSTER_CHANGE = "Terminate query if cluster is in migration state. If the server supports partition queries or the query filter is null (scan), this field is ignored.";
+    public static final String QUERY_POLICY_SHORT_QUERY = "Is query expected to return less than 100 records. If true, the server will optimize the query for a small record set. This field is ignored for aggregation queries, background queries and server versions < 6.0.";
+
     // JSONPath parameters
     public static final String JSON_PATH_NOTES = "JSONPath query parameter.";
     public static final String JSON_PATH_BINS_NOTES = "Specify a set of bins to handle the JSONPath query.";

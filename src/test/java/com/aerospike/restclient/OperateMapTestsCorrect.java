@@ -267,10 +267,15 @@ public class OperateMapTestsCorrect {
 	public void testMapCreate() {
 		Map<String, Object> operation = new HashMap<>();
 		Map<String, Object> opValues = new HashMap<>();
+		Map<String, Object> item = new HashMap<>();
+		List<Map<String, Object>> ctx = new ArrayList<>();
 
 		opValues.put("bin", mapBinName);
 		opValues.put("mapOrder", "UNORDERED");
-		opValues.put("mapKeyCreate", "key1");
+		item.put("ctxType", "mapKey");
+		item.put("key", "key1");
+		ctx.add(item);
+		opValues.put("ctx", ctx);
 		operation.put(OPERATION_FIELD, AerospikeOperation.MAP_CREATE);
 		operation.put(OPERATION_VALUES_FIELD, opValues);
 		opList.add(operation);

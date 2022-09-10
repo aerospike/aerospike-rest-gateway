@@ -13,21 +13,32 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-public class ASRestClientParams {
-    @Parameters(value = {@Parameter(name = AerospikeAPIConstants.RECORD_BINS,
-            description = APIDescriptors.BINS_NOTES,
-            array = @ArraySchema(schema = @Schema(type = "string")),
-            in = ParameterIn.QUERY)})
+public @interface ASRestClientParams {
+    @Parameters(
+            value = {
+                    @Parameter(
+                            name = AerospikeAPIConstants.RECORD_BINS,
+                            description = APIDescriptors.BINS_NOTES,
+                            array = @ArraySchema(schema = @Schema(type = "string")),
+                            in = ParameterIn.QUERY
+                    )
+            }
+    )
     @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     public @interface ASRestClientRecordBinsQueryParam {
     }
 
-    @Parameters(value = {@Parameter(
-            name = AerospikeAPIConstants.KEY_TYPE,
-            description = APIDescriptors.KEYTYPE_NOTES,
-            schema = @Schema(implementation = AerospikeAPIConstants.RecordKeyType.class),
-            in = ParameterIn.QUERY)})
+    @Parameters(
+            value = {
+                    @Parameter(
+                            name = AerospikeAPIConstants.KEY_TYPE,
+                            description = APIDescriptors.KEYTYPE_NOTES,
+                            schema = @Schema(implementation = AerospikeAPIConstants.RecordKeyType.class),
+                            in = ParameterIn.QUERY
+                    )
+            }
+    )
     @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     public @interface ASRestClientKeyTypeQueryParam {
@@ -37,7 +48,8 @@ public class ASRestClientParams {
             name = AerospikeAPIConstants.FROM_TOKEN,
             description = APIDescriptors.SCAN_FROM_TOKEN_NOTES,
             schema = @Schema(type = "string"),
-            in = ParameterIn.QUERY)
+            in = ParameterIn.QUERY
+    )
     @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     public @interface ASRestClientFromScanQueryParam {

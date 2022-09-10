@@ -19,6 +19,7 @@ package com.aerospike.restclient.util;
 import com.aerospike.client.policy.*;
 import com.aerospike.client.query.Statement;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
+import com.aerospike.restclient.util.converters.PolicyValueConverter;
 import com.aerospike.restclient.util.converters.StatementConverter;
 import com.aerospike.restclient.util.converters.policyconverters.*;
 import org.springframework.util.MultiValueMap;
@@ -77,6 +78,14 @@ public final class RequestParamHandler {
                     String.format("Invalid keytype: %s , valid choices are STRING, INTEGER, BYTES, DIGEST", keyTypeStr)
             );
         }
+    }
+
+    public static boolean getGetToken(MultiValueMap<String, String> requestParams) {
+        List<String> keys = requestParams.get(AerospikeAPIConstants.GET_TOKEN);
+        if (keys == null) {
+            return false;
+        }
+        return PolicyValueConverter.getBoolValue(keys.get(0));
     }
 
     public static Policy getPolicy(Map<String, String> requestParams) {

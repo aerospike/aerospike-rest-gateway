@@ -123,9 +123,16 @@ public class NestedCdtOperationsTest {
         List<Map<String, Object>> opList = new ArrayList<>();
         Map<String, Object> opMap = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
+        Map<String, Object> item = new HashMap<>();
+        List<Map<String, Object>> ctx = new ArrayList<>();
         opValues.put("bin", "list");
         opValues.put("value", 100);
-        opValues.put("listIndex", -1);
+
+        item.put("ctxType", "listIndex");
+        item.put("index", -1);
+        ctx.add(item);
+        opValues.put("ctx", ctx);
+
         opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_APPEND);
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
@@ -143,9 +150,17 @@ public class NestedCdtOperationsTest {
         List<Map<String, Object>> opList = new ArrayList<>();
         Map<String, Object> opMap = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
+        Map<String, Object> item = new HashMap<>();
+        List<Map<String, Object>> ctx = new ArrayList<>();
+
         opValues.put("bin", "list");
         opValues.put("value", 100);
-        opValues.put("listValue", l2);
+
+        item.put("ctxType", "listValue");
+        item.put("value", l2);
+        ctx.add(item);
+        opValues.put("ctx", ctx);
+
         opMap.put(OPERATION_FIELD, AerospikeOperation.LIST_APPEND);
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
@@ -163,10 +178,17 @@ public class NestedCdtOperationsTest {
         List<Map<String, Object>> opList = new ArrayList<>();
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
+        Map<String, Object> item = new HashMap<>();
+        List<Map<String, Object>> ctx = new ArrayList<>();
         opValues.put("bin", "map");
         opValues.put("key", "one");
         opValues.put("value", 11);
-        opValues.put("mapKey", "m1");
+
+        item.put("ctxType", "mapKey");
+        item.put("key", "m1");
+        ctx.add(item);
+        opValues.put("ctx", ctx);
+
         operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
         operation.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(operation);
@@ -185,10 +207,17 @@ public class NestedCdtOperationsTest {
         List<Map<String, Object>> opList = new ArrayList<>();
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
+        Map<String, Object> item = new HashMap<>();
+        List<Map<String, Object>> ctx = new ArrayList<>();
         opValues.put("bin", "map");
         opValues.put("key", "one");
         opValues.put("value", 11);
-        opValues.put("mapRank", 1);
+
+        item.put("ctxType", "mapRank");
+        item.put("rank", 1);
+        ctx.add(item);
+        opValues.put("ctx", ctx);
+
         operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
         operation.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(operation);
@@ -201,26 +230,37 @@ public class NestedCdtOperationsTest {
         Assert.assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
     }
 
-//    @SuppressWarnings("unchecked")
-//    @Test
-//    public void testMapPutCdtMultipuleCTX() {
-//        List<Map<String, Object>> opList = new ArrayList<>();
-//        Map<String, Object> operation = new HashMap<>();
-//        Map<String, Object> opValues = new HashMap<>();
-//        opValues.put("bin", "map");
-//        opValues.put("key", "two");
-//        opValues.put("value", 11);
-//        opValues.put("mapKey", "m2");
-//        opValues.put("mapKey", "four");
-//        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
-//        operation.put(OPERATION_VALUES_FIELD, opValues);
-//        opList.add(operation);
-//
-//        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
-//        Map<String, Object> bins = client.get(null, testKey).bins;
-//        Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get("map");
-//        m3.put("two", 11);
-//
-//        Assert.assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
-//    }
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testMapPutCdtMultipuleCTX() {
+        List<Map<String, Object>> opList = new ArrayList<>();
+        Map<String, Object> operation = new HashMap<>();
+        Map<String, Object> opValues = new HashMap<>();
+        Map<String, Object> item1 = new HashMap<>();
+        Map<String, Object> item2 = new HashMap<>();
+        List<Map<String, Object>> ctx = new ArrayList<>();
+        opValues.put("bin", "map");
+        opValues.put("key", "two");
+        opValues.put("value", 11);
+
+        item1.put("ctxType", "mapKey");
+        item1.put("key", "m2");
+        ctx.add(item1);
+
+        item2.put("ctxType", "mapKey");
+        item2.put("key", "m3");
+        ctx.add(item2);
+        opValues.put("ctx", ctx);
+
+        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
+        operation.put(OPERATION_VALUES_FIELD, opValues);
+        opList.add(operation);
+
+        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+        Map<String, Object> bins = client.get(null, testKey).bins;
+        Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get("map");
+        m3.put("two", 11);
+
+        Assert.assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
+    }
 }

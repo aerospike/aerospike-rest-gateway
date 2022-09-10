@@ -239,6 +239,11 @@ public class KeyValueController {
         service.deleteRecord(authDetails, namespace, null, key, keyType, policy);
     }
 
+    /*
+     **************************************************
+     *                     PUT                        *
+     **************************************************
+     */
     @Operation(summary = REPLACE_RECORD_NOTES, operationId = "replaceRecordNamespaceSetKey")
     @ApiResponses(value = {
             @ApiResponse(
@@ -264,7 +269,7 @@ public class KeyValueController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @PutMapping(value = "/{namespace}/{set}/{key}",
-            consumes = "application/json", produces = {"application/json", "application/msgpack"})
+            consumes = "application/json", produces = {"application/json"})
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void replaceRecordNamespaceSetKey(
@@ -285,15 +290,34 @@ public class KeyValueController {
         service.storeRecord(authDetails, namespace, set, key, bins, keyType, policy);
     }
 
-    /*
-     **************************************************
-     *                     PUT                        *
-     **************************************************
-     */
-    @Hidden
+    @Operation(summary = REPLACE_RECORD_NOTES, operationId = "replaceRecordNamespaceSetKeyMP")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Modified record successfully, no content expected."),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid parameters or request",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Not authorized to access the resource",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Record not found.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Generation mismatch for operation.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
+    })
+    @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @PutMapping(value = "/{namespace}/{set}/{key}",
-            consumes = "application/msgpack", produces = {"application/json", "application/msgpack"})
+            consumes = "application/msgpack", produces = {"application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
+    @ASRestClientWritePolicyQueryParams
     public void replaceRecordNamespaceSetKeyMP(
             @PathVariable(value = "namespace") String namespace,
             @PathVariable(value = "set") String set,

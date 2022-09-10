@@ -1,0 +1,42 @@
+package com.aerospike.restclient.domain.querymodels;
+
+import com.aerospike.client.query.Filter;
+import com.aerospike.client.query.IndexCollectionType;
+import com.aerospike.restclient.domain.geojsonmodels.LngLat;
+import com.aerospike.restclient.domain.geojsonmodels.Polygon;
+import com.aerospike.restclient.util.AerospikeAPIConstants;
+import com.aerospike.restclient.util.annotations.ASRestClientSchemas;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.List;
+
+@Schema(
+        description = "Geospatial filter for points contained inside and AeroCircle object.  Only allowed on bin which has a secondary index defined.",
+        externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/query/Filter.html")
+)
+public class QueryGeoWithinPolygonFilter extends QueryFilter {
+    @Schema(
+            description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION,
+            required = true,
+            allowableValues = {AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION}
+    )
+    final public String filterType = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION;
+
+    @Schema(description = "Array of longitude and latitude describing a region.", required = true)
+    public List<LngLat> polygon;
+
+    @ASRestClientSchemas.IndexCollectionType
+    public IndexCollectionType collectionType = IndexCollectionType.DEFAULT;
+
+    public QueryGeoWithinPolygonFilter() {
+    }
+
+    @Override
+    public Filter toFilter() {
+        return Filter.geoWithinRegion(binName, collectionType, new Polygon(polygon).writeValueAsString(),
+                getCTXArray());
+    }
+}
+
+

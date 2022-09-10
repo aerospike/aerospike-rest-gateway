@@ -16,9 +16,15 @@
  */
 package com.aerospike.restclient.converters;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gnu.crypto.util.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -59,6 +65,24 @@ public class BinConverterTests {
 	}
 
 	@Test
+	public void testComplexCDTBin() {
+		Map<String, Object> testMap = new HashMap<>();
+		Map<String, Object> nestedMap = new HashMap<>();
+		nestedMap.put("str", "world");
+		nestedMap.put("int", 10);
+		nestedMap.put("float", 5l);
+		List<Object> nestedList = new ArrayList<>();
+		nestedList.add(1);
+		nestedList.add("str");
+		testMap.put("str", "hello");
+		testMap.put("float", 3.14);
+		testMap.put("float", 5l);
+		testMap.put("nestedMap", nestedMap);
+		testMap.put("nestedList", nestedList);
+		singleObjectBinTest(testMap);
+	}
+
+	@Test
 	public void testBytesBin() {
 		singleObjectBinTest(new byte[] {1,2,3});
 	}
@@ -92,6 +116,47 @@ public class BinConverterTests {
 		Assert.assertTrue(binsContain(bins, bin1));
 		Assert.assertTrue(binsContain(bins, bin2));
 
+	}
+
+	@Test
+	public void testGeoJSON() throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object>testMap = new HashMap<>();
+		testMap.put("type", "Point");
+		testMap.put("coordinates", new double[]{-122.0, 37.5});
+		Bin testBin = new Bin("bin1", Value.getAsGeoJSON(mapper.writeValueAsString(testMap)));
+		Map<String, Object>binMap = new HashMap<>();
+		binMap.put("bin1", Value.getAsGeoJSON(mapper.writeValueAsString(testMap)));
+		Bin[] bins = BinConverter.binsFromMap(binMap);
+		Assert.assertTrue(binsContain(bins, testBin));
+	}
+
+	@Test
+	public void testBase64GeoJSONBin() {
+		String geoJSONStr = "{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}";
+		String geoJSONBase64Str = Base64.encode(geoJSONStr.getBytes(StandardCharsets.UTF_8));
+		Map<String, Object> testMap = new HashMap<>();
+		testMap.put("type", "GEO_JSON");
+		testMap.put("value", geoJSONBase64Str);
+		Bin testBin = new Bin("bin1", Value.getAsGeoJSON(geoJSONStr));
+		Map<String, Object>binMap = new HashMap<>();
+		binMap.put("bin1", testMap);
+		Bin[] bins = BinConverter.binsFromMap(binMap);
+		Assert.assertTrue(binsContain(bins, testBin));
+	}
+
+	@Test
+	public void testBase64BytesBin() {
+		byte[] bytes = "foobar".getBytes(StandardCharsets.UTF_8);
+		String base64Bytes = Base64.encode(bytes);
+		Map<String, Object> testMap = new HashMap<>();
+		testMap.put("type", "BYTE_ARRAY");
+		testMap.put("value", base64Bytes);
+		Bin testBin = new Bin("bin1", Value.get(bytes));
+		Map<String, Object>binMap = new HashMap<>();
+		binMap.put("bin1", testMap);
+		Bin[] bins = BinConverter.binsFromMap(binMap);
+		Assert.assertTrue(binsContain(bins, testBin));
 	}
 
 	private void singleObjectBinTest(Object binValue) {

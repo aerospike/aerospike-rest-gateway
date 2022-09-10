@@ -18,23 +18,25 @@ package com.aerospike.restclient.handlers;
 
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.policy.QueryPolicy;
-import com.aerospike.client.query.*;
+import com.aerospike.client.query.PartitionFilter;
+import com.aerospike.client.query.PartitionStatus;
+import com.aerospike.client.query.QueryListener;
+import com.aerospike.client.query.Statement;
 import com.aerospike.restclient.domain.RestClientKeyRecord;
-import com.aerospike.restclient.domain.querymodels.RestClientQueryResponse;
+import com.aerospike.restclient.domain.querymodels.QueryResponseBody;
 import com.aerospike.restclient.domain.scanmodels.Pagination;
-import org.apache.commons.codec.binary.Hex;
 import org.msgpack.core.MessageBufferPacker;
 import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessageUnpacker;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.Base64;
 
 public class QueryHandler {
 
     private final AerospikeClient client;
 
-    private RestClientQueryResponse response;
+    private QueryResponseBody response;
 
     private static final int PARTITION_STATE_NONE = 0;
     private static final int PARTITION_STATE_NOT_STARTED = 1;
@@ -43,22 +45,25 @@ public class QueryHandler {
 
     public QueryHandler(AerospikeClient client) {
         this.client = client;
-        this.response = new RestClientQueryResponse();
+        this.response = new QueryResponseBody();
     }
 
-    public RestClientQueryResponse queryPartition(QueryPolicy policy, Statement stmt, String fromToken, Boolean getToken, int beginPart, int partCount) throws IOException {
+    public QueryResponseBody queryPartition(QueryPolicy policy, Statement stmt, String fromToken, Boolean getToken,
+                                            int beginPart, int partCount) throws IOException {
         PartitionFilter partitionFilter;
         partitionFilter = getPartitionFilter(fromToken, beginPart, partCount);
         return queryPartition(policy, stmt, partitionFilter, getToken);
     }
 
-    public RestClientQueryResponse queryPartition(QueryPolicy policy, Statement stmt, String fromToken, Boolean getToken) throws IOException {
+    public QueryResponseBody queryPartition(QueryPolicy policy, Statement stmt, String fromToken,
+                                            Boolean getToken) throws IOException {
         PartitionFilter partitionFilter;
         partitionFilter = getPartitionFilter(fromToken);
         return queryPartition(policy, stmt, partitionFilter, getToken);
     }
 
-    public RestClientQueryResponse queryPartition(QueryPolicy policy, Statement stmt, PartitionFilter partitionFilter, Boolean getToken) throws IOException {
+    public QueryResponseBody queryPartition(QueryPolicy policy, Statement stmt, PartitionFilter partitionFilter,
+                                            Boolean getToken) throws IOException {
         client.query(policy, stmt, partitionFilter, callback);
 
         Pagination page = response.getPagination();
@@ -88,26 +93,6 @@ public class QueryHandler {
         } else {
             byte[] tokenOut = Base64.getDecoder().decode(fromToken);
             return decodePartitionFilter(tokenOut);
-        }
-    }
-
-    // TODO remove, for development
-    private void printContentsOfPatitionList(PartitionFilter partitionFilter, String fileName) {
-        try {
-            FileWriter partitionListTxt = new FileWriter(fileName, false);
-
-            for (PartitionStatus status : partitionFilter.getPartitions()) {
-                String digest = "null";
-                int len = 0;
-                if (status.digest != null) {
-                    digest = Hex.encodeHexString(status.digest);
-                    len = status.digest.length;
-                }
-                partitionListTxt.write(String.format("id: %d bval: %d retry: %b digest: len(%d) %s\n", status.id, status.bval, status.retry, len, digest));
-            }
-            partitionListTxt.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 

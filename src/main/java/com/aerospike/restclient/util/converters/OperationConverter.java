@@ -21,7 +21,7 @@ import com.aerospike.client.Operation;
 import com.aerospike.client.Value;
 import com.aerospike.client.cdt.*;
 import com.aerospike.client.operation.*;
-import com.aerospike.restclient.domain.ctxmodels.RestClientCTX;
+import com.aerospike.restclient.domain.ctxmodels.CTX;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.aerospike.restclient.util.RestClientErrors.InvalidOperationError;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -100,10 +100,9 @@ public class OperationConverter {
             CTX_MAP_KEY_KEY,
             CTX_MAP_KEY_CREATE_KEY,
             CTX_MAP_VALUE_KEY
-    );
+                                                              );
 
     private static ObjectMapper mapper = new ObjectMapper();
-
 
 
     @SuppressWarnings("unchecked")
@@ -632,7 +631,8 @@ public class OperationConverter {
         int returnType = getListReturnType(opValues);
 
         if (count != null) {
-            return ListOperation.getByValueRelativeRankRange(binName, value, rank, count, returnType, extractCTX(opValues));
+            return ListOperation.getByValueRelativeRankRange(binName, value, rank, count, returnType,
+                    extractCTX(opValues));
         } else {
             return ListOperation.getByValueRelativeRankRange(binName, value, rank, returnType, extractCTX(opValues));
         }
@@ -841,7 +841,8 @@ public class OperationConverter {
         Integer count = getCount(opValues);
 
         if (count != null) {
-            return ListOperation.removeByValueRelativeRankRange(binName, value, rank, count, returnType, extractCTX(opValues));
+            return ListOperation.removeByValueRelativeRankRange(binName, value, rank, count, returnType,
+                    extractCTX(opValues));
         }
         return ListOperation.removeByValueRelativeRankRange(binName, value, rank, returnType, extractCTX(opValues));
     }
@@ -1128,7 +1129,8 @@ public class OperationConverter {
         int returnType = getMapReturnType(opValues);
 
         if (count != null) {
-            return MapOperation.getByValueRelativeRankRange(binName, value, rank, count, returnType, extractCTX(opValues));
+            return MapOperation.getByValueRelativeRankRange(binName, value, rank, count, returnType,
+                    extractCTX(opValues));
         }
         return MapOperation.getByValueRelativeRankRange(binName, value, rank, returnType, extractCTX(opValues));
     }
@@ -1254,7 +1256,8 @@ public class OperationConverter {
         Integer count = getCount(opValues);
 
         if (count != null) {
-            return MapOperation.removeByKeyRelativeIndexRange(binName, value, index, count, returnType, extractCTX(opValues));
+            return MapOperation.removeByKeyRelativeIndexRange(binName, value, index, count, returnType,
+                    extractCTX(opValues));
         }
         return MapOperation.removeByKeyRelativeIndexRange(binName, value, index, returnType, extractCTX(opValues));
     }
@@ -1270,7 +1273,8 @@ public class OperationConverter {
         int returnType = getMapReturnType(opValues);
 
         if (count != null) {
-            return MapOperation.removeByValueRelativeRankRange(binName, value, rank, count, returnType, extractCTX(opValues));
+            return MapOperation.removeByValueRelativeRankRange(binName, value, rank, count, returnType,
+                    extractCTX(opValues));
         }
         return MapOperation.removeByValueRelativeRankRange(binName, value, rank, returnType, extractCTX(opValues));
     }
@@ -1694,7 +1698,7 @@ public class OperationConverter {
      * Ensure that opValues does not contain any keys not contained in allowedKeys.
      */
     private static void onlyHasAllowedKeys(Map<String, Object> opValues, String... allowedKeys) {
-        Set<String> allowedKeySet = Stream.concat(Arrays.stream(allowedKeys), CTX_KEYS.stream())
+        Set<String> allowedKeySet = Stream.concat(Arrays.stream(allowedKeys), Arrays.stream(new String[]{"ctx"}))
                 .collect(Collectors.toSet());
 
         for (String providedKey : opValues.keySet()) {
@@ -2168,14 +2172,19 @@ public class OperationConverter {
         }
     }
 
-    private static CTX[] extractCTX(Map<String, Object> opValues) {
-        // TODO: Turn all the Operations.  They can then be automatically deserialized and documented via swagger
+    private static com.aerospike.client.cdt.CTX[] extractCTX(Map<String, Object> opValues) {
+        // TODO: Represent all the Operation with models.  They can then be automatically deserialized and documented via swagger
         List<Map<String, Object>> ctxList = (List<Map<String, Object>>) opValues.get("ctx");
-        return ctxList.stream().map(OperationConverter::mapToCTX).toArray(CTX[]::new);
+
+        if (ctxList == null) {
+            return null;
+        }
+
+        return ctxList.stream().map(OperationConverter::mapToCTX).toArray(com.aerospike.client.cdt.CTX[]::new);
     }
 
-    private static CTX mapToCTX(Map<String, Object> ctxMao) {
-        RestClientCTX restCTX = mapper.convertValue(ctxMao, RestClientCTX.class);
+    private static com.aerospike.client.cdt.CTX mapToCTX(Map<String, Object> ctxMao) {
+        CTX restCTX = mapper.convertValue(ctxMao, CTX.class);
         return restCTX.toCTX();
     }
 }
