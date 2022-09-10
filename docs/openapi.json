@@ -12324,18 +12324,18 @@
       "RestClientCTX": {
         "type": "object",
         "properties": {
-          "ctxType": {
+          "type": {
             "type": "string"
           }
         },
         "description": "TODO",
         "discriminator": {
-          "propertyName": "ctxType"
+          "propertyName": "type"
         }
       },
       "RestClientCTXListIndex": {
         "required": [
-          "ctxType",
+          "type",
           "index"
         ],
         "type": "object",
@@ -12346,7 +12346,7 @@
           {
             "type": "object",
             "properties": {
-              "ctxType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -12364,7 +12364,7 @@
       },
       "RestClientCTXListIndexCreate": {
         "required": [
-          "ctxType",
+          "type",
           "index"
         ],
         "type": "object",
@@ -12375,7 +12375,7 @@
           {
             "type": "object",
             "properties": {
-              "ctxType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -12405,7 +12405,7 @@
       },
       "RestClientCTXListRank": {
         "required": [
-          "ctxType",
+          "type",
           "rank"
         ],
         "type": "object",
@@ -12416,7 +12416,7 @@
           {
             "type": "object",
             "properties": {
-              "ctxType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -12434,7 +12434,7 @@
       },
       "RestClientCTXListValue": {
         "required": [
-          "ctxType",
+          "type",
           "value"
         ],
         "type": "object",
@@ -12445,7 +12445,7 @@
           {
             "type": "object",
             "properties": {
-              "ctxType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -12462,7 +12462,7 @@
       },
       "RestClientCTXMapIndex": {
         "required": [
-          "ctxType",
+          "type",
           "index"
         ],
         "type": "object",
@@ -12473,7 +12473,7 @@
           {
             "type": "object",
             "properties": {
-              "ctxType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -12491,7 +12491,7 @@
       },
       "RestClientCTXMapKey": {
         "required": [
-          "ctxType",
+          "type",
           "key"
         ],
         "type": "object",
@@ -12502,7 +12502,7 @@
           {
             "type": "object",
             "properties": {
-              "ctxType": {
+              "type": {
                 "type": "string",
                 "description": "TODOs",
                 "enum": [
@@ -12519,7 +12519,7 @@
       },
       "RestClientCTXMapKeyCreate": {
         "required": [
-          "ctxType",
+          "type",
           "key"
         ],
         "type": "object",
@@ -12530,7 +12530,7 @@
           {
             "type": "object",
             "properties": {
-              "ctxType": {
+              "type": {
                 "type": "string",
                 "description": "TODOs",
                 "enum": [
@@ -12556,7 +12556,7 @@
       },
       "RestClientCTXMapRank": {
         "required": [
-          "ctxType",
+          "type",
           "rank"
         ],
         "type": "object",
@@ -12567,7 +12567,7 @@
           {
             "type": "object",
             "properties": {
-              "ctxType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -12585,7 +12585,7 @@
       },
       "RestClientCTXMapValue": {
         "required": [
-          "ctxType",
+          "type",
           "value"
         ],
         "type": "object",
@@ -12596,7 +12596,7 @@
           {
             "type": "object",
             "properties": {
-              "ctxType": {
+              "type": {
                 "type": "string",
                 "description": "TODOs",
                 "enum": [
@@ -12615,7 +12615,7 @@
         "required": [
           "binName",
           "ctx",
-          "filterType",
+          "type",
           "value"
         ],
         "type": "object",
@@ -12626,7 +12626,7 @@
           {
             "type": "object",
             "properties": {
-              "filterType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -12656,7 +12656,7 @@
         "required": [
           "binName",
           "ctx",
-          "filterType",
+          "type",
           "value"
         ],
         "type": "object",
@@ -12667,7 +12667,7 @@
           {
             "type": "object",
             "properties": {
-              "filterType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -12686,7 +12686,7 @@
         "required": [
           "binName",
           "ctx",
-          "filterType",
+          "type",
           "point"
         ],
         "type": "object",
@@ -12697,7 +12697,7 @@
           {
             "type": "object",
             "properties": {
-              "filterType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -12727,7 +12727,7 @@
         "required": [
           "binName",
           "ctx",
-          "filterType",
+          "type",
           "latitude",
           "longitude",
           "radius"
@@ -12740,7 +12740,7 @@
           {
             "type": "object",
             "properties": {
-              "filterType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -12770,7 +12770,7 @@
         "required": [
           "binName",
           "ctx",
-          "filterType",
+          "type",
           "region"
         ],
         "type": "object",
@@ -12781,7 +12781,7 @@
           {
             "type": "object",
             "properties": {
-              "filterType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -12813,7 +12813,7 @@
           "binName",
           "ctx",
           "end",
-          "filterType"
+          "type"
         ],
         "type": "object",
         "allOf": [
@@ -12823,7 +12823,7 @@
           {
             "type": "object",
             "properties": {
-              "filterType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -12890,7 +12890,7 @@
         "required": [
           "binName",
           "ctx",
-          "filterType"
+          "type"
         ],
         "type": "object",
         "properties": {
@@ -12933,13 +12933,13 @@
               ]
             }
           },
-          "filterType": {
+          "type": {
             "type": "string"
           }
         },
         "description": "Query Filter.",
         "discriminator": {
-          "propertyName": "filterType"
+          "propertyName": "type"
         }
       },
       "Pagination": {
@@ -13248,7 +13248,7 @@
       },
       "RestClientBatchDeleteBody": {
         "required": [
-          "batchType",
+          "type",
           "key"
         ],
         "type": "object",
@@ -13259,7 +13259,7 @@
           {
             "type": "object",
             "properties": {
-              "batchType": {
+              "type": {
                 "type": "string",
                 "description": "List of bins to limit the record response to.",
                 "enum": [
@@ -13315,7 +13315,7 @@
       },
       "RestClientBatchReadBody": {
         "required": [
-          "batchType",
+          "type",
           "key"
         ],
         "type": "object",
@@ -13345,7 +13345,7 @@
               "policy": {
                 "$ref": "#/components/schemas/RestClientBatchReadPolicy"
               },
-              "batchType": {
+              "type": {
                 "type": "string",
                 "description": "TODO",
                 "enum": [
@@ -13386,7 +13386,7 @@
       },
       "RestClientBatchRecordBody": {
         "required": [
-          "batchType",
+          "type",
           "key"
         ],
         "type": "object",
@@ -13394,17 +13394,17 @@
           "key": {
             "$ref": "#/components/schemas/RestClientKey"
           },
-          "batchType": {
+          "type": {
             "type": "string"
           }
         },
         "discriminator": {
-          "propertyName": "batchType"
+          "propertyName": "type"
         }
       },
       "RestClientBatchUDFBody": {
         "required": [
-          "batchType",
+          "type",
           "functionName",
           "key",
           "packageName"
@@ -13417,7 +13417,7 @@
           {
             "type": "object",
             "properties": {
-              "batchType": {
+              "type": {
                 "type": "string",
                 "description": "List of bins to limit the record response to.",
                 "enum": [
@@ -13480,7 +13480,7 @@
       },
       "RestClientBatchWriteBody": {
         "required": [
-          "batchType",
+          "type",
           "key",
           "opsList"
         ],
@@ -13492,7 +13492,7 @@
           {
             "type": "object",
             "properties": {
-              "batchType": {
+              "type": {
                 "type": "string",
                 "description": "List of bins to limit the record response to.",
                 "enum": [

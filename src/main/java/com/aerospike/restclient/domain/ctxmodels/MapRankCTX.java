@@ -14,7 +14,7 @@ public class MapRankCTX extends CTX {
             allowableValues = AerospikeAPIConstants.MAP_RANK,
             required = true
     )
-    public final String ctxType = AerospikeAPIConstants.MAP_RANK;
+    public final String type = AerospikeAPIConstants.MAP_RANK;
 
     @Schema(
             description = "* 0 = smallest value\n" +

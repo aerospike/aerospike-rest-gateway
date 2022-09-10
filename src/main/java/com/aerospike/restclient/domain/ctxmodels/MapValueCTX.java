@@ -19,7 +19,7 @@ public class MapValueCTX extends CTX {
             required = true
     )
     @JsonProperty(required = true)
-    public final String ctxType = AerospikeAPIConstants.MAP_VALUE;
+    public final String type = AerospikeAPIConstants.MAP_VALUE;
 
     @Schema(required = true)
     @JsonDeserialize(using = ObjectDeserializer.class)

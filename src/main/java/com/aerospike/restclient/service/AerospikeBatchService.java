@@ -18,12 +18,12 @@ package com.aerospike.restclient.service;
 
 import com.aerospike.client.policy.BatchPolicy;
 import com.aerospike.restclient.domain.auth.AuthDetails;
-import com.aerospike.restclient.domain.batchmodels.BatchRecordRequest;
+import com.aerospike.restclient.domain.batchmodels.BatchRecord;
 import com.aerospike.restclient.domain.batchmodels.BatchResponseBody;
 
 import java.util.List;
 
 public interface AerospikeBatchService {
-    BatchResponseBody batch(AuthDetails authDetails, List<BatchRecordRequest> batchKeys,
+    BatchResponseBody batch(AuthDetails authDetails, List<BatchRecord> batchKeys,
                             BatchPolicy policy);
 }

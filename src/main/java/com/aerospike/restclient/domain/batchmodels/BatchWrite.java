@@ -1,6 +1,5 @@
 package com.aerospike.restclient.domain.batchmodels;
 
-import com.aerospike.client.BatchWrite;
 import com.aerospike.client.Operation;
 import com.aerospike.restclient.domain.RestClientOperation;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
@@ -12,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Schema(
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
                         "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.1/com/aerospike/client/BatchWrite.html"
         )
 )
-public class BatchWriteRequest extends BatchRecordRequest {
+public class BatchWrite extends BatchRecord {
 
     @Schema(
             description = "List of bins to limit the record response to.",
@@ -29,31 +29,29 @@ public class BatchWriteRequest extends BatchRecordRequest {
             required = true
     )
     @JsonProperty(required = true)
-    public final String batchType = AerospikeAPIConstants.BATCH_TYPE_WRITE;
+    public final String type = AerospikeAPIConstants.BATCH_TYPE_WRITE;
 
     @Schema(description = "List of operation.")
-    @JsonProperty(required = true)
     public List<RestClientOperation> opsList;
 
     @Schema(description = "Policy attributes used for this batch write operation.")
     public BatchWritePolicy policy;
 
-    public BatchWriteRequest() {
+    public BatchWrite() {
     }
 
-    public BatchWrite toBatchRecord() {
+    public com.aerospike.client.BatchWrite toBatchRecord() {
         if (key == null) {
             throw new RestClientErrors.InvalidKeyError("Key for a batch write may not be null");
         }
+
+        com.aerospike.client.policy.BatchWritePolicy batchWritePolicy = Optional.ofNullable(policy).map(
+                BatchWritePolicy::toBatchWritePolicy).orElse(null);
 
         List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap)
                 .collect(Collectors.toList());
         Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
 
-        if (policy == null) {
-            return new BatchWrite(key.toKey(), operations);
-        }
-
-        return new BatchWrite(policy.toBatchWritePolicy(), key.toKey(), operations);
+        return new com.aerospike.client.BatchWrite(batchWritePolicy, key.toKey(), operations);
     }
 }

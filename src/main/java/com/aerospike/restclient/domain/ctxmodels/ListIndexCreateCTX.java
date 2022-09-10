@@ -13,7 +13,7 @@ public class ListIndexCreateCTX extends CTX {
             allowableValues = AerospikeAPIConstants.LIST_INDEX_CREATE,
             required = true
     )
-    public final String ctxType = AerospikeAPIConstants.LIST_INDEX_CREATE;
+    public final String type = AerospikeAPIConstants.LIST_INDEX_CREATE;
 
     @Schema(
             description = "If the index is negative, the resolved index starts backwards from end of list. If an index is out of bounds, a parameter error will be returned. Examples:\n" +

@@ -16,7 +16,9 @@
  */
 package com.aerospike.restclient.domain.batchmodels;
 
-import com.aerospike.client.*;
+import com.aerospike.client.Key;
+import com.aerospike.client.Operation;
+import com.aerospike.client.Value;
 import com.aerospike.client.policy.CommitLevel;
 import com.aerospike.client.policy.RecordExistsAction;
 import com.aerospike.restclient.ASTestMapper;
@@ -66,7 +68,7 @@ public class RestClientBatchBodyTest {
      */
     @Test
     public void testReadNoArgConstructor() {
-        new BatchReadRequest();
+        new BatchRead();
     }
 
     @Test
@@ -75,7 +77,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchReadBase();
         batchMap.put("key", keyMap);
 
-        BatchReadRequest mappedBody = (BatchReadRequest) mapper.bytesToObject(
+        BatchRead mappedBody = (BatchRead) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         Assert.assertTrue(mappedBody.readAllBins);
@@ -93,7 +95,7 @@ public class RestClientBatchBodyTest {
         String[] bins = {"a", "b", "c"};
         batchMap.put("binNames", bins);
 
-        BatchReadRequest mappedBody = (BatchReadRequest) mapper.bytesToObject(
+        BatchRead mappedBody = (BatchRead) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         Assert.assertTrue(mappedBody.readAllBins);
@@ -109,7 +111,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchReadBase();
         batchMap.put("key", keyMap);
 
-        BatchReadRequest mappedBody = (BatchReadRequest) mapper.bytesToObject(
+        BatchRead mappedBody = (BatchRead) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         Assert.assertTrue(mappedBody.readAllBins);
@@ -125,7 +127,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchReadBase();
         batchMap.put("key", keyMap);
 
-        BatchReadRequest mappedBody = (BatchReadRequest) mapper.bytesToObject(
+        BatchRead mappedBody = (BatchRead) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         Assert.assertTrue(mappedBody.readAllBins);
@@ -141,7 +143,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchReadBase();
         batchMap.put("key", keyMap);
 
-        BatchReadRequest mappedBody = (BatchReadRequest) mapper.bytesToObject(
+        BatchRead mappedBody = (BatchRead) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         Assert.assertTrue(mappedBody.readAllBins);
@@ -156,13 +158,13 @@ public class RestClientBatchBodyTest {
         Key realKey = new Key(ns, set, "test");
         RestClientKey rcKey = new RestClientKey(realKey);
         String[] bins = {"b1", "b2", "b3"};
-        BatchReadRequest rCBRB = new BatchReadRequest();
+        BatchRead rCBRB = new BatchRead();
 
         rCBRB.binNames = bins;
         rCBRB.key = rcKey;
         rCBRB.readAllBins = false;
 
-        BatchRead convertedBatchRead = rCBRB.toBatchRecord();
+        com.aerospike.client.BatchRead convertedBatchRead = rCBRB.toBatchRecord();
 
         Assert.assertFalse(convertedBatchRead.readAllBins);
         Assert.assertTrue(ASTestUtils.compareKeys(realKey, convertedBatchRead.key));
@@ -174,13 +176,13 @@ public class RestClientBatchBodyTest {
         Key realKey = new Key(ns, set, "test");
         RestClientKey rcKey = new RestClientKey(realKey);
         String[] bins = {"b1", "b2", "b3"};
-        BatchReadRequest rCBRB = new BatchReadRequest();
+        BatchRead rCBRB = new BatchRead();
 
         rCBRB.binNames = bins;
         rCBRB.key = rcKey;
         rCBRB.readAllBins = true;
 
-        BatchRead convertedBatchRead = rCBRB.toBatchRecord();
+        com.aerospike.client.BatchRead convertedBatchRead = rCBRB.toBatchRecord();
 
         Assert.assertTrue(convertedBatchRead.readAllBins);
         Assert.assertTrue(ASTestUtils.compareKeys(realKey, convertedBatchRead.key));
@@ -191,11 +193,11 @@ public class RestClientBatchBodyTest {
     public void testConversionToBatchReadWithOnlyKeySet() {
         Key realKey = new Key(ns, set, "test");
         RestClientKey rcKey = new RestClientKey(realKey);
-        BatchReadRequest rCBRB = new BatchReadRequest();
+        BatchRead rCBRB = new BatchRead();
 
         rCBRB.key = rcKey;
 
-        BatchRead convertedBatchRead = rCBRB.toBatchRecord();
+        com.aerospike.client.BatchRead convertedBatchRead = rCBRB.toBatchRecord();
 
         Assert.assertFalse(convertedBatchRead.readAllBins);
         Assert.assertTrue(ASTestUtils.compareKeys(realKey, convertedBatchRead.key));
@@ -204,7 +206,7 @@ public class RestClientBatchBodyTest {
 
     @Test(expected = RestClientErrors.InvalidKeyError.class)
     public void testConversionWithNullKey() {
-        BatchReadRequest rCBRB = new BatchReadRequest();
+        BatchRead rCBRB = new BatchRead();
         rCBRB.key = null;
         rCBRB.toBatchRecord();
     }
@@ -215,7 +217,7 @@ public class RestClientBatchBodyTest {
 
     @Test
     public void testWriteNoArgConstructor() {
-        new BatchWriteRequest();
+        new BatchWrite();
     }
 
     @Test
@@ -224,7 +226,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchWriteBase();
         batchMap.put("key", keyMap);
 
-        BatchWriteRequest mappedBody = (BatchWriteRequest) mapper.bytesToObject(
+        BatchWrite mappedBody = (BatchWrite) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -258,7 +260,7 @@ public class RestClientBatchBodyTest {
         expectedBatchMap.put("key", keyMap);
         expectedBatchMap.put("opsList", expectedOpsListMap);
 
-        BatchWriteRequest actualBody = (BatchWriteRequest) mapper.bytesToObject(
+        BatchWrite actualBody = (BatchWrite) mapper.bytesToObject(
                 mapper.objectToBytes(expectedBatchMap));
         List<Map<String, Object>> actualBodyOpsList = actualBody.opsList.stream().map(RestClientOperation::toMap)
                 .collect(Collectors.toList());
@@ -281,7 +283,7 @@ public class RestClientBatchBodyTest {
         expectedBatchMap.put("key", keyMap);
         expectedBatchMap.put("policy", batchWritePolicy);
 
-        BatchWriteRequest actualBody = (BatchWriteRequest) mapper.bytesToObject(
+        BatchWrite actualBody = (BatchWrite) mapper.bytesToObject(
                 mapper.objectToBytes(expectedBatchMap));
         List<Map<String, Object>> actualBodyOpsList = actualBody.opsList.stream().map(RestClientOperation::toMap)
                 .collect(Collectors.toList());
@@ -298,7 +300,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchWriteBase();
         batchMap.put("key", keyMap);
 
-        BatchWriteRequest mappedBody = (BatchWriteRequest) mapper.bytesToObject(
+        BatchWrite mappedBody = (BatchWrite) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -313,7 +315,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchWriteBase();
         batchMap.put("key", keyMap);
 
-        BatchWriteRequest mappedBody = (BatchWriteRequest) mapper.bytesToObject(
+        BatchWrite mappedBody = (BatchWrite) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -328,7 +330,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchWriteBase();
         batchMap.put("key", keyMap);
 
-        BatchWriteRequest mappedBody = (BatchWriteRequest) mapper.bytesToObject(
+        BatchWrite mappedBody = (BatchWrite) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -354,12 +356,12 @@ public class RestClientBatchBodyTest {
         opsList.add(new RestClientOperation(AerospikeOperation.ADD, op1Vals));
         opsList.add(new RestClientOperation(AerospikeOperation.PUT, op2Vals));
 
-        BatchWriteRequest rCBRB = new BatchWriteRequest();
+        BatchWrite rCBRB = new BatchWrite();
 
         rCBRB.key = rcKey;
         rCBRB.opsList = opsList;
 
-        BatchWrite convertedBatchWrite = rCBRB.toBatchRecord();
+        com.aerospike.client.BatchWrite convertedBatchWrite = rCBRB.toBatchRecord();
 
         Assert.assertTrue(ASTestUtils.compareKeys(realKey, convertedBatchWrite.key));
         Assert.assertNull(convertedBatchWrite.policy);
@@ -390,7 +392,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchUDFBase();
         batchMap.put("key", keyMap);
 
-        BatchUDFRequest mappedBody = (BatchUDFRequest) mapper.bytesToObject(
+        BatchUDF mappedBody = (BatchUDF) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -415,7 +417,7 @@ public class RestClientBatchBodyTest {
         batchMap.put("key", keyMap);
         batchMap.put("functionArgs", expectedFunctionArgs);
 
-        BatchUDFRequest mappedBody = (BatchUDFRequest) mapper.bytesToObject(
+        BatchUDF mappedBody = (BatchUDF) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -437,7 +439,7 @@ public class RestClientBatchBodyTest {
         expectedBatchMap.put("key", keyMap);
         expectedBatchMap.put("policy", batchUDFPolicy);
 
-        BatchUDFRequest actualBody = (BatchUDFRequest) mapper.bytesToObject(
+        BatchUDF actualBody = (BatchUDF) mapper.bytesToObject(
                 mapper.objectToBytes(expectedBatchMap));
         RestClientKey actualKey = actualBody.key;
 
@@ -451,7 +453,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchUDFBase();
         batchMap.put("key", keyMap);
 
-        BatchUDFRequest mappedBody = (BatchUDFRequest) mapper.bytesToObject(
+        BatchUDF mappedBody = (BatchUDF) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -465,7 +467,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchUDFBase();
         batchMap.put("key", keyMap);
 
-        BatchUDFRequest mappedBody = (BatchUDFRequest) mapper.bytesToObject(
+        BatchUDF mappedBody = (BatchUDF) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -479,7 +481,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchUDFBase();
         batchMap.put("key", keyMap);
 
-        BatchUDFRequest mappedBody = (BatchUDFRequest) mapper.bytesToObject(
+        BatchUDF mappedBody = (BatchUDF) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -498,7 +500,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchDeleteBase();
         batchMap.put("key", keyMap);
 
-        BatchDeleteRequest mappedBody = (BatchDeleteRequest) mapper.bytesToObject(
+        BatchDelete mappedBody = (BatchDelete) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -514,7 +516,7 @@ public class RestClientBatchBodyTest {
 
         batchMap.put("key", keyMap);
 
-        BatchDeleteRequest mappedBody = (BatchDeleteRequest) mapper.bytesToObject(
+        BatchDelete mappedBody = (BatchDelete) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -533,7 +535,7 @@ public class RestClientBatchBodyTest {
         expectedBatchMap.put("key", keyMap);
         expectedBatchMap.put("policy", batchDeletePolicy);
 
-        BatchDeleteRequest actualBody = (BatchDeleteRequest) mapper.bytesToObject(
+        BatchDelete actualBody = (BatchDelete) mapper.bytesToObject(
                 mapper.objectToBytes(expectedBatchMap));
         RestClientKey actualKey = actualBody.key;
 
@@ -547,7 +549,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchDeleteBase();
         batchMap.put("key", keyMap);
 
-        BatchDeleteRequest mappedBody = (BatchDeleteRequest) mapper.bytesToObject(
+        BatchDelete mappedBody = (BatchDelete) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -561,7 +563,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchDeleteBase();
         batchMap.put("key", keyMap);
 
-        BatchDeleteRequest mappedBody = (BatchDeleteRequest) mapper.bytesToObject(
+        BatchDelete mappedBody = (BatchDelete) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -575,7 +577,7 @@ public class RestClientBatchBodyTest {
         Map<String, Object> batchMap = getBatchDeleteBase();
         batchMap.put("key", keyMap);
 
-        BatchDeleteRequest mappedBody = (BatchDeleteRequest) mapper.bytesToObject(
+        BatchDelete mappedBody = (BatchDelete) mapper.bytesToObject(
                 mapper.objectToBytes(batchMap));
 
         RestClientKey rcKey = mappedBody.key;
@@ -586,7 +588,7 @@ public class RestClientBatchBodyTest {
     /* HELPERS */
     private Map<String, Object> getBatchReadBase() {
         Map<String, Object> batchMap = new HashMap<>();
-        batchMap.put("batchType", "READ");
+        batchMap.put("type", "READ");
         batchMap.put("readAllBins", true);
         batchMap.put("binNames", new String[]{});
         return batchMap;
@@ -595,14 +597,14 @@ public class RestClientBatchBodyTest {
 
     private Map<String, Object> getBatchWriteBase() {
         Map<String, Object> batchMap = new HashMap<>();
-        batchMap.put("batchType", "WRITE");
+        batchMap.put("type", "WRITE");
         batchMap.put("opsList", new ArrayList<>());
         return batchMap;
     }
 
     private Map<String, Object> getBatchUDFBase() {
         Map<String, Object> batchMap = new HashMap<>();
-        batchMap.put("batchType", "UDF");
+        batchMap.put("type", "UDF");
         batchMap.put("packageName", udfPkg);
         batchMap.put("functionName", udfFunc);
         return batchMap;
@@ -610,7 +612,7 @@ public class RestClientBatchBodyTest {
 
     private Map<String, Object> getBatchDeleteBase() {
         Map<String, Object> batchMap = new HashMap<>();
-        batchMap.put("batchType", AerospikeAPIConstants.BATCH_TYPE_DELETE);
+        batchMap.put("type", AerospikeAPIConstants.BATCH_TYPE_DELETE);
         return batchMap;
     }
 
@@ -631,13 +633,13 @@ public class RestClientBatchBodyTest {
 class JsonRestClientBatchRecordBodyMapper extends ASTestMapper {
 
     public JsonRestClientBatchRecordBodyMapper() {
-        super(JSONMessageConverter.getJSONObjectMapper(), BatchRecordRequest.class);
+        super(JSONMessageConverter.getJSONObjectMapper(), BatchRecord.class);
     }
 }
 
 class MsgPackRestClientBatchRecordBodyMapper extends ASTestMapper {
 
     public MsgPackRestClientBatchRecordBodyMapper() {
-        super(MsgPackConverter.getASMsgPackObjectMapper(), BatchRecordRequest.class);
+        super(MsgPackConverter.getASMsgPackObjectMapper(), BatchRecord.class);
     }
 }

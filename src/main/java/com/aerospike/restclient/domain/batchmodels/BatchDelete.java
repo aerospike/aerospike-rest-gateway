@@ -1,10 +1,11 @@
 package com.aerospike.restclient.domain.batchmodels;
 
-import com.aerospike.client.BatchDelete;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.RestClientErrors;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.Optional;
 
 @Schema(
         description = "An object that describes a batch delete operation to be used in a batch request.",
@@ -13,31 +14,30 @@ import io.swagger.v3.oas.annotations.media.Schema;
                         "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.1/com/aerospike/client/BatchDelete.html"
         )
 )
-public class BatchDeleteRequest extends BatchRecordRequest {
+public class BatchDelete extends BatchRecord {
     @Schema(
             description = "The type of batch request. It is always " + AerospikeAPIConstants.BATCH_TYPE_DELETE,
             allowableValues = AerospikeAPIConstants.BATCH_TYPE_DELETE,
             required = true
     )
-    public final String batchType = AerospikeAPIConstants.BATCH_TYPE_DELETE;
+    public final String type = AerospikeAPIConstants.BATCH_TYPE_DELETE;
 
     @Schema(description = "Policy attributes used for this batch delete operation.")
     public BatchDeletePolicy policy;
 
-    public BatchDeleteRequest() {
+    public BatchDelete() {
     }
 
     @Override
-    public BatchDelete toBatchRecord() {
+    public com.aerospike.client.BatchDelete toBatchRecord() {
         if (key == null) {
             throw new RestClientErrors.InvalidKeyError("Key for a batch delete may not be null");
         }
 
-        if (policy == null) {
-            return new BatchDelete(key.toKey());
-        }
+        com.aerospike.client.policy.BatchDeletePolicy batchDeletePolicy = Optional.ofNullable(policy).map(
+                BatchDeletePolicy::toBatchDeletePolicy).orElse(null);
 
-        return new BatchDelete(policy.toBatchDeletePolicy(), key.toKey());
+        return new com.aerospike.client.BatchDelete(batchDeletePolicy, key.toKey());
     }
 }
 

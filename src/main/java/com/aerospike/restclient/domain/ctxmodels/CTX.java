@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "ctxType")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
         {
                 @JsonSubTypes.Type(value = ListIndexCTX.class, name = AerospikeAPIConstants.LIST_INDEX),
@@ -39,7 +39,7 @@ abstract public class CTX {
             AerospikeAPIConstants.LIST_INDEX_CREATE
     }, required = true
     )
-    public final String ctxType = null;
+    public final String type = null;
 
     abstract public com.aerospike.client.cdt.CTX toCTX();
 }

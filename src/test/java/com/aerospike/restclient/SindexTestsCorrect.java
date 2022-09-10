@@ -25,12 +25,7 @@ import com.aerospike.restclient.domain.RestClientIndex;
 import com.aerospike.restclient.util.InfoResponseParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -131,7 +126,8 @@ public class SindexTestsCorrect {
 
         String idxInfos = Info.request(null, client.getNodes()[0], "sindex/" + testNS);
         List<Map<String, String>> idxInfoMaps = InfoResponseParser.getIndexInformation(idxInfos);
-        List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).collect(Collectors.toList());
+        List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).collect(
+                Collectors.toList());
 
         Assert.assertTrue(indexesContain(existingIndexes, postTestIdx));
     }
@@ -152,7 +148,8 @@ public class SindexTestsCorrect {
 
         String idxInfos = Info.request(null, client.getNodes()[0], "sindex/" + testNS);
         List<Map<String, String>> idxInfoMaps = InfoResponseParser.getIndexInformation(idxInfos);
-        List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).collect(Collectors.toList());
+        List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).collect(
+                Collectors.toList());
 
         Assert.assertTrue(indexesContain(existingIndexes, postTestIdx));
     }
@@ -172,7 +169,8 @@ public class SindexTestsCorrect {
 
         String idxInfos = Info.request(null, client.getNodes()[0], "sindex/" + testNS);
         List<Map<String, String>> idxInfoMaps = InfoResponseParser.getIndexInformation(idxInfos);
-        List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).collect(Collectors.toList());
+        List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).collect(
+                Collectors.toList());
 
         Assert.assertTrue(indexesContain(existingIndexes, postTestIdx));
     }
@@ -194,7 +192,8 @@ public class SindexTestsCorrect {
     public void getIndexStats() throws Exception {
         addIndexForTest("getIndexstat", "getIndexstat");
 
-        Map<String, String> restIndexStatMap = handler.getIndexStats(mockMVC, endpoint + "/" + testNS + "/" + testIndexName);
+        Map<String, String> restIndexStatMap = handler.getIndexStats(mockMVC,
+                endpoint + "/" + testNS + "/" + testIndexName);
         String indexStat = Info.request(null, client.getNodes()[0], "sindex/" + testNS + "/" + testIndexName);
         Map<String, String> indexStatMap = InfoResponseParser.getIndexStatInfo(indexStat);
 
@@ -310,15 +309,15 @@ class MsgPackIndexHandler implements RestIndexHandler {
     @Override
     public void testIndexNotFound(MockMvc mockMVC, String endpoint) throws Exception {
         mockMVC.perform(get(endpoint).accept(mediaType))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isNotFound());
     }
 
     @Override
     public void createIndex(MockMvc mockMVC, String endpoint, RestClientIndex idx) throws Exception {
         byte[] indexPayload = mapper.writeValueAsBytes(idx);
         mockMVC.perform(post(endpoint).
-                contentType(mediaType)
-                .content(indexPayload))
+                        contentType(mediaType)
+                        .content(indexPayload))
                 .andExpect(status().isAccepted());
     }
 
@@ -351,15 +350,15 @@ class JSONIndexHandler implements RestIndexHandler {
     @Override
     public void testIndexNotFound(MockMvc mockMVC, String endpoint) throws Exception {
         mockMVC.perform(get(endpoint).accept(mediaType))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isNotFound());
     }
 
     @Override
     public void createIndex(MockMvc mockMVC, String endpoint, RestClientIndex idx) throws Exception {
         String indexPayload = mapper.writeValueAsString(idx);
         mockMVC.perform(post(endpoint).
-                contentType(mediaType)
-                .content(indexPayload))
+                        contentType(mediaType)
+                        .content(indexPayload))
                 .andExpect(status().isAccepted());
     }
 

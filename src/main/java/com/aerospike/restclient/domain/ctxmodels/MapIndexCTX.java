@@ -16,7 +16,7 @@ public class MapIndexCTX extends CTX {
             required = true
     )
     @JsonProperty(required = true)
-    public final String ctxType = AerospikeAPIConstants.MAP_INDEX;
+    public final String type = AerospikeAPIConstants.MAP_INDEX;
 
     @Schema(
             description = "If the index is negative, the resolved index starts backwards from end of list. If an index is out of bounds, a parameter error will be returned. Examples:\n" +

@@ -20,11 +20,7 @@ import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -47,77 +43,77 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class RecordPostErrorTests {
 
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
+    @ClassRule
+    public static final SpringClassRule springClassRule = new SpringClassRule();
 
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-	@Autowired
-	private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-	private MockMvc mockMVC;
+    private MockMvc mockMVC;
 
-	@Autowired
-	private AerospikeClient client;
+    @Autowired
+    private AerospikeClient client;
 
-	@Autowired
-	private WebApplicationContext wac;
+    @Autowired
+    private WebApplicationContext wac;
 
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[] {true, false};
-	}
+    @Parameters
+    public static Object[] getParams() {
+        return new Object[]{true, false};
+    }
 
-	private final String nonExistentNSEndpoint;
-	private final String existingRecordEndpoint;
-	private final Key testKey;
+    private final String nonExistentNSEndpoint;
+    private final String existingRecordEndpoint;
+    private final Key testKey;
 
-	public RecordPostErrorTests(boolean useSet) {
-		if (useSet) {
-			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
-			existingRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
-			testKey = new Key("test", "junit", "getput");
-		} else {
-			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
-			existingRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "getput");
-			testKey = new Key("test", null, "getput");
-		}
-	}
+    public RecordPostErrorTests(boolean useSet) {
+        if (useSet) {
+            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
+            existingRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
+            testKey = new Key("test", "junit", "getput");
+        } else {
+            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
+            existingRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "getput");
+            testKey = new Key("test", null, "getput");
+        }
+    }
 
-	@Before
-	public void setup() {
-		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-		Bin baseBin = new Bin("initial", "bin");
-		client.put(null, testKey, baseBin);
-	}
+    @Before
+    public void setup() {
+        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+        Bin baseBin = new Bin("initial", "bin");
+        client.put(null, testKey, baseBin);
+    }
 
-	@After
-	public void clean() {
-		client.delete(null, testKey);
-	}
+    @After
+    public void clean() {
+        client.delete(null, testKey);
+    }
 
-	@Test
-	public void PostRecordToInvalidNamespace() throws Exception {
-		Map<String, Object> binMap = new HashMap<>();
-		binMap.put("integer", 12345);
+    @Test
+    public void PostRecordToInvalidNamespace() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
+        binMap.put("integer", 12345);
 
-		mockMVC.perform(post(nonExistentNSEndpoint)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(binMap)))
-		.andExpect(status().isInternalServerError());
-	}
+        mockMVC.perform(post(nonExistentNSEndpoint)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(binMap)))
+                .andExpect(status().isNotFound());
+    }
 
-	@Test
-	public void PostRecordToExistingKey() throws Exception {
-		Map<String, Object> binMap = new HashMap<>();
+    @Test
+    public void PostRecordToExistingKey() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
 
-		binMap.put("string", "Aerospike");
+        binMap.put("string", "Aerospike");
 
-		mockMVC.perform(post(existingRecordEndpoint)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(binMap))
-				).andExpect(status().isConflict());
-	}
+        mockMVC.perform(post(existingRecordEndpoint)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(binMap))
+                       ).andExpect(status().isConflict());
+    }
 
 }

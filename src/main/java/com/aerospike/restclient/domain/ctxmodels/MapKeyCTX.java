@@ -19,7 +19,7 @@ public class MapKeyCTX extends CTX {
             required = true
     )
     @JsonProperty(required = true)
-    public final String ctxType = AerospikeAPIConstants.MAP_KEY;
+    public final String type = AerospikeAPIConstants.MAP_KEY;
 
     @JsonDeserialize(using = ObjectDeserializer.class)
     @Schema(description = "String, Integer, or ByteArraySpecifiedType", required = true, example = "my-user-key")

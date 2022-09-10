@@ -544,7 +544,7 @@ public class BatchCorrectTests {
             batchObj.put("readAllBins", true);
         }
 
-        batchObj.put("batchType", "READ");
+        batchObj.put("type", "READ");
         batchObj.put("key", keyToMap(key, keyType));
         return batchObj;
     }
@@ -559,7 +559,7 @@ public class BatchCorrectTests {
             batchObj.put("policy", mapper.convertValue(policy, Map.class));
         }
 
-        batchObj.put("batchType", "WRITE");
+        batchObj.put("type", "WRITE");
         batchObj.put("key", keyToMap(key, keyType));
         batchObj.put("opsList", opsList);
         return batchObj;
@@ -574,7 +574,7 @@ public class BatchCorrectTests {
             batchObj.put("policy", policy);
         }
 
-        batchObj.put("batchType", "UDF");
+        batchObj.put("type", "UDF");
         batchObj.put("key", keyToMap(key, keyType));
         batchObj.put("packageName", packageName);
         batchObj.put("functionName", functionName);
@@ -592,7 +592,7 @@ public class BatchCorrectTests {
         }
 
         batchObj.put("key", keyToMap(key, keyType));
-        batchObj.put("batchType", "DELETE");
+        batchObj.put("type", "DELETE");
         return batchObj;
     }
 

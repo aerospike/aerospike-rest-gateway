@@ -19,7 +19,7 @@ package com.aerospike.restclient.controllers;
 import com.aerospike.client.policy.BatchPolicy;
 import com.aerospike.restclient.domain.RestClientError;
 import com.aerospike.restclient.domain.auth.AuthDetails;
-import com.aerospike.restclient.domain.batchmodels.BatchRecordRequest;
+import com.aerospike.restclient.domain.batchmodels.BatchRecord;
 import com.aerospike.restclient.domain.batchmodels.BatchRecordResponse;
 import com.aerospike.restclient.domain.batchmodels.BatchResponseBody;
 import com.aerospike.restclient.service.AerospikeBatchService;
@@ -83,7 +83,7 @@ public class BatchController {
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientBatchPolicyQueryParams
-    public BatchResponseBody performBatch(@RequestBody List<BatchRecordRequest> batchRecords,
+    public BatchResponseBody performBatch(@RequestBody List<BatchRecord> batchRecords,
                                           @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                           @RequestHeader(
                                                   value = "Authorization",

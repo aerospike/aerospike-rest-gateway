@@ -1,39 +1,39 @@
 buildscript {
-	ext {
-		springBootVersion = "2.5.12"
-		httpclientVersion = "4.5.13"
-		aerospikeClientVersion = findProperty("aerospikeClientVersion") ?:"6.1.0"
-	}
+    ext {
+        springBootVersion = "2.5.12"
+        httpclientVersion = "4.5.13"
+        aerospikeClientVersion = findProperty("aerospikeClientVersion") ?: "6.1.0"
+    }
     if (findProperty("aerospikeUseLocal")) {
-    print("using Local repo")
+        print("using Local repo")
         repositories {
             mavenLocal()
         }
     }
-    repositories{
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 plugins {
 //	id("org.springframework.boot") version "2.7.0"
-	id("org.springdoc.openapi-gradle-plugin") version "1.4.0"
+    id("org.springdoc.openapi-gradle-plugin") version "1.4.0"
 }
 //
 //openApi {
 //	outputDir.set(file("docs"))
 //}
 
-if ( findProperty("aerospikeUseLocal")) {
-print("using Local repo")
+if (findProperty("aerospikeUseLocal")) {
+    print("using Local repo")
     repositories {
         mavenLocal()
     }
 }
-repositories{
+repositories {
     mavenCentral()
 }
 
@@ -48,33 +48,35 @@ sourceCompatibility = 1.8
 version = appVersion
 
 bootJar {
-	baseName "${jarBaseName}"
-	version "${appVersion}"
+    baseName "${jarBaseName}"
+    version "${appVersion}"
 }
 test {
-	testLogging {
-		events "passed", "skipped", "failed"
-	}
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
 springBoot {
-	buildInfo()
+    buildInfo()
 }
 
 dependencies {
-	implementation('org.msgpack:msgpack-core:0.9.3')
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.aerospike:aerospike-client:${aerospikeClientVersion}")
-	implementation("com.aerospike:aerospike-document-api:1.1.1")
-	implementation("org.msgpack:jackson-dataformat-msgpack:0.9.0")
-	implementation("org.springframework.retry:spring-retry:1.3.1")
-	implementation("org.springframework:spring-aspects:5.3.13")
-	implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:2.0.2")
-	implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
+    implementation('org.msgpack:msgpack-core:0.9.3')
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("com.aerospike:aerospike-client:${aerospikeClientVersion}")
+    implementation("com.aerospike:aerospike-document-api:1.1.1")
+    implementation("org.msgpack:jackson-dataformat-msgpack:0.9.0")
+    implementation("org.springframework.retry:spring-retry:1.3.1")
+    implementation("org.springframework:spring-aspects:5.3.13")
+    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:2.0.2")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
 //	implementation("de.grundid.opendatalab:geojson-jackson:1.14")
-	implementation("javax.inject:javax.inject:1")
-	implementation("com.google.guava:guava:31.0.1-jre")
-	implementation("org.springframework.boot:spring-boot-starter-validation")
-	implementation("org.apache.httpcomponents:httpclient:${httpclientVersion}")
-	testImplementation("junit:junit:4.13.2")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("javax.inject:javax.inject:1")
+    implementation("com.google.guava:guava:31.0.1-jre")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.apache.httpcomponents:httpclient:${httpclientVersion}")
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

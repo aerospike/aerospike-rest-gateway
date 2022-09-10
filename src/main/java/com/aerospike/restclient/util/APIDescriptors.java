@@ -106,7 +106,7 @@ public class APIDescriptors {
     public static final String BATCH_POLICY_READMODEAP_NOTES = POLICY_READMODEAP_NOTES;
 
     // Scan Operation Policies
-    public static final String SCAN_POLICY_MAX_RECORDS_NOTES = "Number of records to return.";
+    public static final String SCAN_POLICY_MAX_RECORDS_NOTES = "Number of records to return. Required for pagination. This number is divided by the number of nodes involved in the query. The actual number of records returned may be less than maxRecords if node record counts are small and unbalanced across nodes.";
 
     public static final String SCAN_POLICY_RECORDS_PER_SECOND_NOTES = "Limit returned records per second (rps) rate for each server.\n" +
             "Do not apply rps limit if recordsPerSecond is zero.";
@@ -128,6 +128,9 @@ public class APIDescriptors {
     // Query Operation Policy
     public static final String QUERY_POLICY_FAIL_ON_CLUSTER_CHANGE = "Terminate query if cluster is in migration state. If the server supports partition queries or the query filter is null (scan), this field is ignored.";
     public static final String QUERY_POLICY_SHORT_QUERY = "Is query expected to return less than 100 records. If true, the server will optimize the query for a small record set. This field is ignored for aggregation queries, background queries and server versions < 6.0.";
+
+    // Query Statement Policy
+    public static final String QUERY_STMT_INDEX_NAME = "Optional query index filter. This filter is applied to the secondary index on query. Query index filters must reference a bin which has a secondary index defined.";
 
     // JSONPath parameters
     public static final String JSON_PATH_NOTES = "JSONPath query parameter.";

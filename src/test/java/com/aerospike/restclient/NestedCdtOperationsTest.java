@@ -128,7 +128,7 @@ public class NestedCdtOperationsTest {
         opValues.put("bin", "list");
         opValues.put("value", 100);
 
-        item.put("ctxType", "listIndex");
+        item.put("type", "listIndex");
         item.put("index", -1);
         ctx.add(item);
         opValues.put("ctx", ctx);
@@ -156,7 +156,7 @@ public class NestedCdtOperationsTest {
         opValues.put("bin", "list");
         opValues.put("value", 100);
 
-        item.put("ctxType", "listValue");
+        item.put("type", "listValue");
         item.put("value", l2);
         ctx.add(item);
         opValues.put("ctx", ctx);
@@ -184,7 +184,7 @@ public class NestedCdtOperationsTest {
         opValues.put("key", "one");
         opValues.put("value", 11);
 
-        item.put("ctxType", "mapKey");
+        item.put("type", "mapKey");
         item.put("key", "m1");
         ctx.add(item);
         opValues.put("ctx", ctx);
@@ -213,7 +213,7 @@ public class NestedCdtOperationsTest {
         opValues.put("key", "one");
         opValues.put("value", 11);
 
-        item.put("ctxType", "mapRank");
+        item.put("type", "mapRank");
         item.put("rank", 1);
         ctx.add(item);
         opValues.put("ctx", ctx);
@@ -243,11 +243,11 @@ public class NestedCdtOperationsTest {
         opValues.put("key", "two");
         opValues.put("value", 11);
 
-        item1.put("ctxType", "mapKey");
+        item1.put("type", "mapKey");
         item1.put("key", "m2");
         ctx.add(item1);
 
-        item2.put("ctxType", "mapKey");
+        item2.put("type", "mapKey");
         item2.put("key", "m3");
         ctx.add(item2);
         opValues.put("ctx", ctx);

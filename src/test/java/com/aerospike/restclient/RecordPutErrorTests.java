@@ -43,64 +43,64 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class RecordPutErrorTests {
 
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
+    @ClassRule
+    public static final SpringClassRule springClassRule = new SpringClassRule();
 
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[] {true, false};
-	}
+    @Parameters
+    public static Object[] getParams() {
+        return new Object[]{true, false};
+    }
 
-	private final String nonExistentNSEndpoint;
-	private final String nonExistentRecordEndpoint;
+    private final String nonExistentNSEndpoint;
+    private final String nonExistentRecordEndpoint;
 
-	public RecordPutErrorTests(boolean useSet) {
-		if (useSet) {
-			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
-			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
-		} else {
-			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
-			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
-		}
-	}
+    public RecordPutErrorTests(boolean useSet) {
+        if (useSet) {
+            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
+            nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
+        } else {
+            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
+            nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
+        }
+    }
 
-	@Autowired
-	private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-	private MockMvc mockMVC;
+    private MockMvc mockMVC;
 
-	@Autowired
-	private WebApplicationContext wac;
+    @Autowired
+    private WebApplicationContext wac;
 
-	@Before
-	public void setup() {
-		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-	}
+    @Before
+    public void setup() {
+        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+    }
 
-	@Test
-	public void putToNonExistentNS() throws Exception {
-		Map<String, Object> binMap = new HashMap<>();
-		binMap.put("integer", 12345);
+    @Test
+    public void putToNonExistentNS() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
+        binMap.put("integer", 12345);
 
-		mockMVC.perform(put(nonExistentNSEndpoint)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(binMap)))
-		.andExpect(status().isInternalServerError());
-	}
+        mockMVC.perform(put(nonExistentNSEndpoint)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(binMap)))
+                .andExpect(status().isNotFound());
+    }
 
-	@Test
-	public void putToNonExistentRecord() throws Exception {
-		Map<String, Object> binMap = new HashMap<>();
+    @Test
+    public void putToNonExistentRecord() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
 
-		binMap.put("string", "Aerospike");
+        binMap.put("string", "Aerospike");
 
-		mockMVC.perform(put(nonExistentRecordEndpoint)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(binMap))
-				).andExpect(status().isNotFound());
-	}
+        mockMVC.perform(put(nonExistentRecordEndpoint)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(binMap))
+                       ).andExpect(status().isNotFound());
+    }
 
 }

@@ -12,7 +12,7 @@ import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.HeaderHandler;
 import com.aerospike.restclient.util.RequestParamHandler;
 import com.aerospike.restclient.util.annotations.ASRestClientQueryPolicyQueryParams;
-import com.aerospike.restclient.util.annotations.ASRestClientQueryQueryParams;
+import com.aerospike.restclient.util.annotations.ASRestClientStatementQueryParams;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -66,7 +66,7 @@ public class QueryController {
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientQueryPolicyQueryParams
-    @ASRestClientQueryQueryParams
+    @ASRestClientStatementQueryParams
     public QueryResponseBody performQuery(
             @Parameter(
                     description = APIParamDescriptors.NAMESPACE_NOTES,
@@ -125,7 +125,7 @@ public class QueryController {
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientQueryPolicyQueryParams
-    @ASRestClientQueryQueryParams
+    @ASRestClientStatementQueryParams
     public QueryResponseBody performQuery(
             @Parameter(
                     description = APIParamDescriptors.NAMESPACE_NOTES,
@@ -182,7 +182,7 @@ public class QueryController {
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientQueryPolicyQueryParams
-    @ASRestClientQueryQueryParams
+    @ASRestClientStatementQueryParams
     public QueryResponseBody performQuery(
             @Parameter(
                     description = APIParamDescriptors.NAMESPACE_NOTES,
@@ -251,7 +251,7 @@ public class QueryController {
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientQueryPolicyQueryParams
-    @ASRestClientQueryQueryParams
+    @ASRestClientStatementQueryParams
     public QueryResponseBody performQuery(
             @Parameter(
                     description = APIParamDescriptors.NAMESPACE_NOTES,

@@ -16,7 +16,6 @@
  */
 package com.aerospike.restclient.domain.batchmodels;
 
-import com.aerospike.client.BatchRecord;
 import com.aerospike.restclient.domain.RestClientKey;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,23 +23,23 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "batchType")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
         {
-                @JsonSubTypes.Type(value = BatchReadRequest.class, name = AerospikeAPIConstants.BATCH_TYPE_READ),
+                @JsonSubTypes.Type(value = BatchRead.class, name = AerospikeAPIConstants.BATCH_TYPE_READ),
                 @JsonSubTypes.Type(
-                        value = BatchWriteRequest.class,
+                        value = BatchWrite.class,
                         name = AerospikeAPIConstants.BATCH_TYPE_WRITE
                 ),
                 @JsonSubTypes.Type(
-                        value = BatchDeleteRequest.class,
+                        value = BatchDelete.class,
                         name = AerospikeAPIConstants.BATCH_TYPE_DELETE
                 ),
-                @JsonSubTypes.Type(value = BatchUDFRequest.class, name = AerospikeAPIConstants.BATCH_TYPE_UDF),
+                @JsonSubTypes.Type(value = BatchUDF.class, name = AerospikeAPIConstants.BATCH_TYPE_UDF),
         }
 )
 @Schema(description = "The batch operation base type.")
-public abstract class BatchRecordRequest {
+public abstract class BatchRecord {
     @Schema(
             description = "The type of batch request.",
             allowableValues = {
@@ -51,12 +50,12 @@ public abstract class BatchRecordRequest {
             },
             required = true
     )
-    public final String batchType = null;
+    public final String type = null;
 
     @Schema(description = "Key to a record.", required = true)
     @JsonProperty(required = true)
     public RestClientKey key;
 
-    abstract public BatchRecord toBatchRecord();
+    abstract public com.aerospike.client.BatchRecord toBatchRecord();
 }
 

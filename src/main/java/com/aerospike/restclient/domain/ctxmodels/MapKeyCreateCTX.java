@@ -20,13 +20,16 @@ public class MapKeyCreateCTX extends CTX {
             required = true
     )
     @JsonProperty(required = true)
-    public final String ctxType = AerospikeAPIConstants.MAP_KEY_CREATE;
+    public final String type = AerospikeAPIConstants.MAP_KEY_CREATE;
 
     @Schema(description = "String, Integer, or ByteArraySpecifiedType", required = true, example = "my-user-key")
     @JsonDeserialize(using = ObjectDeserializer.class)
     public Object key;
 
-    @Schema(description = "TODO")
+    @Schema(
+            description = "Map storage order.",
+            externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOrder.html")
+    )
     public MapOrder order = MapOrder.UNORDERED;
 
     MapKeyCreateCTX() {

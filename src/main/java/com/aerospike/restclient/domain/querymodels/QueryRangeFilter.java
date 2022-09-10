@@ -18,11 +18,11 @@ public class QueryRangeFilter extends QueryFilter {
             required = true,
             allowableValues = AerospikeAPIConstants.QueryFilterTypes.RANGE
     )
-    final public String filterType = AerospikeAPIConstants.QueryFilterTypes.RANGE;
-    @Schema(description = "TODO", required = true)
+    final public String type = AerospikeAPIConstants.QueryFilterTypes.RANGE;
+    @Schema(description = "Filter begin value inclusive.", required = true)
     public long begin;
 
-    @Schema(description = "TODO", required = true)
+    @Schema(description = "Filter end value inclusive.", required = true)
     @JsonProperty(required = true)
     public long end;
 

@@ -60,7 +60,7 @@ public class QueryFilterTest {
     @Test
     public void testMapsToQueryStringEqualFilter() {
         Map<String, Object> filterMap = new HashMap<>();
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING);
+        filterMap.put("type", AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING);
         filterMap.put("binName", bin);
         filterMap.put("ctx", new ArrayList<CTX>() {
         });
@@ -69,7 +69,7 @@ public class QueryFilterTest {
         try {
             QueryEqualsStringFilter restCTX = (QueryEqualsStringFilter) mapper.bytesToObject(
                     mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING, restCTX.type);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals("str", restCTX.value);
             ASTestUtils.compareCollection(new ArrayList<CTX>() {
@@ -82,7 +82,7 @@ public class QueryFilterTest {
     @Test
     public void testMapsToQueryLongEqualFilter() {
         Map<String, Object> filterMap = new HashMap<>();
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG);
+        filterMap.put("type", AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG);
         filterMap.put("binName", bin);
         filterMap.put("ctx", new ArrayList<CTX>() {
         });
@@ -90,7 +90,7 @@ public class QueryFilterTest {
 
         try {
             QueryEqualLongFilter restCTX = (QueryEqualLongFilter) mapper.bytesToObject(mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG, restCTX.type);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals(Long.valueOf(1), restCTX.value);
             ASTestUtils.compareCollection(new ArrayList<CTX>() {
@@ -133,7 +133,7 @@ public class QueryFilterTest {
     @Test
     public void testMapsToQueryBinRangeFilter() {
         Map<String, Object> filterMap = new HashMap<>();
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.RANGE);
+        filterMap.put("type", AerospikeAPIConstants.QueryFilterTypes.RANGE);
         filterMap.put("binName", bin);
         filterMap.put("ctx", new ArrayList<CTX>() {
         });
@@ -142,7 +142,7 @@ public class QueryFilterTest {
 
         try {
             QueryRangeFilter restCTX = (QueryRangeFilter) mapper.bytesToObject(mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.RANGE, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.RANGE, restCTX.type);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals(1, restCTX.begin);
             Assert.assertEquals(99, restCTX.end);
@@ -175,7 +175,7 @@ public class QueryFilterTest {
     @Test
     public void testMapsToQueryBinContainsFilter() {
         Map<String, Object> filterMap = new HashMap<>();
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG);
+        filterMap.put("type", AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG);
         filterMap.put("binName", bin);
         filterMap.put("ctx", new ArrayList<CTX>() {
         });
@@ -184,7 +184,7 @@ public class QueryFilterTest {
         try {
             QueryContainsLongFilter restCTX = (QueryContainsLongFilter) mapper.bytesToObject(
                     mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG, restCTX.type);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals(Long.valueOf(1), restCTX.value);
             Assert.assertEquals(IndexCollectionType.DEFAULT, restCTX.collectionType);
@@ -238,7 +238,7 @@ public class QueryFilterTest {
                 new double[]{3, 4},
                 new double[]{4, 5},
                 };
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION);
+        filterMap.put("type", AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION);
         filterMap.put("binName", bin);
         filterMap.put("ctx", new ArrayList<CTX>() {
         });
@@ -252,7 +252,7 @@ public class QueryFilterTest {
         try {
             QueryGeoWithinPolygonFilter restCTX = (QueryGeoWithinPolygonFilter) mapper.bytesToObject(
                     mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION, restCTX.type);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals(expectedLngLat, restCTX.polygon);
             Assert.assertEquals(IndexCollectionType.DEFAULT, restCTX.collectionType);
@@ -287,7 +287,7 @@ public class QueryFilterTest {
     public void testMapsToQueryBinGeoWithinRadiusFilter() {
         Map<String, Object> filterMap = new HashMap<>();
         List<Object> circle = new ArrayList<>();
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS);
+        filterMap.put("type", AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS);
         filterMap.put("binName", bin);
         filterMap.put("ctx", new ArrayList<CTX>() {
         });
@@ -298,7 +298,7 @@ public class QueryFilterTest {
         try {
             QueryGeoWithinRadiusFilter restCTX = (QueryGeoWithinRadiusFilter) mapper.bytesToObject(
                     mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS, restCTX.type);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals(1.2345, restCTX.circle.latLng.longitude, 0);
             Assert.assertEquals(6.789, restCTX.circle.latLng.latitude, 0);
@@ -331,7 +331,7 @@ public class QueryFilterTest {
     public void testMapsToQueryBinGeoContainsPointFilter() {
         Map<String, Object> filterMap = new HashMap<>();
         Map<String, Object> point = new HashMap<>();
-        filterMap.put("filterType", AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT);
+        filterMap.put("type", AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT);
         filterMap.put("binName", bin);
         filterMap.put("ctx", new ArrayList<CTX>() {
         });
@@ -341,7 +341,7 @@ public class QueryFilterTest {
         try {
             QueryGeoContainsPointFilter restCTX = (QueryGeoContainsPointFilter) mapper.bytesToObject(
                     mapper.objectToBytes(filterMap));
-            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT, restCTX.filterType);
+            Assert.assertEquals(AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT, restCTX.type);
             Assert.assertEquals(bin, restCTX.binName);
             Assert.assertEquals(new LngLat(1.2, 2.3), restCTX.point);
             Assert.assertEquals(IndexCollectionType.DEFAULT, restCTX.collectionType);

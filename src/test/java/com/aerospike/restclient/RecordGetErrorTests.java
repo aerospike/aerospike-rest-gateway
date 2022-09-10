@@ -18,11 +18,7 @@ package com.aerospike.restclient;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -45,110 +41,114 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class RecordGetErrorTests {
 
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
+    @ClassRule
+    public static final SpringClassRule springClassRule = new SpringClassRule();
 
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[] {true, false};
-	}
+    @Parameters
+    public static Object[] getParams() {
+        return new Object[]{true, false};
+    }
 
-	String nonExistentNSendpoint;
-	String nonExistentRecordEndpoint;
-	String invalidKeytypeEndpoint;
-	String invalidIntegerEndpoint;
-	String invalidBytesEndpoint;
-	String invalidDigestEndpoint;
+    String nonExistentNSendpoint;
+    String nonExistentRecordEndpoint;
+    String invalidKeytypeEndpoint;
+    String invalidIntegerEndpoint;
+    String invalidBytesEndpoint;
+    String invalidDigestEndpoint;
 
-	public  RecordGetErrorTests(boolean useSet) {
-		if (useSet) {
-			nonExistentNSendpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
-			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
-			invalidKeytypeEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "1") + "?keytype=skeleton";
-			invalidIntegerEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "key") + "?keytype=INTEGER";
-			invalidBytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "/=") + "?keytype=BYTES"; /*Invalid urlsafe bae64*/
-			invalidDigestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "key") + "?keytype=DIGEST";
-		} else {
-			nonExistentNSendpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS",  "1");
-			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
-			invalidKeytypeEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "1") + "?keytype=skeleton";
-			invalidIntegerEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "key") + "?keytype=INTEGER";
-			invalidBytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "/=") + "?keytype=BYTES"; /*Invalid urlsafe bae64*/
-			invalidDigestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "key") + "?keytype=DIGEST";
-		}
-	}
+    public RecordGetErrorTests(boolean useSet) {
+        if (useSet) {
+            nonExistentNSendpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
+            nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
+            invalidKeytypeEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "1") + "?keytype=skeleton";
+            invalidIntegerEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "key") + "?keytype=INTEGER";
+            invalidBytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo",
+                    "/=") + "?keytype=BYTES"; /*Invalid urlsafe bae64*/
+            invalidDigestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "key") + "?keytype=DIGEST";
+        } else {
+            nonExistentNSendpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
+            nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
+            invalidKeytypeEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "1") + "?keytype=skeleton";
+            invalidIntegerEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "key") + "?keytype=INTEGER";
+            invalidBytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test",
+                    "/=") + "?keytype=BYTES"; /*Invalid urlsafe bae64*/
+            invalidDigestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "key") + "?keytype=DIGEST";
+        }
+    }
 
-	@Autowired
-	private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-	private MockMvc mockMVC;
+    private MockMvc mockMVC;
 
-	@Autowired
-	private WebApplicationContext wac;
+    @Autowired
+    private WebApplicationContext wac;
 
-	@Before
-	public void setup() {
-		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-	}
+    @Before
+    public void setup() {
+        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+    }
 
-	@Test
-	public void GetFromNonExistentNS() throws Exception {
+    @Test
+    public void GetFromNonExistentNS() throws Exception {
 
-		MvcResult result = mockMVC.perform(
-				get(nonExistentNSendpoint)
-				).andExpect(status().isInternalServerError()).andReturn();
+        MvcResult result = mockMVC.perform(
+                get(nonExistentNSendpoint)
+                                          ).andExpect(status().isNotFound()).andReturn();
 
-		MockHttpServletResponse res = result.getResponse();
-		String resJson = res.getContentAsString();
-		TypeReference<Map<String, Object>> sOMapType= new TypeReference<Map<String, Object>>() {};
-		Map<String, Object>resObject = objectMapper.readValue(resJson, sOMapType);
+        MockHttpServletResponse res = result.getResponse();
+        String resJson = res.getContentAsString();
+        TypeReference<Map<String, Object>> sOMapType = new TypeReference<Map<String, Object>>() {
+        };
+        Map<String, Object> resObject = objectMapper.readValue(resJson, sOMapType);
 
-		Assert.assertFalse((boolean) resObject.get("inDoubt"));
-	}
+        Assert.assertFalse((boolean) resObject.get("inDoubt"));
+    }
 
-	@Test
-	public void GetNonExistentRecord() throws Exception {
+    @Test
+    public void GetNonExistentRecord() throws Exception {
 
-		MvcResult result = mockMVC.perform(
-				get(nonExistentRecordEndpoint)
-				).andExpect(status().isNotFound()).andReturn();
+        MvcResult result = mockMVC.perform(
+                get(nonExistentRecordEndpoint)
+                                          ).andExpect(status().isNotFound()).andReturn();
 
-		MockHttpServletResponse res = result.getResponse();
-		String resJson = res.getContentAsString();
-		TypeReference<Map<String, Object>> sOMapType= new TypeReference<Map<String, Object>>() {};
-		Map<String, Object>resObject = objectMapper.readValue(resJson, sOMapType);
+        MockHttpServletResponse res = result.getResponse();
+        String resJson = res.getContentAsString();
+        TypeReference<Map<String, Object>> sOMapType = new TypeReference<Map<String, Object>>() {
+        };
+        Map<String, Object> resObject = objectMapper.readValue(resJson, sOMapType);
 
-		Assert.assertFalse((boolean) resObject.get("inDoubt"));
-	}
+        Assert.assertFalse((boolean) resObject.get("inDoubt"));
+    }
 
-	@Test
-	public void GetWithInvalidKeyType() throws Exception {
-		mockMVC.perform(
-				get(invalidKeytypeEndpoint)
-				).andExpect(status().isBadRequest());
-	}
+    @Test
+    public void GetWithInvalidKeyType() throws Exception {
+        mockMVC.perform(
+                get(invalidKeytypeEndpoint)
+                       ).andExpect(status().isBadRequest());
+    }
 
-	@Test
-	public void GetWithInvalidIntegerKey() throws Exception {
-		mockMVC.perform(
-				get(invalidIntegerEndpoint)
-				).andExpect(status().isBadRequest());
-	}
+    @Test
+    public void GetWithInvalidIntegerKey() throws Exception {
+        mockMVC.perform(
+                get(invalidIntegerEndpoint)
+                       ).andExpect(status().isBadRequest());
+    }
 
-	@Test
-	public void GetWithInvalidBytesKey() throws Exception {
-		mockMVC.perform(
-				get(invalidBytesEndpoint) /*This has an illegally encoded urlsafebase64 */
-				).andExpect(status().isBadRequest());
-	}
+    @Test
+    public void GetWithInvalidBytesKey() throws Exception {
+        mockMVC.perform(
+                get(invalidBytesEndpoint) /*This has an illegally encoded urlsafebase64 */
+                       ).andExpect(status().isBadRequest());
+    }
 
-	@Test
-	public void GetWithInvalidDigestKey() throws Exception {
-		mockMVC.perform(
-				get(invalidDigestEndpoint) /* This is not 20 bytes long */
-				).andExpect(status().isBadRequest());
-	}
+    @Test
+    public void GetWithInvalidDigestKey() throws Exception {
+        mockMVC.perform(
+                get(invalidDigestEndpoint) /* This is not 20 bytes long */
+                       ).andExpect(status().isBadRequest());
+    }
 }

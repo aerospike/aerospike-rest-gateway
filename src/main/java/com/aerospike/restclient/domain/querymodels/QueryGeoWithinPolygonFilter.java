@@ -21,7 +21,7 @@ public class QueryGeoWithinPolygonFilter extends QueryFilter {
             required = true,
             allowableValues = {AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION}
     )
-    final public String filterType = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION;
+    final public String type = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION;
 
     @Schema(description = "Array of longitude and latitude describing a region.", required = true)
     public List<LngLat> polygon;

@@ -16,7 +16,7 @@ public class QueryEqualsStringFilter extends QueryFilter {
             required = true,
             allowableValues = AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING
     )
-    final public String filterType = AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING;
+    final public String type = AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING;
 
     @Schema(required = true)
     public String value;

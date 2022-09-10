@@ -43,65 +43,65 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class RecordPatchErrorTests {
 
-	/* Needed to run as a Spring Boot test */
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
+    /* Needed to run as a Spring Boot test */
+    @ClassRule
+    public static final SpringClassRule springClassRule = new SpringClassRule();
 
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-	@Autowired
-	private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-	private MockMvc mockMVC;
+    private MockMvc mockMVC;
 
-	@Autowired
-	private WebApplicationContext wac;
+    @Autowired
+    private WebApplicationContext wac;
 
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[] {true, false};
-	}
+    @Parameters
+    public static Object[] getParams() {
+        return new Object[]{true, false};
+    }
 
-	private final String nonExistentNSEndpoint;
-	private final String nonExistentRecordEndpoint;
+    private final String nonExistentNSEndpoint;
+    private final String nonExistentRecordEndpoint;
 
-	public RecordPatchErrorTests(boolean useSet) {
-		if (useSet) {
-			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
-			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
-		} else {
-			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
-			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
-		}
-	}
+    public RecordPatchErrorTests(boolean useSet) {
+        if (useSet) {
+            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
+            nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
+        } else {
+            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
+            nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
+        }
+    }
 
-	@Before
-	public void setup() {
-		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-	}
+    @Before
+    public void setup() {
+        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+    }
 
-	@Test
-	public void PatchRecordToInvalidNamespace() throws Exception {
-		Map<String, Object> binMap = new HashMap<>();
-		binMap.put("integer", 12345);
+    @Test
+    public void PatchRecordToInvalidNamespace() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
+        binMap.put("integer", 12345);
 
-		mockMVC.perform(patch(nonExistentNSEndpoint)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(binMap)))
-		.andExpect(status().isInternalServerError());
-	}
+        mockMVC.perform(patch(nonExistentNSEndpoint)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(binMap)))
+                .andExpect(status().isNotFound());
+    }
 
-	@Test
-	public void PatchRecordWhichDoesNotExist() throws Exception {
-		Map<String, Object> binMap = new HashMap<>();
+    @Test
+    public void PatchRecordWhichDoesNotExist() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
 
-		binMap.put("string", "Aerospike");
+        binMap.put("string", "Aerospike");
 
-		mockMVC.perform(patch(nonExistentRecordEndpoint)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(binMap))
-				).andExpect(status().isNotFound());
-	}
+        mockMVC.perform(patch(nonExistentRecordEndpoint)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(binMap))
+                       ).andExpect(status().isNotFound());
+    }
 
 }

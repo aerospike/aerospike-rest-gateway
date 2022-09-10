@@ -16,7 +16,9 @@
  */
 package com.aerospike.restclient.domain.batchmodels;
 
-import com.aerospike.client.*;
+import com.aerospike.client.Key;
+import com.aerospike.client.Record;
+import com.aerospike.client.ResultCode;
 import com.aerospike.restclient.ASTestUtils;
 import com.aerospike.restclient.domain.RestClientRecord;
 import org.junit.Assert;
@@ -49,7 +51,7 @@ public class RestClientBatchRecordResponseTest {
     @Test
     public void constructionWithBinNames() {
         String[] testBins = {"b1", "b2", "b3"};
-        BatchRead nullRecordRead = getBatchRead(testKey, testBins, false, null);
+        com.aerospike.client.BatchRecord nullRecordRead = getBatchRead(testKey, testBins, false, null);
 
         BatchRecordResponse response = new BatchRecordResponse(nullRecordRead);
 
@@ -58,7 +60,7 @@ public class RestClientBatchRecordResponseTest {
 
     @Test
     public void constructionWithoutBinNamesReadAllBins() {
-        BatchRead nullRecordRead = getBatchRead(testKey, null, true, null);
+        com.aerospike.client.BatchRecord nullRecordRead = getBatchRead(testKey, null, true, null);
 
         BatchRecordResponse response = new BatchRecordResponse(nullRecordRead);
 
@@ -67,7 +69,7 @@ public class RestClientBatchRecordResponseTest {
 
     @Test
     public void constructionWithoutBinNamesReadAllBinsFalse() {
-        BatchRead nullRecordRead = getBatchRead(testKey, null, false, null);
+        com.aerospike.client.BatchRecord nullRecordRead = getBatchRead(testKey, null, false, null);
 
         BatchRecordResponse response = new BatchRecordResponse(nullRecordRead);
 
@@ -76,7 +78,8 @@ public class RestClientBatchRecordResponseTest {
 
     @Test
     public void constructionOfUserKey() {
-        BatchRecord nullRecordRead = new BatchRecord(testKey, null, ResultCode.MAX_ERROR_RATE, true, true);
+        com.aerospike.client.BatchRecord nullRecordRead = new com.aerospike.client.BatchRecord(testKey, null,
+                ResultCode.MAX_ERROR_RATE, true, true);
         BatchRecordResponse response = new BatchRecordResponse(nullRecordRead);
         Key convertedKey = response.key.toKey();
         Assert.assertTrue(ASTestUtils.compareKeys(testKey, convertedKey));
@@ -87,7 +90,8 @@ public class RestClientBatchRecordResponseTest {
 
     @Test
     public void constructionOfRecord() {
-        BatchRecord batchRecord = new BatchRecord(testKey, testRecord, ResultCode.MAX_ERROR_RATE, false, false);
+        com.aerospike.client.BatchRecord batchRecord = new com.aerospike.client.BatchRecord(testKey, testRecord,
+                ResultCode.MAX_ERROR_RATE, false, false);
         BatchRecordResponse response = new BatchRecordResponse(batchRecord);
 
         RestClientRecord convertedRecord = response.record;
@@ -99,12 +103,12 @@ public class RestClientBatchRecordResponseTest {
         Assert.assertFalse(response.inDoubt);
     }
 
-    private BatchRead getBatchRead(Key key, String[] bins, boolean readAllbins, Record record) {
-        BatchRead read;
+    private com.aerospike.client.BatchRead getBatchRead(Key key, String[] bins, boolean readAllbins, Record record) {
+        com.aerospike.client.BatchRead read;
         if (bins != null) {
-            read = new BatchRead(key, bins);
+            read = new com.aerospike.client.BatchRead(key, bins);
         } else {
-            read = new BatchRead(key, readAllbins);
+            read = new com.aerospike.client.BatchRead(key, readAllbins);
         }
         read.record = record;
 

@@ -14,7 +14,7 @@ public class ListRankCTX extends CTX {
             allowableValues = AerospikeAPIConstants.LIST_RANK,
             required = true
     )
-    public final String ctxType = AerospikeAPIConstants.LIST_RANK;
+    public final String type = AerospikeAPIConstants.LIST_RANK;
 
     @Schema(
             description = "* 0 = smallest value\n" +

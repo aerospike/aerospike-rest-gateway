@@ -1,9 +1,14 @@
 package com.aerospike.restclient;
 
 import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.Bin;
+import com.aerospike.client.Key;
+import com.aerospike.client.query.Filter;
 import com.aerospike.restclient.config.JSONMessageConverter;
 import com.aerospike.restclient.config.MsgPackConverter;
 import com.aerospike.restclient.domain.RestClientError;
+import com.aerospike.restclient.domain.querymodels.QueryEqualLongFilter;
+import com.aerospike.restclient.domain.querymodels.QueryFilter;
 import com.aerospike.restclient.domain.querymodels.QueryRequestBody;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -49,6 +54,13 @@ public class QueryTestError {
     @Before
     public void setup() throws InterruptedException {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+        Bin bin = new Bin("binWithNoSIndex", 1);
+        client.put(null, new Key(namespace, setName, "key_" + 1), bin);
+    }
+
+    @After
+    public void clean() throws InterruptedException {
+        client.delete(null, new Key(namespace, setName, "key_" + 1));
     }
 
     @Parameterized.Parameters
@@ -74,7 +86,7 @@ public class QueryTestError {
     @Test
     public void testNonExistentPath() throws Exception {
         String endpoint = testEndpoint.replace(namespace, "nonExistent");
-        RestClientError res = queryHandler.perform(mockMVC, endpoint, new QueryRequestBody(), status().isBadRequest());
+        RestClientError res = queryHandler.perform(mockMVC, endpoint, new QueryRequestBody(), status().isNotFound());
         Assert.assertFalse(res.getInDoubt());
     }
 
@@ -82,6 +94,45 @@ public class QueryTestError {
     public void testInvalidStartAndCount() throws Exception {
         String endpoint = String.join("/", testEndpoint, "200", "90832");
         RestClientError res = queryHandler.perform(mockMVC, endpoint, new QueryRequestBody(), status().isBadRequest());
+        Assert.assertFalse(res.getInDoubt());
+    }
+
+    @Test
+    public void testInvalidFilterType() throws Exception {
+        class unknownFilter extends QueryFilter {
+            final String type = "UNKNOWN_FILTER_TYPE";
+
+            @Override
+            public Filter toFilter() {
+                return null;
+            }
+        }
+
+        QueryRequestBody requestBody = new QueryRequestBody();
+        requestBody.filter = new unknownFilter();
+        RestClientError res = queryHandler.perform(mockMVC, testEndpoint, requestBody, status().isBadRequest());
+        Assert.assertFalse(res.getInDoubt());
+    }
+
+    @Test
+    public void testFilterWithNoSIndex() throws Exception {
+        QueryRequestBody requestBody = new QueryRequestBody();
+        QueryEqualLongFilter filter = new QueryEqualLongFilter();
+        filter.value = 6L;
+        filter.binName = "binWithNoSIndex";
+        requestBody.filter = filter;
+        RestClientError res = queryHandler.perform(mockMVC, testEndpoint, requestBody, status().isNotFound());
+        Assert.assertFalse(res.getInDoubt());
+    }
+
+    @Test
+    public void testFilterNonExistentBin() throws Exception {
+        QueryRequestBody requestBody = new QueryRequestBody();
+        QueryEqualLongFilter filter = new QueryEqualLongFilter();
+        filter.value = 6L;
+        filter.binName = "nonExistentBin";
+        requestBody.filter = filter;
+        RestClientError res = queryHandler.perform(mockMVC, testEndpoint, requestBody, status().isBadRequest());
         Assert.assertFalse(res.getInDoubt());
     }
 }

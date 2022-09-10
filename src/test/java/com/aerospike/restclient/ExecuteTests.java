@@ -83,9 +83,19 @@ public class ExecuteTests {
     public static Object[][] getParams() {
         return new Object[][]{
                 {new ObjectMapper(), new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString(), true},
-                {new ObjectMapper(new MessagePackFactory()), new MsgPackResponseDeserializer(), "application/msgpack", true},
+                {
+                        new ObjectMapper(new MessagePackFactory()),
+                        new MsgPackResponseDeserializer(),
+                        "application/msgpack",
+                        true
+                },
                 {new ObjectMapper(), new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString(), false},
-                {new ObjectMapper(new MessagePackFactory()), new MsgPackResponseDeserializer(), "application/msgpack", false}
+                {
+                        new ObjectMapper(new MessagePackFactory()),
+                        new MsgPackResponseDeserializer(),
+                        "application/msgpack",
+                        false
+                }
         };
     }
 
@@ -126,23 +136,23 @@ public class ExecuteTests {
 
         byte[] payload = objectMapper.writeValueAsBytes(opList);
         MockHttpServletResponse response = mockMVC.perform(post(testEndpoint)
-                .contentType(currentMediaType)
-                .content(payload)
-                .accept(currentMediaType))
+                        .contentType(currentMediaType)
+                        .content(payload)
+                        .accept(currentMediaType))
                 .andExpect(status().isOk()).andReturn().getResponse();
 
         RestClientExecuteTask task = responseDeserializer.getResponse(response, RestClientExecuteTask.class);
 
-        Thread.sleep(100);
+        Thread.sleep(200);
         String endpoint = queryStatusEndpoint + task.getTaskId();
         MockHttpServletResponse statusResponse = mockMVC.perform(
                 get(endpoint).accept(currentMediaType)
-        ).andExpect(status().isOk()).andReturn().getResponse();
+                                                                ).andExpect(status().isOk()).andReturn().getResponse();
 
         RestClientExecuteTaskStatus status = responseDeserializer
                 .getResponse(statusResponse, RestClientExecuteTaskStatus.class);
 
-        Assert.assertEquals(status.getStatus(), "COMPLETE");
+        Assert.assertEquals("COMPLETE", status.getStatus());
 
         for (int i = 0; i < numberOfRecords; i++) {
             long binValue = (long) client.get(null, testKeys[i]).bins.get("binInt");

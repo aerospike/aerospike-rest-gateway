@@ -16,7 +16,7 @@
  */
 package com.aerospike.restclient.converters;
 
-import com.aerospike.restclient.domain.batchmodels.BatchReadRequest;
+import com.aerospike.restclient.domain.batchmodels.BatchRead;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Base64;
@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 interface BatchReadBodyMapperTester {
-    public BatchReadRequest getBatchRead(String ns, String set, String key, List<String> bins,
-                                         String keytype) throws Exception;
+    public BatchRead getBatchRead(String ns, String set, String key, List<String> bins,
+                                  String keytype) throws Exception;
 
-    public BatchReadRequest getBatchRead(String ns, byte[] digest) throws Exception;
+    public BatchRead getBatchRead(String ns, byte[] digest) throws Exception;
 }
 
 class JSONBatchReadTester implements BatchReadBodyMapperTester {
@@ -40,8 +40,8 @@ class JSONBatchReadTester implements BatchReadBodyMapperTester {
     }
 
     @Override
-    public BatchReadRequest getBatchRead(String ns, String set, String key, List<String> bins,
-                                         String keytype) throws Exception {
+    public BatchRead getBatchRead(String ns, String set, String key, List<String> bins,
+                                  String keytype) throws Exception {
         Map<String, Object> batchReadBody = new HashMap<>();
         Map<String, String> keyMap = new HashMap<>();
 
@@ -67,11 +67,11 @@ class JSONBatchReadTester implements BatchReadBodyMapperTester {
 
 
         String batchReadStr = mapper.writeValueAsString(batchReadBody);
-        return mapper.readValue(batchReadStr, BatchReadRequest.class);
+        return mapper.readValue(batchReadStr, BatchRead.class);
     }
 
     @Override
-    public BatchReadRequest getBatchRead(String ns, byte[] digest) throws Exception {
+    public BatchRead getBatchRead(String ns, byte[] digest) throws Exception {
         Map<String, Object> batchReadBody = new HashMap<>();
         Map<String, String> keyMap = new HashMap<>();
         Encoder urlEncoder = Base64.getUrlEncoder();
@@ -84,7 +84,7 @@ class JSONBatchReadTester implements BatchReadBodyMapperTester {
         batchReadBody.put("key", keyMap);
 
         String batchReadStr = mapper.writeValueAsString(batchReadBody);
-        return mapper.readValue(batchReadStr, BatchReadRequest.class);
+        return mapper.readValue(batchReadStr, BatchRead.class);
 
     }
 }
@@ -97,8 +97,8 @@ class MsgPackBatchReadTester implements BatchReadBodyMapperTester {
     }
 
     @Override
-    public BatchReadRequest getBatchRead(String ns, String set, String key, List<String> bins,
-                                         String keytype) throws Exception {
+    public BatchRead getBatchRead(String ns, String set, String key, List<String> bins,
+                                  String keytype) throws Exception {
         Map<String, Object> batchReadBody = new HashMap<>();
         Map<String, String> keyMap = new HashMap<>();
 
@@ -124,11 +124,11 @@ class MsgPackBatchReadTester implements BatchReadBodyMapperTester {
 
 
         byte[] batchReadBytes = mapper.writeValueAsBytes(batchReadBody);
-        return mapper.readValue(batchReadBytes, BatchReadRequest.class);
+        return mapper.readValue(batchReadBytes, BatchRead.class);
     }
 
     @Override
-    public BatchReadRequest getBatchRead(String ns, byte[] digest) throws Exception {
+    public BatchRead getBatchRead(String ns, byte[] digest) throws Exception {
         Map<String, Object> batchReadBody = new HashMap<>();
         Map<String, String> keyMap = new HashMap<>();
         Encoder urlEncoder = Base64.getUrlEncoder();
@@ -141,7 +141,7 @@ class MsgPackBatchReadTester implements BatchReadBodyMapperTester {
         batchReadBody.put("key", keyMap);
 
         byte[] batchReadBytes = mapper.writeValueAsBytes(batchReadBody);
-        return mapper.readValue(batchReadBytes, BatchReadRequest.class);
+        return mapper.readValue(batchReadBytes, BatchRead.class);
 
     }
 

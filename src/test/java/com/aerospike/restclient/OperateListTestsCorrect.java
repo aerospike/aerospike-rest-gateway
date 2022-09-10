@@ -215,7 +215,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(binsObject.get("list"), objectList.get(2)));
     }
@@ -234,7 +235,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(binsObject.get("list"), 2));
     }
@@ -254,7 +256,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(binsObject.get("list"), 4));
     }
@@ -276,7 +279,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         List<Object> retItems = (List<Object>) binsObject.get("list");
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(2, 0, 3)));
@@ -298,7 +302,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         List<Object> retItems = (List<Object>) binsObject.get("list");
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(2, 0, 3, 4)));
@@ -320,7 +325,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(binsObject.get("list"), 2));
     }
@@ -341,7 +347,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(binsObject.get("list"), 1));
     }
@@ -363,7 +370,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         @SuppressWarnings("unchecked")
         List<Object> retItems = (List<Object>) binsObject.get("list");
@@ -389,7 +397,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         @SuppressWarnings("unchecked")
         List<Object> retItems = (List<Object>) binsObject.get("list");
@@ -417,7 +426,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         @SuppressWarnings("unchecked")
         List<Object> retItems = (List<Object>) binsObject.get("list");
@@ -444,7 +454,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         @SuppressWarnings("unchecked")
         List<Object> retItems = (List<Object>) binsObject.get("list");
@@ -468,9 +479,11 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-        Assert.assertTrue(ASTestUtils.compareCollection((List<?>) binsObject.get("list"), Collections.singletonList(2)));
+        Assert.assertTrue(
+                ASTestUtils.compareCollection((List<?>) binsObject.get("list"), Collections.singletonList(2)));
     }
 
     @SuppressWarnings("unchecked")
@@ -491,7 +504,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         List<Object> retItems = (List<Object>) binsObject.get("list");
 
@@ -516,7 +530,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         @SuppressWarnings("unchecked")
         List<Object> retItems = (List<Object>) binsObject.get("list");
@@ -543,7 +558,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         List<Object> retItems = (List<Object>) binsObject.get("list");
 
@@ -569,7 +585,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         List<Object> retItems = (List<Object>) binsObject.get("list");
 
@@ -595,7 +612,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         List<Object> retItems = (List<Object>) binsObject.get("map");
 
@@ -619,7 +637,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         List<Object> retItems = (List<Object>) binsObject.get("list");
 
@@ -640,7 +659,8 @@ public class OperateListTestsCorrect {
 
         opList.add(opMap);
 
-        Map<String, Object> binsObject = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> binsObject = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         List<Object> retItems = (List<Object>) binsObject.get("list");
 
@@ -828,7 +848,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> returnedBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 2));
 
@@ -852,7 +873,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> returnedBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), Arrays.asList(2, 0, 3)));
 
@@ -877,7 +899,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> returnedBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), Arrays.asList(2, 0, 3, 4)));
 
@@ -929,7 +952,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> returnedBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         //The popped value was the smallest element, so it's rank should be 0
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 0));
@@ -957,7 +981,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> returnedBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         //Three items were removed, so the server should return 3 items
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 3));
@@ -986,7 +1011,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> returnedBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         //Three items were removed, so the server should return 3 items
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 4));
@@ -1017,7 +1043,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> returnedBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         //The popped value was the smallest element, it was at index 2
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 2));
@@ -1137,7 +1164,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> returnedBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         //The popped value was the smallest element, it was at index 2
         Assert.assertTrue(ASTestUtils.compareCollection((List<?>) returnedBins.get("list"), Arrays.asList(2, 5)));
@@ -1165,7 +1193,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> returnedBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         //The popped value was the smallest element, it was at index 2
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 2));
@@ -1190,7 +1219,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> returnedBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         //The popped value was the smallest element, it was at index 2
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 3));
@@ -1216,7 +1246,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> returnedBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         //The popped value was the smallest element, it was at index 2
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 4));
@@ -1244,7 +1275,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> returnedBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> returnedBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         //The popped value was the smallest element, it was at index 2
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 4));
@@ -1384,7 +1416,8 @@ public class OperateListTestsCorrect {
         opMap.put(OPERATION_VALUES_FIELD, opValues);
         opList.add(opMap);
 
-        Map<String, Object> retBins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        Map<String, Object> retBins = getReturnedBins(
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(retBins.get("list"), 5));
     }
@@ -1442,7 +1475,7 @@ public class OperateListTestsCorrect {
         opValues.put("listOrder", "UNORDERED");
         opValues.put("pad", true);
 
-        item.put("ctxType", "listIndex");
+        item.put("type", "listIndex");
         item.put("index", 7);
         ctx.add(item);
 

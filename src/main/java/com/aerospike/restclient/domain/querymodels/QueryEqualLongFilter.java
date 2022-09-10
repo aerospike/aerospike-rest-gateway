@@ -17,9 +17,9 @@ public class QueryEqualLongFilter extends QueryFilter {
             required = true,
             allowableValues = AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG
     )
-    final public String filterType = AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG;
+    final public String type = AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG;
 
-    @Schema(description = "TODO", required = true)
+    @Schema(required = true)
     public Long value;
 
     public QueryEqualLongFilter() {

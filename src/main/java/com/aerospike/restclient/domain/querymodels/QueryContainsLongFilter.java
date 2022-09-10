@@ -19,7 +19,7 @@ public class QueryContainsLongFilter extends QueryFilter {
             required = true,
             allowableValues = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG
     )
-    final public String filterType = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG;
+    final public String type = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG;
 
     @Schema(required = true)
     @JsonProperty(required = true)

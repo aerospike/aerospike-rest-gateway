@@ -18,7 +18,7 @@ public class QueryContainsStringFilter extends QueryFilter {
             required = true,
             allowableValues = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING
     )
-    final public String filterType = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING;
+    final public String type = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING;
 
     @Schema(required = true)
     public String value;

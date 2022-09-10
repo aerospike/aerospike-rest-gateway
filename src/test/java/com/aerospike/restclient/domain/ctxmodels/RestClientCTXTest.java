@@ -51,12 +51,12 @@ public class RestClientCTXTest {
     @Test
     public void testMapsToRestClientCTXListIndex() {
         Map<String, Object> ctxMap = new HashMap<>();
-        ctxMap.put("ctxType", AerospikeAPIConstants.LIST_INDEX);
+        ctxMap.put("type", AerospikeAPIConstants.LIST_INDEX);
         ctxMap.put("index", 1);
 
         try {
             ListIndexCTX restCTX = (ListIndexCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
-            Assert.assertEquals(restCTX.ctxType, AerospikeAPIConstants.LIST_INDEX);
+            Assert.assertEquals(restCTX.type, AerospikeAPIConstants.LIST_INDEX);
             Assert.assertEquals(restCTX.index.intValue(), 1);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientCTXListIndex %s", e));
@@ -76,7 +76,7 @@ public class RestClientCTXTest {
     @Test
     public void testMapsToRestClientCTXListIndexCreate() {
         Map<String, Object> ctxMap = new HashMap<>();
-        ctxMap.put("ctxType", AerospikeAPIConstants.LIST_INDEX_CREATE);
+        ctxMap.put("type", AerospikeAPIConstants.LIST_INDEX_CREATE);
         ctxMap.put("index", 1);
         ctxMap.put("order", ListOrder.ORDERED);
         ctxMap.put("pad", true);
@@ -84,7 +84,7 @@ public class RestClientCTXTest {
 
         try {
             ListIndexCreateCTX restCTX = (ListIndexCreateCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
-            Assert.assertEquals(restCTX.ctxType, AerospikeAPIConstants.LIST_INDEX_CREATE);
+            Assert.assertEquals(restCTX.type, AerospikeAPIConstants.LIST_INDEX_CREATE);
             Assert.assertEquals(restCTX.index.intValue(), 1);
             Assert.assertEquals(restCTX.order, ListOrder.ORDERED);
             Assert.assertTrue(restCTX.pad);
@@ -109,13 +109,13 @@ public class RestClientCTXTest {
     @Test
     public void testMapsToRestClientCTXListRank() {
         Map<String, Object> ctxMap = new HashMap<>();
-        ctxMap.put("ctxType", AerospikeAPIConstants.LIST_RANK);
+        ctxMap.put("type", AerospikeAPIConstants.LIST_RANK);
         ctxMap.put("rank", 1);
 
 
         try {
             ListRankCTX restCTX = (ListRankCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
-            Assert.assertEquals(restCTX.ctxType, AerospikeAPIConstants.LIST_RANK);
+            Assert.assertEquals(restCTX.type, AerospikeAPIConstants.LIST_RANK);
             Assert.assertEquals(restCTX.rank.intValue(), 1);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientCTXListIndexCreate %s", e));
@@ -137,12 +137,12 @@ public class RestClientCTXTest {
     @Test
     public void tesMapToRestClientCTXListValueWithStrVal() {
         Map<String, Object> ctxMap = new HashMap<>();
-        ctxMap.put("ctxType", AerospikeAPIConstants.LIST_VALUE);
+        ctxMap.put("type", AerospikeAPIConstants.LIST_VALUE);
         ctxMap.put("value", "abc");
 
         try {
             ListValueCTX restCTX = (ListValueCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
-            Assert.assertEquals(restCTX.ctxType, AerospikeAPIConstants.LIST_VALUE);
+            Assert.assertEquals(restCTX.type, AerospikeAPIConstants.LIST_VALUE);
             Assert.assertEquals(restCTX.value, "abc");
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientCTXListIndexCreate %s", e));
@@ -152,12 +152,12 @@ public class RestClientCTXTest {
     @Test
     public void tesMapToRestClientCTXListValueWithIntVal() {
         Map<String, Object> ctxMap = new HashMap<>();
-        ctxMap.put("ctxType", AerospikeAPIConstants.LIST_VALUE);
+        ctxMap.put("type", AerospikeAPIConstants.LIST_VALUE);
         ctxMap.put("value", 9);
 
         try {
             ListValueCTX restCTX = (ListValueCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
-            Assert.assertEquals(restCTX.ctxType, AerospikeAPIConstants.LIST_VALUE);
+            Assert.assertEquals(restCTX.type, AerospikeAPIConstants.LIST_VALUE);
             Assert.assertEquals(restCTX.value, 9);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientCTXListIndexCreate %s", e));
@@ -167,12 +167,12 @@ public class RestClientCTXTest {
     @Test
     public void tesMapToRestClientCTXListValueWithFloat() {
         Map<String, Object> ctxMap = new HashMap<>();
-        ctxMap.put("ctxType", AerospikeAPIConstants.LIST_VALUE);
+        ctxMap.put("type", AerospikeAPIConstants.LIST_VALUE);
         ctxMap.put("value", 3.14159);
 
         try {
             ListValueCTX restCTX = (ListValueCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
-            Assert.assertEquals(restCTX.ctxType, AerospikeAPIConstants.LIST_VALUE);
+            Assert.assertEquals(restCTX.type, AerospikeAPIConstants.LIST_VALUE);
             Assert.assertEquals(restCTX.value, 3.14159);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientCTXListIndexCreate %s", e));
@@ -182,12 +182,12 @@ public class RestClientCTXTest {
     @Test
     public void tesMapToRestClientCTXListValueWithBool() {
         Map<String, Object> ctxMap = new HashMap<>();
-        ctxMap.put("ctxType", AerospikeAPIConstants.LIST_VALUE);
+        ctxMap.put("type", AerospikeAPIConstants.LIST_VALUE);
         ctxMap.put("value", true);
 
         try {
             ListValueCTX restCTX = (ListValueCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
-            Assert.assertEquals(restCTX.ctxType, AerospikeAPIConstants.LIST_VALUE);
+            Assert.assertEquals(restCTX.type, AerospikeAPIConstants.LIST_VALUE);
             Assert.assertEquals(restCTX.value, true);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientCTXListIndexCreate %s", e));
@@ -207,13 +207,13 @@ public class RestClientCTXTest {
     @Test
     public void tesMapToRestClientCTXMapIndex() {
         Map<String, Object> ctxMap = new HashMap<>();
-        ctxMap.put("ctxType", AerospikeAPIConstants.MAP_INDEX);
+        ctxMap.put("type", AerospikeAPIConstants.MAP_INDEX);
         ctxMap.put("index", 11);
 
 
         try {
             MapIndexCTX restCTX = (MapIndexCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
-            Assert.assertEquals(restCTX.ctxType, AerospikeAPIConstants.MAP_INDEX);
+            Assert.assertEquals(restCTX.type, AerospikeAPIConstants.MAP_INDEX);
             Assert.assertEquals(restCTX.index.intValue(), 11);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientCTXListIndexCreate %s", e));
@@ -233,13 +233,13 @@ public class RestClientCTXTest {
     @Test
     public void tesMapToRestClientCTXMapRank() {
         Map<String, Object> ctxMap = new HashMap<>();
-        ctxMap.put("ctxType", AerospikeAPIConstants.MAP_RANK);
+        ctxMap.put("type", AerospikeAPIConstants.MAP_RANK);
         ctxMap.put("rank", 11);
 
 
         try {
             MapRankCTX restCTX = (MapRankCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
-            Assert.assertEquals(restCTX.ctxType, AerospikeAPIConstants.MAP_RANK);
+            Assert.assertEquals(restCTX.type, AerospikeAPIConstants.MAP_RANK);
             Assert.assertEquals(restCTX.rank.intValue(), 11);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientCTXListIndexCreate %s", e));
@@ -259,12 +259,12 @@ public class RestClientCTXTest {
     @Test
     public void tesMapToRestClientCTXMapKey() {
         Map<String, Object> ctxMap = new HashMap<>();
-        ctxMap.put("ctxType", AerospikeAPIConstants.MAP_KEY);
+        ctxMap.put("type", AerospikeAPIConstants.MAP_KEY);
         ctxMap.put("key", true);
 
         try {
             MapKeyCTX restCTX = (MapKeyCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
-            Assert.assertEquals(restCTX.ctxType, AerospikeAPIConstants.MAP_KEY);
+            Assert.assertEquals(restCTX.type, AerospikeAPIConstants.MAP_KEY);
             Assert.assertEquals(restCTX.key, true);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientCTXListIndexCreate %s", e));
@@ -284,13 +284,13 @@ public class RestClientCTXTest {
     @Test
     public void tesMapToRestClientCTXMapKeyCreate() {
         Map<String, Object> ctxMap = new HashMap<>();
-        ctxMap.put("ctxType", AerospikeAPIConstants.MAP_KEY_CREATE);
+        ctxMap.put("type", AerospikeAPIConstants.MAP_KEY_CREATE);
         ctxMap.put("key", true);
         ctxMap.put("order", MapOrder.KEY_VALUE_ORDERED);
 
         try {
             MapKeyCreateCTX restCTX = (MapKeyCreateCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
-            Assert.assertEquals(restCTX.ctxType, AerospikeAPIConstants.MAP_KEY_CREATE);
+            Assert.assertEquals(restCTX.type, AerospikeAPIConstants.MAP_KEY_CREATE);
             Assert.assertEquals(restCTX.key, true);
             Assert.assertEquals(restCTX.order, MapOrder.KEY_VALUE_ORDERED);
         } catch (Exception e) {
@@ -313,12 +313,12 @@ public class RestClientCTXTest {
     @Test
     public void tesMapToRestClientCTXMapValue() {
         Map<String, Object> ctxMap = new HashMap<>();
-        ctxMap.put("ctxType", AerospikeAPIConstants.MAP_VALUE);
+        ctxMap.put("type", AerospikeAPIConstants.MAP_VALUE);
         ctxMap.put("value", 10);
 
         try {
             MapValueCTX restCTX = (MapValueCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
-            Assert.assertEquals(AerospikeAPIConstants.MAP_VALUE, restCTX.ctxType);
+            Assert.assertEquals(AerospikeAPIConstants.MAP_VALUE, restCTX.type);
             Assert.assertEquals(10, restCTX.value);
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientCTXListIndexCreate %s", e));

@@ -20,7 +20,7 @@ public class ListValueCTX extends CTX {
             required = true
     )
     @JsonProperty(required = true)
-    public final String ctxType = AerospikeAPIConstants.LIST_VALUE;
+    public final String type = AerospikeAPIConstants.LIST_VALUE;
 
     @Schema(required = true)
     @JsonDeserialize(using = ObjectDeserializer.class)

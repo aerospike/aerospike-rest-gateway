@@ -18,7 +18,7 @@ public class QueryGeoWithinRadiusFilter extends QueryFilter {
             required = true,
             allowableValues = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS
     )
-    final public String filterType = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS;
+    final public String type = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS;
 
     @Schema(description = "Array of longitude, latitude, and radius describing a circle.", required = true)
     public LngLatRad circle;

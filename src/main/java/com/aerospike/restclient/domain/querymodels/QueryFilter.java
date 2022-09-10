@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "filterType")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
         {
                 @JsonSubTypes.Type(
@@ -45,7 +45,7 @@ import java.util.List;
 )
 @Schema(description = "QueryFilter base type. Only allowed on bin which has a secondary index defined.")
 abstract public class QueryFilter {
-    //     Must be set in SubType.
+    //         Must be set in SubType.
     @Schema(
             description = "The type of query filter this object represents.",
             required = true,
@@ -59,13 +59,13 @@ abstract public class QueryFilter {
                     AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT,
             }
     )
-    final public String filterType = null;
+    final public String type = null;
 
     @Schema(description = "The bin for which a secondary-index is defined.", required = true)
     @JsonProperty(required = true)
     public String binName;
 
-    @Schema(description = "An optional context for which a secondary-index is defined.")
+    @Schema(description = "An optional context for elements within a CDT which a secondary-index is defined.")
     public List<CTX> ctx;
 
     abstract public Filter toFilter();
