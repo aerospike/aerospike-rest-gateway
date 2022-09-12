@@ -522,11 +522,11 @@ public class BatchCorrectTests {
 
         Assert.assertEquals(4, returnedRecords.size());
         for (Map<String, Object> record : returnedRecords) {
-            Assert.assertEquals(0, record.get("resultCode"));
-//            Assert.assertNull(returnedRecord.get("record"));
-//            Assert.assertFalse((boolean) returnedRecord.get("inDoubt"));
+            int resultCode = (int) record.get("resultCode");
+            if (resultCode != ResultCode.OK && resultCode != ResultCode.ENTERPRISE_ONLY) {
+                Assert.fail(String.format("Expected OK or ENTERPRISE_ONLY response code. Received: %d", resultCode));
+            }
         }
-//        Assert.assertEquals("Generation error", returnedRecord.get("resultCodeString"));
     }
 
     private Map<String, Object> keyToBatchReadObject(BatchReadPolicy policy, Key key,

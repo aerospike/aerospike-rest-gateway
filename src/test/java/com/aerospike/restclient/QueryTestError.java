@@ -132,7 +132,8 @@ public class QueryTestError {
         filter.value = 6L;
         filter.binName = "nonExistentBin";
         requestBody.filter = filter;
-        RestClientError res = queryHandler.perform(mockMVC, testEndpoint, requestBody, status().isBadRequest());
+        // Not found because sindex is checked first
+        RestClientError res = queryHandler.perform(mockMVC, testEndpoint, requestBody, status().isNotFound());
         Assert.assertFalse(res.getInDoubt());
     }
 }
