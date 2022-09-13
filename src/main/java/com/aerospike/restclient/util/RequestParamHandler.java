@@ -82,7 +82,7 @@ public final class RequestParamHandler {
 
     public static boolean getGetToken(MultiValueMap<String, String> requestParams) {
         List<String> keys = requestParams.get(AerospikeAPIConstants.GET_TOKEN);
-        if (keys == null) {
+        if (keys == null || keys.size() == 0) {
             return false;
         }
         return PolicyValueConverter.getBoolValue(keys.get(0));

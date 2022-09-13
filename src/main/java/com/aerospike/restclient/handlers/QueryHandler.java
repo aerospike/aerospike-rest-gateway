@@ -102,7 +102,7 @@ public class QueryHandler {
         int count = partitionFilter.getCount();
 
         if (count == 0) {
-            return null;
+            return new byte[]{};
         }
 
         packer.packInt(begin);

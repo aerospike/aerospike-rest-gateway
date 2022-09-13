@@ -91,8 +91,6 @@ abstract public class QueryFilter {
                     @JsonSubTypes.Type(value = MapRankCTX.class, name = AerospikeAPIConstants.CTX.MAP_RANK),
                     @JsonSubTypes.Type(value = MapKeyCTX.class, name = AerospikeAPIConstants.CTX.MAP_KEY),
                     @JsonSubTypes.Type(value = MapValueCTX.class, name = AerospikeAPIConstants.CTX.MAP_VALUE),
-//                    @JsonSubTypes.Type(value = MapKeyCreateCTX.class, name = AerospikeAPIConstants.CTX.MAP_KEY_CREATE),
-//                    @JsonSubTypes.Type(value = ListIndexCreateCTX.class, name = AerospikeAPIConstants.CTX.LIST_INDEX_CREATE),
             }
     )
     public List<CTX> ctx;

@@ -46,10 +46,7 @@ public class BatchWritePolicy {
         policy.expiration = expiration;
         policy.durableDelete = durableDelete;
         policy.sendKey = sendKey;
-
-        if (filterExp != null) {
-            policy.filterExp = PolicyValueConverter.getFilterExp(filterExp);
-        }
+        policy.filterExp = PolicyValueConverter.getFilterExp(filterExp);
 
         return policy;
     }

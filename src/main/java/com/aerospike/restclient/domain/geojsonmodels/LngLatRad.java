@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.Objects;
+
 @JsonFormat(shape = JsonFormat.Shape.ARRAY)
 @JsonPropertyOrder({"latLng", "radius"})
 @Schema(
@@ -24,13 +26,16 @@ public class LngLatRad {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof LngLatRad)) {
-            return false;
-        }
-        if (((LngLatRad) obj).radius != radius) {
-            return false;
-        }
-        return ((LngLatRad) obj).latLng.equals(latLng);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LngLatRad lngLatRad = (LngLatRad) o;
+        return Double.compare(lngLatRad.radius, radius) == 0 && Objects.equals(latLng,
+                lngLatRad.latLng);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(latLng, radius);
     }
 }

@@ -35,7 +35,6 @@ public class InfoResponseParser {
     static Pattern newReplicationFactorPattern = Pattern.compile(".*effective_replication_factor=(\\d*).*");
     // Depending on the server, the response will contain either replication-factor=# or repl-factor=
     static Pattern replicationFactorPattern = Pattern.compile(".*(?:replication-factor|repl-factor)=(\\d*).*");
-    static String nsNotFound = "ns_type=unknown";
 
     public static int getReplicationFactor(String response, String namespace) {
         try {
@@ -105,20 +104,13 @@ public class InfoResponseParser {
         if (response.trim().startsWith("ns_type=unknown")) {
             throw new AerospikeException(ResultCode.INVALID_NAMESPACE, "Namespace for Index does not exist");
         }
-        Map<String, String> indexStatMap = new HashMap<>();
-        String[] statEntryStrings = response.trim().split(";");
 
-        for (String statEntryString : statEntryStrings) {
-            String[] statKV = statEntryString.split("=");
-            indexStatMap.put(statKV[0], statKV[1]);
-        }
-        return indexStatMap;
+        return getKeyValueMap(response, ";");
     }
 
-    public static Map<String, String> getKeyValueMap(String keyValueString) {
-        // These strings are formatted as "k1=v1:k2=v2:k3=v3:..." Split them into a map {k1: v1, k2:v2, ...}
+    public static Map<String, String> getKeyValueMap(String keyValueString, String delimiter) {
         Map<String, String> indexMap = new HashMap<>();
-        String[] kvPairs = keyValueString.split(":");
+        String[] kvPairs = keyValueString.trim().split(delimiter);
 
         for (String kvPair : kvPairs) {
             String[] kvAry = kvPair.split("=");
@@ -126,6 +118,13 @@ public class InfoResponseParser {
         }
 
         return indexMap;
+    }
+
+    /**
+     * keyValueString is formatted as "k1=v1:k2=v2:k3=v3:..." Split them into a map {k1: v1, k2:v2, ...}
+     */
+    public static Map<String, String> getKeyValueMap(String keyValueString) {
+        return getKeyValueMap(keyValueString, ":");
     }
 
 }

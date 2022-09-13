@@ -61,10 +61,6 @@ public class BatchUDF extends BatchRecord {
             values = functionArgs.stream().map(Value::get).toArray(Value[]::new);
         }
 
-        if (policy == null) {
-            return new com.aerospike.client.BatchUDF(key.toKey(), packageName, functionName, values);
-        }
-
         return new com.aerospike.client.BatchUDF(batchUDFPolicy, key.toKey(), packageName, functionName,
                 values);
     }

@@ -1,7 +1,6 @@
 package com.aerospike.restclient.domain.geojsonmodels;
 
 import com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -34,8 +33,6 @@ public class Polygon extends GeoJSON {
     public Polygon(LngLat... polygon) {
         coordinates = Arrays.asList(polygon);
     }
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public boolean equals(Object o) {
