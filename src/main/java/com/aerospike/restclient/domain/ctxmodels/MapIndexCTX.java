@@ -11,12 +11,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 )
 public class MapIndexCTX extends CTX {
     @Schema(
-            description = "The type of context this object represents. It is always " + AerospikeAPIConstants.MAP_INDEX,
-            allowableValues = AerospikeAPIConstants.MAP_INDEX,
+            description = "The type of context this object represents. It is always " + AerospikeAPIConstants.CTX.MAP_INDEX,
+            allowableValues = AerospikeAPIConstants.CTX.MAP_INDEX,
             required = true
     )
     @JsonProperty(required = true)
-    public final String type = AerospikeAPIConstants.MAP_INDEX;
+    public final String type = AerospikeAPIConstants.CTX.MAP_INDEX;
 
     @Schema(
             description = "If the index is negative, the resolved index starts backwards from end of list. If an index is out of bounds, a parameter error will be returned. Examples:\n" +

@@ -1,11 +1,12 @@
 package com.aerospike.restclient.domain.querymodels;
 
 import com.aerospike.client.query.Filter;
-import com.aerospike.restclient.domain.ctxmodels.CTX;
+import com.aerospike.restclient.domain.ctxmodels.*;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
@@ -57,7 +58,8 @@ abstract public class QueryFilter {
                     AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION,
                     AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS,
                     AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT,
-            }
+            },
+            hidden = true
     )
     final public String type = null;
 
@@ -65,7 +67,34 @@ abstract public class QueryFilter {
     @JsonProperty(required = true)
     public String binName;
 
-    @Schema(description = "An optional context for elements within a CDT which a secondary-index is defined.")
+    @ArraySchema(
+            schema = @Schema(
+                    description = "An optional context for elements within a CDT which a secondary-index is defined.",
+                    anyOf = {
+                            ListIndexCTX.class,
+                            ListRankCTX.class,
+                            ListValueCTX.class,
+                            MapIndexCTX.class,
+                            MapRankCTX.class,
+                            MapKeyCTX.class,
+                            MapValueCTX.class,
+                    }
+            )
+    )
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+    @JsonSubTypes(
+            {
+                    @JsonSubTypes.Type(value = ListIndexCTX.class, name = AerospikeAPIConstants.CTX.LIST_INDEX),
+                    @JsonSubTypes.Type(value = ListRankCTX.class, name = AerospikeAPIConstants.CTX.LIST_RANK),
+                    @JsonSubTypes.Type(value = ListValueCTX.class, name = AerospikeAPIConstants.CTX.LIST_VALUE),
+                    @JsonSubTypes.Type(value = MapIndexCTX.class, name = AerospikeAPIConstants.CTX.MAP_INDEX),
+                    @JsonSubTypes.Type(value = MapRankCTX.class, name = AerospikeAPIConstants.CTX.MAP_RANK),
+                    @JsonSubTypes.Type(value = MapKeyCTX.class, name = AerospikeAPIConstants.CTX.MAP_KEY),
+                    @JsonSubTypes.Type(value = MapValueCTX.class, name = AerospikeAPIConstants.CTX.MAP_VALUE),
+//                    @JsonSubTypes.Type(value = MapKeyCreateCTX.class, name = AerospikeAPIConstants.CTX.MAP_KEY_CREATE),
+//                    @JsonSubTypes.Type(value = ListIndexCreateCTX.class, name = AerospikeAPIConstants.CTX.LIST_INDEX_CREATE),
+            }
+    )
     public List<CTX> ctx;
 
     abstract public Filter toFilter();

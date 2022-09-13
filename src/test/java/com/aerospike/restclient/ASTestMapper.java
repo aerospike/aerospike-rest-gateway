@@ -7,7 +7,6 @@ public class ASTestMapper implements IASTestMapper {
     private final ObjectMapper mapper;
     private final Class<?> t;
 
-    @SuppressWarnings("unchecked")
     public ASTestMapper(ObjectMapper mapper, Class<?> type) {
         this.mapper = mapper;
         t = type;

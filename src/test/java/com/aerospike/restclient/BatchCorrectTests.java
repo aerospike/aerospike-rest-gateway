@@ -46,6 +46,7 @@ import java.util.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SuppressWarnings("unchecked")
 @RunWith(Parameterized.class)
 @SpringBootTest
 public class BatchCorrectTests {
@@ -664,6 +665,7 @@ public class BatchCorrectTests {
     }
 }
 
+@SuppressWarnings("unchecked")
 class RestBatchComparator {
 
     @SuppressWarnings("unchecked")

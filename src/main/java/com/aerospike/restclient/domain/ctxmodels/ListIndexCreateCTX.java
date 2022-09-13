@@ -9,11 +9,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 )
 public class ListIndexCreateCTX extends CTX {
     @Schema(
-            description = "The type of context this object represents. It is always " + AerospikeAPIConstants.LIST_INDEX_CREATE,
-            allowableValues = AerospikeAPIConstants.LIST_INDEX_CREATE,
+            description = "The type of context this object represents. It is always " + AerospikeAPIConstants.CTX.LIST_INDEX_CREATE,
+            allowableValues = AerospikeAPIConstants.CTX.LIST_INDEX_CREATE,
             required = true
     )
-    public final String type = AerospikeAPIConstants.LIST_INDEX_CREATE;
+    public final String type = AerospikeAPIConstants.CTX.LIST_INDEX_CREATE;
 
     @Schema(
             description = "If the index is negative, the resolved index starts backwards from end of list. If an index is out of bounds, a parameter error will be returned. Examples:\n" +
@@ -32,8 +32,6 @@ public class ListIndexCreateCTX extends CTX {
 
     ListIndexCreateCTX() {
     }
-
-    ;
 
     @Override
     public com.aerospike.client.cdt.CTX toCTX() {

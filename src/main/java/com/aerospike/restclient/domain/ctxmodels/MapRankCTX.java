@@ -10,11 +10,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 )
 public class MapRankCTX extends CTX {
     @Schema(
-            description = "The type of context this object represents. It is always " + AerospikeAPIConstants.MAP_RANK,
-            allowableValues = AerospikeAPIConstants.MAP_RANK,
+            description = "The type of context this object represents. It is always " + AerospikeAPIConstants.CTX.MAP_RANK,
+            allowableValues = AerospikeAPIConstants.CTX.MAP_RANK,
             required = true
     )
-    public final String type = AerospikeAPIConstants.MAP_RANK;
+    public final String type = AerospikeAPIConstants.CTX.MAP_RANK;
 
     @Schema(
             description = "* 0 = smallest value\n" +

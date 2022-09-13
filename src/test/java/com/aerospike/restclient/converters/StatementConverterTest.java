@@ -1,10 +1,8 @@
 package com.aerospike.restclient.converters;
 
-import com.aerospike.client.policy.QueryPolicy;
 import com.aerospike.client.query.Statement;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.converters.StatementConverter;
-import com.aerospike.restclient.util.converters.policyconverters.QueryPolicyConverter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,9 +10,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class StatementConverterTest {
     MultiValueMap<String, String> policyMap;

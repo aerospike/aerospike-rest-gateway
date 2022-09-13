@@ -136,6 +136,10 @@ public class QueryHandler {
     }
 
     private PartitionFilter decodePartitionFilter(byte[] token) throws IOException {
+        if (token.length == 0) {
+            return PartitionFilter.all();
+        }
+
         MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(token);
 
         int begin = unpacker.unpackInt();

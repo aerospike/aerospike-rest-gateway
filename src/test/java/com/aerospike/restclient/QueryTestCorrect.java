@@ -232,7 +232,7 @@ public class QueryTestCorrect {
         QueryResponseBody res = null;
         Set<Integer> binValues = new HashSet<>();
         String endpoint = String.join("/", testEndpoint, namespace, String.valueOf(startPartitions),
-                String.valueOf(partitionCount) + "?maxRecords=" + pageSize + "&getToken=True");
+                partitionCount + "?maxRecords=" + pageSize + "&getToken=True");
         String fromToken = null;
 
         do {
@@ -263,7 +263,7 @@ public class QueryTestCorrect {
         QueryResponseBody res = null;
         Set<Integer> binValues = new HashSet<>();
         String endpoint = String.join("/", testEndpoint, namespace, setName, String.valueOf(startPartitions),
-                String.valueOf(partitionCount) + "?maxRecords=" + pageSize + "&getToken=True");
+                partitionCount + "?maxRecords=" + pageSize + "&getToken=True");
         String fromToken = null;
 
         do {

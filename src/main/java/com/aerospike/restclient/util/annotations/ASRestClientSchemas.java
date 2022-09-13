@@ -9,6 +9,6 @@ public @interface ASRestClientSchemas {
             defaultValue = "DEFAULT",
             externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/query/IndexCollectionType.html")
     )
-    public @interface IndexCollectionType {
+    @interface IndexCollectionType {
     }
 }

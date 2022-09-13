@@ -16,131 +16,127 @@
  */
 package com.aerospike.restclient.util.deserializers;
 
+import com.aerospike.client.Value;
+import com.aerospike.client.command.ParticleType;
+import com.aerospike.restclient.util.RestClientErrors.MalformedMsgPackError;
+import org.msgpack.core.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.msgpack.core.ExtensionTypeHeader;
-import org.msgpack.core.MessageFormat;
-import org.msgpack.core.MessagePack;
-import org.msgpack.core.MessagePackException;
-import org.msgpack.core.MessageUnpacker;
-
-import com.aerospike.client.Value;
-import com.aerospike.client.command.ParticleType;
-import com.aerospike.restclient.util.RestClientErrors.MalformedMsgPackError;
-
 public class MsgPackParser {
-	protected MessageUnpacker unpacker;
+    protected MessageUnpacker unpacker;
 
-	public MsgPackParser(InputStream stream) {
-		unpacker = MessagePack.newDefaultUnpacker(stream);
-	}
+    public MsgPackParser(InputStream stream) {
+        unpacker = MessagePack.newDefaultUnpacker(stream);
+    }
 
-	public Object unpackValue() throws IOException{
-		try {
+    public Object unpackValue() throws IOException {
+        try {
 
-			MessageFormat format = unpacker.getNextFormat();
-			switch (format) {
-			case NIL:
-				unpacker.unpackNil();
-				return new Value.NullValue();
-			case BOOLEAN:
-				return unpacker.unpackBoolean();
-			case INT8:
-			case INT16:
-			case INT32:
-			case INT64:
-			case UINT8:
-			case UINT16:
-			case UINT32:
-			case NEGFIXINT:
-			case POSFIXINT:
-				return unpacker.unpackLong();
-			case UINT64:
-				try {
-					BigInteger bigInt = unpacker.unpackBigInteger();
-					return bigInt.longValueExact();
-				} catch (ArithmeticException e) {
-					throw new MalformedMsgPackError("Integer value too large");
-				}
-			case FLOAT32:
-			case FLOAT64:
-				return unpacker.unpackDouble();
-			case STR8:
-			case STR16:
-			case STR32:
-			case FIXSTR:
-				return unpacker.unpackString();
-			case BIN8:
-			case BIN16:
-			case BIN32:
-				int binLen = unpacker.unpackRawStringHeader();
-				return unpacker.readPayload(binLen);
-			case EXT8:
-			case EXT16:
-			case EXT32:
-			case FIXEXT1:
-			case FIXEXT2:
-			case FIXEXT4:
-			case FIXEXT8:
-			case FIXEXT16:
-				return unpackExtension();
-			case ARRAY16:
-			case ARRAY32:
-			case FIXARRAY:
-				return unpackList();
-			case MAP16:
-			case MAP32:
-			case FIXMAP:
-				return unpackMap();
-			case NEVER_USED:
-				throw new MalformedMsgPackError("Unexpected MessageFormat 'NEVER_USED'");
-			default:
-				throw new MalformedMsgPackError("Unknown messagpack type");
-			}
-		}catch (MessagePackException e) {
-			throw new MalformedMsgPackError("Failed to unpack data");
-		}
-	}
+            MessageFormat format = unpacker.getNextFormat();
+            switch (format) {
+                case NIL:
+                    unpacker.unpackNil();
+                    return new Value.NullValue();
+                case BOOLEAN:
+                    return unpacker.unpackBoolean();
+                case INT8:
+                case INT16:
+                case INT32:
+                case INT64:
+                case UINT8:
+                case UINT16:
+                case UINT32:
+                case NEGFIXINT:
+                case POSFIXINT:
+                    return unpacker.unpackLong();
+                case UINT64:
+                    try {
+                        BigInteger bigInt = unpacker.unpackBigInteger();
+                        return bigInt.longValueExact();
+                    } catch (ArithmeticException e) {
+                        throw new MalformedMsgPackError("Integer value too large");
+                    }
+                case FLOAT32:
+                case FLOAT64:
+                    return unpacker.unpackDouble();
+                case STR8:
+                case STR16:
+                case STR32:
+                case FIXSTR:
+                    return unpacker.unpackString();
+                case BIN8:
+                case BIN16:
+                case BIN32:
+                    int binLen = unpacker.unpackRawStringHeader();
+                    return unpacker.readPayload(binLen);
+                case EXT8:
+                case EXT16:
+                case EXT32:
+                case FIXEXT1:
+                case FIXEXT2:
+                case FIXEXT4:
+                case FIXEXT8:
+                case FIXEXT16:
+                    return unpackExtension();
+                case ARRAY16:
+                case ARRAY32:
+                case FIXARRAY:
+                    return unpackList();
+                case MAP16:
+                case MAP32:
+                case FIXMAP:
+                    return unpackMap();
+                case NEVER_USED:
+                    throw new MalformedMsgPackError("Unexpected MessageFormat 'NEVER_USED'");
+                default:
+                    throw new MalformedMsgPackError("Unknown messagpack type");
+            }
+        } catch (MessagePackException e) {
+            throw new MalformedMsgPackError("Failed to unpack data");
+        }
+    }
 
-	private Object unpackMap() throws IOException {
-		int count = unpacker.unpackMapHeader();
-		Map<Object, Object> map = new HashMap<Object, Object>(count);
-		// Need to unpack key and then value
-		for (int i = 0; i < count; i++) {
-			Object key = unpackValue();
-			Object value = unpackValue();
-			map.put(key, value);
-		}
-		return map;
-	}
+    private Object unpackMap() throws IOException {
+        int count = unpacker.unpackMapHeader();
+        Map<Object, Object> map = new HashMap<Object, Object>(count);
+        // Need to unpack key and then value
+        for (int i = 0; i < count; i++) {
+            Object key = unpackValue();
+            Object value = unpackValue();
+            map.put(key, value);
+        }
+        return map;
+    }
 
-	private List<Object> unpackList() throws IOException {
-		int count = unpacker.unpackArrayHeader();
-		List<Object> list = new ArrayList<Object>(count);
-		for (int i = 0; i < count; i++) {
-			list.add(i, unpackValue());
-		}
-		return list;
-	}
+    private List<Object> unpackList() throws IOException {
+        int count = unpacker.unpackArrayHeader();
+        List<Object> list = new ArrayList<Object>(count);
+        for (int i = 0; i < count; i++) {
+            list.add(i, unpackValue());
+        }
+        return list;
+    }
 
-	private Object unpackExtension() throws IOException {
-		ExtensionTypeHeader extHeader = unpacker.unpackExtensionTypeHeader();
-		byte extType = extHeader.getType();
-		int extLen = extHeader.getLength();
+    private Object unpackExtension() throws IOException {
+        ExtensionTypeHeader extHeader = unpacker.unpackExtensionTypeHeader();
+        byte extType = extHeader.getType();
+        int extLen = extHeader.getLength();
 
-		if (extType == ParticleType.GEOJSON ) {
-			byte[] geoStr = unpacker.readPayload(extLen);
-			String geoJsonStr = new String(geoStr, "UTF-8");
-			return new Value.GeoJSONValue(geoJsonStr);
-		}
+        if (extType == ParticleType.GEOJSON) {
+            byte[] geoStr = unpacker.readPayload(extLen);
+            String geoJsonStr = new String(geoStr, StandardCharsets.UTF_8);
+            return new Value.GeoJSONValue(geoJsonStr);
+        }
 
-		throw new MalformedMsgPackError(String.format("Unknown extension type %d", extType));
+        throw new MalformedMsgPackError(String.format("Unknown extension type %d", extType));
 
-	}
+    }
 }

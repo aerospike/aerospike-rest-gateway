@@ -1,10 +1,7 @@
 package com.aerospike.restclient.converters.policyConverters;
 
-import com.aerospike.client.policy.BatchPolicy;
 import com.aerospike.client.policy.QueryPolicy;
-import com.aerospike.client.policy.Replica;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.aerospike.restclient.util.converters.policyconverters.BatchPolicyConverter;
 import com.aerospike.restclient.util.converters.policyconverters.QueryPolicyConverter;
 import org.junit.Assert;
 import org.junit.Before;

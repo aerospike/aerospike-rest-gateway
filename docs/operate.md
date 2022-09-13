@@ -118,7 +118,7 @@ Append a `value` to the item in the specified `bin`
 * `bin`
 * `value`
 
-## Optional Fields:
+### Optional Fields:
 
 * None
 
@@ -191,7 +191,7 @@ Prepend an `value` to the item in the specified `bin`.
 * `bin`
 * `value`
 
-Optional Fields:
+### Optional Fields:
 
 * None
 
@@ -499,7 +499,8 @@ this operation will return
 
 ## LIST_GET_BY_INDEX
 
-Return an item, located a specific index, from a list in the specified bin. The value of `listReturnType` determines what will be returned.
+Return an item, located a specific index, from a list in the specified bin. The value of `listReturnType` determines
+what will be returned.
 Requires Aerospike Server `3.16.0.1` or greater.
 
 ### Required fields
@@ -540,7 +541,8 @@ this operation will return
 
 ## LIST_GET_BY_INDEX_RANGE
 
-Return a specified amount of items beginning at a specific index, from a list in the specified bin. If `count` is not provided, all items from `index` until the end of the list will be returned.
+Return a specified amount of items beginning at a specific index, from a list in the specified bin. If `count` is not
+provided, all items from `index` until the end of the list will be returned.
 
 Requires Aerospike Server `3.16.0.1` or later
 
@@ -626,7 +628,8 @@ this operation will return
 
 ## LIST_GET_BY_RANK_RANGE
 
-Return `count` items beginning with the specified rank. If `count` is omitted, all items beginning with specified rank will be returned.
+Return `count` items beginning with the specified rank. If `count` is omitted, all items beginning with specified rank
+will be returned.
 
 Requires Aerospike Server `3.16.0.1` or later.
 
@@ -711,7 +714,9 @@ this operation will return
 
 ## LIST_GET_BY_VALUE_RANGE
 
-Return all items in a list with values between `valueBegin` and `valueEnd`. If `valueBegin` is omitted, all items with a value less than `valueEnd` will be returned. If `valueEnd` is omitted, all items with a value greater than `valueBegin` will be returned.
+Return all items in a list with values between `valueBegin` and `valueEnd`. If `valueBegin` is omitted, all items with a
+value less than `valueEnd` will be returned. If `valueEnd` is omitted, all items with a value greater than `valueBegin`
+will be returned.
 
 Requires Aerospike Server `3.16.0.1` or later.
 
@@ -798,7 +803,8 @@ this operation will return
 
 ## LIST_GET_RANGE
 
-Get `count` items from the list beginning with the specified index. If `count` is omitted, all items from `index` to the end of the list will be returned.
+Get `count` items from the list beginning with the specified index. If `count` is omitted, all items from `index` to the
+end of the list will be returned.
 
 ### Required fields
 
@@ -1238,7 +1244,8 @@ And the value of the record will be
 
 ## LIST_REMOVE_BY_RANK_RANGE
 
-Remove `count` items from a list, beginning with the item with the specified `rank`. If `count` is omitted, all items beginning with the specified `rank` will be removed and returned.
+Remove `count` items from a list, beginning with the item with the specified `rank`. If `count` is omitted, all items
+beginning with the specified `rank` will be removed and returned.
 
 Requires Aerospike Server `3.16.0.1` or later.
 
@@ -1330,7 +1337,9 @@ And the value of the record will be
 
 ## LIST_REMOVE_BY_VALUE_RANGE
 
-Remove all items from the list with values between `valueBegin` and `valueEnd`. If `valueBegin` is omitted all items with a value less than `valueEnd` will be removed. If `valueEnd` is omitted all items with a value greater than `valueBegin` will be removed.
+Remove all items from the list with values between `valueBegin` and `valueEnd`. If `valueBegin` is omitted all items
+with a value less than `valueEnd` will be removed. If `valueEnd` is omitted all items with a value greater
+than `valueBegin` will be removed.
 
 Requires Aerospike Server `3.16.0.1` or later.
 
@@ -1752,7 +1761,8 @@ Get the map item at the specified `index`.
 
 ## MAP_GET_BY_INDEX_RANGE
 
-Get all map items with indexes in the range `[index, index + count)` . If `count` is omitted, all items beginning with the item at the specified index will be returned.
+Get all map items with indexes in the range `[index, index + count)` . If `count` is omitted, all items beginning with
+the item at the specified index will be returned.
 
 ### Required fields
 
@@ -1862,7 +1872,9 @@ The operation will return a value determined by mapReturnType for the items asso
 
 ## MAP_GET_BY_KEY_RANGE
 
-Return map values with keys in the specified range. If `keyBegin` is omitted, all map values with key values less than `keyEnd` will be returned. If `keyEnd` is omitted, all map values with a key greater than or equal to `keyBegin` will be returned.
+Return map values with keys in the specified range. If `keyBegin` is omitted, all map values with key values less
+than `keyEnd` will be returned. If `keyEnd` is omitted, all map values with a key greater than or equal to `keyBegin`
+will be returned.
 
 ### Required fields
 
@@ -1943,7 +1955,8 @@ The operation will return a value determined by mapReturnType for the item with 
 
 ## MAP_GET_BY_RANK_RANGE
 
-Return `count` values from the map beginning with the value with the specified `rank`. If `count` is omitted, all items with a `rank` greater than or equal to the specified `rank` will be returned.
+Return `count` values from the map beginning with the value with the specified `rank`. If `count` is omitted, all items
+with a `rank` greater than or equal to the specified `rank` will be returned.
 
 ### Required fields
 
@@ -2024,7 +2037,9 @@ The operation will return a value determined by mapReturnType for items with the
 
 ## MAP_GET_BY_VALUE_RANGE
 
-Return all map items with value in the range [`valueBegin`, `valueEnd`). If `valueBegin` is omitted, all map items with a value less than `valueEnd` will be returned. If `valueEnd` is omitted, all map items with a value greater  than or equal to `valueBegin` will be returned.
+Return all map items with value in the range [`valueBegin`, `valueEnd`). If `valueBegin` is omitted, all map items with
+a value less than `valueEnd` will be returned. If `valueEnd` is omitted, all map items with a value greater than or
+equal to `valueBegin` will be returned.
 
 ### Required fields
 
@@ -2275,7 +2290,8 @@ Remove and return the map item at the specified index.
 
 ## MAP_REMOVE_BY_INDEX_RANGE
 
-Remove all map items with indexes in the range `[index, index + count)` . If `count` is omitted, all items beginning with the item at the specified index will be removed.
+Remove all map items with indexes in the range `[index, index + count)` . If `count` is omitted, all items beginning
+with the item at the specified index will be removed.
 
 ### Required fields
 
@@ -2347,7 +2363,9 @@ and the record will be:
 
 ## MAP_REMOVE_BY_KEY_RANGE
 
-Remove and return map values with keys in the specified range. If `keyBegin` is omitted, all map values with key values less than `keyEnd` will be removed and returned. If `keyEnd` is omitted, all map values with a key greater than or equal to `keyBegin` will be removed and returned.
+Remove and return map values with keys in the specified range. If `keyBegin` is omitted, all map values with key values
+less than `keyEnd` will be removed and returned. If `keyEnd` is omitted, all map values with a key greater than or equal
+to `keyBegin` will be removed and returned.
 
 ### Required fields
 
@@ -2436,7 +2454,8 @@ and the record will be:
 
 ## MAP_REMOVE_BY_RANK_RANGE
 
-Remove and return `count` values from the map beginning with the value with the specified rank. If `count` is omitted, all items beginning with the specified `rank` will be removed and returned.
+Remove and return `count` values from the map beginning with the value with the specified rank. If `count` is omitted,
+all items beginning with the specified `rank` will be removed and returned.
 
 ### Required fields
 
@@ -2526,7 +2545,9 @@ and the record will be:
 
 ## MAP_REMOVE_BY_VALUE_RANGE
 
-Remove and return all map items with value in the range `[valueBegin, valueEnd)`. If `valueBegin` is omitted, all map items with a value less than `valueEnd` will be removed and returned. If `valueEnd` is omitted, all map items with a value greater than or equal to `valueBegin` will be removed and returned.
+Remove and return all map items with value in the range `[valueBegin, valueEnd)`. If `valueBegin` is omitted, all map
+items with a value less than `valueEnd` will be removed and returned. If `valueEnd` is omitted, all map items with a
+value greater than or equal to `valueBegin` will be removed and returned.
 
 ### Required fields
 
@@ -2689,18 +2710,20 @@ A Map policy alters the manner in which map updates are handled. It has three di
 
 * order : This defines the order of the map. Must be one of "UNORDERED", "KEY_ORDERED", or "KEY_VALUE_ORDERED"
 * writeMode : Defines how changes to existing in the map will be handled. Options are: "CREATE_ONLY", or "UPDATE_ONLY"
-  * "CREATE_ONLY" If the key already exists, the write will fail.
-  * "UPDATE": If the key already exists, the item will be overwritten.
-  * "UPDATE_ONLY" If the key already exists, the item will be overwritten.
+    * "CREATE_ONLY" If the key already exists, the write will fail.
+    * "UPDATE": If the key already exists, the item will be overwritten.
+    * "UPDATE_ONLY" If the key already exists, the item will be overwritten.
 
-* writeFlags : A list of Strings indicating how to handle map writes. The usage of this option requires Aerospike Server >= `4.3.0.0`. Possibles values are:
-  * "DEFAULT" Allow writes to existing keys and creation of new keys.
-  * "CREATE_ONLY": If the key already exists, the item will be denied.
-  * "UPDATE_ONLY": If the key already exists, the item will be overwritten. Creation of new keys is denied.
-  * "PARTIAL": Allow other valid map items to be committed if a map item is denied due to write flag constraints.
-  * "NO_FAIL": Do not raise error if a map item is denied due to write flag constraints.
+* writeFlags : A list of Strings indicating how to handle map writes. The usage of this option requires Aerospike
+  Server >= `4.3.0.0`. Possibles values are:
+    * "DEFAULT" Allow writes to existing keys and creation of new keys.
+    * "CREATE_ONLY": If the key already exists, the item will be denied.
+    * "UPDATE_ONLY": If the key already exists, the item will be overwritten. Creation of new keys is denied.
+    * "PARTIAL": Allow other valid map items to be committed if a map item is denied due to write flag constraints.
+    * "NO_FAIL": Do not raise error if a map item is denied due to write flag constraints.
 
-Only one of `writeFlags` or `writeMode` should be used. `writeFlags` should be preferred if using an Aerospike Server >= `4.3.0.0`.
+Only one of `writeFlags` or `writeMode` should be used. `writeFlags` should be preferred if using an Aerospike Server >
+= `4.3.0.0`.
 
 ```javascript
 "mapPolicy": {

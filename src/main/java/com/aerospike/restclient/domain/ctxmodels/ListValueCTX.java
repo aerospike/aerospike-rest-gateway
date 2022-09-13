@@ -15,12 +15,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 )
 public class ListValueCTX extends CTX {
     @Schema(
-            description = "The type of context this object represents. It is always " + AerospikeAPIConstants.LIST_VALUE,
-            allowableValues = AerospikeAPIConstants.LIST_VALUE,
+            description = "The type of context this object represents. It is always " + AerospikeAPIConstants.CTX.LIST_VALUE,
+            allowableValues = AerospikeAPIConstants.CTX.LIST_VALUE,
             required = true
     )
     @JsonProperty(required = true)
-    public final String type = AerospikeAPIConstants.LIST_VALUE;
+    public final String type = AerospikeAPIConstants.CTX.LIST_VALUE;
 
     @Schema(required = true)
     @JsonDeserialize(using = ObjectDeserializer.class)

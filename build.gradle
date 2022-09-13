@@ -19,13 +19,8 @@ buildscript {
 }
 
 plugins {
-//	id("org.springframework.boot") version "2.7.0"
     id("org.springdoc.openapi-gradle-plugin") version "1.4.0"
 }
-//
-//openApi {
-//	outputDir.set(file("docs"))
-//}
 
 if (findProperty("aerospikeUseLocal")) {
     print("using Local repo")
@@ -70,13 +65,12 @@ dependencies {
     implementation("org.springframework:spring-aspects:5.3.13")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:2.0.2")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
-//	implementation("de.grundid.opendatalab:geojson-jackson:1.14")
     implementation("javax.inject:javax.inject:1")
     implementation("com.google.guava:guava:31.0.1-jre")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.apache.httpcomponents:httpclient:${httpclientVersion}")
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('io.micrometer:micrometer-registry-prometheus')
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

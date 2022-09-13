@@ -542,7 +542,7 @@ public class ASTestUtils {
 
     public static class BinMatcher implements ArgumentMatcher<Bin> {
 
-        private Bin actual;
+        private final Bin actual;
 
         public BinMatcher(Bin actual) {
             super();
@@ -563,7 +563,7 @@ public class ASTestUtils {
 
     public static class KeyMatcher implements ArgumentMatcher<Key> {
 
-        private Key expected;
+        private final Key expected;
 
         public KeyMatcher(Key expected) {
             super();
@@ -583,11 +583,11 @@ public class ASTestUtils {
     }
 
     public static class WritePolicyMatcher implements ArgumentMatcher<WritePolicy> {
-        public static interface WritePolicyComparator {
-            public boolean comparePolicy(WritePolicy actual, WritePolicy expected);
+        public interface WritePolicyComparator {
+            boolean comparePolicy(WritePolicy actual, WritePolicy expected);
         }
 
-        private WritePolicy expected;
+        private final WritePolicy expected;
         WritePolicyComparator comparator;
 
         public WritePolicyMatcher(WritePolicy expected, WritePolicyComparator comparator) {

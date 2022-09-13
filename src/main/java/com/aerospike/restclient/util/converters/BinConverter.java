@@ -24,12 +24,8 @@ import com.aerospike.restclient.util.RestClientErrors;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gnu.crypto.util.Base64;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.luaj.vm2.ast.Str;
 
 import java.util.Map;
-import java.util.Optional;
 
 public class BinConverter {
     private static final ObjectMapper mapper = JSONMessageConverter.getJSONObjectMapper();
@@ -48,7 +44,7 @@ public class BinConverter {
             if (entry.getValue() == null) {
                 binArray[index] = (Bin.asNull(entry.getKey()));
             } else if (entry.getValue() instanceof Map) {
-                Map<String,Object> mapVal = (Map<String, Object>) value;
+                Map<String, Object> mapVal = (Map<String, Object>) value;
                 Value asVal;
 
                 if (isGeoJSON(mapVal)) {
@@ -59,8 +55,10 @@ public class BinConverter {
                     }
                 } else if (isBytes(mapVal)) {
                     try {
-                        AerospikeAPIConstants.SpecifiedType.Type type = AerospikeAPIConstants.SpecifiedType.Type.valueOf((String) mapVal.get(AerospikeAPIConstants.SpecifiedType.Keys.specifiedTypeKey));
-                        byte[] byteArr = Base64.decode((String) mapVal.get(AerospikeAPIConstants.SpecifiedType.Keys.specifiedValueKey));
+                        AerospikeAPIConstants.SpecifiedType.Type type = AerospikeAPIConstants.SpecifiedType.Type.valueOf(
+                                (String) mapVal.get(AerospikeAPIConstants.SpecifiedType.Keys.specifiedTypeKey));
+                        byte[] byteArr = Base64.decode(
+                                (String) mapVal.get(AerospikeAPIConstants.SpecifiedType.Keys.specifiedValueKey));
                         switch (type) {
                             case BYTE_ARRAY:
                                 asVal = Value.get(byteArr);
@@ -73,7 +71,8 @@ public class BinConverter {
                                 asVal = Value.get(mapVal);
                         }
                     } catch (Exception e) {
-                        throw new RestClientErrors.InvalidBinValue(String.format("Error parsing typed bin parameter: %s", e));
+                        throw new RestClientErrors.InvalidBinValue(
+                                String.format("Error parsing typed bin parameter: %s", e));
                     }
                 } else {
                     asVal = Value.get(mapVal);

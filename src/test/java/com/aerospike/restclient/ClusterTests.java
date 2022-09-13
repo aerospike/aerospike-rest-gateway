@@ -16,11 +16,8 @@
  */
 package com.aerospike.restclient;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Map;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,61 +31,65 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ClusterTests {
 
-	@Autowired ObjectMapper mapper;
+    @Autowired
+    ObjectMapper mapper;
 
 
-	public static TypeReference<Map<String,Object>> clusterInfoType = new TypeReference<Map<String,Object>>() {};
+    public static TypeReference<Map<String, Object>> clusterInfoType = new TypeReference<Map<String, Object>>() {
+    };
 
-	private MockMvc mockMVC;
+    private MockMvc mockMVC;
 
-	@Autowired
-	private WebApplicationContext wac;
-
-
-	private String endpoint = "/v1/cluster";
+    @Autowired
+    private WebApplicationContext wac;
 
 
-	@Before
-	public void setup() throws InterruptedException {
-		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-	}
+    private final String endpoint = "/v1/cluster";
 
 
-	@Test
-	public void testClusterWithJSON() throws Exception {
-		/* Get all users and verify that the one we just created is included*/
+    @Before
+    public void setup() throws InterruptedException {
+        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+    }
 
-		String response = mockMVC.perform(get(endpoint).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-		Map<String, Object>clusterInfo = mapper.readValue(response, clusterInfoType);
+    @Test
+    public void testClusterWithJSON() throws Exception {
+        /* Get all users and verify that the one we just created is included*/
 
-		Assert.assertTrue(clusterInfo.containsKey("nodes"));
-		Assert.assertTrue(clusterInfo.containsKey("namespaces"));
+        String response = mockMVC.perform(get(endpoint).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-	}
+        Map<String, Object> clusterInfo = mapper.readValue(response, clusterInfoType);
 
-	@Test
-	public void testClusterWithMsgPack() throws Exception {
-		/* Get all users and verify that the one we just created is included*/
+        Assert.assertTrue(clusterInfo.containsKey("nodes"));
+        Assert.assertTrue(clusterInfo.containsKey("namespaces"));
 
-		ObjectMapper msgpackmapper = new ObjectMapper(new MessagePackFactory());
-		byte[] response = mockMVC.perform(get(endpoint).accept(new MediaType("application", "msgpack")))
-				.andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
+    }
 
-		Map<String, Object>clusterInfo = msgpackmapper.readValue(response, clusterInfoType);
+    @Test
+    public void testClusterWithMsgPack() throws Exception {
+        /* Get all users and verify that the one we just created is included*/
 
-		Assert.assertTrue(clusterInfo.containsKey("nodes"));
-		Assert.assertTrue(clusterInfo.containsKey("namespaces"));
+        ObjectMapper msgpackmapper = new ObjectMapper(new MessagePackFactory());
+        byte[] response = mockMVC.perform(get(endpoint).accept(new MediaType("application", "msgpack")))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
 
-	}
+        Map<String, Object> clusterInfo = msgpackmapper.readValue(response, clusterInfoType);
+
+        Assert.assertTrue(clusterInfo.containsKey("nodes"));
+        Assert.assertTrue(clusterInfo.containsKey("namespaces"));
+
+    }
 
 }

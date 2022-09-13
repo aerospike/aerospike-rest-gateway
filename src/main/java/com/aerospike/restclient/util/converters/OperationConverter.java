@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 /*
  * Class containing static methods used for converting Java Maps to Aerospike Operations.
  */
+@SuppressWarnings("unchecked")
 public class OperationConverter {
 
     // Constants for accessing values from maps
@@ -80,29 +81,7 @@ public class OperationConverter {
     public static final String HLL_INDEX_BIT_COUNT_KEY = "indexBitCount";
     public static final String HLL_MIN_HASH_BIT_COUNT_KEY = "minHashBitCount";
 
-    public static final String CTX_LIST_INDEX_KEY = "listIndex";
-    public static final String CTX_LIST_INDEX_CREATE_KEY = "listIndexCreate";
-    public static final String CTX_LIST_RANK_KEY = "listRank";
-    public static final String CTX_LIST_VALUE_KEY = "listValue";
-    public static final String CTX_MAP_INDEX_KEY = "mapIndex";
-    public static final String CTX_MAP_RANK_KEY = "mapRank";
-    public static final String CTX_MAP_KEY_KEY = "mapKey";
-    public static final String CTX_MAP_KEY_CREATE_KEY = "mapKeyCreate";
-    public static final String CTX_MAP_VALUE_KEY = "mapValue";
-
-    private static final List<String> CTX_KEYS = Arrays.asList(
-            CTX_LIST_INDEX_KEY,
-            CTX_LIST_INDEX_CREATE_KEY,
-            CTX_LIST_RANK_KEY,
-            CTX_LIST_VALUE_KEY,
-            CTX_MAP_INDEX_KEY,
-            CTX_MAP_RANK_KEY,
-            CTX_MAP_KEY_KEY,
-            CTX_MAP_KEY_CREATE_KEY,
-            CTX_MAP_VALUE_KEY
-                                                              );
-
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
 
     @SuppressWarnings("unchecked")

@@ -14,12 +14,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 )
 public class MapKeyCTX extends CTX {
     @Schema(
-            description = "The type of context this object represents. It is always " + AerospikeAPIConstants.MAP_KEY,
-            allowableValues = AerospikeAPIConstants.MAP_KEY,
+            description = "The type of context this object represents. It is always " + AerospikeAPIConstants.CTX.MAP_KEY,
+            allowableValues = AerospikeAPIConstants.CTX.MAP_KEY,
             required = true
     )
     @JsonProperty(required = true)
-    public final String type = AerospikeAPIConstants.MAP_KEY;
+    public final String type = AerospikeAPIConstants.CTX.MAP_KEY;
 
     @JsonDeserialize(using = ObjectDeserializer.class)
     @Schema(description = "String, Integer, or ByteArraySpecifiedType", required = true, example = "my-user-key")
@@ -28,13 +28,9 @@ public class MapKeyCTX extends CTX {
     public MapKeyCTX() {
     }
 
-    ;
-
     public MapKeyCTX(Object key) {
         this.key = key;
     }
-
-    ;
 
     @Override
     public com.aerospike.client.cdt.CTX toCTX() {

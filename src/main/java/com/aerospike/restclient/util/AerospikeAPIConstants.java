@@ -93,6 +93,7 @@ public final class AerospikeAPIConstants {
 
     // SCAN POLICY KEYS (Merged into Query subsystem in 6.0)
     public static final String MAX_RECORDS = "maxRecords";
+    public static final String MAX_RECORDS_DEFAULT = "10000";
     public static final String RECORDS_PER_SECOND = "recordsPerSecond";
     public static final String MAX_CONCURRENT_NODES = "maxConcurrentNodes";
     public static final String CONCURRENT_NODES = "concurrentNodes";
@@ -113,14 +114,14 @@ public final class AerospikeAPIConstants {
 
     // QUERY FILTER TYPES
     public final static class QueryFilterTypes {
-        public static final String EQUAL_STRING = "equalsString";
-        public static final String EQUAL_LONG = "equalsLong";
-        public static final String RANGE = "range";
-        public static final String CONTAINS_STRING = "containsString";
-        public static final String CONTAINS_LONG = "containsLong";
-        public static final String GEOWITHIN_REGION = "geoWithinRegion";
-        public static final String GEOWITHIN_RADIUS = "geoWithinRadius";
-        public static final String GEOCONTAINS_POINT = "geoContainsPoint";
+        public static final String EQUAL_STRING = "EQUALS_STRING";
+        public static final String EQUAL_LONG = "EQUALS_LONG";
+        public static final String RANGE = "RANGE";
+        public static final String CONTAINS_STRING = "CONTAINS_STRING";
+        public static final String CONTAINS_LONG = "CONTAINS_LONG";
+        public static final String GEOWITHIN_REGION = "GEO_WITHIN_REGION";
+        public static final String GEOWITHIN_RADIUS = "GEO_WITHIN_RADIUS";
+        public static final String GEOCONTAINS_POINT = "GEO_CONTAINS_POINT";
     }
 
 
@@ -132,22 +133,23 @@ public final class AerospikeAPIConstants {
     public static final String OPERATION_VALUES_FIELD = "opValues";
 
     // CTX Types
-    public static final String LIST_INDEX = "listIndex";
-    public static final String LIST_INDEX_CREATE = "listIndexCreate";
-    public static final String LIST_RANK = "listRank";
-    public static final String LIST_VALUE = "listValue";
-    public static final String MAP_INDEX = "mapIndex";
-    public static final String MAP_RANK = "mapRank";
-    public static final String MAP_KEY = "mapKey";
-    public static final String MAP_KEY_CREATE = "mapKeyCreate";
-    public static final String MAP_VALUE = "mapValue";
+    public static class CTX {
+        public static final String LIST_INDEX = "listIndex";
+        public static final String LIST_INDEX_CREATE = "listIndexCreate";
+        public static final String LIST_RANK = "listRank";
+        public static final String LIST_VALUE = "listValue";
+        public static final String MAP_INDEX = "mapIndex";
+        public static final String MAP_RANK = "mapRank";
+        public static final String MAP_KEY = "mapKey";
+        public static final String MAP_KEY_CREATE = "mapKeyCreate";
+        public static final String MAP_VALUE = "mapValue";
+    }
 
     // GEOJSON
     public final static class GeoJSON {
         public static class Types {
             public static final String POINT = "Point";
             public static final String POLYGON = "Polygon";
-            public static final String MULTI_POLYGON = "MultiPolygon";
             public static final String AERO_CIRCLE = "AeroCircle";
         }
 
@@ -159,16 +161,11 @@ public final class AerospikeAPIConstants {
         }
     }
 
-    // SpecifiedType used for representing bytes & geojson (deprecated) in json.
+    // SpecifiedType used for representing bytes & geojson (deprecated) in json.  TODO make a model
     public static class SpecifiedType {
         public enum Type {
             BYTE_ARRAY,
             GEO_JSON,
-        }
-
-        public static class Types {
-            public static final String byteArray = "BYTE_ARRAY";
-            public static final String geoJSON = "GEO_JSON";
         }
 
         public static class Keys {

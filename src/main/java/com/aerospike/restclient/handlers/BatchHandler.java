@@ -17,9 +17,7 @@
 package com.aerospike.restclient.handlers;
 
 import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.BatchRead;
 import com.aerospike.client.BatchRecord;
-import com.aerospike.client.BatchWrite;
 import com.aerospike.client.policy.BatchPolicy;
 
 import java.util.List;

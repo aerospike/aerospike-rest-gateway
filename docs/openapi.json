@@ -12701,7 +12701,7 @@
                 "type": "string",
                 "description": "TODO",
                 "enum": [
-                  "geoContainsPoint"
+                  "GEO_CONTAINS_POINT"
                 ]
               },
               "point": {
@@ -12744,7 +12744,7 @@
                 "type": "string",
                 "description": "TODO",
                 "enum": [
-                  "geoWithinRadius"
+                  "GEO_WITHIN_RADIUS"
                 ]
               },
               "latitude": {
@@ -12785,7 +12785,7 @@
                 "type": "string",
                 "description": "TODO",
                 "enum": [
-                  "geoWithinRegion"
+                  "GEO_WITHIN_REGION"
                 ]
               },
               "region": {

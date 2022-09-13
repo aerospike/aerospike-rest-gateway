@@ -2,7 +2,6 @@ package com.aerospike.restclient.util.converters.policyconverters;
 
 import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.QueryPolicy;
-import com.aerospike.client.policy.ScanPolicy;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.converters.PolicyValueConverter;
 

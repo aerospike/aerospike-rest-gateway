@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 interface BatchReadBodyMapperTester {
-    public BatchRead getBatchRead(String ns, String set, String key, List<String> bins,
-                                  String keytype) throws Exception;
+    BatchRead getBatchRead(String ns, String set, String key, List<String> bins,
+                           String keytype) throws Exception;
 
-    public BatchRead getBatchRead(String ns, byte[] digest) throws Exception;
+    BatchRead getBatchRead(String ns, byte[] digest) throws Exception;
 }
 
 class JSONBatchReadTester implements BatchReadBodyMapperTester {

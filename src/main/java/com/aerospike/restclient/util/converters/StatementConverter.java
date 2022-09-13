@@ -24,6 +24,8 @@ public class StatementConverter {
         }
         if (stmtMap.containsKey(AerospikeAPIConstants.MAX_RECORDS)) {
             stmt.setMaxRecords(getLongValue(stmtMap.get(AerospikeAPIConstants.MAX_RECORDS)));
+        } else {
+            stmt.setMaxRecords(Long.parseLong(AerospikeAPIConstants.MAX_RECORDS_DEFAULT));
         }
         if (stmtMap.containsKey(AerospikeAPIConstants.RECORDS_PER_SECOND)) {
             stmt.setRecordsPerSecond(getIntValue(stmtMap.get(AerospikeAPIConstants.RECORDS_PER_SECOND)));

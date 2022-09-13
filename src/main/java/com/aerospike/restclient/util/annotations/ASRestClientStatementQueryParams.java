@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
                 @Parameter(
                         name = AerospikeAPIConstants.MAX_RECORDS,
                         description = APIDescriptors.SCAN_POLICY_MAX_RECORDS_NOTES,
-                        schema = @Schema(type = "integer"),
+                        schema = @Schema(type = "integer", defaultValue = AerospikeAPIConstants.MAX_RECORDS_DEFAULT),
                         in = ParameterIn.QUERY
                 ),
                 @Parameter(

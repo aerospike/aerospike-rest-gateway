@@ -26,7 +26,7 @@ public @interface ASRestClientParams {
     )
     @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface ASRestClientRecordBinsQueryParam {
+    @interface ASRestClientRecordBinsQueryParam {
     }
 
     @Parameters(
@@ -41,7 +41,7 @@ public @interface ASRestClientParams {
     )
     @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface ASRestClientKeyTypeQueryParam {
+    @interface ASRestClientKeyTypeQueryParam {
     }
 
     @Parameter(
@@ -52,6 +52,6 @@ public @interface ASRestClientParams {
     )
     @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface ASRestClientFromScanQueryParam {
+    @interface ASRestClientFromScanQueryParam {
     }
 }

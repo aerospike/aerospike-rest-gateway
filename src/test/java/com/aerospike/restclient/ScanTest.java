@@ -7,12 +7,7 @@ import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.RestClientKeyRecord;
 import com.aerospike.restclient.domain.scanmodels.RestClientScanResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
@@ -103,7 +98,7 @@ public class ScanTest {
     public void testScanAll() throws Exception {
         MockHttpServletResponse response = mockMVC.perform(
                 get(testEndpoint).accept(currentMediaType)
-        ).andExpect(status().isOk()).andReturn().getResponse();
+                                                          ).andExpect(status().isOk()).andReturn().getResponse();
 
         RestClientScanResponse res = responseDeserializer.getResponse(response, RestClientScanResponse.class);
         Assert.assertEquals(res.getPagination().getTotalRecords(), numberOfRecords);
@@ -121,7 +116,7 @@ public class ScanTest {
         while (total < numberOfRecords) {
             MockHttpServletResponse response = mockMVC.perform(
                     get(endpoint).accept(currentMediaType)
-            ).andExpect(status().isOk()).andReturn().getResponse();
+                                                              ).andExpect(status().isOk()).andReturn().getResponse();
 
             res = responseDeserializer.getResponse(response, RestClientScanResponse.class);
             for (RestClientKeyRecord r : res.getRecords()) {
@@ -141,7 +136,7 @@ public class ScanTest {
 }
 
 interface ResponseDeserializer {
-    public <T> T getResponse(MockHttpServletResponse res, Class<T> clazz);
+    <T> T getResponse(MockHttpServletResponse res, Class<T> clazz);
 }
 
 class MsgPackResponseDeserializer implements ResponseDeserializer {
