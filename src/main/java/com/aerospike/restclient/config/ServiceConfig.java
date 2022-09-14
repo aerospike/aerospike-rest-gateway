@@ -26,6 +26,7 @@ import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuit
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.cloud.client.circuitbreaker.Customizer;
 
 import java.time.Duration;
 import java.util.function.Function;
@@ -34,7 +35,7 @@ import java.util.function.Function;
 public class ServiceConfig {
 
     @Bean
-    public Resilience4JCircuitBreaker circuitBreakerConfiguration() {
+    public Customizer<Resilience4JCircuitBreakerFactory> restClientCustomizer() {
         final TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
                 .timeoutDuration(Duration.ofSeconds(1))
                 .build();
@@ -45,18 +46,7 @@ public class ServiceConfig {
                 .recordException(e -> e instanceof AerospikeException.Connection)
                 .build();
 
-        Function<String, Resilience4JConfigBuilder.Resilience4JCircuitBreakerConfiguration> defaultConfiguration =
-                id -> new Resilience4JConfigBuilder(id).circuitBreakerConfig(circuitBreakerConfig)
-                        .timeLimiterConfig(timeLimiterConfig).build();
-
-        Resilience4JCircuitBreakerFactory circuitBreakerFactory = new Resilience4JCircuitBreakerFactory(
-                CircuitBreakerRegistry.ofDefaults(),
-                TimeLimiterRegistry.ofDefaults(),
-                null
-        );
-        circuitBreakerFactory.configureDefault(defaultConfiguration);
-
-        return circuitBreakerFactory.create("rest-client");
+        return factory -> factory.configure(builder -> builder.circuitBreakerConfig(circuitBreakerConfig)
+                .timeLimiterConfig(timeLimiterConfig), "rest-client");
     }
-
 }
