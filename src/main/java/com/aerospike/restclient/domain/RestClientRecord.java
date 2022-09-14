@@ -19,6 +19,7 @@ package com.aerospike.restclient.domain;
 import java.util.Map;
 
 import com.aerospike.client.Record;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /* Record describing what we return as a record in JSON */
@@ -38,6 +39,7 @@ public class RestClientRecord {
 	@Schema(name = "ttl", description = "The time to live for the record, in seconds from now.", example = "1000")
 	public int ttl;
 
+	@JsonInclude(JsonInclude.Include.ALWAYS)
 	@Schema(name = "bins", description = "A mapping from binName to binValue",
 			example = "{\"bin1\": \"val1\", \"pi\": \"3.14\"}")
 	public Map<String, Object> bins;

@@ -17,21 +17,13 @@
 package com.aerospike.restclient.util.converters;
 
 import com.aerospike.client.exp.Expression;
-import com.aerospike.client.policy.CommitLevel;
-import com.aerospike.client.policy.GenerationPolicy;
-import com.aerospike.client.policy.ReadModeAP;
-import com.aerospike.client.policy.ReadModeSC;
-import com.aerospike.client.policy.RecordExistsAction;
-import com.aerospike.client.policy.Replica;
-import com.aerospike.client.query.PredExp;
+import com.aerospike.client.policy.*;
 import com.aerospike.restclient.util.RestClientErrors;
 import com.aerospike.restclient.util.converters.exp.FilterExpParser;
-import com.aerospike.restclient.util.converters.exp.PredExpParser;
 
 import java.util.Base64;
 
 public class PolicyValueConverter {
-    private static final PredExpParser predExpParser = new PredExpParser();
     private static final FilterExpParser filterExpParser = new FilterExpParser();
 
     public static ReadModeAP getReadModeAP(String readModeAP) {
@@ -50,16 +42,11 @@ public class PolicyValueConverter {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    public static PredExp[] getPredExp(String predExp) {
-        try {
-            return predExpParser.parse(predExp);
-        } catch (Exception e) {
-            throw new RestClientErrors.InvalidPolicyValueError("Invalid PredExp: " + predExp);
-        }
-    }
-
     public static Expression getFilterExp(String filterExp) {
+        if (filterExp == null) {
+            return null;
+        }
+
         try {
             try {
                 return filterExpParser.parse(filterExp);

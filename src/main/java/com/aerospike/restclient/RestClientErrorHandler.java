@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.Locale;
+
 @ControllerAdvice
 public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
 
@@ -43,7 +45,8 @@ public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
         logger.warn(ex.getMessage());
-        return new ResponseEntity<>(new RestClientError(ex.getMostSpecificCause().getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new RestClientError(ex.getMostSpecificCause().getMessage()),
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({RestClientErrors.AerospikeRestClientError.class})
@@ -62,6 +65,7 @@ public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
             case ResultCode.KEY_NOT_FOUND_ERROR:
             case ResultCode.INDEX_NOTFOUND:
             case ResultCode.INVALID_ROLE:
+            case ResultCode.INVALID_NAMESPACE:
                 return HttpStatus.NOT_FOUND;
 
             case ResultCode.KEY_EXISTS_ERROR:
@@ -78,11 +82,13 @@ public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
             case ResultCode.BIN_TYPE_ERROR:
             case ResultCode.PARAMETER_ERROR:
             case ResultCode.INVALID_PRIVILEGE:
+            case ResultCode.BATCH_MAX_REQUESTS_EXCEEDED:
                 return HttpStatus.BAD_REQUEST;
 
             case ResultCode.ROLE_VIOLATION:
             case ResultCode.ALWAYS_FORBIDDEN:
             case ResultCode.FAIL_FORBIDDEN:
+            case ResultCode.BATCH_DISABLED:
                 return HttpStatus.FORBIDDEN;
 
             case ResultCode.INVALID_USER:
@@ -95,8 +101,14 @@ public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
                 return HttpStatus.UNAUTHORIZED;
 
             case ResultCode.INVALID_NODE_ERROR:
-            case ResultCode.INVALID_NAMESPACE:
+            case ResultCode.BATCH_QUEUES_FULL:
+            case ResultCode.BATCH_FAILED:
                 return HttpStatus.INTERNAL_SERVER_ERROR;
+
+            case ResultCode.MAX_RETRIES_EXCEEDED:
+                if (ex.getMessage().toLowerCase(Locale.ENGLISH).contains("index not found")) {
+                    return HttpStatus.NOT_FOUND;
+                }
 
             default:
                 return HttpStatus.INTERNAL_SERVER_ERROR;

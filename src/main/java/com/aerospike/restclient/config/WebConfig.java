@@ -19,21 +19,11 @@ package com.aerospike.restclient.config;
 
 import java.util.List;
 
-import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import com.aerospike.client.Value.GeoJSONValue;
-import com.aerospike.restclient.util.converters.JSONMessageConverter;
-import com.aerospike.restclient.util.serializers.MsgPackGeoJSONSerializer;
-import com.aerospike.restclient.util.serializers.MsgPackObjKeySerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -45,7 +35,7 @@ public class WebConfig implements WebMvcConfigurer {
 			StringHttpMessageConverter must be first meaning it should be the last to add at index 0.
 		 */
 		converters.add(0, new MsgPackConverter());
-		converters.add(0, JSONMessageConverter.getConverter());
+		converters.add(0, new JSONMessageConverter());
 		converters.add(0, new StringHttpMessageConverter());
 	}
 
@@ -58,24 +48,4 @@ public class WebConfig implements WebMvcConfigurer {
 	}
 }
 
-class MsgPackConverter extends AbstractJackson2HttpMessageConverter {
-	static final MediaType mediaType = new MediaType("application", "msgpack");
 
-	MsgPackConverter() {
-		super(getASMsgPackObjectMapper(), mediaType);
-		ObjectMapper mapper = getObjectMapper();
-		addSerializerModules(mapper);
-	}
-
-	private static ObjectMapper getASMsgPackObjectMapper() {
-		MessagePackFactory aerospikeMsgPackFactory = new MessagePackFactory();
-		return new ObjectMapper(aerospikeMsgPackFactory);
-	}
-
-	private static void addSerializerModules(ObjectMapper mapper) {
-		SimpleModule recModule = new SimpleModule();
-		recModule.addSerializer(GeoJSONValue.class, new MsgPackGeoJSONSerializer());
-		recModule.addKeySerializer(Object.class, new MsgPackObjKeySerializer());
-		mapper.registerModule(recModule);
-	}
-}

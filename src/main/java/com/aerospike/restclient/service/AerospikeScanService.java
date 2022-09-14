@@ -25,5 +25,6 @@ import java.util.Map;
 public interface AerospikeScanService {
 
     RestClientScanResponse scan(AuthDetails authDetails, String[] binNames, Map<String, String> requestParams,
-                                       ScanPolicy policy, String namespace, String set);
+                                ScanPolicy policy, String namespace, String set);
 }
+

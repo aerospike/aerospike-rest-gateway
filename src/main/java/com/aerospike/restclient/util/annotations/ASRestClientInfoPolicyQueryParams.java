@@ -16,12 +16,21 @@
  */
 package com.aerospike.restclient.util.annotations;
 
+import com.aerospike.restclient.util.APIDescriptors;
+import com.aerospike.restclient.util.AerospikeAPIConstants;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import io.swagger.v3.oas.annotations.Parameters;
-
-@Parameters()
+@Parameters(value = {@Parameter(
+        name = AerospikeAPIConstants.TIMEOUT,
+        description = APIDescriptors.INFO_POLICY_TIMEOUT,
+        schema = @Schema(type = "int"),
+        in = ParameterIn.QUERY)})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ASRestClientInfoPolicyQueryParams {
 

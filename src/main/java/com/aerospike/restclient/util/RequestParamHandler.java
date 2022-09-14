@@ -16,18 +16,12 @@
  */
 package com.aerospike.restclient.util;
 
-import com.aerospike.client.policy.BatchPolicy;
-import com.aerospike.client.policy.InfoPolicy;
-import com.aerospike.client.policy.Policy;
-import com.aerospike.client.policy.RecordExistsAction;
-import com.aerospike.client.policy.ScanPolicy;
-import com.aerospike.client.policy.WritePolicy;
+import com.aerospike.client.policy.*;
+import com.aerospike.client.query.Statement;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
-import com.aerospike.restclient.util.converters.policyconverters.BatchPolicyConverter;
-import com.aerospike.restclient.util.converters.policyconverters.InfoPolicyConverter;
-import com.aerospike.restclient.util.converters.policyconverters.PolicyConverter;
-import com.aerospike.restclient.util.converters.policyconverters.ScanPolicyConverter;
-import com.aerospike.restclient.util.converters.policyconverters.WritePolicyConverter;
+import com.aerospike.restclient.util.converters.PolicyValueConverter;
+import com.aerospike.restclient.util.converters.StatementConverter;
+import com.aerospike.restclient.util.converters.policyconverters.*;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
@@ -86,6 +80,14 @@ public final class RequestParamHandler {
         }
     }
 
+    public static boolean getGetToken(MultiValueMap<String, String> requestParams) {
+        List<String> keys = requestParams.get(AerospikeAPIConstants.GET_TOKEN);
+        if (keys == null || keys.size() == 0) {
+            return false;
+        }
+        return PolicyValueConverter.getBoolValue(keys.get(0));
+    }
+
     public static Policy getPolicy(Map<String, String> requestParams) {
         return PolicyConverter.policyFromMap(requestParams);
     }
@@ -108,6 +110,14 @@ public final class RequestParamHandler {
 
     public static ScanPolicy getScanPolicy(Map<String, String> requestParams) {
         return ScanPolicyConverter.scanPolicyFromMap(requestParams);
+    }
+
+    public static QueryPolicy getQueryPolicy(Map<String, String> requestParams) {
+        return QueryPolicyConverter.queryPolicyFromMap(requestParams);
+    }
+
+    public static Statement getStatement(MultiValueMap<String, String> requestParams) {
+        return StatementConverter.statementFromMultiMap(requestParams);
     }
 
     public static InfoPolicy getInfoPolicy(Map<String, String> requestParams) {

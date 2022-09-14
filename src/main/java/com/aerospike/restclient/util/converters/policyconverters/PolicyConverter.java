@@ -24,7 +24,6 @@ import java.util.Map;
 
 public class PolicyConverter {
 
-    @SuppressWarnings("deprecation")
     public static Policy policyFromMap(Map<String, String> policyMap) {
         Policy policy = new Policy();
 
@@ -59,10 +58,6 @@ public class PolicyConverter {
         if (policyMap.containsKey(AerospikeAPIConstants.READ_MODE_SC)) {
             policy.readModeSC = PolicyValueConverter.getReadModeSC(
                     policyMap.get(AerospikeAPIConstants.READ_MODE_SC));
-        }
-        if (policyMap.containsKey(AerospikeAPIConstants.PRED_EXP)) {
-            policy.predExp = PolicyValueConverter.getPredExp(
-                    policyMap.get(AerospikeAPIConstants.PRED_EXP));
         }
         if (policyMap.containsKey(AerospikeAPIConstants.FILTER_EXP)) {
             policy.filterExp = PolicyValueConverter.getFilterExp(

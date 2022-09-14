@@ -21,12 +21,7 @@ import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.Record;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -40,11 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,7 +47,7 @@ public class RecordPutCorrectTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private PutPerformer putPerformer;
+    private final PutPerformer putPerformer;
     private MockMvc mockMVC;
 
     /* Needed to run as a Spring Boot test */
@@ -103,7 +94,7 @@ public class RecordPutCorrectTests {
                 {new MsgPackPutPerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())), true},
                 {new JSONPutPerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), false},
                 {new MsgPackPutPerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())), false},
-        };
+                };
     }
 
     public RecordPutCorrectTests(PutPerformer performer, boolean useSet) {
@@ -256,7 +247,7 @@ public class RecordPutCorrectTests {
         String queryParams = "?generation=150&generationPolicy=EXPECT_GEN_EQUAL";
 
         mockMVC.perform(put(testEndpoint + queryParams).contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(binMap)))
+                        .content(objectMapper.writeValueAsString(binMap)))
                 .andExpect(status().isConflict());
 
         Record record = client.get(null, this.testKey);
@@ -266,7 +257,7 @@ public class RecordPutCorrectTests {
 }
 
 interface PutPerformer {
-    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
+    void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
             throws Exception;
 }
 
@@ -283,7 +274,7 @@ class JSONPutPerformer implements PutPerformer {
     public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
             throws Exception {
         mockMVC.perform(put(testEndpoint).contentType(mediaType)
-                .content(mapper.writeValueAsString(binMap)))
+                        .content(mapper.writeValueAsString(binMap)))
                 .andExpect(status().isNoContent());
     }
 
@@ -302,7 +293,7 @@ class MsgPackPutPerformer implements PutPerformer {
     public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
             throws Exception {
         mockMVC.perform(put(testEndpoint).contentType(mediaType)
-                .content(mapper.writeValueAsBytes(binMap)))
+                        .content(mapper.writeValueAsBytes(binMap)))
                 .andExpect(status().isNoContent());
     }
 

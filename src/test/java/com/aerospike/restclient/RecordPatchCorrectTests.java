@@ -21,12 +21,7 @@ import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.Record;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -40,11 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -253,7 +244,7 @@ public class RecordPatchCorrectTests {
         binMap.put("integer", 12345);
 
         mockMVC.perform(patch(testEndpoint + queryParams).contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(binMap)))
+                        .content(objectMapper.writeValueAsString(binMap)))
                 .andExpect(status().isConflict());
 
         Record record = client.get(null, this.testKey);
@@ -262,7 +253,7 @@ public class RecordPatchCorrectTests {
 }
 
 interface UpdatePerformer {
-    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
+    void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
             throws Exception;
 }
 
@@ -279,7 +270,7 @@ class JSONUpdatePerformer implements UpdatePerformer {
     public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
             throws Exception {
         mockMVC.perform(patch(testEndpoint).contentType(mediaType)
-                .content(mapper.writeValueAsString(binMap)))
+                        .content(mapper.writeValueAsString(binMap)))
                 .andExpect(status().isNoContent());
     }
 }
@@ -297,7 +288,7 @@ class MsgPackUpdatePerformer implements UpdatePerformer {
     public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
             throws Exception {
         mockMVC.perform(patch(testEndpoint).contentType(mediaType)
-                .content(mapper.writeValueAsBytes(binMap)))
+                        .content(mapper.writeValueAsBytes(binMap)))
                 .andExpect(status().isNoContent());
     }
 }

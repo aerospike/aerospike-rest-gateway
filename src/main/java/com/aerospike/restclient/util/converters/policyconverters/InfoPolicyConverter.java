@@ -16,19 +16,19 @@
  */
 package com.aerospike.restclient.util.converters.policyconverters;
 
-import java.util.Map;
-
 import com.aerospike.client.policy.InfoPolicy;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.converters.PolicyValueConverter;
 
+import java.util.Map;
+
 public class InfoPolicyConverter {
 
-	public static InfoPolicy policyFromMap(Map<String, String>policyMap) {
-		InfoPolicy policy = new InfoPolicy();
-		if (policyMap.containsKey(AerospikeAPIConstants.TIMEOUT)) {
-			policy.timeout = PolicyValueConverter.getIntValue(policyMap.get(AerospikeAPIConstants.TIMEOUT));
-		}
-		return policy;
-	}
+    public static InfoPolicy policyFromMap(Map<String, String> policyMap) {
+        InfoPolicy policy = new InfoPolicy();
+        if (policyMap.containsKey(AerospikeAPIConstants.TIMEOUT)) {
+            policy.timeout = PolicyValueConverter.getIntValue(policyMap.get(AerospikeAPIConstants.TIMEOUT));
+        }
+        return policy;
+    }
 }

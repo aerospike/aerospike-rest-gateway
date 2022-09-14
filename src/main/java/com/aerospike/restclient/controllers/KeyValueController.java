@@ -25,9 +25,10 @@ import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.aerospike.restclient.service.AerospikeRecordService;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.aerospike.restclient.util.HeaderHandler;
-import com.aerospike.restclient.util.QueryParamDescriptors;
+import com.aerospike.restclient.util.APIDescriptors;
 import com.aerospike.restclient.util.RequestBodyExamples;
 import com.aerospike.restclient.util.RequestParamHandler;
+import com.aerospike.restclient.util.annotations.ASRestClientParams;
 import com.aerospike.restclient.util.annotations.ASRestClientPolicyQueryParams;
 import com.aerospike.restclient.util.annotations.ASRestClientWritePolicyQueryParams;
 import com.aerospike.restclient.util.annotations.DefaultRestClientAPIResponses;
@@ -97,6 +98,8 @@ public class KeyValueController {
     })
     @DefaultRestClientAPIResponses
     @GetMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
+    @ASRestClientParams.ASRestClientRecordBinsQueryParam
     @ASRestClientPolicyQueryParams
     public RestClientRecord getRecordNamespaceSetKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -133,6 +136,8 @@ public class KeyValueController {
     })
     @DefaultRestClientAPIResponses
     @GetMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
+    @ASRestClientParams.ASRestClientRecordBinsQueryParam
     @ASRestClientPolicyQueryParams
     public RestClientRecord getRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -178,6 +183,7 @@ public class KeyValueController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void deleteRecordNamespaceSetKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -218,6 +224,7 @@ public class KeyValueController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void deleteRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -232,6 +239,11 @@ public class KeyValueController {
         service.deleteRecord(authDetails, namespace, null, key, keyType, policy);
     }
 
+    /*
+     **************************************************
+     *                     PUT                        *
+     **************************************************
+     */
     @Operation(summary = REPLACE_RECORD_NOTES, operationId = "replaceRecordNamespaceSetKey")
     @ApiResponses(value = {
             @ApiResponse(
@@ -257,7 +269,8 @@ public class KeyValueController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @PutMapping(value = "/{namespace}/{set}/{key}",
-            consumes = "application/json", produces = {"application/json", "application/msgpack"})
+            consumes = "application/json", produces = {"application/json"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void replaceRecordNamespaceSetKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -277,15 +290,34 @@ public class KeyValueController {
         service.storeRecord(authDetails, namespace, set, key, bins, keyType, policy);
     }
 
-    /*
-     **************************************************
-     *                     PUT                        *
-     **************************************************
-     */
-    @Hidden
+    @Operation(summary = REPLACE_RECORD_NOTES, operationId = "replaceRecordNamespaceSetKeyMP")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Modified record successfully, no content expected."),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid parameters or request",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Not authorized to access the resource",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Record not found.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Generation mismatch for operation.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
+    })
+    @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @PutMapping(value = "/{namespace}/{set}/{key}",
-            consumes = "application/msgpack", produces = {"application/json", "application/msgpack"})
+            consumes = "application/msgpack", produces = {"application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
+    @ASRestClientWritePolicyQueryParams
     public void replaceRecordNamespaceSetKeyMP(
             @PathVariable(value = "namespace") String namespace,
             @PathVariable(value = "set") String set,
@@ -328,6 +360,7 @@ public class KeyValueController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @PutMapping(value = "/{namespace}/{key}",
             consumes = "application/json", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void replaceRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -396,6 +429,7 @@ public class KeyValueController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "/{namespace}/{set}/{key}",
             consumes = {"application/json"}, produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void createRecordNamespaceSetKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -461,6 +495,7 @@ public class KeyValueController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "/{namespace}/{key}",
             consumes = {"application/json"}, produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void createRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -529,6 +564,7 @@ public class KeyValueController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @PatchMapping(value = "/{namespace}/{set}/{key}",
             consumes = {"application/json"}, produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void updateRecordNamespaceSetKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -594,6 +630,7 @@ public class KeyValueController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @PatchMapping(value = "/{namespace}/{key}",
             consumes = "application/json", produces = {"application/json", "application/msgpack"})
+    @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void updateRecordNamespaceKey(
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
@@ -653,7 +690,7 @@ public class KeyValueController {
             @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
             @Parameter(hidden = true) HttpServletResponse res,
-            @Parameter(name = "keytype", description = QueryParamDescriptors.KEYTYPE_NOTES) @RequestParam(value = "keytype", required = false) RecordKeyType keyType,
+            @Parameter(name = "keytype", description = APIDescriptors.KEYTYPE_NOTES) @RequestParam(value = "keytype", required = false) RecordKeyType keyType,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
@@ -689,7 +726,7 @@ public class KeyValueController {
             @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
             @Parameter(hidden = true) HttpServletResponse res,
-            @Parameter(name = "keytype", description = QueryParamDescriptors.KEYTYPE_NOTES) @RequestParam(value = "keytype", required = false) RecordKeyType keyType,
+            @Parameter(name = "keytype", description = APIDescriptors.KEYTYPE_NOTES) @RequestParam(value = "keytype", required = false) RecordKeyType keyType,
             @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);

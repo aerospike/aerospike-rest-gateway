@@ -112,3 +112,4 @@ public class ScanController {
         return service.scan(authDetails, bins, requestParams.toSingleValueMap(), policy, namespace, null);
     }
 }
+

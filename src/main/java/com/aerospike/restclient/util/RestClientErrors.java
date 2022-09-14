@@ -132,6 +132,42 @@ public class RestClientErrors {
 		}
 	}
 
+	public static class InvalidQueryFilterError extends AerospikeRestClientError {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public HttpStatus getStatusCode() {
+			return HttpStatus.BAD_REQUEST;
+		}
+
+		public InvalidQueryFilterError() {
+			this("Invalid query filter");
+		}
+
+		public InvalidQueryFilterError(String reason) {
+			super(reason);
+			this.message = reason;
+		}
+	}
+
+	public static class InvalidQueryError extends AerospikeRestClientError {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public HttpStatus getStatusCode() {
+			return HttpStatus.BAD_REQUEST;
+		}
+
+		public InvalidQueryError() {
+			this("Invalid query statement");
+		}
+
+		public InvalidQueryError(String reason) {
+			super(reason);
+			this.message = reason;
+		}
+	}
+
 	public static class RecordNotFoundError extends AerospikeRestClientError {
 		private static final long serialVersionUID = 1L;
 
@@ -184,4 +220,57 @@ public class RestClientErrors {
 		}
 	}
 
+    public static class InvalidCTXError extends AerospikeRestClientError {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public HttpStatus getStatusCode() {
+			return HttpStatus.BAD_REQUEST;
+		}
+
+		public InvalidCTXError() {
+			this("Invalid context");
+		}
+
+		public InvalidCTXError(String reason) {
+			super(reason);
+			this.message = reason;
+		}
+    }
+
+	public static class InvalidGeoJSON extends AerospikeRestClientError {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public HttpStatus getStatusCode() {
+			return HttpStatus.BAD_REQUEST;
+		}
+
+		public InvalidGeoJSON() {
+			this("Invalid GeoJSON");
+		}
+
+		public InvalidGeoJSON(String reason) {
+			super(reason);
+			this.message = reason;
+		}
+	}
+
+	public static class InvalidBinValue extends AerospikeRestClientError {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public HttpStatus getStatusCode() {
+			return HttpStatus.BAD_REQUEST;
+		}
+
+		public InvalidBinValue() {
+			this("Invalid bin value");
+		}
+
+		public InvalidBinValue(String reason) {
+			super(reason);
+			this.message = reason;
+		}
+	}
 }

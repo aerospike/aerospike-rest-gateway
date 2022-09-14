@@ -28,103 +28,108 @@ import java.util.regex.Pattern;
 
 public class InfoResponseParser {
 
-	static Pattern setPattern = Pattern.compile("set=([^:]*):");
-	static Pattern objectPattern = Pattern.compile(".*objects=([0-9]*).*");
+    static Pattern setPattern = Pattern.compile("set=([^:]*):");
+    static Pattern objectPattern = Pattern.compile(".*objects=(\\d*).*");
 
-	// Newer versions of the server return effective_replication_factor
-	static Pattern newReplicationFactorPattern = Pattern.compile(".*effective_replication_factor=([0-9]*).*");
-	// Depending on the server, the response will contain either replication-factor=# or repl-factor=
-	static Pattern replicationFactorPattern = Pattern.compile(".*(?:replication-factor|repl-factor)=([0-9]*).*");
-	static String nsNotFound = "ns_type=unknown";
+    // Newer versions of the server return effective_replication_factor
+    static Pattern newReplicationFactorPattern = Pattern.compile(".*effective_replication_factor=(\\d*).*");
+    // Depending on the server, the response will contain either replication-factor=# or repl-factor=
+    static Pattern replicationFactorPattern = Pattern.compile(".*(?:replication-factor|repl-factor)=(\\d*).*");
 
-	public static int getReplicationFactor(String response, String namespace) {
-		try {
-			Matcher newMatcher = newReplicationFactorPattern.matcher(response);
-			if (newMatcher.matches()) {
-				return Integer.parseInt(newMatcher.group(1));
-			}
-			Matcher replMatcher = replicationFactorPattern.matcher(response);
-			if (replMatcher.matches()) {
-				return Integer.parseInt(replMatcher.group(1));
-			}
-		} catch (NumberFormatException ignore) {
-		}
-		throw new AerospikeException(ResultCode.INVALID_NAMESPACE, String.format("Failed to fetch replication factor for namespace: %s ", namespace));
-	}
+    public static int getReplicationFactor(String response, String namespace) {
+        try {
+            Matcher newMatcher = newReplicationFactorPattern.matcher(response);
+            if (newMatcher.matches()) {
+                return Integer.parseInt(newMatcher.group(1));
+            }
+            Matcher replMatcher = replicationFactorPattern.matcher(response);
+            if (replMatcher.matches()) {
+                return Integer.parseInt(replMatcher.group(1));
+            }
+        } catch (NumberFormatException ignore) {
+        }
+        throw new AerospikeException(ResultCode.INVALID_NAMESPACE,
+                String.format("Failed to fetch replication factor for namespace: %s ", namespace));
+    }
 
-	public static String[] getSetsFromResponse(String response) {
-		List<String> allMatches = new ArrayList<>();
-		Matcher setMatcher = setPattern.matcher(response);
-		while(setMatcher.find()) {
-			String m = setMatcher.group();
-			allMatches.add(m.substring(4, m.length() - 1));
-		}
-		return allMatches.toArray(new String[0]);
-	}
+    public static String[] getSetsFromResponse(String response) {
+        List<String> allMatches = new ArrayList<>();
+        Matcher setMatcher = setPattern.matcher(response);
+        while (setMatcher.find()) {
+            String m = setMatcher.group();
+            allMatches.add(m.substring(4, m.length() - 1));
+        }
+        return allMatches.toArray(new String[0]);
+    }
 
-	public static String[] getNamespacesFromResponse(String response) {
-		return response.split(";");
-	}
+    public static String[] getNamespacesFromResponse(String response) {
+        return response.split(";");
+    }
 
-	public static int getSetObjectCountFromResponse(String response) {
-		Matcher objMatcher = objectPattern.matcher(response);
-		int matches = 0;
-		if (objMatcher.matches()) {
-			matches = Integer.parseInt(objMatcher.group(1), 10);
-		}
-		return matches;
-	}
+    public static int getSetObjectCountFromResponse(String response) {
+        Matcher objMatcher = objectPattern.matcher(response);
+        int matches = 0;
+        if (objMatcher.matches()) {
+            try {
+                matches = Integer.parseInt(objMatcher.group(1), 10);
+            } catch (NumberFormatException e) {
+                throw new RestClientErrors.AerospikeRestClientError(
+                        String.format("Error parsing info response : %s", e.toString()));
+            }
+        }
+        return matches;
+    }
 
-	public static int getNamespaceCountFromResponse(String response) {
-		return InfoResponseParser.getNamespacesFromResponse(response).length;
-	}
+    public static int getNamespaceCountFromResponse(String response) {
+        return InfoResponseParser.getNamespacesFromResponse(response).length;
+    }
 
-	public static List<Map<String,String>> getIndexInformation(String response) {
-		List<Map<String,String>>indexMaps = new ArrayList<>();
-		// Split the response into substrings for each individual index
-		if (response.trim().isEmpty()){
-			return indexMaps;
-		}
-		if (response.trim().startsWith("ns_type=unknown")) {
-			throw new AerospikeException(ResultCode.INVALID_NAMESPACE, "Namespace not found");
-		}
+    public static List<Map<String, String>> getIndexInformation(String response) {
+        List<Map<String, String>> indexMaps = new ArrayList<>();
+        // Split the response into substrings for each individual index
+        if (response.trim().isEmpty()) {
+            return indexMaps;
+        }
+        if (response.trim().startsWith("ns_type=unknown")) {
+            throw new AerospikeException(ResultCode.INVALID_NAMESPACE, "Namespace not found");
+        }
 
-		String[] indexInfoAry = response.trim().split(";");
-		for (String indexInfoString : indexInfoAry) {
-			indexMaps.add(getKeyValueMap(indexInfoString));
-		}
-		return indexMaps;
-	}
+        String[] indexInfoAry = response.trim().split(";");
+        for (String indexInfoString : indexInfoAry) {
+            indexMaps.add(getKeyValueMap(indexInfoString));
+        }
+        return indexMaps;
+    }
 
-	/* Convert a string of the type "k1=v1;k2=v2;k3=v3" into a map {k1:v1, k2:v2, k3:v3} */
-	public static Map<String, String> getIndexStatInfo(String response) {
-		if (response.trim().startsWith("FAIL:201")) {
-			throw new AerospikeException(ResultCode.INDEX_NOTFOUND);
-		}
-		if (response.trim().startsWith("ns_type=unknown")) {
-			throw new AerospikeException(ResultCode.INVALID_NAMESPACE, "Namespace for Index does not exist");
-		}
-		Map<String, String> indexStatMap = new HashMap<>();
-		String[] statEntryStrings = response.trim().split(";");
+    /* Convert a string of the type "k1=v1;k2=v2;k3=v3" into a map {k1:v1, k2:v2, k3:v3} */
+    public static Map<String, String> getIndexStatInfo(String response) {
+        if (response.trim().startsWith("FAIL:201")) {
+            throw new AerospikeException(ResultCode.INDEX_NOTFOUND);
+        }
+        if (response.trim().startsWith("ns_type=unknown")) {
+            throw new AerospikeException(ResultCode.INVALID_NAMESPACE, "Namespace for Index does not exist");
+        }
 
-		for (String statEntryString : statEntryStrings) {
-			String[] statKV = statEntryString.split("=");
-			indexStatMap.put(statKV[0], statKV[1]);
-		}
-		return indexStatMap;
-	}
+        return getKeyValueMap(response, ";");
+    }
 
-	public static Map<String, String> getKeyValueMap(String keyValueString) {
-		// These strings are formatted as "k1=v1:k2=v2:k3=v3:..." Split them into a map {k1: v1, k2:v2, ...}
-		Map<String, String> indexMap = new HashMap<>();
-		String[] kvPairs = keyValueString.split(":");
+    public static Map<String, String> getKeyValueMap(String keyValueString, String delimiter) {
+        Map<String, String> indexMap = new HashMap<>();
+        String[] kvPairs = keyValueString.trim().split(delimiter);
 
-		for (String kvPair: kvPairs) {
-			String[] kvAry = kvPair.split("=");
-			indexMap.put(kvAry[0], kvAry[1]);
-		}
+        for (String kvPair : kvPairs) {
+            String[] kvAry = kvPair.split("=");
+            indexMap.put(kvAry[0], kvAry[1]);
+        }
 
-		return indexMap;
-	}
+        return indexMap;
+    }
+
+    /**
+     * keyValueString is formatted as "k1=v1:k2=v2:k3=v3:..." Split them into a map {k1: v1, k2:v2, ...}
+     */
+    public static Map<String, String> getKeyValueMap(String keyValueString) {
+        return getKeyValueMap(keyValueString, ":");
+    }
 
 }

@@ -16,12 +16,14 @@
  */
 package com.aerospike.restclient.util.annotations;
 
+import com.aerospike.client.policy.ReadModeAP;
+import com.aerospike.client.policy.ReadModeSC;
+import com.aerospike.client.policy.Replica;
+import com.aerospike.restclient.util.APIDescriptors;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.aerospike.restclient.util.QueryParamDescriptors;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.lang.annotation.ElementType;
@@ -32,67 +34,52 @@ import java.lang.annotation.Target;
 @Parameters(value = {
         @Parameter(
                 name = AerospikeAPIConstants.SEND_KEY,
-                description = QueryParamDescriptors.POLICY_SEND_KEY_NOTES,
+                description = APIDescriptors.POLICY_SEND_KEY_NOTES,
                 schema = @Schema(type = "boolean"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.REPLICA,
-                description = QueryParamDescriptors.POLICY_REPLICA_NOTES,
-                schema = @Schema(type = "string", allowableValues = QueryParamDescriptors.POLICY_REPLICA_ALLOWABLE_VALUES),
-                in = ParameterIn.QUERY),
-        @Parameter(
-                name = AerospikeAPIConstants.KEY_TYPE,
-                description = QueryParamDescriptors.KEYTYPE_NOTES,
-                schema = @Schema(type = "string", allowableValues = QueryParamDescriptors.KEYTYPE_ALLOWABLE_VALUES),
-                in = ParameterIn.QUERY),
-        @Parameter(
-                name = AerospikeAPIConstants.RECORD_BINS,
-                description = QueryParamDescriptors.BINS_NOTES,
-                array = @ArraySchema(schema = @Schema(type = "string")),
+                description = APIDescriptors.POLICY_REPLICA_NOTES,
+                schema = @Schema(implementation = Replica.class),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.READ_MODE_SC,
-                description = QueryParamDescriptors.POLICY_READMODESC_NOTES,
-                schema = @Schema(type = "string", allowableValues = QueryParamDescriptors.POLICY_READMODESC_ALLOWABLE_VALUES),
+                description = APIDescriptors.POLICY_READMODESC_NOTES,
+                schema = @Schema(implementation = ReadModeSC.class),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.READ_MODE_AP,
-                description = QueryParamDescriptors.POLICY_READMODEAP_NOTES,
-                schema = @Schema(type = "string", allowableValues = QueryParamDescriptors.POLICY_READMODEAP_ALLOWABLE_VALUES),
+                description = APIDescriptors.POLICY_READMODEAP_NOTES,
+                schema = @Schema(implementation = ReadModeAP.class),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.TOTAL_TIMEOUT,
-                description = QueryParamDescriptors.POLICY_TOTAL_TIMEOUT_NOTES,
+                description = APIDescriptors.POLICY_TOTAL_TIMEOUT_NOTES,
                 schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.SOCKET_TIMEOUT,
-                description = QueryParamDescriptors.POLICY_SOCKET_TIMEOUT_NOTES,
+                description = APIDescriptors.POLICY_SOCKET_TIMEOUT_NOTES,
                 schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.SLEEP_BETWEEN_RETRIES,
-                description = QueryParamDescriptors.POLICY_SLEEP_BETWEEN_RETRIES_NOTES,
+                description = APIDescriptors.POLICY_SLEEP_BETWEEN_RETRIES_NOTES,
                 schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.MAX_RETRIES,
-                description = QueryParamDescriptors.POLICY_MAX_RETRIES_NOTES,
+                description = APIDescriptors.POLICY_MAX_RETRIES_NOTES,
                 schema = @Schema(type = "integer"),
                 in = ParameterIn.QUERY),
         @Parameter(
-                name = AerospikeAPIConstants.PRED_EXP,
-                description = QueryParamDescriptors.POLICY_PRED_EXP_NOTES,
-                schema = @Schema(type = "string"),
-                in = ParameterIn.QUERY),
-        @Parameter(
                 name = AerospikeAPIConstants.FILTER_EXP,
-                description = QueryParamDescriptors.POLICY_FILTER_EXP_NOTES,
+                description = APIDescriptors.POLICY_FILTER_EXP_NOTES,
                 schema = @Schema(type = "string"),
                 in = ParameterIn.QUERY),
         @Parameter(
                 name = AerospikeAPIConstants.COMPRESS,
-                description = QueryParamDescriptors.POLICY_COMPRESS_NOTES,
+                description = APIDescriptors.POLICY_COMPRESS_NOTES,
                 schema = @Schema(type = "boolean"),
                 in = ParameterIn.QUERY)
 })

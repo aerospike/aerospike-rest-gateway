@@ -58,3 +58,4 @@ public class AerospikeScanServiceV1 implements AerospikeScanService {
         return policy;
     }
 }
+

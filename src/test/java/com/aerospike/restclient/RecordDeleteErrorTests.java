@@ -16,16 +16,9 @@
  */
 package com.aerospike.restclient;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Map;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -40,79 +33,84 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(Parameterized.class)
 @SpringBootTest
 public class RecordDeleteErrorTests {
 
 
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
+    @ClassRule
+    public static final SpringClassRule springClassRule = new SpringClassRule();
 
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-	@Autowired
-	private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-	private MockMvc mockMVC;
-	@Autowired
-	private WebApplicationContext wac;
+    private MockMvc mockMVC;
+    @Autowired
+    private WebApplicationContext wac;
 
-	@Before
-	public void setup() {
-		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-	}
+    @Before
+    public void setup() {
+        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+    }
 
-	private String nonExistentNSEndpoint = null;
-	private String nonExistentRecordEndpoint = null;
+    private String nonExistentNSEndpoint = null;
+    private String nonExistentRecordEndpoint = null;
 
-	@Parameters
-	public static Object[] getParams() {
-		return new Object[] {true, false};
-	}
+    @Parameters
+    public static Object[] getParams() {
+        return new Object[]{true, false};
+    }
 
-	public RecordDeleteErrorTests(boolean useSet) {
-		if (useSet) {
-			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
-			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
-		} else {
-			nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
-			nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
-		}
-	}
-	@Test
-	public void DeleteFromNonExistentNS() throws Exception {
+    public RecordDeleteErrorTests(boolean useSet) {
+        if (useSet) {
+            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
+            nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
+        } else {
+            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
+            nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
+        }
+    }
 
-		MvcResult result = mockMVC.perform(
-				delete(nonExistentNSEndpoint)
-				.accept(MediaType.APPLICATION_JSON)
-				).andExpect(status().isInternalServerError()).andReturn();
+    @Test
+    public void DeleteFromNonExistentNS() throws Exception {
 
-		MockHttpServletResponse res = result.getResponse();
-		String resJson = res.getContentAsString();
-		TypeReference<Map<String, Object>> sOMapType= new TypeReference<Map<String, Object>>() {};
-		Map<String, Object>resObject = objectMapper.readValue(resJson, sOMapType);
+        MvcResult result = mockMVC.perform(
+                delete(nonExistentNSEndpoint)
+                        .accept(MediaType.APPLICATION_JSON)
+                                          ).andExpect(status().isNotFound()).andReturn();
 
-		Assert.assertFalse((boolean) resObject.get("inDoubt"));
-	}
+        MockHttpServletResponse res = result.getResponse();
+        String resJson = res.getContentAsString();
+        TypeReference<Map<String, Object>> sOMapType = new TypeReference<Map<String, Object>>() {
+        };
+        Map<String, Object> resObject = objectMapper.readValue(resJson, sOMapType);
 
-	@Test
-	public void DeleteNonExistentRecord() throws Exception {
+        Assert.assertFalse((boolean) resObject.get("inDoubt"));
+    }
 
-		MvcResult result = mockMVC.perform(
-				delete(nonExistentRecordEndpoint)
-				.accept(MediaType.APPLICATION_JSON)
-				).andExpect(status().isNotFound()).andReturn();
+    @Test
+    public void DeleteNonExistentRecord() throws Exception {
 
-		MockHttpServletResponse res = result.getResponse();
-		String resJson = res.getContentAsString();
-		TypeReference<Map<String, Object>> sOMapType= new TypeReference<Map<String, Object>>() {};
-		Map<String, Object>resObject = objectMapper.readValue(resJson, sOMapType);
+        MvcResult result = mockMVC.perform(
+                delete(nonExistentRecordEndpoint)
+                        .accept(MediaType.APPLICATION_JSON)
+                                          ).andExpect(status().isNotFound()).andReturn();
 
-		Assert.assertFalse((boolean) resObject.get("inDoubt"));
-	}
+        MockHttpServletResponse res = result.getResponse();
+        String resJson = res.getContentAsString();
+        TypeReference<Map<String, Object>> sOMapType = new TypeReference<Map<String, Object>>() {
+        };
+        Map<String, Object> resObject = objectMapper.readValue(resJson, sOMapType);
+
+        Assert.assertFalse((boolean) resObject.get("inDoubt"));
+    }
 
 }

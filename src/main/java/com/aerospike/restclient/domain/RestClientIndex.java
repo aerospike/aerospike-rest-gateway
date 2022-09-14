@@ -16,125 +16,129 @@
  */
 package com.aerospike.restclient.domain;
 
-import java.util.Map;
-
 import com.aerospike.client.query.IndexCollectionType;
 import com.aerospike.client.query.IndexType;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.Map;
 
 public class RestClientIndex {
 
-	@JsonProperty("type")
-	IndexType indexType;
+    @JsonProperty("type")
+    IndexType indexType;
 
-	@JsonProperty("collection_type")
-	IndexCollectionType collectionType;
+    @JsonProperty("collection_type")
+    IndexCollectionType collectionType;
 
-	@Schema(example = "testNS")
-	String namespace;
+    @Schema(example = "testNS")
+    String namespace;
 
-	@Schema(example = "testSet")
-	String set;
+    @Schema(example = "testSet")
+    String set;
 
-	@Schema(description = "The bin which is indexed", example = "ageBin")
-	String bin;
+    @Schema(description = "The bin which is indexed", example = "ageBin")
+    String bin;
 
-	@Schema(description = "The name of the index. This must be unique per set", example = "ageIndex")
-	String name;
+    @Schema(description = "The name of the index. This must be unique per set", example = "ageIndex")
+    String name;
 
-	public IndexType getIndexType() {
-		return this.indexType;
-	}
+    public IndexType getIndexType() {
+        return this.indexType;
+    }
 
-	public IndexCollectionType getCollectionType() {
-		return this.collectionType == null ? IndexCollectionType.DEFAULT : this.collectionType;
-	}
+    public IndexCollectionType getCollectionType() {
+        return this.collectionType == null ? IndexCollectionType.DEFAULT : this.collectionType;
+    }
 
-	public String getNamespace() {
-		return this.namespace;
-	}
+    public String getNamespace() {
+        return this.namespace;
+    }
 
-	public String getSet() {
-		return this.set;
-	}
-	public String getBin() {
-		return this.bin;
-	}
+    public String getSet() {
+        return this.set;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getBin() {
+        return this.bin;
+    }
 
-	public void setIndexType(IndexType iType) {
-		this.indexType = iType;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setCollectionType(IndexCollectionType cType) {
-		this.collectionType = cType;
-	}
+    public void setIndexType(IndexType iType) {
+        this.indexType = iType;
+    }
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
+    public void setCollectionType(IndexCollectionType cType) {
+        this.collectionType = cType;
+    }
 
-	public void setSet(String set) {
-		this.set = set;
-	}
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
 
-	public void setBin(String bin) {
-		this.bin = bin;
-	}
+    public void setSet(String set) {
+        this.set = set;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setBin(String bin) {
+        this.bin = bin;
+    }
 
-	/* Convert an info call to a RestClientIndex */
-	@Schema(hidden = true)
-	private static final String NAME_KEY = "indexname";
-	@Schema(hidden = true)
-	private static final String NS_KEY = "ns";
-	@Schema(hidden = true)
-	private static final String SET_KEY = "set";
-	@Schema(hidden = true)
-	private static final String BIN_KEY = "bin";
-	@Schema(hidden = true)
-	private static final String INDEX_TYPE_KEY = "type";
-	@Schema(hidden = true)
-	private static final String COLLECTION_TYPE_KEY = "indextype";
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public RestClientIndex() {}
+    /* Convert an info call to a RestClientIndex */
+    @Schema(hidden = true)
+    private static final String NAME_KEY = "indexname";
+    @Schema(hidden = true)
+    private static final String NS_KEY = "ns";
+    @Schema(hidden = true)
+    private static final String SET_KEY = "set";
+    @Schema(hidden = true)
+    private static final String BIN_KEY = "bin";
+    @Schema(hidden = true)
+    private static final String INDEX_TYPE_KEY = "type";
+    @Schema(hidden = true)
+    private static final String COLLECTION_TYPE_KEY = "indextype";
 
-	public RestClientIndex(Map<String, String> idxInfo) {
-		name = idxInfo.get(NAME_KEY);
-		namespace = idxInfo.get(NS_KEY);
-		set = normalizeSet(idxInfo.get(SET_KEY));
-		bin = idxInfo.get(BIN_KEY);
-		indexType = normalizeIndexType(idxInfo.get(INDEX_TYPE_KEY));
-		collectionType = normalizeCollectionType(idxInfo.get(COLLECTION_TYPE_KEY));
-	}
+    public RestClientIndex() {
+    }
 
-	private String normalizeSet(String set) {
-		if(set == null || set.equals("NULL")) {
-			return null;
-		}
-		return set;
-	}
+    public RestClientIndex(Map<String, String> idxInfo) {
+        name = idxInfo.get(NAME_KEY);
+        namespace = idxInfo.get(NS_KEY);
+        set = normalizeSet(idxInfo.get(SET_KEY));
+        bin = idxInfo.get(BIN_KEY);
+        indexType = normalizeIndexType(idxInfo.get(INDEX_TYPE_KEY));
+        collectionType = normalizeCollectionType(idxInfo.get(COLLECTION_TYPE_KEY));
+    }
 
-	private IndexType normalizeIndexType(String idxType) {
+    private String normalizeSet(String set) {
+        if (set == null || set.equals("NULL")) {
+            return null;
+        }
+        return set;
+    }
 
-		if (idxType.equals("GEOJSON")) {
-			return IndexType.GEO2DSPHERE;
-		}
-		return IndexType.valueOf(idxType);
-	}
+    private IndexType normalizeIndexType(String idxType) {
+        idxType = idxType.toUpperCase();
 
-	static IndexCollectionType normalizeCollectionType(String collType) {
-		if (collType.equals("NONE")) {
-			return IndexCollectionType.DEFAULT;
-		}
-		return IndexCollectionType.valueOf(collType);
-	}
+        if (idxType.equals("GEOJSON")) {
+            return IndexType.GEO2DSPHERE;
+        }
+        return IndexType.valueOf(idxType);
+    }
+
+    static IndexCollectionType normalizeCollectionType(String collType) {
+        collType = collType.toUpperCase();
+        
+        if (collType.equals("NONE")) {
+            return IndexCollectionType.DEFAULT;
+        }
+        return IndexCollectionType.valueOf(collType);
+    }
 }

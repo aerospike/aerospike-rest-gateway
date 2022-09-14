@@ -17,14 +17,13 @@
 package com.aerospike.restclient.service;
 
 import com.aerospike.client.policy.BatchPolicy;
-import com.aerospike.restclient.domain.RestClientBatchReadBody;
-import com.aerospike.restclient.domain.RestClientBatchReadResponse;
 import com.aerospike.restclient.domain.auth.AuthDetails;
+import com.aerospike.restclient.domain.batchmodels.BatchRecord;
+import com.aerospike.restclient.domain.batchmodels.BatchResponseBody;
 
 import java.util.List;
 
 public interface AerospikeBatchService {
-
-    List<RestClientBatchReadResponse> batchGet(AuthDetails authDetails, List<RestClientBatchReadBody> batchKeys,
-                                               BatchPolicy policy);
+    BatchResponseBody batch(AuthDetails authDetails, List<BatchRecord> batchKeys,
+                            BatchPolicy policy);
 }

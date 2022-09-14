@@ -80,7 +80,7 @@ public class ScanHandler {
 
     private void setPaginationDetails(final long maxRecords) {
         result.getPagination().setTotalRecords(result.size());
-        if (result.size() == maxRecords && isValidPartition())
+        if (result.size() == maxRecords && isValidPartition() && lastKey != null)
             result.getPagination().setNextToken(Base64.getEncoder().encodeToString(lastKey.digest));
     }
 

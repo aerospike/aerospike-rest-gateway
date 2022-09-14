@@ -16,18 +16,12 @@
  */
 package com.aerospike.restclient;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.Info;
+import com.aerospike.client.cluster.Node;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -41,166 +35,172 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.Info;
-import com.aerospike.client.cluster.Node;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(Parameterized.class)
 @SpringBootTest
 public class InfoTests {
 
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
+    @ClassRule
+    public static final SpringClassRule springClassRule = new SpringClassRule();
 
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-	public static TypeReference<Map<String, String>> infoResponseType = new TypeReference<Map<String, String>>() {};
+    public static TypeReference<Map<String, String>> infoResponseType = new TypeReference<Map<String, String>>() {
+    };
 
-	private InfoPerformer performer;
+    private final InfoPerformer performer;
 
-	@Autowired
-	private AerospikeClient client;
+    @Autowired
+    private AerospikeClient client;
 
-	@Autowired  WebApplicationContext wac;
+    @Autowired
+    WebApplicationContext wac;
 
-	private MockMvc mockMVC = null;
+    private MockMvc mockMVC = null;
 
-	private String endpoint = "/v1/info";
+    private final String endpoint = "/v1/info";
 
-	private Node testNode;
+    private Node testNode;
 
-	@Parameters
-	public static Object[] getParams(){
-		return new Object[] {
-				new JSONInfoPerformer(),
-				new MsgPackInfoPerformer()
-		};
-	}
+    @Parameters
+    public static Object[] getParams() {
+        return new Object[]{
+                new JSONInfoPerformer(),
+                new MsgPackInfoPerformer()
+        };
+    }
 
 
-	@Before
-	public void setup() {
-		mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-		testNode = client.getNodes()[0];
-	}
+    @Before
+    public void setup() {
+        mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+        testNode = client.getNodes()[0];
+    }
 
-	public InfoTests(InfoPerformer performer) {
-		this.performer = performer;
-	}
+    public InfoTests(InfoPerformer performer) {
+        this.performer = performer;
+    }
 
-	@Test
-	public void testSingleInfoCommand() throws Exception {
-		String command = "edition";
-		List<String>commands = Arrays.asList(command);
-		Map<String, String>responses = performer.performInfoAndReturn(endpoint, commands, mockMVC);
+    @Test
+    public void testSingleInfoCommand() throws Exception {
+        String command = "edition";
+        List<String> commands = Arrays.asList(command);
+        Map<String, String> responses = performer.performInfoAndReturn(endpoint, commands, mockMVC);
 
-		Assert.assertTrue(responses.containsKey(command));
-		String restClientResponse = responses.get(command);
+        Assert.assertTrue(responses.containsKey(command));
+        String restClientResponse = responses.get(command);
 
-		String clientResponse = Info.request(null, testNode, command);
+        String clientResponse = Info.request(null, testNode, command);
 
-		Assert.assertEquals(restClientResponse, clientResponse);
+        Assert.assertEquals(restClientResponse, clientResponse);
 
-	}
+    }
 
-	@Test
-	public void testMultipleInfoCommands() throws Exception {
-		String command1 = "edition";
-		String command2 = "build";
-		List<String>commands = Arrays.asList(command1, command2);
-		Map<String, String>responses = performer.performInfoAndReturn(endpoint, commands, mockMVC);
+    @Test
+    public void testMultipleInfoCommands() throws Exception {
+        String command1 = "edition";
+        String command2 = "build";
+        List<String> commands = Arrays.asList(command1, command2);
+        Map<String, String> responses = performer.performInfoAndReturn(endpoint, commands, mockMVC);
 
-		Assert.assertTrue(responses.containsKey(command1));
-		Assert.assertTrue(responses.containsKey(command2));
+        Assert.assertTrue(responses.containsKey(command1));
+        Assert.assertTrue(responses.containsKey(command2));
 
-		Map<String, String> clientResponses = Info.request(null, testNode, command1, command2);
+        Map<String, String> clientResponses = Info.request(null, testNode, command1, command2);
 
-		Assert.assertTrue(ASTestUtils.compareStringMap(responses, clientResponses));
+        Assert.assertTrue(ASTestUtils.compareStringMap(responses, clientResponses));
 
-	}
+    }
 
-	@Test
-	public void testNonExistentInfoCommand() throws Exception {
-		String realCommand = "edition";
-		// If this becomes a real command, the test will fail.
-		String fakeCommand = "asdfasdfasdf";
-		List<String>commands = Arrays.asList(realCommand, fakeCommand);
-		Map<String, String>responses = performer.performInfoAndReturn(endpoint, commands, mockMVC);
+    @Test
+    public void testNonExistentInfoCommand() throws Exception {
+        String realCommand = "edition";
+        // If this becomes a real command, the test will fail.
+        String fakeCommand = "asdfasdfasdf";
+        List<String> commands = Arrays.asList(realCommand, fakeCommand);
+        Map<String, String> responses = performer.performInfoAndReturn(endpoint, commands, mockMVC);
 
-		Assert.assertTrue(responses.containsKey(realCommand));
-		Assert.assertFalse(responses.containsKey(fakeCommand));
+        Assert.assertTrue(responses.containsKey(realCommand));
+        Assert.assertFalse(responses.containsKey(fakeCommand));
 
-		Map<String, String> clientResponses = Info.request(null, testNode, realCommand, fakeCommand);
+        Map<String, String> clientResponses = Info.request(null, testNode, realCommand, fakeCommand);
 
-		Assert.assertTrue(ASTestUtils.compareStringMap(responses, clientResponses));
+        Assert.assertTrue(ASTestUtils.compareStringMap(responses, clientResponses));
 
-	}
+    }
 
-	@Test
-	public void testSendCommandToSingleNode() throws Exception {
-		String nameCommand = "name";
-		String nodeName = testNode.getName();
-		// If this becomes a real command, the test will fail.
-		List<String>commands = Arrays.asList(nameCommand);
-		String singleNodeEndpoint = endpoint + "/" + nodeName;
-		Map<String, String> responses = performer.performInfoAndReturn(singleNodeEndpoint, commands, mockMVC);
-		String rcNodeName = responses.get(nameCommand);
+    @Test
+    public void testSendCommandToSingleNode() throws Exception {
+        String nameCommand = "name";
+        String nodeName = testNode.getName();
+        // If this becomes a real command, the test will fail.
+        List<String> commands = Arrays.asList(nameCommand);
+        String singleNodeEndpoint = endpoint + "/" + nodeName;
+        Map<String, String> responses = performer.performInfoAndReturn(singleNodeEndpoint, commands, mockMVC);
+        String rcNodeName = responses.get(nameCommand);
 
-		String clientNodeName = Info.request(null, testNode, nameCommand);
+        String clientNodeName = Info.request(null, testNode, nameCommand);
 
-		Assert.assertEquals(rcNodeName, clientNodeName);
+        Assert.assertEquals(rcNodeName, clientNodeName);
 
-	}
+    }
 
 
 }
 
 interface InfoPerformer {
-	public Map<String, String>performInfoAndReturn(String endpoint, List<String>commands, MockMvc mockMVC) throws Exception;
+    Map<String, String> performInfoAndReturn(String endpoint, List<String> commands, MockMvc mockMVC) throws Exception;
 }
 
 class JSONInfoPerformer implements InfoPerformer {
-	private ObjectMapper mapper;
-	public JSONInfoPerformer() {
-		mapper = new ObjectMapper();
-	}
+    private final ObjectMapper mapper;
 
-	@Override
-	public Map<String, String> performInfoAndReturn(String endpoint, List<String> commands, MockMvc mockMVC) throws Exception {
-		String jsonCommands = mapper.writeValueAsString(commands);
-		String results = mockMVC.perform(post(endpoint)
-				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-				.content(jsonCommands))
-				.andExpect(status().isOk())
-				.andReturn()
-				.getResponse()
-				.getContentAsString();
-		return mapper.readValue(results, InfoTests.infoResponseType);
-	}
+    public JSONInfoPerformer() {
+        mapper = new ObjectMapper();
+    }
+
+    @Override
+    public Map<String, String> performInfoAndReturn(String endpoint, List<String> commands,
+                                                    MockMvc mockMVC) throws Exception {
+        String jsonCommands = mapper.writeValueAsString(commands);
+        String results = mockMVC.perform(post(endpoint)
+                        .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonCommands))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        return mapper.readValue(results, InfoTests.infoResponseType);
+    }
 }
 
 class MsgPackInfoPerformer implements InfoPerformer {
-	private ObjectMapper mapper;
-	private MediaType mediaType = new MediaType("application", "msgpack");
+    private final ObjectMapper mapper;
+    private final MediaType mediaType = new MediaType("application", "msgpack");
 
-	public MsgPackInfoPerformer() {
-		mapper = new ObjectMapper(new MessagePackFactory());
+    public MsgPackInfoPerformer() {
+        mapper = new ObjectMapper(new MessagePackFactory());
 
-	}
+    }
 
-	@Override
-	public Map<String, String> performInfoAndReturn(String endpoint, List<String> commands, MockMvc mockMVC) throws Exception {
-		byte[] jsonCommands = mapper.writeValueAsBytes(commands);
-		byte[] results = mockMVC.perform(post(endpoint)
-				.accept(mediaType).contentType(mediaType)
-				.content(jsonCommands))
-				.andExpect(status().isOk())
-				.andReturn()
-				.getResponse()
-				.getContentAsByteArray();
-		return mapper.readValue(results, InfoTests.infoResponseType);
-	}
+    @Override
+    public Map<String, String> performInfoAndReturn(String endpoint, List<String> commands,
+                                                    MockMvc mockMVC) throws Exception {
+        byte[] jsonCommands = mapper.writeValueAsBytes(commands);
+        byte[] results = mockMVC.perform(post(endpoint)
+                        .accept(mediaType).contentType(mediaType)
+                        .content(jsonCommands))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
+        return mapper.readValue(results, InfoTests.infoResponseType);
+    }
 }

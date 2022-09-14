@@ -16,12 +16,15 @@
  */
 package com.aerospike.restclient.handlers;
 
-import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.Record;
 import com.aerospike.client.Key;
 import com.aerospike.client.Operation;
-import com.aerospike.client.Record;
+import com.aerospike.client.BatchRecord;
+import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.policy.BatchPolicy;
 import com.aerospike.client.policy.WritePolicy;
+
+import java.util.List;
 
 public class OperateHandler {
 
@@ -37,6 +40,11 @@ public class OperateHandler {
 
     public Record[] operate(BatchPolicy policy, Key[] key, Operation[] operations) {
         return client.get(policy, key, operations);
+    }
+
+    public List<BatchRecord> operate(BatchPolicy policy, List<BatchRecord> records) {
+        client.operate(policy, records);
+        return records;
     }
 
     public static OperateHandler create(AerospikeClient client) {
