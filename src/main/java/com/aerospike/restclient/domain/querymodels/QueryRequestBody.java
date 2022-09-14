@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Body of Query request.")
 public class QueryRequestBody {
-    @Schema(description = "Query Filter.")
+    @Schema(
+            description = "QueryFilter. Only allowed on bin which has a secondary index defined."
+    )
     public QueryFilter filter;
 
     @Schema(

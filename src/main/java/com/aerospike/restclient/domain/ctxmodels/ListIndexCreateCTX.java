@@ -2,10 +2,12 @@ package com.aerospike.restclient.domain.ctxmodels;
 
 import com.aerospike.client.cdt.ListOrder;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-        description = "Lookup list by base list's index offset. If the list at index offset is not found, create it with the given sort order at that index offset."
+        description = "Lookup list by base list's index offset. If the list at index offset is not found, create it with the given sort order at that index offset.",
+        externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/CTX.html")
 )
 public class ListIndexCreateCTX extends CTX {
     @Schema(

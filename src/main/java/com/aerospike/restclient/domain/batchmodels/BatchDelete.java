@@ -11,7 +11,7 @@ import java.util.Optional;
         description = "An object that describes a batch delete operation to be used in a batch request.",
         externalDocs = @ExternalDocumentation(
                 url =
-                        "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.1/com/aerospike/client/BatchDelete.html"
+                        "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/BatchDelete.html"
         )
 )
 public class BatchDelete extends BatchRecord {

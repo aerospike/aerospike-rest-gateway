@@ -9,7 +9,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(
         name = "CTX",
         description = "Nested CDT context. Identifies the location of nested list/map to apply the operation.",
-        externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/CTX.html")
+        externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/CTX.html"),
+        oneOf = {
+                ListIndexCTX.class,
+                ListRankCTX.class,
+                ListValueCTX.class,
+                MapIndexCTX.class,
+                MapRankCTX.class,
+                MapKeyCTX.class,
+                MapValueCTX.class,
+                MapKeyCreateCTX.class,
+                ListIndexCreateCTX.class,
+        }
 )
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
@@ -29,20 +40,5 @@ import io.swagger.v3.oas.annotations.media.Schema;
         }
 )
 abstract public class CTX {
-    @Schema(
-            description = "The type of geoJSON geometry this object represents.", allowableValues = {
-            AerospikeAPIConstants.CTX.LIST_INDEX,
-            AerospikeAPIConstants.CTX.LIST_RANK,
-            AerospikeAPIConstants.CTX.LIST_VALUE,
-            AerospikeAPIConstants.CTX.MAP_INDEX,
-            AerospikeAPIConstants.CTX.MAP_RANK,
-            AerospikeAPIConstants.CTX.MAP_KEY,
-            AerospikeAPIConstants.CTX.MAP_VALUE,
-            AerospikeAPIConstants.CTX.MAP_KEY_CREATE,
-            AerospikeAPIConstants.CTX.LIST_INDEX_CREATE
-    }, required = true
-    )
-    public final String type = null;
-
     abstract public com.aerospike.client.cdt.CTX toCTX();
 }

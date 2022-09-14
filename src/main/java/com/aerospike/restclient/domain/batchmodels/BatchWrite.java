@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
         description = "An object that describes a batch write operation to be used in a batch request.",
         externalDocs = @ExternalDocumentation(
                 url =
-                        "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.1/com/aerospike/client/BatchWrite.html"
+                        "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/BatchWrite.html"
         )
 )
 public class BatchWrite extends BatchRecord {

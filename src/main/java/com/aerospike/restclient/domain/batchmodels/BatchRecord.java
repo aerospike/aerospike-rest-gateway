@@ -38,20 +38,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
                 @JsonSubTypes.Type(value = BatchUDF.class, name = AerospikeAPIConstants.BATCH_TYPE_UDF),
         }
 )
-@Schema(description = "The batch operation base type.")
+@Schema(
+        description = "The batch operation base type.", oneOf = {
+        BatchRead.class,
+        BatchWrite.class,
+        BatchDelete.class,
+        BatchUDF.class
+}
+)
 public abstract class BatchRecord {
-    @Schema(
-            description = "The type of batch request.",
-            allowableValues = {
-                    AerospikeAPIConstants.BATCH_TYPE_READ,
-                    AerospikeAPIConstants.BATCH_TYPE_WRITE,
-                    AerospikeAPIConstants.BATCH_TYPE_DELETE,
-                    AerospikeAPIConstants.BATCH_TYPE_UDF
-            },
-            required = true
-    )
-    public final String type = null;
-
     @Schema(description = "Key to a record.", required = true)
     @JsonProperty(required = true)
     public RestClientKey key;

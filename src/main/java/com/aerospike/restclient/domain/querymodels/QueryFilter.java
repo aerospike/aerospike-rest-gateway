@@ -1,12 +1,12 @@
 package com.aerospike.restclient.domain.querymodels;
 
 import com.aerospike.client.query.Filter;
-import com.aerospike.restclient.domain.ctxmodels.*;
+import com.aerospike.restclient.domain.ctxmodels.CTX;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
@@ -44,55 +44,30 @@ import java.util.List;
                 ),
         }
 )
-@Schema(description = "QueryFilter base type. Only allowed on bin which has a secondary index defined.")
+@Schema(
+        description = "QueryFilter base type. Only allowed on bin which has a secondary index defined.", oneOf = {
+        QueryEqualsStringFilter.class,
+        QueryEqualLongFilter.class,
+        QueryRangeFilter.class,
+        QueryContainsStringFilter.class,
+        QueryContainsLongFilter.class,
+        QueryGeoWithinPolygonFilter.class,
+        QueryGeoWithinRadiusFilter.class,
+        QueryGeoContainsPointFilter.class,
+},
+        externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/query/Filter.html")
+)
 abstract public class QueryFilter {
-    //         Must be set in SubType.
-    @Schema(
-            description = "The type of query filter this object represents.",
-            required = true,
-            allowableValues = {
-                    AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING,
-                    AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG,
-                    AerospikeAPIConstants.QueryFilterTypes.RANGE,
-                    AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG,
-                    AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION,
-                    AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS,
-                    AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT,
-            },
-            hidden = true
-    )
-    final public String type = null;
-
     @Schema(description = "The bin for which a secondary-index is defined.", required = true)
     @JsonProperty(required = true)
     public String binName;
 
-    @ArraySchema(
-            schema = @Schema(
-                    description = "An optional context for elements within a CDT which a secondary-index is defined.",
-                    anyOf = {
-                            ListIndexCTX.class,
-                            ListRankCTX.class,
-                            ListValueCTX.class,
-                            MapIndexCTX.class,
-                            MapRankCTX.class,
-                            MapKeyCTX.class,
-                            MapValueCTX.class,
-                    }
-            )
+    //    @ArraySchema(
+    @Schema(
+            description = "An optional context for elements within a CDT which a secondary-index is defined.",
+            externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/CTX.html")
     )
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-    @JsonSubTypes(
-            {
-                    @JsonSubTypes.Type(value = ListIndexCTX.class, name = AerospikeAPIConstants.CTX.LIST_INDEX),
-                    @JsonSubTypes.Type(value = ListRankCTX.class, name = AerospikeAPIConstants.CTX.LIST_RANK),
-                    @JsonSubTypes.Type(value = ListValueCTX.class, name = AerospikeAPIConstants.CTX.LIST_VALUE),
-                    @JsonSubTypes.Type(value = MapIndexCTX.class, name = AerospikeAPIConstants.CTX.MAP_INDEX),
-                    @JsonSubTypes.Type(value = MapRankCTX.class, name = AerospikeAPIConstants.CTX.MAP_RANK),
-                    @JsonSubTypes.Type(value = MapKeyCTX.class, name = AerospikeAPIConstants.CTX.MAP_KEY),
-                    @JsonSubTypes.Type(value = MapValueCTX.class, name = AerospikeAPIConstants.CTX.MAP_VALUE),
-            }
-    )
+//    )
     public List<CTX> ctx;
 
     abstract public Filter toFilter();

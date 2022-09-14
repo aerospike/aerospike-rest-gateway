@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
         description = "An object that describes a policy for a write operation used in a batch request.",
         externalDocs = @ExternalDocumentation(
                 url =
-                        "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.1/com/aerospike/client/policy/BatchWritePolicy.html"
+                        "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/policy/BatchWritePolicy.html"
         )
 )
 public class BatchWritePolicy {

@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
         description = "An object that describes a batch read operation to be used in a batch request.",
         externalDocs = @ExternalDocumentation(
                 url =
-                        "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.1/com/aerospike/client/BatchRead.html"
+                        "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/BatchRead.html"
         )
 )
 public class BatchRead extends BatchRecord {
