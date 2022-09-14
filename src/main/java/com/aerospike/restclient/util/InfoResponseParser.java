@@ -70,7 +70,12 @@ public class InfoResponseParser {
         Matcher objMatcher = objectPattern.matcher(response);
         int matches = 0;
         if (objMatcher.matches()) {
-            matches = Integer.parseInt(objMatcher.group(1), 10);
+            try {
+                matches = Integer.parseInt(objMatcher.group(1), 10);
+            } catch (NumberFormatException e) {
+                throw new RestClientErrors.AerospikeRestClientError(
+                        String.format("Error parsing info response : %s", e.toString()));
+            }
         }
         return matches;
     }

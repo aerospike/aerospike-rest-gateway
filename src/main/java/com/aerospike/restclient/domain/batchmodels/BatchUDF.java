@@ -47,6 +47,7 @@ public class BatchUDF extends BatchRecord {
     public BatchUDF() {
     }
 
+    @Override
     public com.aerospike.client.BatchUDF toBatchRecord() {
         if (key == null) {
             throw new RestClientErrors.InvalidKeyError("Key for a batch udf may not be null");

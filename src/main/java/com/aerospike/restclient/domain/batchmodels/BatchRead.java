@@ -61,6 +61,7 @@ public class BatchRead extends BatchRecord {
     public BatchRead() {
     }
 
+    @Override
     public com.aerospike.client.BatchRead toBatchRecord() {
         if (key == null) {
             throw new RestClientErrors.InvalidKeyError("Key for a batch read may not be null");

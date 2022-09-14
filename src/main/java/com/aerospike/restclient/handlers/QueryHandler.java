@@ -25,6 +25,7 @@ import com.aerospike.client.query.Statement;
 import com.aerospike.restclient.domain.RestClientKeyRecord;
 import com.aerospike.restclient.domain.querymodels.QueryResponseBody;
 import com.aerospike.restclient.domain.scanmodels.Pagination;
+import com.aerospike.restclient.util.RestClientErrors;
 import org.msgpack.core.MessageBufferPacker;
 import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessageUnpacker;
@@ -56,34 +57,45 @@ public class QueryHandler {
     }
 
     public QueryResponseBody queryPartition(QueryPolicy policy, Statement stmt, String fromToken,
-                                            Boolean getToken) throws IOException {
+                                            Boolean getToken) {
         PartitionFilter partitionFilter;
         partitionFilter = getPartitionFilter(fromToken);
         return queryPartition(policy, stmt, partitionFilter, getToken);
     }
 
     public QueryResponseBody queryPartition(QueryPolicy policy, Statement stmt, PartitionFilter partitionFilter,
-                                            Boolean getToken) throws IOException {
+                                            Boolean getToken) {
         client.query(policy, stmt, partitionFilter, callback);
 
         Pagination page = response.getPagination();
         page.setTotalRecords(response.size());
 
         if (getToken && !partitionFilter.isDone()) {
-            byte[] token = encodePartitionFilter(partitionFilter);
-            String tokenStr = Base64.getEncoder().encodeToString(token);
-            page.setNextToken(tokenStr);
+            try {
+                byte[] token = encodePartitionFilter(partitionFilter);
+                String tokenStr = Base64.getEncoder().encodeToString(token);
+                page.setNextToken(tokenStr);
+            } catch (IOException e) {
+                throw new RestClientErrors.AerospikeRestClientError(
+                        String.format("Unable to encode partition query filter to token: %s", e.toString()));
+            }
         }
 
         return response;
     }
 
-    private PartitionFilter getPartitionFilter(String fromToken) throws IOException {
+    private PartitionFilter getPartitionFilter(String fromToken) {
         if (fromToken == null) {
             return PartitionFilter.all();
         } else {
             byte[] tokenOut = Base64.getDecoder().decode(fromToken);
-            return decodePartitionFilter(tokenOut);
+
+            try {
+                return decodePartitionFilter(tokenOut);
+            } catch (IOException e) {
+                throw new RestClientErrors.AerospikeRestClientError(
+                        String.format("Unable to decode from token: %s", e.toString()));
+            }
         }
     }
 

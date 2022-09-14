@@ -141,30 +141,6 @@ public class OperateMapTestsCorrect {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testMapDecrement() {
-        Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
-
-        Map<String, Object> policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteMode.UPDATE);
-
-        opValues.put(OperationConverter.MAP_POLICY_KEY, policy);
-        opValues.put("bin", mapBinName);
-        opValues.put("key", "ten");
-        opValues.put("decr", 3);
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_DECREMENT);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
-        opList.add(operation);
-
-        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
-
-        Map<String, Object> bins = client.get(null, testKey).bins;
-        Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
-        objectMap.put("ten", 7);
-        Assert.assertTrue(ASTestUtils.compareMap(realMapBin, objectMap));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
     public void testMapIncrement() {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();

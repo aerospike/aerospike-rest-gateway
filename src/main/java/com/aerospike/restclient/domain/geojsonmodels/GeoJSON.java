@@ -23,19 +23,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(
         name = "GeoJSON",
         description = "A geoJSON AeroCirlce, Point, or Polygon object.",
-        externalDocs = @ExternalDocumentation(url = "https://docs.aerospike.com/server/guide/data-types/geospatial")
+        externalDocs = @ExternalDocumentation(url = "https://docs.aerospike.com/server/guide/data-types/geospatial"),
+        oneOf = {
+                AeroCircle.class,
+                Point.class,
+                Polygon.class,
+        }
 )
 abstract public class GeoJSON {
-    @Schema(
-            description = "The type of geoJSON geometry this object represents.",
-            allowableValues = {
-                    AerospikeAPIConstants.GeoJSON.Types.POLYGON,
-                    AerospikeAPIConstants.GeoJSON.Types.POINT,
-                    AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE
-            },
-            required = true
-    )
-    public final String type = null;
 
     private final ObjectMapper mapper = new ObjectMapper();
 

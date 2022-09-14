@@ -40,6 +40,7 @@ public class BatchWrite extends BatchRecord {
     public BatchWrite() {
     }
 
+    @Override
     public com.aerospike.client.BatchWrite toBatchRecord() {
         if (key == null) {
             throw new RestClientErrors.InvalidKeyError("Key for a batch write may not be null");

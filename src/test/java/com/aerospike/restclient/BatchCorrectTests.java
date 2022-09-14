@@ -317,7 +317,7 @@ public class BatchCorrectTests {
     @Test
     public void testWriteExistingRecordWithUpdateOnly() throws Exception {
         List<Map<String, Object>> batchKeys = new ArrayList<>();
-        List<Map<String, Object>> expectedOpsListMap = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> expectedOpsListMap = new ArrayList<>();
         Key key = new Key("test", "testset", "does not exist");
 
         BatchWritePolicy policy = new BatchWritePolicy();
@@ -350,7 +350,7 @@ public class BatchCorrectTests {
     @Test
     public void testWriteExistingRecordWithExpectGenEqual() throws Exception {
         List<Map<String, Object>> batchKeys = new ArrayList<>();
-        List<Map<String, Object>> expectedOpsListMap = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> expectedOpsListMap = new ArrayList<>();
         Key key = new Key("test", "testset", "does not exist");
 
         BatchWritePolicy policy = new BatchWritePolicy();
@@ -384,9 +384,6 @@ public class BatchCorrectTests {
     @Test
     public void testSingleUDFWithCommitMaster() throws Exception {
         List<Map<String, Object>> batchRecReq = new ArrayList<>();
-        List<BatchRecord> batchRecResp = new ArrayList<>();
-        List<Map<String, Object>> expectedOpsListMap = new ArrayList<Map<String, Object>>();
-
         BatchUDFPolicy policy = new BatchUDFPolicy();
         policy.commitLevel = CommitLevel.COMMIT_MASTER;
 
@@ -473,12 +470,8 @@ public class BatchCorrectTests {
     @Test
     public void testComplexMultiBatchOperation() throws Exception {
         List<Map<String, Object>> batchRecReq = new ArrayList<>();
-        BatchReadPolicy readPolicy = new BatchReadPolicy();
-        BatchWritePolicy writePolicy = new BatchWritePolicy();
-        BatchUDFPolicy udfPolicy = new BatchUDFPolicy();
         BatchDeletePolicy deletePolicy = new BatchDeletePolicy();
         deletePolicy.durableDelete = true;
-        writePolicy.recordExistsAction = RecordExistsAction.REPLACE;
 
         List<Map<String, Object>> writeOps = new ArrayList<>();
         Map<String, Object> op1 = new HashMap<>();
@@ -495,17 +488,8 @@ public class BatchCorrectTests {
         op2Vals.put("value", "new val");
         op2.put("opValues", op2Vals);
 
-        Map<String, Object> op3 = new HashMap<>();
-        Map<String, Object> op3Vals = new HashMap<>();
-        op3.put("operation", AerospikeOperation.LIST_CREATE);
-        op3Vals.put("bin", "list");
-        op3Vals.put("listOrder", "UNORDERED");
-        op3Vals.put("listIndexCreate", 3);
-        op3.put("opValues", op3Vals);
-
         writeOps.add(op1);
         writeOps.add(op2);
-//        writeOps.add(op3);
 
         List<Object> functionArgs = new ArrayList<>();
         functionArgs.add("bin3");
@@ -777,7 +761,7 @@ interface BatchHandler {
 
 class MsgPackBatchHandler implements BatchHandler {
 
-    ObjectMapper msgPackMapper;
+    final ObjectMapper msgPackMapper;
 
     public MsgPackBatchHandler() {
         msgPackMapper = new ObjectMapper(new MessagePackFactory());
@@ -813,7 +797,7 @@ class MsgPackBatchHandler implements BatchHandler {
 
 class JSONBatchHandler implements BatchHandler {
 
-    ObjectMapper msgPackMapper;
+    final ObjectMapper msgPackMapper;
 
     public JSONBatchHandler() {
         msgPackMapper = new ObjectMapper();

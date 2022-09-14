@@ -36,7 +36,7 @@ public class QueryRequestBodyTest {
         Map<String, Object> ctxMap = new HashMap<>();
 
         try {
-            QueryRequestBody body = (QueryRequestBody) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
+            mapper.bytesToObject(mapper.objectToBytes(ctxMap));
         } catch (Exception e) {
             Assert.fail("Should have mapped to RestClientQueryBody");
             // Success

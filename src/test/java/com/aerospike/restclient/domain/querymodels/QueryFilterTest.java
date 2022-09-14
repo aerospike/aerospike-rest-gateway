@@ -50,7 +50,7 @@ public class QueryFilterTest {
         Map<String, Object> ctxMap = new HashMap<>();
 
         try {
-            Object obj = mapper.bytesToObject(mapper.objectToBytes(ctxMap));
+            mapper.bytesToObject(mapper.objectToBytes(ctxMap));
             Assert.fail("Should have not mapped to CTX");
         } catch (Exception e) {
             // Success
@@ -232,7 +232,6 @@ public class QueryFilterTest {
     @Test
     public void testMapsToQueryBinGeoWithinRegionFilter() {
         Map<String, Object> filterMap = new HashMap<>();
-        Map<String, Object> region = new HashMap<>();
         double[][] coord = new double[][]{
                 new double[]{1, 2},
                 new double[]{3, 4},
@@ -330,7 +329,6 @@ public class QueryFilterTest {
     @Test
     public void testMapsToQueryBinGeoContainsPointFilter() {
         Map<String, Object> filterMap = new HashMap<>();
-        Map<String, Object> point = new HashMap<>();
         filterMap.put("type", AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT);
         filterMap.put("binName", bin);
         filterMap.put("ctx", new ArrayList<CTX>() {

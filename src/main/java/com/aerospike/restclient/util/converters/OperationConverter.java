@@ -234,9 +234,6 @@ public class OperationConverter {
             case MAP_CLEAR:
                 return mapToMapClearOp(opValues);
 
-            case MAP_DECREMENT:
-                return mapToMapDecrementOp(opValues);
-
             case MAP_GET_BY_INDEX:
                 return mapToMapGetByIndexOp(opValues);
 
@@ -949,19 +946,6 @@ public class OperationConverter {
         String binName = getBinName(opValues);
 
         return MapOperation.clear(binName, extractCTX(opValues));
-    }
-
-    @SuppressWarnings("deprecation")
-    private static Operation mapToMapDecrementOp(Map<String, Object> opValues) {
-        hasAllRequiredKeys(opValues, BIN_KEY, DECR_KEY, MAP_KEY_KEY);
-        onlyHasAllowedKeys(opValues, BIN_KEY, MAP_POLICY_KEY, DECR_KEY, MAP_KEY_KEY);
-
-        String binName = getBinName(opValues);
-        MapPolicy policy = getMapPolicy(opValues);
-        Value decr = getDecr(opValues);
-        Value key = getMapKey(opValues);
-
-        return MapOperation.decrement(policy, binName, key, Value.get(decr), extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByIndexOp(Map<String, Object> opValues) {
