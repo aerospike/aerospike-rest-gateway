@@ -31,7 +31,8 @@ import com.aerospike.restclient.util.KeyBuilder;
 import com.aerospike.restclient.util.RestClientErrors;
 import com.aerospike.restclient.util.converters.OperationsConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -46,7 +47,7 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
     private AerospikeClientPool clientPool;
 
     @Autowired
-    private Resilience4JCircuitBreaker circuitBreaker;
+    private CircuitBreakerFactory circuitBreakerFactory;
 
     @Override
     public RestClientRecord operate(AuthDetails authDetails, String namespace, String set, String key,
@@ -57,6 +58,7 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
 
         Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
         Key opKey = KeyBuilder.buildKey(namespace, set, key, keyType);
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("rest-client");
         Record fetchedRecord = circuitBreaker.run(() -> OperateHandler.create(clientPool.getClient(authDetails))
                 .operate(policy, opKey, operations));
         if (fetchedRecord == null) {
@@ -72,6 +74,7 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
 
         List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap)
                 .collect(Collectors.toList());
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("rest-client");
 
         Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
         Key[] opKeys = Arrays.stream(keys).map(k -> KeyBuilder.buildKey(namespace, set, k, keyType)).toArray(Key[]::new);
