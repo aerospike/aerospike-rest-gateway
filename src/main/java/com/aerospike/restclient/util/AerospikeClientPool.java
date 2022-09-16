@@ -23,6 +23,8 @@ import com.aerospike.client.policy.ClientPolicy;
 import com.aerospike.restclient.domain.auth.AuthDetails;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 import com.google.common.hash.Hashing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,11 +46,13 @@ public class AerospikeClientPool {
     public AerospikeClientPool(int poolSize, ClientPolicy clientPolicy,
                                int port, String hostList, String hostname,
                                AerospikeClient defaultClient, boolean useBoolBin) {
-        this.clientPool = CacheBuilder.newBuilder().maximumSize(poolSize).build();
+        RemovalListener<String, AerospikeClient> removalListener = AerospikeClientPool::onClientRemoval;
+
+        this.clientPool = CacheBuilder.newBuilder().maximumSize(poolSize).removalListener(removalListener).build();
+
         if (defaultClient != null) {
             this.clientPool.put(DEFAULT_CLIENT_KEY, defaultClient);
         }
-
         this.clientPolicy = clientPolicy;
         this.port = port;
         this.hostList = hostList;
@@ -96,5 +100,13 @@ public class AerospikeClientPool {
     @SuppressWarnings("UnstableApiUsage")
     protected String buildPoolKey(AuthDetails authDetails) {
         return Hashing.sha256().hashBytes(authDetails.toString().getBytes()).toString();
+    }
+
+    public static void onClientRemoval(RemovalNotification<String, AerospikeClient> removal) {
+        AerospikeClient client = removal.getValue();
+
+        if (client != null) {
+            client.close(); // tear down properly
+        }
     }
 }
