@@ -18,18 +18,16 @@ package com.aerospike.restclient.config;
 
 import com.aerospike.client.AerospikeException;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
-import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
-import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
-import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreaker;
+import org.apache.coyote.http2.Http2Protocol;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
-import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
+import org.springframework.cloud.client.circuitbreaker.Customizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.cloud.client.circuitbreaker.Customizer;
 
 import java.time.Duration;
-import java.util.function.Function;
 
 @Configuration
 public class ServiceConfig {
@@ -48,5 +46,12 @@ public class ServiceConfig {
 
         return factory -> factory.configure(builder -> builder.circuitBreakerConfig(circuitBreakerConfig)
                 .timeLimiterConfig(timeLimiterConfig), "rest-client");
+    }
+
+    @Bean
+    public ConfigurableServletWebServerFactory tomcatCustomizer() {
+        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
+        factory.addConnectorCustomizers(connector -> connector.addUpgradeProtocol(new Http2Protocol()));
+        return factory;
     }
 }
