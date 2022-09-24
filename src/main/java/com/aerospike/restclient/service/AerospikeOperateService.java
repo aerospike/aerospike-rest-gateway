@@ -21,15 +21,22 @@ import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.RestClientOperation;
 import com.aerospike.restclient.domain.RestClientRecord;
 import com.aerospike.restclient.domain.auth.AuthDetails;
+import com.aerospike.restclient.domain.operationmodels.Operation;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 
 import java.util.List;
 
 public interface AerospikeOperateService {
 
-    RestClientRecord operate(AuthDetails authDetails, String namespace, String set, String key,
-                                    List<RestClientOperation> opsList, RecordKeyType keyType, WritePolicy policy);
+    RestClientRecord operateV1(AuthDetails authDetails, String namespace, String set, String key,
+                               List<RestClientOperation> opsList, RecordKeyType keyType, WritePolicy policy);
 
-    RestClientRecord[] operate(AuthDetails authDetails, String namespace, String set, String[] keys,
-                                      List<RestClientOperation> opsList, RecordKeyType keyType, BatchPolicy policy);
+    RestClientRecord[] operateV1(AuthDetails authDetails, String namespace, String set, String[] keys,
+                                 List<RestClientOperation> opsList, RecordKeyType keyType, BatchPolicy policy);
+
+    RestClientRecord operateV2(AuthDetails authDetails, String namespace, String set, String key,
+                               List<Operation> opsList, RecordKeyType keyType, WritePolicy policy);
+
+    RestClientRecord[] operateV2(AuthDetails authDetails, String namespace, String set, String[] keys,
+                                 List<Operation> opsList, RecordKeyType keyType, BatchPolicy policy);
 }

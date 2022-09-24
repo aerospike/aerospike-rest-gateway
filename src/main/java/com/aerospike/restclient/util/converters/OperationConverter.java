@@ -2017,7 +2017,7 @@ public class OperationConverter {
     }
 
     @SuppressWarnings("unchecked")
-    static Map<Value, Value> getMapValues(Map<String, Object> map) {
+    public static Map<Value, Value> getMapValues(Map<String, Object> map) {
         Map<Value, Value> valueMap = new HashMap<>();
         Map<Object, Object> objMap;
         try {

@@ -49,10 +49,11 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated()
 @Tag(name = "Operate operations", description = "Perform multiple operations atomically on a single record.")
 @RestController
 @RequestMapping("/v1/operate")
-public class OperateController {
+public class OperateV1Controller {
 
     public static final String OPERATE_NOTES = "Perform multiple operations atomically on the specified record.";
     public static final String OPERATIONS_PARAM_NOTES = "An array of operation objects specifying the operations to perform on the record";
@@ -62,38 +63,55 @@ public class OperateController {
     private AerospikeOperateService service;
 
     @Operation(summary = OPERATE_NOTES, operationId = "operateNamespaceSetKey")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Multiple operations on a record performed successfully."),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Namespace or set does not exist.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Generation conflict.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Multiple operations on a record performed successfully."
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid parameters or request.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Not authorized to access the resource.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Namespace or set does not exist.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Generation conflict.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    )
+            }
+    )
     @DefaultRestClientAPIResponses
-    @PostMapping(value = "/{namespace}/{set}/{key}",
+    @PostMapping(
+            value = "/{namespace}/{set}/{key}",
             consumes = "application/json",
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public RestClientRecord operateNamespaceSetKey(
-            @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = APIParamDescriptors.SET_NOTES, required = true) @PathVariable(value = "set") String set,
-            @Parameter(description = APIParamDescriptors.USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
+            @Parameter(
+                    description = APIParamDescriptors.NAMESPACE_NOTES,
+                    required = true
+            ) @PathVariable(value = "namespace") String namespace,
+            @Parameter(
+                    description = APIParamDescriptors.SET_NOTES,
+                    required = true
+            ) @PathVariable(value = "set") String set,
+            @Parameter(
+                    description = APIParamDescriptors.USERKEY_NOTES,
+                    required = true
+            ) @PathVariable(value = "key") String key,
             @Parameter(description = OPERATIONS_PARAM_NOTES, required = true)
             @RequestBody List<RestClientOperation> operations,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
@@ -103,11 +121,12 @@ public class OperateController {
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.operate(authDetails, namespace, set, key, operations, keyType, policy);
+        return service.operateV1(authDetails, namespace, set, key, operations, keyType, policy);
     }
 
     @Hidden
-    @PostMapping(value = "/{namespace}/{set}/{key}",
+    @PostMapping(
+            value = "/{namespace}/{set}/{key}",
             consumes = "application/msgpack",
             produces = {"application/json", "application/msgpack"}
     )
@@ -124,40 +143,55 @@ public class OperateController {
         List<RestClientOperation> operations = operationsFromIStream(dataStream);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.operate(authDetails, namespace, set, key, operations, keyType, policy);
+        return service.operateV1(authDetails, namespace, set, key, operations, keyType, policy);
     }
 
     @Operation(summary = OPERATE_NOTES, operationId = "operateNamespaceKey")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Multiple operations on a record performed successfully."),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Namespace or set does not exist.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Generation conflict.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Multiple operations on a record performed successfully."
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid parameters or request.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Not authorized to access the resource.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Namespace or set does not exist.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Generation conflict.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    )
+            }
+    )
     @DefaultRestClientAPIResponses
-    @PostMapping(value = "/{namespace}/{key}",
+    @PostMapping(
+            value = "/{namespace}/{key}",
             consumes = "application/json",
-            produces = {"application/json", "application/msgpack"})
+            produces = {"application/json", "application/msgpack"}
+    )
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public RestClientRecord operateNamespaceKey(
-            @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = APIParamDescriptors.USERKEY_NOTES, required = true) @PathVariable(value = "key") String key,
+            @Parameter(
+                    description = APIParamDescriptors.NAMESPACE_NOTES,
+                    required = true
+            ) @PathVariable(value = "namespace") String namespace,
+            @Parameter(
+                    description = APIParamDescriptors.USERKEY_NOTES,
+                    required = true
+            ) @PathVariable(value = "key") String key,
             @Parameter(description = OPERATIONS_PARAM_NOTES, required = true)
             @RequestBody List<RestClientOperation> operations,
             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
@@ -167,13 +201,15 @@ public class OperateController {
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.operate(authDetails, namespace, null, key, operations, keyType, policy);
+        return service.operateV1(authDetails, namespace, null, key, operations, keyType, policy);
     }
 
     @Hidden
-    @PostMapping(value = "/{namespace}/{key}",
+    @PostMapping(
+            value = "/{namespace}/{key}",
             consumes = "application/msgpack",
-            produces = {"application/json", "application/msgpack"})
+            produces = {"application/json", "application/msgpack"}
+    )
     public RestClientRecord operateNamespaceKeyMP(
             @PathVariable(value = "namespace") String namespace,
             @PathVariable(value = "key") String key,
@@ -186,7 +222,7 @@ public class OperateController {
         List<RestClientOperation> operations = operationsFromIStream(dataStream);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.operate(authDetails, namespace, null, key, operations, keyType, policy);
+        return service.operateV1(authDetails, namespace, null, key, operations, keyType, policy);
     }
 
     private List<RestClientOperation> operationsFromIStream(InputStream dataStream) {
@@ -195,38 +231,52 @@ public class OperateController {
     }
 
     @Operation(summary = BATCH_OPERATE_NOTES, operationId = "operateBatchNamespaceSet")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Read operations on multiple records performed successfully.",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestClientRecord.class)))),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Namespace or set does not exist.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Generation conflict.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Read operations on multiple records performed successfully.",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestClientRecord.class)))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid parameters or request.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Not authorized to access the resource.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Namespace or set does not exist.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Generation conflict.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    )
+            }
+    )
     @DefaultRestClientAPIResponses
-    @PostMapping(value = "/read/{namespace}/{set}",
+    @PostMapping(
+            value = "/read/{namespace}/{set}",
             consumes = "application/json",
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientOperateReadQueryParams
     public RestClientRecord[] operateBatchNamespaceSet(
-            @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = APIParamDescriptors.SET_NOTES, required = true) @PathVariable(value = "set") String set,
+            @Parameter(
+                    description = APIParamDescriptors.NAMESPACE_NOTES,
+                    required = true
+            ) @PathVariable(value = "namespace") String namespace,
+            @Parameter(
+                    description = APIParamDescriptors.SET_NOTES,
+                    required = true
+            ) @PathVariable(value = "set") String set,
             @Parameter(description = OPERATIONS_PARAM_NOTES, required = true)
             @RequestBody List<RestClientOperation> operations,
             @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
@@ -237,11 +287,12 @@ public class OperateController {
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.operate(authDetails, namespace, set, keys, operations, keyType, policy);
+        return service.operateV1(authDetails, namespace, set, keys, operations, keyType, policy);
     }
 
     @Hidden
-    @PostMapping(value = "/read/{namespace}/{set}",
+    @PostMapping(
+            value = "/read/{namespace}/{set}",
             consumes = "application/msgpack",
             produces = {"application/json", "application/msgpack"}
     )
@@ -258,40 +309,52 @@ public class OperateController {
         List<RestClientOperation> operations = operationsFromIStream(dataStream);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.operate(authDetails, namespace, set, keys, operations, keyType, policy);
+        return service.operateV1(authDetails, namespace, set, keys, operations, keyType, policy);
     }
 
     @Operation(summary = BATCH_OPERATE_NOTES, operationId = "operateBatchNamespace")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Read operations on multiple records performed successfully.",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestClientRecord.class)))),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Namespace or set does not exist.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Generation conflict.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Read operations on multiple records performed successfully.",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = RestClientRecord.class)))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid parameters or request.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Not authorized to access the resource.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Namespace or set does not exist.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Generation conflict.",
+                            content = @Content(schema = @Schema(implementation = RestClientError.class))
+                    )
+            }
+    )
     @DefaultRestClientAPIResponses
-    @PostMapping(value = "/read/{namespace}",
+    @PostMapping(
+            value = "/read/{namespace}",
             consumes = "application/json",
-            produces = {"application/json", "application/msgpack"})
+            produces = {"application/json", "application/msgpack"}
+    )
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientOperateReadQueryParams
     public RestClientRecord[] operateBatchNamespace(
-            @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
+            @Parameter(
+                    description = APIParamDescriptors.NAMESPACE_NOTES,
+                    required = true
+            ) @PathVariable(value = "namespace") String namespace,
             @Parameter(description = OPERATIONS_PARAM_NOTES, required = true)
             @RequestBody List<RestClientOperation> operations,
             @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
@@ -302,13 +365,15 @@ public class OperateController {
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.operate(authDetails, namespace, null, keys, operations, keyType, policy);
+        return service.operateV1(authDetails, namespace, null, keys, operations, keyType, policy);
     }
 
     @Hidden
-    @PostMapping(value = "/read/{namespace}",
+    @PostMapping(
+            value = "/read/{namespace}",
             consumes = "application/msgpack",
-            produces = {"application/json", "application/msgpack"})
+            produces = {"application/json", "application/msgpack"}
+    )
     public RestClientRecord[] operateBatchNamespaceMP(
             @PathVariable(value = "namespace") String namespace,
             InputStream dataStream,
@@ -321,7 +386,7 @@ public class OperateController {
         List<RestClientOperation> operations = operationsFromIStream(dataStream);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.operate(authDetails, namespace, null, keys, operations, keyType, policy);
+        return service.operateV1(authDetails, namespace, null, keys, operations, keyType, policy);
     }
 }
 

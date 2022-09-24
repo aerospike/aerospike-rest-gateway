@@ -39,7 +39,7 @@ apply plugin: "org.springframework.boot"
 apply plugin: "io.spring.dependency-management"
 
 group = "com.aerospike"
-sourceCompatibility = 1.8
+sourceCompatibility = 16
 version = appVersion
 
 bootJar {
@@ -74,3 +74,4 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
+targetCompatibility = JavaVersion.VERSION_16
