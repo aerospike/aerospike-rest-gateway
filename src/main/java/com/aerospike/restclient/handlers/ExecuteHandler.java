@@ -24,14 +24,10 @@ import com.aerospike.client.query.Statement;
 import com.aerospike.client.task.ExecuteTask;
 import com.aerospike.restclient.domain.RestClientExecuteTask;
 import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
-import com.aerospike.restclient.domain.RestClientOperation;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.aerospike.restclient.util.converters.OperationsConverter;
 import com.aerospike.restclient.util.converters.PolicyValueConverter;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ExecuteHandler {
 
@@ -41,7 +37,7 @@ public class ExecuteHandler {
         this.client = client;
     }
 
-    public RestClientExecuteTask executeScan(String namespace, String set, List<RestClientOperation> opsList,
+    public RestClientExecuteTask executeScan(String namespace, String set, Operation[] opsList,
                                              WritePolicy policy, Map<String, String> requestParams) {
         Statement stmt = new Statement();
         stmt.setNamespace(namespace);
@@ -52,17 +48,14 @@ public class ExecuteHandler {
             stmt.setBinNames(binNames);
         }
         if (requestParams.containsKey(AerospikeAPIConstants.RECORDS_PER_SECOND)) {
-            int recordsPerSecond = PolicyValueConverter.getIntValue(requestParams.get(AerospikeAPIConstants.RECORDS_PER_SECOND));
+            int recordsPerSecond = PolicyValueConverter.getIntValue(
+                    requestParams.get(AerospikeAPIConstants.RECORDS_PER_SECOND));
             stmt.setRecordsPerSecond(recordsPerSecond);
         }
 
-        List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap).collect(Collectors.toList());
-        Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
+        ExecuteTask task = client.execute(policy, stmt, opsList);
 
-        ExecuteTask task = client.execute(policy, stmt, operations);
-        RestClientExecuteTask restClientTask = new RestClientExecuteTask(task.getTaskId(), true);
-
-        return restClientTask;
+        return new RestClientExecuteTask(task.getTaskId(), true);
     }
 
     public RestClientExecuteTaskStatus queryScanStatus(String taskId) {

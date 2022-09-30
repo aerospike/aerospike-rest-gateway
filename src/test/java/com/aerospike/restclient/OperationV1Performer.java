@@ -16,13 +16,16 @@
  */
 package com.aerospike.restclient;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
-public interface OperationPerformer {
-	Map<String, Object>performOperationsAndReturn(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>>ops);
-	void performOperationsAndExpect(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>>ops, ResultMatcher matcher) throws Exception;
+import java.util.List;
+import java.util.Map;
+
+public interface OperationV1Performer {
+    Map<String, Object> performOperationsAndReturn(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>> ops);
+
+    void performOperationsAndExpect(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>> ops,
+                                    ResultMatcher matcher) throws Exception;
 }
+

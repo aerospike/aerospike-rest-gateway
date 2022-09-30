@@ -59,11 +59,12 @@ public class RecordPutErrorTests {
 
     public RecordPutErrorTests(boolean useSet) {
         if (useSet) {
-            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
-            nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
+            nonExistentNSEndpoint = ASTestUtils.buildEndpointV1("kvs", "fakeNS", "demo", "1");
+            nonExistentRecordEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "demo",
+                    "thisisnotarealkeyforarecord");
         } else {
-            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
-            nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
+            nonExistentNSEndpoint = ASTestUtils.buildEndpointV1("kvs", "fakeNS", "1");
+            nonExistentRecordEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "thisisnotarealkeyforarecord");
         }
     }
 
@@ -85,10 +86,8 @@ public class RecordPutErrorTests {
         Map<String, Object> binMap = new HashMap<>();
         binMap.put("integer", 12345);
 
-        mockMVC.perform(put(nonExistentNSEndpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(binMap)))
-                .andExpect(status().isNotFound());
+        mockMVC.perform(put(nonExistentNSEndpoint).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(binMap))).andExpect(status().isNotFound());
     }
 
     @Test
@@ -97,10 +96,8 @@ public class RecordPutErrorTests {
 
         binMap.put("string", "Aerospike");
 
-        mockMVC.perform(put(nonExistentRecordEndpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(binMap))
-                       ).andExpect(status().isNotFound());
+        mockMVC.perform(put(nonExistentRecordEndpoint).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(binMap))).andExpect(status().isNotFound());
     }
 
 }

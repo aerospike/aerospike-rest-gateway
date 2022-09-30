@@ -21,7 +21,10 @@ import com.aerospike.client.Operation;
 import com.aerospike.client.Value;
 import com.aerospike.client.cdt.*;
 import com.aerospike.client.operation.*;
+import com.aerospike.restclient.config.JSONMessageConverter;
 import com.aerospike.restclient.domain.ctxmodels.CTX;
+import com.aerospike.restclient.domain.operationmodels.ListReturnType;
+import com.aerospike.restclient.domain.operationmodels.MapReturnType;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.aerospike.restclient.util.RestClientErrors.InvalidOperationError;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,8 +84,7 @@ public class OperationConverter {
     public static final String HLL_INDEX_BIT_COUNT_KEY = "indexBitCount";
     public static final String HLL_MIN_HASH_BIT_COUNT_KEY = "minHashBitCount";
 
-    private static final ObjectMapper mapper = new ObjectMapper();
-
+    private static final ObjectMapper mapper = JSONMessageConverter.getJSONObjectMapper();
 
     @SuppressWarnings("unchecked")
     public static Operation convertMapToOperation(Map<String, Object> operationMap) {
@@ -505,7 +507,7 @@ public class OperationConverter {
         String binName = getBinName(opValues);
         Value value = getValue(opValues);
 
-        return ListOperation.append(binName, value, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.append(binName, value, extractCTX(opValues));
     }
 
     private static Operation mapToListAppendItemsOp(Map<String, Object> opValues) {
@@ -517,9 +519,9 @@ public class OperationConverter {
         ListPolicy policy = getListPolicy(opValues);
 
         if (policy != null) {
-            return ListOperation.appendItems(policy, binName, valueList, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.appendItems(policy, binName, valueList, extractCTX(opValues));
         } else {
-            return ListOperation.appendItems(binName, valueList, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.appendItems(binName, valueList, extractCTX(opValues));
         }
     }
 
@@ -529,7 +531,7 @@ public class OperationConverter {
 
         String binName = getBinName(opValues);
 
-        return ListOperation.clear(binName, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.clear(binName, extractCTX(opValues));
     }
 
     private static Operation mapToListGetOp(Map<String, Object> opValues) {
@@ -539,7 +541,7 @@ public class OperationConverter {
         String binName = getBinName(opValues);
         int index = getIndex(opValues);
 
-        return ListOperation.get(binName, index, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.get(binName, index, extractCTX(opValues));
     }
 
     private static Operation mapToListGetByIndexOp(Map<String, Object> opValues) {
@@ -550,7 +552,7 @@ public class OperationConverter {
         int index = getIndex(opValues);
         int returnType = getListReturnType(opValues);
 
-        return ListOperation.getByIndex(binName, index, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.getByIndex(binName, index, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToListGetByIndexRangeOp(Map<String, Object> opValues) {
@@ -563,9 +565,11 @@ public class OperationConverter {
         int returnType = getListReturnType(opValues);
 
         if (count != null) {
-            return ListOperation.getByIndexRange(binName, index, count, returnType, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.getByIndexRange(binName, index, count, returnType,
+                    extractCTX(opValues));
         } else {
-            return ListOperation.getByIndexRange(binName, index, returnType, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.getByIndexRange(binName, index, returnType,
+                    extractCTX(opValues));
         }
     }
 
@@ -577,7 +581,7 @@ public class OperationConverter {
         int rank = getRank(opValues);
         int returnType = getListReturnType(opValues);
 
-        return ListOperation.getByRank(binName, rank, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.getByRank(binName, rank, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToListGetByRankRangeOp(Map<String, Object> opValues) {
@@ -590,9 +594,11 @@ public class OperationConverter {
         int returnType = getListReturnType(opValues);
 
         if (count != null) {
-            return ListOperation.getByRankRange(binName, rank, count, returnType, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.getByRankRange(binName, rank, count, returnType,
+                    extractCTX(opValues));
         } else {
-            return ListOperation.getByRankRange(binName, rank, returnType, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.getByRankRange(binName, rank, returnType,
+                    extractCTX(opValues));
         }
     }
 
@@ -607,10 +613,11 @@ public class OperationConverter {
         int returnType = getListReturnType(opValues);
 
         if (count != null) {
-            return ListOperation.getByValueRelativeRankRange(binName, value, rank, count, returnType,
-                    extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.getByValueRelativeRankRange(binName, value, rank, count,
+                    returnType, extractCTX(opValues));
         } else {
-            return ListOperation.getByValueRelativeRankRange(binName, value, rank, returnType, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.getByValueRelativeRankRange(binName, value, rank, returnType,
+                    extractCTX(opValues));
         }
     }
 
@@ -622,7 +629,7 @@ public class OperationConverter {
         Value value = getValue(opValues);
         int returnType = getListReturnType(opValues);
 
-        return ListOperation.getByValue(binName, value, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.getByValue(binName, value, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToListGetByValueRangeOp(Map<String, Object> opValues) {
@@ -634,7 +641,8 @@ public class OperationConverter {
         Value valueEnd = getValueEnd(opValues);
         int returnType = getListReturnType(opValues);
 
-        return ListOperation.getByValueRange(binName, valueBegin, valueEnd, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.getByValueRange(binName, valueBegin, valueEnd, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToListGetByValueListOp(Map<String, Object> opValues) {
@@ -645,7 +653,7 @@ public class OperationConverter {
         List<Value> values = getValueList(opValues);
         int returnType = getListReturnType(opValues);
 
-        return ListOperation.getByValueList(binName, values, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.getByValueList(binName, values, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToListGetRangeOp(Map<String, Object> opValues) {
@@ -657,9 +665,9 @@ public class OperationConverter {
         Integer count = getCount(opValues);
 
         if (count != null) {
-            return ListOperation.getRange(binName, index, count, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.getRange(binName, index, count, extractCTX(opValues));
         } else {
-            return ListOperation.getRange(binName, index, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.getRange(binName, index, extractCTX(opValues));
         }
     }
 
@@ -674,15 +682,16 @@ public class OperationConverter {
 
         if (policy != null) {
             if (incr != null) {
-                return ListOperation.increment(policy, binName, index, incr, extractCTX(opValues));
+                return com.aerospike.client.cdt.ListOperation.increment(policy, binName, index, incr,
+                        extractCTX(opValues));
             } else {
-                return ListOperation.increment(policy, binName, index, extractCTX(opValues));
+                return com.aerospike.client.cdt.ListOperation.increment(policy, binName, index, extractCTX(opValues));
             }
         } else {
             if (incr != null) {
-                return ListOperation.increment(binName, index, incr, extractCTX(opValues));
+                return com.aerospike.client.cdt.ListOperation.increment(binName, index, incr, extractCTX(opValues));
             } else {
-                return ListOperation.increment(binName, index, extractCTX(opValues));
+                return com.aerospike.client.cdt.ListOperation.increment(binName, index, extractCTX(opValues));
             }
         }
     }
@@ -697,9 +706,9 @@ public class OperationConverter {
         ListPolicy policy = getListPolicy(opValues);
 
         if (policy == null) {
-            return ListOperation.insert(binName, index, value, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.insert(binName, index, value, extractCTX(opValues));
         } else {
-            return ListOperation.insert(policy, binName, index, value, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.insert(policy, binName, index, value, extractCTX(opValues));
         }
     }
 
@@ -713,9 +722,10 @@ public class OperationConverter {
         ListPolicy policy = getListPolicy(opValues);
 
         if (policy == null) {
-            return ListOperation.insertItems(binName, index, values, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.insertItems(binName, index, values, extractCTX(opValues));
         } else {
-            return ListOperation.insertItems(policy, binName, index, values, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.insertItems(policy, binName, index, values,
+                    extractCTX(opValues));
         }
     }
 
@@ -726,7 +736,7 @@ public class OperationConverter {
         String binName = getBinName(opValues);
         int index = getIndex(opValues);
 
-        return ListOperation.pop(binName, index, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.pop(binName, index, extractCTX(opValues));
     }
 
     private static Operation mapToListPopRangeOp(Map<String, Object> opValues) {
@@ -738,9 +748,9 @@ public class OperationConverter {
         Integer count = getCount(opValues);
 
         if (count != null) {
-            return ListOperation.popRange(binName, index, count, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.popRange(binName, index, count, extractCTX(opValues));
         } else {
-            return ListOperation.popRange(binName, index, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.popRange(binName, index, extractCTX(opValues));
         }
     }
 
@@ -751,7 +761,7 @@ public class OperationConverter {
         String binName = getBinName(opValues);
         int index = getIndex(opValues);
 
-        return ListOperation.remove(binName, index, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.remove(binName, index, extractCTX(opValues));
     }
 
     private static Operation mapToListRemoveByIndexOp(Map<String, Object> opValues) {
@@ -762,7 +772,7 @@ public class OperationConverter {
         int index = getIndex(opValues);
         int returnType = getListReturnType(opValues);
 
-        return ListOperation.removeByIndex(binName, index, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.removeByIndex(binName, index, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToListRemoveByIndexRangeOp(Map<String, Object> opValues) {
@@ -775,9 +785,11 @@ public class OperationConverter {
         int returnType = getListReturnType(opValues);
 
         if (count != null) {
-            return ListOperation.removeByIndexRange(binName, index, count, returnType, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.removeByIndexRange(binName, index, count, returnType,
+                    extractCTX(opValues));
         }
-        return ListOperation.removeByIndexRange(binName, index, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.removeByIndexRange(binName, index, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToListRemoveByRankOp(Map<String, Object> opValues) {
@@ -788,7 +800,7 @@ public class OperationConverter {
         int rank = getRank(opValues);
         int returnType = getListReturnType(opValues);
 
-        return ListOperation.removeByRank(binName, rank, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.removeByRank(binName, rank, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToListRemoveByRankRangeOp(Map<String, Object> opValues) {
@@ -801,9 +813,11 @@ public class OperationConverter {
         Integer count = getCount(opValues);
 
         if (count != null) {
-            return ListOperation.removeByRankRange(binName, rank, count, returnType, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.removeByRankRange(binName, rank, count, returnType,
+                    extractCTX(opValues));
         }
-        return ListOperation.removeByRankRange(binName, rank, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.removeByRankRange(binName, rank, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToListRemoveByValueRelRankRangeOp(Map<String, Object> opValues) {
@@ -817,10 +831,11 @@ public class OperationConverter {
         Integer count = getCount(opValues);
 
         if (count != null) {
-            return ListOperation.removeByValueRelativeRankRange(binName, value, rank, count, returnType,
-                    extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.removeByValueRelativeRankRange(binName, value, rank, count,
+                    returnType, extractCTX(opValues));
         }
-        return ListOperation.removeByValueRelativeRankRange(binName, value, rank, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.removeByValueRelativeRankRange(binName, value, rank, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToListRemoveByValueOp(Map<String, Object> opValues) {
@@ -831,7 +846,7 @@ public class OperationConverter {
         Value value = getValue(opValues);
         int returnType = getListReturnType(opValues);
 
-        return ListOperation.removeByValue(binName, value, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.removeByValue(binName, value, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToListRemoveByValueRangeOp(Map<String, Object> opValues) {
@@ -843,7 +858,8 @@ public class OperationConverter {
         Value valueEnd = getValueEnd(opValues);
         int returnType = getListReturnType(opValues);
 
-        return ListOperation.removeByValueRange(binName, valueBegin, valueEnd, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.removeByValueRange(binName, valueBegin, valueEnd, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToListRemoveByValueListOp(Map<String, Object> opValues) {
@@ -854,7 +870,8 @@ public class OperationConverter {
         List<Value> values = getValueList(opValues);
         int returnType = getListReturnType(opValues);
 
-        return ListOperation.removeByValueList(binName, values, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.removeByValueList(binName, values, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToListRemoveRangeOp(Map<String, Object> opValues) {
@@ -866,9 +883,9 @@ public class OperationConverter {
         Integer count = getCount(opValues);
 
         if (count != null) {
-            return ListOperation.removeRange(binName, index, count, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.removeRange(binName, index, count, extractCTX(opValues));
         }
-        return ListOperation.removeRange(binName, index, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.removeRange(binName, index, extractCTX(opValues));
     }
 
     private static Operation mapToListSetOp(Map<String, Object> opValues) {
@@ -881,9 +898,9 @@ public class OperationConverter {
         int index = getIndex(opValues);
 
         if (policy != null) {
-            return ListOperation.set(policy, binName, index, value, extractCTX(opValues));
+            return com.aerospike.client.cdt.ListOperation.set(policy, binName, index, value, extractCTX(opValues));
         }
-        return ListOperation.set(binName, index, value, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.set(binName, index, value, extractCTX(opValues));
     }
 
     private static Operation mapToListSetOrderOp(Map<String, Object> opValues) {
@@ -893,7 +910,7 @@ public class OperationConverter {
         String binName = getBinName(opValues);
         ListOrder order = getListOrder(opValues);
 
-        return ListOperation.setOrder(binName, order);
+        return com.aerospike.client.cdt.ListOperation.setOrder(binName, order);
     }
 
     private static Operation mapToListSizeOp(Map<String, Object> opValues) {
@@ -902,7 +919,7 @@ public class OperationConverter {
 
         String binName = getBinName(opValues);
 
-        return ListOperation.size(binName, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.size(binName, extractCTX(opValues));
     }
 
     private static Operation mapToListSortOp(Map<String, Object> opValues) {
@@ -912,7 +929,7 @@ public class OperationConverter {
         String binName = getBinName(opValues);
         int sortFlags = getSortFlags(opValues);
 
-        return ListOperation.sort(binName, sortFlags, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.sort(binName, sortFlags, extractCTX(opValues));
     }
 
     private static Operation mapToListTrimOp(Map<String, Object> opValues) {
@@ -923,7 +940,7 @@ public class OperationConverter {
         int index = getIndex(opValues);
         int count = getCount(opValues);
 
-        return ListOperation.trim(binName, index, count, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.trim(binName, index, count, extractCTX(opValues));
     }
 
     private static Operation mapToListCreateOp(Map<String, Object> opValues) {
@@ -934,7 +951,7 @@ public class OperationConverter {
         ListOrder order = getListOrder(opValues);
         boolean pad = getBoolValue(opValues, PAD_KEY);
 
-        return ListOperation.create(binName, order, pad, extractCTX(opValues));
+        return com.aerospike.client.cdt.ListOperation.create(binName, order, pad, extractCTX(opValues));
     }
 
     /* MAP OPERATIONS */
@@ -945,7 +962,7 @@ public class OperationConverter {
 
         String binName = getBinName(opValues);
 
-        return MapOperation.clear(binName, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.clear(binName, extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByIndexOp(Map<String, Object> opValues) {
@@ -956,7 +973,7 @@ public class OperationConverter {
         int returnType = getMapReturnType(opValues);
         int index = getIndex(opValues);
 
-        return MapOperation.getByIndex(binName, index, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.getByIndex(binName, index, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByIndexRangeOp(Map<String, Object> opValues) {
@@ -968,9 +985,11 @@ public class OperationConverter {
         int index = getIndex(opValues);
         Integer count = getCount(opValues);
         if (count == null) {
-            return MapOperation.getByIndexRange(binName, index, returnType, extractCTX(opValues));
+            return com.aerospike.client.cdt.MapOperation.getByIndexRange(binName, index, returnType,
+                    extractCTX(opValues));
         }
-        return MapOperation.getByIndexRange(binName, index, count, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.getByIndexRange(binName, index, count, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByKeyOp(Map<String, Object> opValues) {
@@ -981,7 +1000,7 @@ public class OperationConverter {
         int returnType = getMapReturnType(opValues);
         Value key = getMapKey(opValues);
 
-        return MapOperation.getByKey(binName, key, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.getByKey(binName, key, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByKeyListOp(Map<String, Object> opValues) {
@@ -992,7 +1011,7 @@ public class OperationConverter {
         int returnType = getMapReturnType(opValues);
         List<Value> keys = getMapKeys(opValues);
 
-        return MapOperation.getByKeyList(binName, keys, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.getByKeyList(binName, keys, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByKeyRangeOp(Map<String, Object> opValues) {
@@ -1004,7 +1023,8 @@ public class OperationConverter {
         Value keyBegin = getMapKeyBegin(opValues);
         Value keyEnd = getMapKeyEnd(opValues);
 
-        return MapOperation.getByKeyRange(binName, keyBegin, keyEnd, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.getByKeyRange(binName, keyBegin, keyEnd, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByRankOp(Map<String, Object> opValues) {
@@ -1014,7 +1034,7 @@ public class OperationConverter {
         String binName = getBinName(opValues);
         int rank = getRank(opValues);
         int returnType = getMapReturnType(opValues);
-        return MapOperation.getByRank(binName, rank, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.getByRank(binName, rank, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByRankRangeOp(Map<String, Object> opValues) {
@@ -1027,9 +1047,10 @@ public class OperationConverter {
         int returnType = getMapReturnType(opValues);
 
         if (count != null) {
-            return MapOperation.getByRankRange(binName, rank, count, returnType, extractCTX(opValues));
+            return com.aerospike.client.cdt.MapOperation.getByRankRange(binName, rank, count, returnType,
+                    extractCTX(opValues));
         }
-        return MapOperation.getByRankRange(binName, rank, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.getByRankRange(binName, rank, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByValueOp(Map<String, Object> opValues) {
@@ -1039,7 +1060,7 @@ public class OperationConverter {
         String binName = getBinName(opValues);
         Value value = getValue(opValues);
         int returnType = getMapReturnType(opValues);
-        return MapOperation.getByValue(binName, value, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.getByValue(binName, value, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByValueRangeOp(Map<String, Object> opValues) {
@@ -1051,7 +1072,8 @@ public class OperationConverter {
         Value valueEnd = getValueEnd(opValues);
         int returnType = getMapReturnType(opValues);
 
-        return MapOperation.getByValueRange(binName, valueBegin, valueEnd, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.getByValueRange(binName, valueBegin, valueEnd, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByValueListOp(Map<String, Object> opValues) {
@@ -1062,7 +1084,7 @@ public class OperationConverter {
         List<Value> values = getValueList(opValues);
         int returnType = getMapReturnType(opValues);
 
-        return MapOperation.getByValueList(binName, values, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.getByValueList(binName, values, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByKeyRelIndexRangeOp(Map<String, Object> opValues) {
@@ -1076,9 +1098,11 @@ public class OperationConverter {
         Integer count = getCount(opValues);
 
         if (count == null) {
-            return MapOperation.getByKeyRelativeIndexRange(binName, value, index, returnType, extractCTX(opValues));
+            return com.aerospike.client.cdt.MapOperation.getByKeyRelativeIndexRange(binName, value, index, returnType,
+                    extractCTX(opValues));
         }
-        return MapOperation.getByKeyRelativeIndexRange(binName, value, index, count, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.getByKeyRelativeIndexRange(binName, value, index, count,
+                returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapGetByValueRelRankRangeOp(Map<String, Object> opValues) {
@@ -1092,10 +1116,11 @@ public class OperationConverter {
         int returnType = getMapReturnType(opValues);
 
         if (count != null) {
-            return MapOperation.getByValueRelativeRankRange(binName, value, rank, count, returnType,
-                    extractCTX(opValues));
+            return com.aerospike.client.cdt.MapOperation.getByValueRelativeRankRange(binName, value, rank, count,
+                    returnType, extractCTX(opValues));
         }
-        return MapOperation.getByValueRelativeRankRange(binName, value, rank, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.getByValueRelativeRankRange(binName, value, rank, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToMapIncrementOp(Map<String, Object> opValues) {
@@ -1107,7 +1132,7 @@ public class OperationConverter {
         Value incr = getIncr(opValues);
         Value key = getMapKey(opValues);
 
-        return MapOperation.increment(policy, binName, key, incr, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.increment(policy, binName, key, incr, extractCTX(opValues));
     }
 
     private static Operation mapToMapPutOp(Map<String, Object> opValues) {
@@ -1119,7 +1144,7 @@ public class OperationConverter {
         Value value = getValue(opValues);
         Value key = getMapKey(opValues);
 
-        return MapOperation.put(policy, binName, key, value, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.put(policy, binName, key, value, extractCTX(opValues));
     }
 
     private static Operation mapToMapPutItemsOp(Map<String, Object> opValues) {
@@ -1130,7 +1155,7 @@ public class OperationConverter {
         MapPolicy policy = getMapPolicy(opValues);
         Map<Value, Value> putItems = getMapValues(opValues);
 
-        return MapOperation.putItems(policy, binName, putItems, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.putItems(policy, binName, putItems, extractCTX(opValues));
     }
 
     private static Operation mapToMapRemoveByIndexOp(Map<String, Object> opValues) {
@@ -1141,7 +1166,7 @@ public class OperationConverter {
         int returnType = getMapReturnType(opValues);
         int index = getIndex(opValues);
 
-        return MapOperation.removeByIndex(binName, index, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.removeByIndex(binName, index, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapRemoveByIndexRangeOp(Map<String, Object> opValues) {
@@ -1154,9 +1179,11 @@ public class OperationConverter {
         Integer count = getCount(opValues);
 
         if (count != null) {
-            return MapOperation.removeByIndexRange(binName, index, count, returnType, extractCTX(opValues));
+            return com.aerospike.client.cdt.MapOperation.removeByIndexRange(binName, index, count, returnType,
+                    extractCTX(opValues));
         }
-        return MapOperation.removeByIndexRange(binName, index, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.removeByIndexRange(binName, index, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToMapRemoveByKeyOp(Map<String, Object> opValues) {
@@ -1167,7 +1194,7 @@ public class OperationConverter {
         int returnType = getMapReturnType(opValues);
         Value key = getMapKey(opValues);
 
-        return MapOperation.removeByKey(binName, key, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.removeByKey(binName, key, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapRemoveByKeyRangeOp(Map<String, Object> opValues) {
@@ -1179,7 +1206,8 @@ public class OperationConverter {
         Value keyBegin = getMapKeyBegin(opValues);
         Value keyEnd = getMapKeyEnd(opValues);
 
-        return MapOperation.removeByKeyRange(binName, keyBegin, keyEnd, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.removeByKeyRange(binName, keyBegin, keyEnd, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToMapRemoveByRankOp(Map<String, Object> opValues) {
@@ -1190,7 +1218,7 @@ public class OperationConverter {
         int rank = getRank(opValues);
         int returnType = getMapReturnType(opValues);
 
-        return MapOperation.removeByRank(binName, rank, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.removeByRank(binName, rank, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapRemoveByRankRangeOp(Map<String, Object> opValues) {
@@ -1203,9 +1231,10 @@ public class OperationConverter {
         int returnType = getMapReturnType(opValues);
 
         if (count != null) {
-            return MapOperation.removeByRankRange(binName, rank, count, returnType, extractCTX(opValues));
+            return com.aerospike.client.cdt.MapOperation.removeByRankRange(binName, rank, count, returnType,
+                    extractCTX(opValues));
         }
-        return MapOperation.removeByRankRange(binName, rank, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.removeByRankRange(binName, rank, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapRemoveByKeyRelIndexRangeOp(Map<String, Object> opValues) {
@@ -1219,10 +1248,11 @@ public class OperationConverter {
         Integer count = getCount(opValues);
 
         if (count != null) {
-            return MapOperation.removeByKeyRelativeIndexRange(binName, value, index, count, returnType,
-                    extractCTX(opValues));
+            return com.aerospike.client.cdt.MapOperation.removeByKeyRelativeIndexRange(binName, value, index, count,
+                    returnType, extractCTX(opValues));
         }
-        return MapOperation.removeByKeyRelativeIndexRange(binName, value, index, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.removeByKeyRelativeIndexRange(binName, value, index, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToMapRemoveByValueRelRankRangeOp(Map<String, Object> opValues) {
@@ -1236,10 +1266,11 @@ public class OperationConverter {
         int returnType = getMapReturnType(opValues);
 
         if (count != null) {
-            return MapOperation.removeByValueRelativeRankRange(binName, value, rank, count, returnType,
-                    extractCTX(opValues));
+            return com.aerospike.client.cdt.MapOperation.removeByValueRelativeRankRange(binName, value, rank, count,
+                    returnType, extractCTX(opValues));
         }
-        return MapOperation.removeByValueRelativeRankRange(binName, value, rank, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.removeByValueRelativeRankRange(binName, value, rank, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToMapRemoveByValueOp(Map<String, Object> opValues) {
@@ -1249,7 +1280,7 @@ public class OperationConverter {
         String binName = getBinName(opValues);
         Value value = getValue(opValues);
         int returnType = getMapReturnType(opValues);
-        return MapOperation.removeByValue(binName, value, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.removeByValue(binName, value, returnType, extractCTX(opValues));
     }
 
     private static Operation mapToMapRemoveByValueRangeOp(Map<String, Object> opValues) {
@@ -1261,7 +1292,8 @@ public class OperationConverter {
         Value valueEnd = getValueEnd(opValues);
         int returnType = getMapReturnType(opValues);
 
-        return MapOperation.removeByValueRange(binName, valueBegin, valueEnd, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.removeByValueRange(binName, valueBegin, valueEnd, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToMapRemoveByValueListOp(Map<String, Object> opValues) {
@@ -1272,7 +1304,8 @@ public class OperationConverter {
         List<Value> values = getValueList(opValues);
         int returnType = getMapReturnType(opValues);
 
-        return MapOperation.removeByValueList(binName, values, returnType, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.removeByValueList(binName, values, returnType,
+                extractCTX(opValues));
     }
 
     private static Operation mapToMapSetMapPolicyOp(Map<String, Object> opValues) {
@@ -1282,7 +1315,7 @@ public class OperationConverter {
         String binName = getBinName(opValues);
         MapPolicy policy = getMapPolicy(opValues);
 
-        return MapOperation.setMapPolicy(policy, binName, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.setMapPolicy(policy, binName, extractCTX(opValues));
     }
 
     private static Operation mapToMapSizeOp(Map<String, Object> opValues) {
@@ -1291,7 +1324,7 @@ public class OperationConverter {
 
         String binName = getBinName(opValues);
 
-        return MapOperation.size(binName, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.size(binName, extractCTX(opValues));
     }
 
     private static Operation mapToMapCreateOp(Map<String, Object> opValues) {
@@ -1301,7 +1334,7 @@ public class OperationConverter {
         String binName = getBinName(opValues);
         MapOrder order = getMapOrder(opValues);
 
-        return MapOperation.create(binName, order, extractCTX(opValues));
+        return com.aerospike.client.cdt.MapOperation.create(binName, order, extractCTX(opValues));
     }
 
     /* BIT OPERATIONS */
@@ -1890,7 +1923,7 @@ public class OperationConverter {
      * this is the value of the LIST_RETURN_KEY field bitwise or'd with the value of the INVERTED_KEY field
      */
     static int getListReturnType(Map<String, Object> map) {
-        int inverted = getInverted(map);
+        boolean inverted = getInverted(map);
         String returnTypeString;
         try {
             returnTypeString = (String) map.get(LIST_RETURN_KEY);
@@ -1898,24 +1931,9 @@ public class OperationConverter {
             throw new InvalidOperationError("listReturnType must be a string");
         }
 
-        switch (returnTypeString) {
-            case "COUNT":
-                return ListReturnType.COUNT | inverted;
-            case "INDEX":
-                return ListReturnType.INDEX | inverted;
-            case "NONE":
-                return ListReturnType.NONE | inverted;
-            case "RANK":
-                return ListReturnType.RANK | inverted;
-            case "REVERSE_INDEX":
-                return ListReturnType.REVERSE_INDEX | inverted;
-            case "REVERSE_RANK":
-                return ListReturnType.REVERSE_RANK | inverted;
-            case "VALUE":
-                return ListReturnType.VALUE | inverted;
-            default:
-                throw new InvalidOperationError("Invalid listReturnType: " + returnTypeString);
-        }
+        com.aerospike.restclient.domain.operationmodels.ListReturnType listReturnType = ListReturnType.valueOf(
+                returnTypeString);
+        return listReturnType.toListReturnType(inverted);
     }
 
     /*
@@ -1924,48 +1942,29 @@ public class OperationConverter {
      */
     static int getMapReturnType(Map<String, Object> map) {
         String returnTypeString;
-        int inverted = getInverted(map);
+        boolean inverted = getInverted(map);
         try {
             returnTypeString = (String) map.get(MAP_RETURN_KEY);
         } catch (ClassCastException cce) {
             throw new InvalidOperationError("mapReturnType must be a string");
         }
 
-        switch (returnTypeString) {
-            case "COUNT":
-                return MapReturnType.COUNT | inverted;
-            case "INDEX":
-                return MapReturnType.INDEX | inverted;
-            case "KEY":
-                return MapReturnType.KEY | inverted;
-            case "KEY_VALUE":
-                return MapReturnType.KEY_VALUE | inverted;
-            case "NONE":
-                return MapReturnType.NONE | inverted;
-            case "RANK":
-                return MapReturnType.RANK | inverted;
-            case "REVERSE_INDEX":
-                return MapReturnType.REVERSE_INDEX | inverted;
-            case "REVERSE_RANK":
-                return MapReturnType.REVERSE_RANK | inverted;
-            case "VALUE":
-                return MapReturnType.VALUE | inverted;
-            default:
-                throw new InvalidOperationError("Invalid mapReturnType: " + returnTypeString);
-        }
+        com.aerospike.restclient.domain.operationmodels.MapReturnType mapReturnType = MapReturnType.valueOf(
+                returnTypeString);
+
+        return mapReturnType.toMapReturnType(inverted);
     }
 
-    static int getInverted(Map<String, Object> map) {
+    static boolean getInverted(Map<String, Object> map) {
         boolean inverted;
         if (map.containsKey(INVERTED_KEY)) {
             try {
-                inverted = (boolean) map.get(INVERTED_KEY);
+                return (boolean) map.get(INVERTED_KEY);
             } catch (ClassCastException cce) {
                 throw new InvalidOperationError("inverted must be a boolean value");
             }
-            return inverted ? ListReturnType.INVERTED : 0;
         }
-        return 0;
+        return false;
     }
 
     static ListOrder getListOrder(Map<String, Object> map) {
@@ -2093,8 +2092,7 @@ public class OperationConverter {
     private static int getMapWriteFlags(Map<String, Object> mapPolicy) {
         try {
             int flags = 0;
-            @SuppressWarnings("unchecked")
-            List<String> writeFlags = (List<String>) mapPolicy.get(WRITE_FLAGS_KEY);
+            @SuppressWarnings("unchecked") List<String> writeFlags = (List<String>) mapPolicy.get(WRITE_FLAGS_KEY);
             for (String flagName : writeFlags) {
                 switch (flagName) {
                     case "CREATE_ONLY":

@@ -1,31 +1,14 @@
-/*
- * Copyright 2019 Aerospike, Inc.
- *
- * Portions may be licensed to Aerospike, Inc. under one or more contributor
- * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.aerospike.restclient;
 
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.cdt.*;
-import com.aerospike.restclient.util.AerospikeOperation;
+import com.aerospike.restclient.domain.operationmodels.OperationTypes;
 import com.aerospike.restclient.util.converters.OperationConverter;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,14 +18,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.*;
 
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
-import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(Parameterized.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class OperateMapTestsCorrect {
+public class OperateV2MapCorrectTests {
 
     /* Needed to run as a Spring Boot test */
     @ClassRule
@@ -57,11 +38,13 @@ public class OperateMapTestsCorrect {
     @Autowired
     private AerospikeClient client;
 
-    private final OperationPerformer opPerformer;
+    private final OperationV2Performer opPerformer;
 
     private Map<Object, Object> objectMap;
     private Map<Object, Object> objectMapInt;
+    private Map<String, Object> opRequest;
     private List<Map<String, Object>> opList;
+    private final String OPERATION_FIELD_TYPE = "type";
     private final String mapBinName = "map";
     private final String mapBinNameInt = "mapint";
     private final Key testKey;
@@ -88,12 +71,11 @@ public class OperateMapTestsCorrect {
         client.put(null, testKey, mapBin, mapBinInt);
         //Key order the maps
         client.operate(null, testKey,
-                MapOperation.setMapPolicy(
-                        new MapPolicy(MapOrder.KEY_ORDERED, MapWriteMode.UPDATE), mapBinName),
-                MapOperation.setMapPolicy(
-                        new MapPolicy(MapOrder.KEY_ORDERED, MapWriteMode.UPDATE), mapBinNameInt));
+                MapOperation.setMapPolicy(new MapPolicy(MapOrder.KEY_ORDERED, MapWriteMode.UPDATE), mapBinName),
+                MapOperation.setMapPolicy(new MapPolicy(MapOrder.KEY_ORDERED, MapWriteMode.UPDATE), mapBinNameInt));
         opList = new ArrayList<>();
-
+        opRequest = new HashMap<>();
+        opRequest.put("opsList", opList);
     }
 
     @After
@@ -101,23 +83,25 @@ public class OperateMapTestsCorrect {
         client.delete(null, testKey);
     }
 
-    @Parameters
+    @Parameterized.Parameters
     public static Object[][] getParams() {
         return new Object[][]{
-                {new JSONOperationPerformer(), true}, {new MsgPackOperationPerformer(), true},
-                {new JSONOperationPerformer(), false}, {new MsgPackOperationPerformer(), false},
+                {new JSONOperationV2Performer(), true},
+                {new MsgPackOperationV2Performer(), true},
+                {new JSONOperationV2Performer(), false},
+                {new MsgPackOperationV2Performer(), false},
                 };
     }
 
     /* Set up the correct msgpack/json performer for this set of runs */
-    public OperateMapTestsCorrect(OperationPerformer performer, boolean useSet) {
+    public OperateV2MapCorrectTests(OperationV2Performer performer, boolean useSet) {
         this.opPerformer = performer;
         if (useSet) {
             testKey = new Key("test", "junit", "mapop");
-            testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "mapop");
+            testEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "junit", "mapop");
         } else {
             testKey = new Key("test", null, "mapop");
-            testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "mapop");
+            testEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "mapop");
         }
     }
 
@@ -127,12 +111,12 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_CLEAR);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_CLEAR);
+
         opList.add(operation);
 
-        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
 
         Map<String, Object> bins = client.get(null, testKey).bins;
         Map<String, Object> realMapBin = (Map<String, Object>) bins.get(mapBinName);
@@ -147,15 +131,15 @@ public class OperateMapTestsCorrect {
 
         Map<String, Object> policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteMode.UPDATE);
 
-        opValues.put(OperationConverter.MAP_POLICY_KEY, policy);
-        opValues.put("bin", mapBinName);
-        opValues.put("key", "ten");
-        opValues.put("incr", 3);
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_INCREMENT);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OperationConverter.MAP_POLICY_KEY, policy);
+        operation.put("binName", mapBinName);
+        operation.put("key", "ten");
+        operation.put("incr", 3);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_INCREMENT);
+
         opList.add(operation);
 
-        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
 
         Map<String, Object> bins = client.get(null, testKey).bins;
         Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
@@ -168,15 +152,15 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put("index", 0);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_INDEX);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put("index", 0);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "KEY");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_INDEX);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), "aero"));
     }
@@ -187,16 +171,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put("index", 1);
-        opValues.put("count", 3);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_INDEX_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put("index", 1);
+        operation.put("count", 3);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "KEY");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_INDEX_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> keys = (List<Object>) bins.get(mapBinName);
 
@@ -209,15 +193,15 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put("index", 1);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_INDEX_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put("index", 1);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "KEY");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_INDEX_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> keys = (List<Object>) bins.get(mapBinName);
 
@@ -229,15 +213,15 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put("key", "three");
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_KEY);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put("key", "three");
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_KEY);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), 3));
     }
@@ -250,17 +234,17 @@ public class OperateMapTestsCorrect {
         Map<String, Object> item = new HashMap<>();
         List<Map<String, Object>> ctx = new ArrayList<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put("mapOrder", "UNORDERED");
+        operation.put("binName", mapBinName);
+        operation.put("mapOrder", "UNORDERED");
         item.put("type", "mapKey");
         item.put("key", "key1");
         ctx.add(item);
-        opValues.put("ctx", ctx);
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_CREATE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("ctx", ctx);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_CREATE);
+
         opList.add(operation);
 
-        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
 
         Map<String, Object> bins = client.get(null, testKey).bins;
         Map<Object, Object> mapBin = (Map<Object, Object>) bins.get(mapBinName);
@@ -274,15 +258,15 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put("keys", Arrays.asList("aero", "two", "three"));
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_KEY_LIST);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put("keys", Arrays.asList("aero", "two", "three"));
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_KEY_LIST);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> retValues = (List<Object>) bins.get(mapBinName);
 
@@ -295,17 +279,17 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
+        operation.put("binName", mapBinName);
+        operation.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
         // A value after "ten"
-        opValues.put(OperationConverter.MAP_KEY_END_KEY, "threez");
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_KEY_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OperationConverter.MAP_KEY_END_KEY, "threez");
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_KEY_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> retValues = (List<Object>) bins.get(mapBinName);
 
@@ -318,16 +302,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
+        operation.put("binName", mapBinName);
         // A value after "ten"
-        opValues.put(OperationConverter.MAP_KEY_END_KEY, "threez");
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_KEY_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OperationConverter.MAP_KEY_END_KEY, "threez");
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_KEY_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> retValues = (List<Object>) bins.get(mapBinName);
 
@@ -340,16 +324,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
+        operation.put("binName", mapBinName);
+        operation.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
         // A value after "ten"
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_KEY_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_KEY_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> retValues = (List<Object>) bins.get(mapBinName);
 
@@ -362,15 +346,15 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put("rank", 4);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_RANK);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinNameInt);
+        operation.put("rank", 4);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_RANK);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinNameInt), 10));
     }
@@ -381,19 +365,18 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put("rank", 1);
-        opValues.put("count", 3);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_RANK_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinNameInt);
+        operation.put("rank", 1);
+        operation.put("count", 3);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_RANK_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retVals = (List<Object>) bins.get(mapBinNameInt);
+        @SuppressWarnings("unchecked") List<Object> retVals = (List<Object>) bins.get(mapBinNameInt);
         Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(1, 2, 3)));
     }
 
@@ -403,18 +386,17 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put("rank", 1);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_RANK_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinNameInt);
+        operation.put("rank", 1);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_RANK_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retVals = (List<Object>) bins.get(mapBinNameInt);
+        @SuppressWarnings("unchecked") List<Object> retVals = (List<Object>) bins.get(mapBinNameInt);
         Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(1, 2, 3, 10)));
     }
 
@@ -425,20 +407,20 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put("value", 3);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
+        operation.put("binName", mapBinName);
+        operation.put("value", 3);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "KEY");
         /* Store a second item with the value of 3 to show that we get all keys with the provided value*/
         objectMap.put("threez", 3);
         Bin newBin = new Bin(mapBinName, objectMap);
         client.put(null, testKey, newBin);
 
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_VALUE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_VALUE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         Assert.assertTrue(
                 ASTestUtils.compareCollection((List<Object>) bins.get(mapBinName), Arrays.asList("three", "threez")));
@@ -451,17 +433,17 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put(OperationConverter.VALUE_BEGIN_KEY, 1);
-        opValues.put(OperationConverter.VALUE_END_KEY, 4);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put("binName", mapBinNameInt);
+        operation.put(OperationConverter.VALUE_BEGIN_KEY, 1);
+        operation.put(OperationConverter.VALUE_END_KEY, 4);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
 
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_VALUE_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_VALUE_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         /* These keys come back in key sorted order, so "one" < "three" < "two" */
         Assert.assertTrue(ASTestUtils.containSameItems((List<Object>) bins.get(mapBinNameInt), Arrays.asList(1, 3, 2)));
@@ -474,16 +456,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put(OperationConverter.VALUE_END_KEY, 4);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put("binName", mapBinNameInt);
+        operation.put(OperationConverter.VALUE_END_KEY, 4);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
 
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_VALUE_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_VALUE_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         /* These keys come back in key sorted order, so "one" < "three" < "two" < "zero" */
         Assert.assertTrue(
@@ -497,16 +479,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put(OperationConverter.VALUE_BEGIN_KEY, 1);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put("binName", mapBinNameInt);
+        operation.put(OperationConverter.VALUE_BEGIN_KEY, 1);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
 
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_VALUE_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_VALUE_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         /* These keys come back in key sorted order, so "one" < "ten", "three" < "two" */
         Assert.assertTrue(
                 ASTestUtils.containSameItems((List<Object>) bins.get(mapBinNameInt), Arrays.asList(1, 10, 3, 2)));
@@ -520,16 +502,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put("values", Arrays.asList(0, 2, 10));
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
+        operation.put("binName", mapBinNameInt);
+        operation.put("values", Arrays.asList(0, 2, 10));
+        operation.put(OperationConverter.MAP_RETURN_KEY, "KEY");
 
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_VALUE_LIST);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_VALUE_LIST);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         /* These keys come back in key sorted order, so "ten" < "two" < "zero" */
         Assert.assertTrue(ASTestUtils.containSameItems((List<Object>) bins.get(mapBinNameInt),
                 Arrays.asList("ten", "two", "zero")));
@@ -541,22 +523,22 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put("value", "one");
-        opValues.put("index", 1);
+        operation.put("binName", mapBinNameInt);
+        operation.put("value", "one");
+        operation.put("index", 1);
 
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_KEY_REL_INDEX_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "KEY");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_KEY_RELATIVE_INDEX_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         List<Object> keys = (List<Object>) bins.get(mapBinNameInt);
         Assert.assertTrue(ASTestUtils.compareCollection(keys, Arrays.asList("ten", "three", "two", "zero")));
 
-        opValues.put("count", 3);
-        bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        operation.put("count", 3);
+        bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         keys = (List<Object>) bins.get(mapBinNameInt);
         Assert.assertTrue(ASTestUtils.compareCollection(keys, Arrays.asList("ten", "three", "two")));
     }
@@ -568,21 +550,21 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put("value", 1);
-        opValues.put("rank", -1);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_GET_BY_VALUE_REL_RANK_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinNameInt);
+        operation.put("value", 1);
+        operation.put("rank", -1);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         List<Object> retVals = (List<Object>) bins.get(mapBinNameInt);
         Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(0, 1, 2, 3, 10)));
 
-        opValues.put("count", 3);
-        bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+        operation.put("count", 3);
+        bins = getReturnedBins(opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         retVals = (List<Object>) bins.get(mapBinNameInt);
         Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(0, 1, 2)));
     }
@@ -595,15 +577,15 @@ public class OperateMapTestsCorrect {
 
         Map<String, Object> policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteMode.UPDATE);
 
-        opValues.put(OperationConverter.MAP_POLICY_KEY, policy);
-        opValues.put("bin", mapBinName);
-        opValues.put("key", "five");
-        opValues.put("value", 5);
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OperationConverter.MAP_POLICY_KEY, policy);
+        operation.put("binName", mapBinName);
+        operation.put("key", "five");
+        operation.put("value", 5);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_PUT);
+
         opList.add(operation);
 
-        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
 
         Map<String, Object> bins = client.get(null, testKey).bins;
         Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
@@ -628,15 +610,15 @@ public class OperateMapTestsCorrect {
         objectMap.put("six", 6);
         objectMap.put("list", Arrays.asList(1, 2, 3));
 
-        opValues.put("map", putValues);
-        opValues.put(OperationConverter.MAP_POLICY_KEY, policy);
-        opValues.put("bin", mapBinName);
+        operation.put("map", putValues);
+        operation.put(OperationConverter.MAP_POLICY_KEY, policy);
+        operation.put("binName", mapBinName);
 
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT_ITEMS);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_PUT_ITEMS);
+
         opList.add(operation);
 
-        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
 
         Map<String, Object> bins = client.get(null, testKey).bins;
         Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
@@ -649,20 +631,19 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put("index", 0);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_INDEX);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put("index", 0);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "KEY");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_INDEX);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), "aero"));
 
         Map<String, Object> realBins = client.get(null, testKey).bins;
-        @SuppressWarnings("unchecked")
-        Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
+        @SuppressWarnings("unchecked") Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
         Assert.assertFalse(realMapBin.containsKey("aero"));
     }
 
@@ -672,16 +653,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put("index", 0);
-        opValues.put("count", 3);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_INDEX_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put("index", 0);
+        operation.put("count", 3);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "KEY");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_INDEX_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> retVals = (List<Object>) bins.get(mapBinName);
 
@@ -700,20 +681,18 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put("index", 0);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_INDEX_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put("index", 0);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "KEY");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_INDEX_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> retVals = (List<Object>) bins.get(mapBinName);
-        Assert.assertTrue(
-                ASTestUtils.compareCollection(
-                        retVals, Arrays.asList("aero", "one", "ten", "three", "two")));
+        Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList("aero", "one", "ten", "three", "two")));
 
         Map<String, Object> realBins = client.get(null, testKey).bins;
         Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
@@ -725,21 +704,20 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put("key", "two");
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_KEY);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put("key", "two");
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_KEY);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), 2));
 
         Map<String, Object> realBins = client.get(null, testKey).bins;
-        @SuppressWarnings("unchecked")
-        Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
+        @SuppressWarnings("unchecked") Map<Object, Object> realMapBin = (Map<Object, Object>) realBins.get(mapBinName);
         Assert.assertFalse(realMapBin.containsKey("two"));
     }
 
@@ -749,17 +727,17 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
+        operation.put("binName", mapBinName);
+        operation.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
         // A value after "three"
-        opValues.put(OperationConverter.MAP_KEY_END_KEY, "threez");
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_KEY_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OperationConverter.MAP_KEY_END_KEY, "threez");
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_KEY_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> retValues = (List<Object>) bins.get(mapBinName);
         Assert.assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList(1, 10, 3)));
@@ -777,17 +755,17 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
+        operation.put("binName", mapBinName);
 
         // A value after "three"
-        opValues.put(OperationConverter.MAP_KEY_END_KEY, "threez");
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_KEY_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OperationConverter.MAP_KEY_END_KEY, "threez");
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_KEY_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> retValues = (List<Object>) bins.get(mapBinName);
         Assert.assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList("spike", 1, 10, 3)));
@@ -806,16 +784,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
+        operation.put("binName", mapBinName);
+        operation.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
         // A value after "three"
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_KEY_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_KEY_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> retValues = (List<Object>) bins.get(mapBinName);
         Assert.assertTrue(ASTestUtils.compareCollection(retValues, Arrays.asList(1, 10, 3, 2)));
@@ -835,15 +813,15 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put("rank", 2);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_RANK);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinNameInt);
+        operation.put("rank", 2);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_RANK);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinNameInt), 2));
 
@@ -860,16 +838,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put("rank", 1);
-        opValues.put("count", 3);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_RANK_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinNameInt);
+        operation.put("rank", 1);
+        operation.put("count", 3);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_RANK_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> retVals = (List<Object>) bins.get(mapBinNameInt);
 
@@ -893,15 +871,15 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put("rank", 1);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_RANK_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinNameInt);
+        operation.put("rank", 1);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_RANK_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         List<Object> retVals = (List<Object>) bins.get(mapBinNameInt);
 
@@ -923,17 +901,17 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put("value", "one");
-        opValues.put("index", 1);
-        opValues.put("count", 2);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_KEY_REL_INDEX_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinNameInt);
+        operation.put("value", "one");
+        operation.put("index", 1);
+        operation.put("count", 2);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "KEY");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_KEY_RELATIVE_INDEX_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         List<Object> retVals = (List<Object>) bins.get(mapBinNameInt);
         Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList("ten", "three")));
 
@@ -950,16 +928,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put("value", 10);
-        opValues.put("rank", -1);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_VALUE_REL_RANK_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinNameInt);
+        operation.put("value", 10);
+        operation.put("rank", -1);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         List<Object> retVals = (List<Object>) bins.get(mapBinNameInt);
         Assert.assertTrue(ASTestUtils.compareCollection(retVals, Arrays.asList(3, 10)));
 
@@ -977,20 +955,20 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        opValues.put("value", 3);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
+        operation.put("binName", mapBinName);
+        operation.put("value", 3);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "KEY");
         /* Store a second item with the value of 3 to show that we get all keys with the provided value*/
         objectMap.put("threez", 3);
         Bin newBin = new Bin(mapBinName, objectMap);
         client.put(null, testKey, newBin);
 
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_VALUE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_VALUE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
 
         Assert.assertTrue(
                 ASTestUtils.compareCollection((List<Object>) bins.get(mapBinName), Arrays.asList("three", "threez")));
@@ -1010,17 +988,17 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put(OperationConverter.VALUE_BEGIN_KEY, 1);
-        opValues.put(OperationConverter.VALUE_END_KEY, 4);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put("binName", mapBinNameInt);
+        operation.put(OperationConverter.VALUE_BEGIN_KEY, 1);
+        operation.put(OperationConverter.VALUE_END_KEY, 4);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
 
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_VALUE_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_VALUE_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         /* These keys come back in key sorted order, so "one" < "three" < "two" */
         Assert.assertTrue(ASTestUtils.containSameItems((List<Object>) bins.get(mapBinNameInt), Arrays.asList(1, 3, 2)));
 
@@ -1040,16 +1018,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put(OperationConverter.VALUE_END_KEY, 4);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put("binName", mapBinNameInt);
+        operation.put(OperationConverter.VALUE_END_KEY, 4);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
 
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_VALUE_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_VALUE_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         /* These keys come back in key sorted order, so "one" < "three" < "two" < "zero"*/
         Assert.assertTrue(
                 ASTestUtils.containSameItems((List<Object>) bins.get(mapBinNameInt), Arrays.asList(1, 3, 2, 0)));
@@ -1071,16 +1049,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put(OperationConverter.VALUE_BEGIN_KEY, 1);
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
+        operation.put("binName", mapBinNameInt);
+        operation.put(OperationConverter.VALUE_BEGIN_KEY, 1);
+        operation.put(OperationConverter.MAP_RETURN_KEY, "VALUE");
 
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_VALUE_RANGE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_VALUE_RANGE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         /* These keys come back in key sorted order, so "one" < "ten", "three" < "two" */
         Assert.assertTrue(
                 ASTestUtils.containSameItems((List<Object>) bins.get(mapBinNameInt), Arrays.asList(1, 10, 3, 2)));
@@ -1102,16 +1080,16 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinNameInt);
-        opValues.put("values", Arrays.asList(1, 2, 3));
-        opValues.put(OperationConverter.MAP_RETURN_KEY, "KEY");
+        operation.put("binName", mapBinNameInt);
+        operation.put("values", Arrays.asList(1, 2, 3));
+        operation.put(OperationConverter.MAP_RETURN_KEY, "KEY");
 
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_REMOVE_BY_VALUE_LIST);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_REMOVE_BY_VALUE_LIST);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         Assert.assertTrue(ASTestUtils.containSameItems((List<Object>) bins.get(mapBinNameInt),
                 Arrays.asList("one", "three", "two")));
 
@@ -1140,17 +1118,16 @@ public class OperateMapTestsCorrect {
         Map<Object, Object> expected = new HashMap<>();
         expected.put(newKey, newVal);
 
-        opValues.put("bin", mapBinName);
-        opValues.put("key", newKey);
-        opValues.put("value", newVal);
-        opValues.put(OperationConverter.MAP_POLICY_KEY, policyMap);
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put("key", newKey);
+        operation.put("value", newVal);
+        operation.put(OperationConverter.MAP_POLICY_KEY, policyMap);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_PUT);
 
         opList.add(operation);
 
         /* This should succeed because we are doing a create only on a new value */
-        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
         Map<String, Object> bins = client.get(null, testKey).bins;
         Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
 
@@ -1173,12 +1150,11 @@ public class OperateMapTestsCorrect {
         Map<Object, Object> expected = new HashMap<>();
         expected.put(newKey, newVal);
 
-        opValues.put("bin", mapBinName);
-        opValues.put("key", newKey);
-        opValues.put("value", newVal);
-        opValues.put(OperationConverter.MAP_POLICY_KEY, policyMap);
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put("key", newKey);
+        operation.put("value", newVal);
+        operation.put(OperationConverter.MAP_POLICY_KEY, policyMap);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_PUT);
 
         opList.add(operation);
         opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opList, status().isInternalServerError());
@@ -1200,18 +1176,16 @@ public class OperateMapTestsCorrect {
         Map<Object, Object> expected = new HashMap<>();
         expected.put(existingKey, newVal);
 
-        opValues.put("bin", mapBinName);
-        opValues.put("key", existingKey);
-        opValues.put("value", newVal);
-        opValues.put(OperationConverter.MAP_POLICY_KEY, policyMap);
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put("key", existingKey);
+        operation.put("value", newVal);
+        operation.put(OperationConverter.MAP_POLICY_KEY, policyMap);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_PUT);
 
         opList.add(operation);
-        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
         Map<String, Object> bins = client.get(null, testKey).bins;
-        @SuppressWarnings("unchecked")
-        Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
+        @SuppressWarnings("unchecked") Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
 
         Assert.assertEquals(newVal, realMapBin.get(existingKey));
     }
@@ -1235,22 +1209,20 @@ public class OperateMapTestsCorrect {
         Map<Object, Object> expected = new HashMap<>();
         expected.put(existingKey, newVal);
 
-        opValues.put("bin", mapBinName);
-        opValues.put(OperationConverter.MAP_POLICY_KEY, policyMap);
+        operation.put("binName", mapBinName);
+        operation.put(OperationConverter.MAP_POLICY_KEY, policyMap);
 
         Map<Object, Object> putValues = new HashMap<>();
         putValues.put(existingKey, newVal);
         putValues.put(newKey, newVal);
-        opValues.put("map", putValues);
+        operation.put("map", putValues);
 
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_PUT_ITEMS);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_PUT_ITEMS);
 
         opList.add(operation);
-        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
+        opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
         Map<String, Object> bins = client.get(null, testKey).bins;
-        @SuppressWarnings("unchecked")
-        Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
+        @SuppressWarnings("unchecked") Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
 
         Assert.assertEquals(newVal, realMapBin.get(existingKey));
         Assert.assertNull(realMapBin.get(newKey));
@@ -1261,13 +1233,13 @@ public class OperateMapTestsCorrect {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        opValues.put("bin", mapBinName);
-        operation.put(OPERATION_FIELD, AerospikeOperation.MAP_SIZE);
-        operation.put(OPERATION_VALUES_FIELD, opValues);
+        operation.put("binName", mapBinName);
+        operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_SIZE);
+
         opList.add(operation);
 
         Map<String, Object> bins = getReturnedBins(
-                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
+                opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), objectMap.size()));
     }
 
@@ -1347,3 +1319,4 @@ public class OperateMapTestsCorrect {
         return (Map<String, Object>) rec.get("bins");
     }
 }
+

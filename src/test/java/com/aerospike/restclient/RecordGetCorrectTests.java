@@ -95,7 +95,6 @@ public class RecordGetCorrectTests {
     private final String bytesEndpoint;
     private final String digestEndpoint;
 
-
     @Before
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
@@ -121,32 +120,31 @@ public class RecordGetCorrectTests {
 
             bytesKey = new Key("test", "junit", new Value.BytesValue(keyBytes));
 
-            noBinEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
+            noBinEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", "getput");
 
-            intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "1") + "?keytype=INTEGER";
+            intEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", "1") + "?keytype=INTEGER";
 
             String keyDigest = Base64.getUrlEncoder().encodeToString(this.testKey.digest);
-            digestEndpoint = ASTestUtils.buildEndpoint("kvs",
-                    this.testKey.namespace, this.testKey.setName, keyDigest) + "?keytype=DIGEST";
+            digestEndpoint = ASTestUtils.buildEndpointV1("kvs", this.testKey.namespace, this.testKey.setName,
+                    keyDigest) + "?keytype=DIGEST";
 
             String b64byteStr = Base64.getUrlEncoder().encodeToString(keyBytes);
-            bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", b64byteStr) + "?keytype=BYTES";
+            bytesEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", b64byteStr) + "?keytype=BYTES";
         } else {
             testKey = new Key("test", null, "getput");
             intKey = new Key("test", null, 1);
 
             bytesKey = new Key("test", null, new Value.BytesValue(keyBytes));
 
-            noBinEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "getput");
+            noBinEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "getput");
 
-            intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "1") + "?keytype=INTEGER";
+            intEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "1") + "?keytype=INTEGER";
 
             String keyDigest = Base64.getUrlEncoder().encodeToString(this.testKey.digest);
-            digestEndpoint = ASTestUtils.buildEndpoint("kvs",
-                    this.testKey.namespace, keyDigest) + "?keytype=DIGEST";
+            digestEndpoint = ASTestUtils.buildEndpointV1("kvs", this.testKey.namespace, keyDigest) + "?keytype=DIGEST";
 
             String b64byteStr = Base64.getUrlEncoder().encodeToString(keyBytes);
-            bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", b64byteStr) + "?keytype=BYTES";
+            bytesEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", b64byteStr) + "?keytype=BYTES";
         }
     }
 
@@ -160,9 +158,10 @@ public class RecordGetCorrectTests {
         client.put(null, this.testKey, intBin);
 
         MockHttpServletResponse res = mockMVC.perform(
-                get(noBinEndpoint)
-                        .contentType(MediaType.APPLICATION_JSON).accept(currentMediaType)
-                                                     ).andExpect(status().isOk()).andReturn().getResponse();
+                        get(noBinEndpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
@@ -179,10 +178,10 @@ public class RecordGetCorrectTests {
         client.put(null, this.testKey, intBin);
 
         MockHttpServletResponse res = mockMVC.perform(
-                get(noBinEndpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(currentMediaType)
-                                                     ).andExpect(status().isOk()).andReturn().getResponse();
+                        get(noBinEndpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
@@ -199,10 +198,10 @@ public class RecordGetCorrectTests {
         client.put(null, this.testKey, intBin);
 
         MockHttpServletResponse res = mockMVC.perform(
-                get(noBinEndpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(currentMediaType)
-                                                     ).andExpect(status().isOk()).andReturn().getResponse();
+                        get(noBinEndpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
@@ -220,10 +219,10 @@ public class RecordGetCorrectTests {
         client.put(null, this.testKey, intBin);
 
         MockHttpServletResponse res = mockMVC.perform(
-                get(noBinEndpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(currentMediaType)
-                                                     ).andExpect(status().isOk()).andReturn().getResponse();
+                        get(noBinEndpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
@@ -244,10 +243,10 @@ public class RecordGetCorrectTests {
         client.put(null, this.testKey, intBin);
 
         MockHttpServletResponse res = mockMVC.perform(
-                get(noBinEndpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(currentMediaType)
-                                                     ).andExpect(status().isOk()).andReturn().getResponse();
+                        get(noBinEndpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
@@ -278,10 +277,8 @@ public class RecordGetCorrectTests {
 
         /* Get the record and only fetch bins A, B, and E */
         MockHttpServletResponse res = mockMVC.perform(
-                get(ASTestUtils.addFilterBins(noBinEndpoint, returnBins))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(currentMediaType)
-                                                     ).andExpect(status().isOk()).andReturn().getResponse();
+                get(ASTestUtils.addFilterBins(noBinEndpoint, returnBins)).contentType(MediaType.APPLICATION_JSON)
+                        .accept(currentMediaType)).andExpect(status().isOk()).andReturn().getResponse();
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
@@ -302,11 +299,10 @@ public class RecordGetCorrectTests {
         client.put(null, intKey, idBin);
 
         MockHttpServletResponse res = mockMVC.perform(
-                        get(intEndpoint)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(currentMediaType)
-                                                     ).andExpect(status().isOk())
-                .andReturn().getResponse();
+                        get(intEndpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
@@ -322,11 +318,10 @@ public class RecordGetCorrectTests {
         client.put(null, this.testKey, intBin);
 
         MockHttpServletResponse res = mockMVC.perform(
-                        get(digestEndpoint)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(currentMediaType)
-                                                     ).andExpect(status().isOk())
-                .andReturn().getResponse();
+                        get(digestEndpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 
@@ -342,11 +337,10 @@ public class RecordGetCorrectTests {
 
         binMap.put("id", "bytes");
         MockHttpServletResponse res = mockMVC.perform(
-                        get(bytesEndpoint)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(currentMediaType)
-                                                     ).andExpect(status().isOk())
-                .andReturn().getResponse();
+                        get(bytesEndpoint).contentType(MediaType.APPLICATION_JSON).accept(currentMediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
 
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
 

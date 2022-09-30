@@ -16,6 +16,7 @@
  */
 package com.aerospike.restclient;
 
+import com.aerospike.client.Record;
 import com.aerospike.client.*;
 import org.junit.After;
 import org.junit.Assert;

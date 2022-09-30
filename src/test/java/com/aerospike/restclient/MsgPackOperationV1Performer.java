@@ -27,15 +27,15 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import java.util.List;
 import java.util.Map;
 
-public class MsgPackOperationPerformer implements OperationPerformer {
+public class MsgPackOperationV1Performer implements OperationV1Performer {
 
-    private static final Logger logger = LogManager.getLogger(MsgPackOperationPerformer.class);
+    private static final Logger logger = LogManager.getLogger(MsgPackOperationV1Performer.class);
 
     private final ObjectMapper mapper;
     private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {
     };
 
-    public MsgPackOperationPerformer() {
+    public MsgPackOperationV1Performer() {
         this.mapper = new ObjectMapper(new MessagePackFactory());
     }
 

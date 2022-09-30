@@ -58,25 +58,27 @@ public class OperateHLLTestsCorrect {
     public void clean() {
     }
 
-    private final OperationPerformer opPerformer;
+    private final OperationV1Performer opPerformer;
 
     @Parameterized.Parameters
     public static Object[][] getParams() {
         return new Object[][]{
-                {new JSONOperationPerformer(), true}, {new MsgPackOperationPerformer(), true},
-                {new JSONOperationPerformer(), false}, {new MsgPackOperationPerformer(), false}
+                {new JSONOperationV1Performer(), true},
+                {new MsgPackOperationV1Performer(), true},
+                {new JSONOperationV1Performer(), false},
+                {new MsgPackOperationV1Performer(), false}
         };
     }
 
     /* Set up the correct msgpack/json performer for this set of runs. Also decided whether to use the endpoint with a set or without */
-    public OperateHLLTestsCorrect(OperationPerformer performer, boolean useSet) {
+    public OperateHLLTestsCorrect(OperationV1Performer performer, boolean useSet) {
         this.opPerformer = performer;
         if (useSet) {
             testKey = new Key("test", "junit", "hllop");
-            testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "hllop");
+            testEndpoint = ASTestUtils.buildEndpointV1("operate", "test", "junit", "hllop");
         } else {
             testKey = new Key("test", null, "hllop");
-            testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "hllop");
+            testEndpoint = ASTestUtils.buildEndpointV1("operate", "test", "hllop");
         }
     }
 
@@ -157,8 +159,8 @@ public class OperateHLLTestsCorrect {
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
         byte[] expected;
         try {
-            expected = Base64.getDecoder().decode(((Map<String, Map<String, String>>) res.get("bins")).get("hll")
-                    .get("object").getBytes());
+            expected = Base64.getDecoder()
+                    .decode(((Map<String, Map<String, String>>) res.get("bins")).get("hll").get("object").getBytes());
         } catch (ClassCastException e) {
             expected = (byte[]) ((Map<String, Map<String, Object>>) res.get("bins")).get("hll").get("object");
         }

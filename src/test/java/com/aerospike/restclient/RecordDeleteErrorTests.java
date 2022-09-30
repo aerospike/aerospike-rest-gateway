@@ -42,7 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class RecordDeleteErrorTests {
 
-
     @ClassRule
     public static final SpringClassRule springClassRule = new SpringClassRule();
 
@@ -71,21 +70,21 @@ public class RecordDeleteErrorTests {
 
     public RecordDeleteErrorTests(boolean useSet) {
         if (useSet) {
-            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
-            nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "demo", "thisisnotarealkeyforarecord");
+            nonExistentNSEndpoint = ASTestUtils.buildEndpointV1("kvs", "fakeNS", "demo", "1");
+            nonExistentRecordEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "demo",
+                    "thisisnotarealkeyforarecord");
         } else {
-            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
-            nonExistentRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "thisisnotarealkeyforarecord");
+            nonExistentNSEndpoint = ASTestUtils.buildEndpointV1("kvs", "fakeNS", "1");
+            nonExistentRecordEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "thisisnotarealkeyforarecord");
         }
     }
 
     @Test
     public void DeleteFromNonExistentNS() throws Exception {
 
-        MvcResult result = mockMVC.perform(
-                delete(nonExistentNSEndpoint)
-                        .accept(MediaType.APPLICATION_JSON)
-                                          ).andExpect(status().isNotFound()).andReturn();
+        MvcResult result = mockMVC.perform(delete(nonExistentNSEndpoint).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn();
 
         MockHttpServletResponse res = result.getResponse();
         String resJson = res.getContentAsString();
@@ -99,10 +98,9 @@ public class RecordDeleteErrorTests {
     @Test
     public void DeleteNonExistentRecord() throws Exception {
 
-        MvcResult result = mockMVC.perform(
-                delete(nonExistentRecordEndpoint)
-                        .accept(MediaType.APPLICATION_JSON)
-                                          ).andExpect(status().isNotFound()).andReturn();
+        MvcResult result = mockMVC.perform(delete(nonExistentRecordEndpoint).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn();
 
         MockHttpServletResponse res = result.getResponse();
         String resJson = res.getContentAsString();

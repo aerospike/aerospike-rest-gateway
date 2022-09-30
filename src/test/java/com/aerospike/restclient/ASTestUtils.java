@@ -49,17 +49,14 @@ public class ASTestUtils {
      */
     @SuppressWarnings("unchecked")
     public static boolean compareCollection(List<?> list1, List<?> list2) {
-        if (list1 == null || list2 == null)
-            return false;
-        if (list1.size() != list2.size())
-            return false;
+        if (list1 == null || list2 == null) return false;
+        if (list1.size() != list2.size()) return false;
 
         for (int i = 0; i < list1.size(); i++) {
             Object elem1 = list1.get(i);
             Object elem2 = list2.get(i);
             if (elem1 instanceof byte[]) {
-                if (!Arrays.equals((byte[]) elem1, (byte[]) elem2))
-                    return false;
+                if (!Arrays.equals((byte[]) elem1, (byte[]) elem2)) return false;
             } else if (elem1 instanceof List) {
                 if (elem2 instanceof List) {
                     if (!compareCollection((List<?>) elem1, (List<?>) elem2)) {
@@ -84,10 +81,8 @@ public class ASTestUtils {
     }
 
     public static boolean containSameItems(List<?> list1, List<?> list2) {
-        if (list1 == null || list2 == null)
-            return false;
-        if (list1.size() != list2.size())
-            return false;
+        if (list1 == null || list2 == null) return false;
+        if (list1.size() != list2.size()) return false;
         Map<Object, Integer> counts1 = new HashMap<>();
         Map<Object, Integer> counts2 = new HashMap<>();
 
@@ -124,19 +119,15 @@ public class ASTestUtils {
     @SuppressWarnings("unchecked")
     /*
      * Deep comparison of Map<Object, Object>
-     */
-    public static boolean compareMap(Map<Object, Object> map1, Map<Object, Object> map2) {
-        if (map1 == null || map2 == null)
-            return false;
-        if (map1.size() != map2.size())
-            return false;
+     */ public static boolean compareMap(Map<Object, Object> map1, Map<Object, Object> map2) {
+        if (map1 == null || map2 == null) return false;
+        if (map1.size() != map2.size()) return false;
 
         for (Object key : map1.keySet()) {
             Object value1 = map1.get(key);
             Object value2 = map2.get(key);
             if (value1 instanceof byte[]) {
-                if (!Arrays.equals((byte[]) value1, (byte[]) value2))
-                    return false;
+                if (!Arrays.equals((byte[]) value1, (byte[]) value2)) return false;
             } else if (value1 instanceof List) {
                 if (!compareCollection((List<?>) value1, (List<?>) value2)) {
                     return false;
@@ -155,12 +146,9 @@ public class ASTestUtils {
     @SuppressWarnings("unchecked")
     /*
      * Deep comparison of Map<String, Object>
-     */
-    public static boolean compareMapStringObj(Map<String, Object> map1, Map<String, Object> map2) {
-        if (map1 == null || map2 == null)
-            return false;
-        if (map1.size() != map2.size())
-            return false;
+     */ public static boolean compareMapStringObj(Map<String, Object> map1, Map<String, Object> map2) {
+        if (map1 == null || map2 == null) return false;
+        if (map1.size() != map2.size()) return false;
 
         for (String key : map1.keySet()) {
             Object value1 = map1.get(key);
@@ -191,14 +179,11 @@ public class ASTestUtils {
     @SuppressWarnings("unchecked")
     /*
      * Deep comparison of Map<String, Object>
-     */
-    public static boolean compareRCRecordToASRecord(Map<String, Object> rcRecord, Record asRecord) {
+     */ public static boolean compareRCRecordToASRecord(Map<String, Object> rcRecord, Record asRecord) {
         Map<String, Object> map1 = (Map<String, Object>) rcRecord.get("bins");
         Map<String, Object> map2 = asRecord.bins;
-        if (map1 == null || map2 == null)
-            return false;
-        if (map1.size() != map2.size())
-            return false;
+        if (map1 == null || map2 == null) return false;
+        if (map1.size() != map2.size()) return false;
 
         for (String key : map1.keySet()) {
             Object value1 = map1.get(key);
@@ -248,10 +233,8 @@ public class ASTestUtils {
      * Deep comparison of Map<String, String>
      */
     public static boolean compareStringMap(Map<String, String> map1, Map<String, String> map2) {
-        if (map1 == null || map2 == null)
-            return false;
-        if (map1.size() != map2.size())
-            return false;
+        if (map1 == null || map2 == null) return false;
+        if (map1.size() != map2.size()) return false;
 
         for (String key : map1.keySet()) {
             String value1 = map1.get(key);
@@ -299,11 +282,10 @@ public class ASTestUtils {
                 actual.getPackedCtx()); // At this time, equal() does not check CTX
     }
 
-
     /* Build an URL for an operation which takes multiple bins as query params; e.g, /kvs/test/demo/1?bins=a&bins=b&bins=c
      *
      */
-    public static String buildEndpoint(String prefix, String namespace, String set, String key, String[] bins) {
+    public static String buildEndpointV1(String prefix, String namespace, String set, String key, String[] bins) {
         StringBuilder endpointBuilder = new StringBuilder("/v1/" + prefix + "/" + namespace + "/" + set + "/" + key);
         if (bins.length > 0) {
             endpointBuilder.append("?" + AerospikeAPIConstants.RECORD_BINS + "=" + bins[0]);
@@ -314,7 +296,6 @@ public class ASTestUtils {
         }
         return endpointBuilder.toString();
     }
-
 
     public static String addFilterBins(String endpoint, String[] bins) {
         StringBuilder endpointBuilder = new StringBuilder(endpoint);
@@ -328,7 +309,7 @@ public class ASTestUtils {
         return endpointBuilder.toString();
     }
 
-    public static String buildEndpoint(String prefix, String namespace, String set, String[] keys, String[] bins) {
+    public static String buildEndpointV1(String prefix, String namespace, String set, String[] keys, String[] bins) {
         StringBuilder endpointBuilder = new StringBuilder("/v1/" + prefix + "/" + namespace + "/" + set);
         if (keys.length > 0) {
             endpointBuilder.append("?key=" + keys[0]);
@@ -345,12 +326,20 @@ public class ASTestUtils {
         return endpointBuilder.toString();
     }
 
-    public static String buildEndpoint(String prefix, String namespace, String set, String key) {
-        return "/v1/" + prefix + "/" + namespace + "/" + set + "/" + key;
+    public static String buildEndpointV1(String prefix, String namespace, String set, String key) {
+        return buildEndpoint("/v1", prefix, namespace, set, key);
     }
 
-    public static String buildEndpoint(String prefix, String namespace, String key) {
-        return "/v1/" + prefix + "/" + namespace + "/" + key;
+    public static String buildEndpointV1(String prefix, String namespace, String key) {
+        return buildEndpoint("/v1", prefix, namespace, key);
+    }
+
+    public static String buildEndpointV2(String prefix, String namespace, String set, String key) {
+        return buildEndpoint("/v2", prefix, namespace, set, key);
+    }
+
+    public static String buildEndpointV2(String prefix, String namespace, String key) {
+        return buildEndpoint("/v2", prefix, namespace, key);
     }
 
     public static String buildEndpoint(String... path) {
@@ -457,18 +446,14 @@ public class ASTestUtils {
 
     public static void performOperation(MockMvc mockMVC, String endpoint, String payload) throws Exception {
 
-        mockMVC.perform(post(endpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(payload))
+        mockMVC.perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(payload))
                 .andExpect(status().isOk());
     }
 
     public static String performOperationAndReturn(MockMvc mockMVC, String endpoint, String payload) throws Exception {
 
-        MockHttpServletResponse res = mockMVC.perform(post(endpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(payload))
-                .andReturn().getResponse();
+        MockHttpServletResponse res = mockMVC.perform(
+                post(endpoint).contentType(MediaType.APPLICATION_JSON).content(payload)).andReturn().getResponse();
 
         int status = res.getStatus();
         if (status != 200) {
@@ -482,9 +467,8 @@ public class ASTestUtils {
     public static String performOperationAndExpect(MockMvc mockMVC, String endpoint, String payload,
                                                    ResultMatcher matcher) throws Exception {
 
-        ResultActions resultActions = mockMVC.perform(post(endpoint)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(payload));
+        ResultActions resultActions = mockMVC.perform(
+                post(endpoint).contentType(MediaType.APPLICATION_JSON).content(payload));
 
         String resp = resultActions.andReturn().getResponse().getContentAsString();
 
@@ -500,32 +484,30 @@ public class ASTestUtils {
     /* Perform Operation utilizing MsgPack for input and output */
     public static void performOperation(MockMvc mockMVC, String endpoint, byte[] payload) throws Exception {
 
-        mockMVC.perform(post(endpoint)
-                        .contentType("application/msgpack")
-                        .content(payload))
-                .andExpect(status().isOk());
+        mockMVC.perform(post(endpoint).contentType("application/msgpack").content(payload)).andExpect(status().isOk());
     }
 
     /* Perform Operation utilizing MsgPack for input and output. Also return Resulting record to caller as byte[] */
     public static byte[] performOperationAndReturn(MockMvc mockMVC, String endpoint, byte[] payload) throws Exception {
 
-        return mockMVC.perform(post(endpoint)
-                        .contentType("application/msgpack")
-                        .content(payload)
-                        .accept("application/msgpack"))
+        return mockMVC.perform(
+                        post(endpoint).contentType("application/msgpack").content(payload).accept("application/msgpack"))
                 .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsByteArray();
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
     }
 
     /* Perform Operation utilizing MsgPack for input and output. Also return Resulting record to caller as byte[] */
     public static byte[] performOperationAndExpect(MockMvc mockMVC, String endpoint, byte[] payload,
                                                    ResultMatcher matcher) throws Exception {
 
-        return mockMVC.perform(post(endpoint)
-                        .contentType("application/msgpack")
-                        .content(payload)
-                        .accept("application/msgpack"))
-                .andExpect(matcher).andReturn().getResponse().getContentAsByteArray();
+        return mockMVC.perform(
+                        post(endpoint).contentType("application/msgpack").content(payload).accept("application/msgpack"))
+                .andExpect(matcher)
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
     }
 
     /* Check if the server is v 3.16.0.1 or newer */
@@ -608,7 +590,6 @@ public class ASTestUtils {
         }
 
     }
-
 
     public static boolean compareRCOperations(RestClientOperation expected, RestClientOperation other) {
 

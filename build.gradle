@@ -74,4 +74,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
-targetCompatibility = JavaVersion.VERSION_16
+
+compileJava {
+    options.compilerArgs << '-parameters'
+}

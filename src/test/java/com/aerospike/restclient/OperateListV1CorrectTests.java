@@ -41,7 +41,7 @@ import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALU
 @RunWith(Parameterized.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class OperateListTestsCorrect {
+public class OperateListV1CorrectTests {
 
     @ClassRule
     public static final SpringClassRule springClassRule = new SpringClassRule();
@@ -88,25 +88,27 @@ public class OperateListTestsCorrect {
         client.delete(null, testKey);
     }
 
-    private final OperationPerformer opPerformer;
+    private final OperationV1Performer opPerformer;
 
     @Parameters
     public static Object[][] getParams() {
         return new Object[][]{
-                {new JSONOperationPerformer(), true}, {new MsgPackOperationPerformer(), true},
-                {new JSONOperationPerformer(), false}, {new MsgPackOperationPerformer(), false}
+                {new JSONOperationV1Performer(), true},
+                {new MsgPackOperationV1Performer(), true},
+                {new JSONOperationV1Performer(), false},
+                {new MsgPackOperationV1Performer(), false}
         };
     }
 
     /* Set up the correct msgpack/json performer for this set of runs. Also decided whether to use the endpoint with a set or without */
-    public OperateListTestsCorrect(OperationPerformer performer, boolean useSet) {
+    public OperateListV1CorrectTests(OperationV1Performer performer, boolean useSet) {
         this.opPerformer = performer;
         if (useSet) {
             testKey = new Key("test", "junit", "listop");
-            testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "listop");
+            testEndpoint = ASTestUtils.buildEndpointV1("operate", "test", "junit", "listop");
         } else {
             testKey = new Key("test", null, "listop");
-            testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "listop");
+            testEndpoint = ASTestUtils.buildEndpointV1("operate", "test", "listop");
         }
     }
 
@@ -123,8 +125,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> realList = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> realList = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         objectList.add("aerospike");
 
         Assert.assertTrue(ASTestUtils.compareCollection(objectList, realList));
@@ -145,8 +147,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> realList = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> realList = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         objectList.add("aero");
         objectList.add("spike");
         objectList.add("aero");
@@ -174,8 +176,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> realList = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> realList = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         objectList.add("aero");
         objectList.add("spike");
 
@@ -196,8 +198,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> realList = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> realList = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         Assert.assertEquals(realList.size(), 0);
     }
@@ -373,8 +375,7 @@ public class OperateListTestsCorrect {
         Map<String, Object> binsObject = getReturnedBins(
                 opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) binsObject.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) binsObject.get("list");
 
         Set<Object> retItemSet = new HashSet<>(retItems);
         Set<Object> expectedSet = new HashSet<>(Arrays.asList(1, 2, 3));
@@ -400,8 +401,7 @@ public class OperateListTestsCorrect {
         Map<String, Object> binsObject = getReturnedBins(
                 opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) binsObject.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) binsObject.get("list");
 
         Set<Object> retItemSet = new HashSet<>(retItems);
         Set<Object> expectedSet = new HashSet<>(Arrays.asList(1, 2, 3, 4));
@@ -429,8 +429,7 @@ public class OperateListTestsCorrect {
         Map<String, Object> binsObject = getReturnedBins(
                 opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) binsObject.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) binsObject.get("list");
 
         Set<Object> retItemSet = new HashSet<>(retItems);
         Set<Object> expectedSet = new HashSet<>(Arrays.asList(3, 4));
@@ -457,8 +456,7 @@ public class OperateListTestsCorrect {
         Map<String, Object> binsObject = getReturnedBins(
                 opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) binsObject.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) binsObject.get("list");
 
         Set<Object> retItemSet = new HashSet<>(retItems);
         Set<Object> expectedSet = new HashSet<>(Arrays.asList(2, 3, 4));
@@ -533,8 +531,7 @@ public class OperateListTestsCorrect {
         Map<String, Object> binsObject = getReturnedBins(
                 opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) binsObject.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) binsObject.get("list");
 
         Set<Object> retItemSet = new HashSet<>(retItems);
         Set<Object> expectedSet = new HashSet<>(Arrays.asList(1, 2, 3, 4));
@@ -683,8 +680,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(retItems.get(1), 12));
     }
@@ -703,8 +700,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(retItems.get(1), 3));
     }
@@ -729,8 +726,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(retItems.get(1), 12));
     }
@@ -751,8 +748,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         objectList.add(1, "one");
 
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, objectList));
@@ -776,8 +773,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(1, 5, 2, 0, 3, 4)));
     }
@@ -798,8 +795,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         objectList.add(1, "three");
         objectList.add(1, "two");
         objectList.add(1, "one");
@@ -826,8 +823,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         objectList.add(1, "three");
         objectList.add(1, "two");
         objectList.add(1, "one");
@@ -904,8 +901,8 @@ public class OperateListTestsCorrect {
 
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), Arrays.asList(2, 0, 3, 4)));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         // Remove 4 items starting from index 1
         objectList.remove(1);
@@ -930,8 +927,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         objectList.remove(2);
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, objectList));
@@ -958,8 +955,8 @@ public class OperateListTestsCorrect {
         //The popped value was the smallest element, so it's rank should be 0
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 0));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         objectList.remove(2);
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, objectList));
@@ -987,8 +984,8 @@ public class OperateListTestsCorrect {
         //Three items were removed, so the server should return 3 items
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 3));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         objectList.remove(1);
         objectList.remove(1);
@@ -1017,8 +1014,8 @@ public class OperateListTestsCorrect {
         //Three items were removed, so the server should return 3 items
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 4));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         objectList.remove(1);
         objectList.remove(1);
@@ -1072,8 +1069,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(0, 4)));
     }
 
@@ -1094,8 +1091,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Collections.singletonList(0)));
     }
 
@@ -1118,8 +1115,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(1, 0, 4)));
     }
 
@@ -1141,8 +1138,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(1, 0)));
     }
 
@@ -1170,8 +1167,8 @@ public class OperateListTestsCorrect {
         //The popped value was the smallest element, it was at index 2
         Assert.assertTrue(ASTestUtils.compareCollection((List<?>) returnedBins.get("list"), Arrays.asList(2, 5)));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         objectList.remove(5);
         objectList.remove(2);
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, objectList));
@@ -1199,8 +1196,8 @@ public class OperateListTestsCorrect {
         //The popped value was the smallest element, it was at index 2
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 2));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(0, 3, 4)));
     }
 
@@ -1225,8 +1222,8 @@ public class OperateListTestsCorrect {
         //The popped value was the smallest element, it was at index 2
         Assert.assertTrue(ASTestUtils.compareSimpleValues(returnedBins.get("list"), 3));
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(3, 4)));
     }
 
@@ -1286,7 +1283,6 @@ public class OperateListTestsCorrect {
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(1, 3)));
     }
 
-
     @Test
     public void testListRemoveRange() {
 
@@ -1303,8 +1299,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         objectList.remove(1);
         objectList.remove(1);
@@ -1327,8 +1323,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         objectList.remove(1);
         objectList.remove(1);
@@ -1352,8 +1348,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(1, "two", 0, 3, 4)));
     }
@@ -1377,8 +1373,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(1, "two", 0, 3, 4)));
     }
@@ -1399,8 +1395,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
 
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(0, 1, 2, 3, 4)));
     }
@@ -1437,8 +1433,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(0, 1, 2, 3, 4)));
     }
 
@@ -1457,8 +1453,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         Assert.assertTrue(ASTestUtils.compareCollection(retItems, Arrays.asList(2, 0, 3)));
     }
 
@@ -1485,8 +1481,8 @@ public class OperateListTestsCorrect {
 
         opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opList);
 
-        @SuppressWarnings("unchecked")
-        List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get("list");
+        @SuppressWarnings("unchecked") List<Object> retItems = (List<Object>) client.get(null, testKey).bins.get(
+                "list");
         Assert.assertTrue(((List<?>) retItems.get(7)).isEmpty());
     }
 
@@ -1514,3 +1510,5 @@ public class OperateListTestsCorrect {
     }
 
 }
+
+

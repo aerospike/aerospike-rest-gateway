@@ -26,15 +26,15 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import java.util.List;
 import java.util.Map;
 
-class JSONOperationPerformer implements OperationPerformer {
+class JSONOperationV1Performer implements OperationV1Performer {
 
-    private static final Logger logger = LogManager.getLogger(JSONOperationPerformer.class);
+    private static final Logger logger = LogManager.getLogger(JSONOperationV1Performer.class);
 
     private final ObjectMapper mapper;
     private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {
     };
 
-    public JSONOperationPerformer() {
+    public JSONOperationV1Performer() {
         this.mapper = new ObjectMapper();
     }
 

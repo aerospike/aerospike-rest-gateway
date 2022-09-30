@@ -4,12 +4,7 @@ import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.exp.Exp;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,10 +72,10 @@ public class FilterExpressionTest {
 
         if (useSet) {
             testKey = new Key("test", "junit", "getput");
-            noBinEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
+            noBinEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", "getput");
         } else {
             testKey = new Key("test", null, "getput");
-            noBinEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "getput");
+            noBinEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "getput");
         }
     }
 
@@ -98,8 +93,10 @@ public class FilterExpressionTest {
         String encoded = Base64.getUrlEncoder().encodeToString(filterBytes);
         String endpoint = buildEndpoint(encoded);
         MockHttpServletResponse res = mockMVC.perform(
-                get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(mediaType)
-        ).andExpect(status().isOk()).andReturn().getResponse();
+                        get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(mediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
         Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
@@ -113,9 +110,8 @@ public class FilterExpressionTest {
 
         String encoded = Base64.getUrlEncoder().encodeToString(filterBytes);
         String endpoint = buildEndpoint(encoded);
-        mockMVC.perform(
-                get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(mediaType)
-        ).andExpect(status().isNotFound());
+        mockMVC.perform(get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(mediaType))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -127,15 +123,15 @@ public class FilterExpressionTest {
 
         client.put(null, testKey, intBin);
 
-        byte[] filterBytes = Exp.build(
-                Exp.eq(Exp.bin("string", Exp.Type.STRING), Exp.val("aerospike"))
-        ).getBytes();
+        byte[] filterBytes = Exp.build(Exp.eq(Exp.bin("string", Exp.Type.STRING), Exp.val("aerospike"))).getBytes();
 
         String encoded = Base64.getUrlEncoder().encodeToString(filterBytes);
         String endpoint = buildEndpoint(encoded);
         MockHttpServletResponse res = mockMVC.perform(
-                get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(mediaType)
-        ).andExpect(status().isOk()).andReturn().getResponse();
+                        get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(mediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
         Map<String, Object> resObject = recordDeserializer.getReturnedBins(res);
         Assert.assertTrue(ASTestUtils.compareMapStringObj(resObject, binMap));
     }
@@ -145,15 +141,12 @@ public class FilterExpressionTest {
         Bin intBin = new Bin("string", "aerospike");
         client.put(null, testKey, intBin);
 
-        byte[] filterBytes = Exp.build(
-                Exp.eq(Exp.bin("string", Exp.Type.STRING), Exp.val("aero"))
-        ).getBytes();
+        byte[] filterBytes = Exp.build(Exp.eq(Exp.bin("string", Exp.Type.STRING), Exp.val("aero"))).getBytes();
 
         String encoded = Base64.getUrlEncoder().encodeToString(filterBytes);
         String endpoint = buildEndpoint(encoded);
-        mockMVC.perform(
-                get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(mediaType)
-        ).andExpect(status().isNotFound());
+        mockMVC.perform(get(endpoint).contentType(MediaType.APPLICATION_JSON).accept(mediaType))
+                .andExpect(status().isNotFound());
     }
 
     private String buildEndpoint(String encoded) {

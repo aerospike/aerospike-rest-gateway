@@ -54,25 +54,27 @@ public class OperateBitTestsCorrect {
         client.delete(null, testKey);
     }
 
-    private final OperationPerformer opPerformer;
+    private final OperationV1Performer opPerformer;
 
     @Parameterized.Parameters
     public static Object[][] getParams() {
         return new Object[][]{
-                {new JSONOperationPerformer(), true}, {new MsgPackOperationPerformer(), true},
-                {new JSONOperationPerformer(), false}, {new MsgPackOperationPerformer(), false}
+                {new JSONOperationV1Performer(), true},
+                {new MsgPackOperationV1Performer(), true},
+                {new JSONOperationV1Performer(), false},
+                {new MsgPackOperationV1Performer(), false}
         };
     }
 
     /* Set up the correct msgpack/json performer for this set of runs. Also decided whether to use the endpoint with a set or without */
-    public OperateBitTestsCorrect(OperationPerformer performer, boolean useSet) {
+    public OperateBitTestsCorrect(OperationV1Performer performer, boolean useSet) {
         this.opPerformer = performer;
         if (useSet) {
             testKey = new Key("test", "junit", "bitop");
-            testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "bitop");
+            testEndpoint = ASTestUtils.buildEndpointV1("operate", "test", "junit", "bitop");
         } else {
             testKey = new Key("test", null, "bitop");
-            testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "bitop");
+            testEndpoint = ASTestUtils.buildEndpointV1("operate", "test", "bitop");
         }
     }
 

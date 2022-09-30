@@ -71,12 +71,12 @@ public class RecordPostErrorTests {
 
     public RecordPostErrorTests(boolean useSet) {
         if (useSet) {
-            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "demo", "1");
-            existingRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
+            nonExistentNSEndpoint = ASTestUtils.buildEndpointV1("kvs", "fakeNS", "demo", "1");
+            existingRecordEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", "getput");
             testKey = new Key("test", "junit", "getput");
         } else {
-            nonExistentNSEndpoint = ASTestUtils.buildEndpoint("kvs", "fakeNS", "1");
-            existingRecordEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "getput");
+            nonExistentNSEndpoint = ASTestUtils.buildEndpointV1("kvs", "fakeNS", "1");
+            existingRecordEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "getput");
             testKey = new Key("test", null, "getput");
         }
     }
@@ -98,10 +98,8 @@ public class RecordPostErrorTests {
         Map<String, Object> binMap = new HashMap<>();
         binMap.put("integer", 12345);
 
-        mockMVC.perform(post(nonExistentNSEndpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(binMap)))
-                .andExpect(status().isNotFound());
+        mockMVC.perform(post(nonExistentNSEndpoint).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(binMap))).andExpect(status().isNotFound());
     }
 
     @Test
@@ -110,10 +108,8 @@ public class RecordPostErrorTests {
 
         binMap.put("string", "Aerospike");
 
-        mockMVC.perform(post(existingRecordEndpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(binMap))
-                       ).andExpect(status().isConflict());
+        mockMVC.perform(post(existingRecordEndpoint).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(binMap))).andExpect(status().isConflict());
     }
 
 }

@@ -89,7 +89,7 @@ public class OperateV2Controller {
     @DefaultRestClientAPIResponses
     @PostMapping(
             value = "/{namespace}/{set}/{key}",
-            consumes = "application/json",
+            consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
@@ -116,7 +116,7 @@ public class OperateV2Controller {
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.operateV2(authDetails, namespace, set, key, body.operations, keyType, policy);
+        return service.operateV2(authDetails, namespace, set, key, body.opsList, keyType, policy);
     }
 
 
@@ -152,7 +152,7 @@ public class OperateV2Controller {
     @DefaultRestClientAPIResponses
     @PostMapping(
             value = "/{namespace}/{key}",
-            consumes = "application/json",
+            consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
@@ -175,7 +175,7 @@ public class OperateV2Controller {
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.operateV2(authDetails, namespace, null, key, body.operations, keyType, policy);
+        return service.operateV2(authDetails, namespace, null, key, body.opsList, keyType, policy);
     }
 
 
@@ -212,7 +212,7 @@ public class OperateV2Controller {
     @DefaultRestClientAPIResponses
     @PostMapping(
             value = "/read/{namespace}/{set}",
-            consumes = "application/json",
+            consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
@@ -236,7 +236,7 @@ public class OperateV2Controller {
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.operateV2(authDetails, namespace, set, keys, body.operations, keyType, policy);
+        return service.operateV2(authDetails, namespace, set, keys, body.opsList, keyType, policy);
     }
 
     @Operation(summary = BATCH_OPERATE_NOTES, operationId = "operateBatchNamespace")
@@ -272,7 +272,7 @@ public class OperateV2Controller {
     @DefaultRestClientAPIResponses
     @PostMapping(
             value = "/read/{namespace}",
-            consumes = "application/json",
+            consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
@@ -292,7 +292,7 @@ public class OperateV2Controller {
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.operateV2(authDetails, namespace, null, keys, body.operations, keyType, policy);
+        return service.operateV2(authDetails, namespace, null, keys, body.opsList, keyType, policy);
     }
 }
 

@@ -21,15 +21,10 @@ import com.aerospike.client.AerospikeException;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.restclient.ASTestUtils;
-import com.aerospike.restclient.MsgPackOperationPerformer;
+import com.aerospike.restclient.MsgPackOperationV1Performer;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.aerospike.restclient.util.deserializers.MsgPackBinParser;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -68,7 +63,7 @@ public class BasicMsgPackOperationsTest {
     @Autowired
     private WebApplicationContext wac;
 
-    private final MsgPackOperationPerformer opPerformer = new MsgPackOperationPerformer();
+    private final MsgPackOperationV1Performer opPerformer = new MsgPackOperationV1Performer();
 
     private MockMvc mockMVC;
 
@@ -85,10 +80,10 @@ public class BasicMsgPackOperationsTest {
     public BasicMsgPackOperationsTest(boolean useSet) {
         if (useSet) {
             testKey = new Key("test", "junit", "mpoperate");
-            testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "mpoperate");
+            testEndpoint = ASTestUtils.buildEndpointV1("operate", "test", "junit", "mpoperate");
         } else {
             testKey = new Key("test", null, "mpoperate");
-            testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "mpoperate");
+            testEndpoint = ASTestUtils.buildEndpointV1("operate", "test", "mpoperate");
         }
     }
 
@@ -158,8 +153,7 @@ public class BasicMsgPackOperationsTest {
         opPerformer.performOperationsAndReturnRaw(mockMVC, testEndpoint, opBytes);
 
         Map<String, Object> realBins = client.get(null, testKey).bins;
-        @SuppressWarnings("unchecked")
-        Map<Long, Long> expectedMap = (Map<Long, Long>) realBins.get("new");
+        @SuppressWarnings("unchecked") Map<Long, Long> expectedMap = (Map<Long, Long>) realBins.get("new");
 
         Assert.assertEquals(expectedMap.size(), 1);
         Assert.assertEquals((Long) 2L, expectedMap.get(1L));
