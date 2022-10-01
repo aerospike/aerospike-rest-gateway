@@ -31,7 +31,6 @@ public class MapGetByKeyListOperation extends MapOperation {
         super(binName);
         this.keys = keys;
         this.mapReturnType = mapReturnType;
-        inverted = false;
     }
 
     public List<Object> getKeys() {

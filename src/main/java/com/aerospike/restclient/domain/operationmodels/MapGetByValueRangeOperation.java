@@ -29,7 +29,6 @@ public class MapGetByValueRangeOperation extends MapOperation {
     public MapGetByValueRangeOperation(String binName, MapReturnType mapReturnType) {
         super(binName);
         this.mapReturnType = mapReturnType;
-        inverted = false;
     }
 
     public MapReturnType getMapReturnType() {
@@ -67,8 +66,18 @@ public class MapGetByValueRangeOperation extends MapOperation {
     @Override
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
+        Value begin = null;
+        Value end = null;
 
-        return com.aerospike.client.cdt.MapOperation.getByValueRange(binName, Value.get(valueBegin),
-                Value.get(valueEnd), mapReturnType.toMapReturnType(inverted), asCTX);
+        if (valueBegin != null) {
+            begin = Value.get(valueBegin);
+        }
+
+        if (valueEnd != null) {
+            end = Value.get(valueEnd);
+        }
+
+        return com.aerospike.client.cdt.MapOperation.getByValueRange(binName, begin, end,
+                mapReturnType.toMapReturnType(inverted), asCTX);
     }
 }

@@ -1,10 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
-import com.aerospike.restclient.domain.ctxmodels.CTX;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.util.List;
 
 @Schema(
         description = " Get `count` items from the list beginning with the specified index. If `count` is omitted, all items from `index` to the end of the list will be returned.",
@@ -24,11 +21,9 @@ public class ListGetRangeOperation extends ListOperation {
 
     private Integer count;
 
-    public ListGetRangeOperation(String binName, Integer index, List<CTX> ctx, Integer count) {
+    public ListGetRangeOperation(String binName, Integer index) {
         super(binName);
         this.index = index;
-        this.ctx = ctx;
-        this.count = count;
     }
 
     public Integer getIndex() {
@@ -50,6 +45,10 @@ public class ListGetRangeOperation extends ListOperation {
     @Override
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
+
+        if (count == null) {
+            return com.aerospike.client.cdt.ListOperation.getRange(binName, index, asCTX);
+        }
 
         return com.aerospike.client.cdt.ListOperation.getRange(binName, index, count, asCTX);
     }

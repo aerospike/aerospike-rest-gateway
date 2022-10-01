@@ -19,6 +19,7 @@ public class MsgPackConverter extends AbstractJackson2HttpMessageConverter {
         ObjectMapper mapper = getObjectMapper();
         mapper.registerModule(new ParameterNamesModule());
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+//        mapper.setConstructorDetector(ConstructorDetector.USE_PROPERTIES_BASED);
         addSerializerModules(mapper);
     }
 

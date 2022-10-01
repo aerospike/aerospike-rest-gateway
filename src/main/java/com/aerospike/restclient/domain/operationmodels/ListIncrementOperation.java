@@ -1,12 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
-import com.aerospike.client.cdt.ListPolicy;
-import com.aerospike.restclient.domain.ctxmodels.CTX;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.util.List;
 
 @Schema(
         description = " Increment the value of a an item of a list at the specified index, by the value of `incr`",
@@ -24,16 +20,15 @@ public class ListIncrementOperation extends ListOperation {
     @Schema(required = true)
     private Integer index;
 
+    @Schema(required = true)
     private Number incr;
 
     private ListPolicy listPolicy;
 
-    public ListIncrementOperation(String binName, Integer index, List<CTX> ctx, Number incr, ListPolicy listPolicy) {
+    public ListIncrementOperation(String binName, Integer index, Number incr) {
         super(binName);
         this.index = index;
-        this.ctx = ctx;
         this.incr = incr;
-        this.listPolicy = listPolicy;
     }
 
     public Integer getIndex() {
@@ -63,18 +58,26 @@ public class ListIncrementOperation extends ListOperation {
     @Override
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
-        Value asVal;
+        Value asVal = null;
 
         if (incr instanceof Integer) {
             asVal = Value.get(incr.intValue());
-        } else {
+        } else if (incr instanceof Double) {
             asVal = Value.get(incr.doubleValue());
         }
 
         if (listPolicy == null) {
+            if (asVal == null) {
+                return com.aerospike.client.cdt.ListOperation.increment(binName, index, asCTX);
+            }
             return com.aerospike.client.cdt.ListOperation.increment(binName, index, asVal, asCTX);
         }
 
-        return com.aerospike.client.cdt.ListOperation.increment(listPolicy, binName, index, asVal, asCTX);
+        com.aerospike.client.cdt.ListPolicy asListPolicy = listPolicy.toListPolicy();
+
+        if (asVal == null) {
+            return com.aerospike.client.cdt.ListOperation.increment(asListPolicy, binName, index, asCTX);
+        }
+        return com.aerospike.client.cdt.ListOperation.increment(asListPolicy, binName, index, asVal, asCTX);
     }
 }

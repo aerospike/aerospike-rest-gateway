@@ -29,7 +29,6 @@ public class MapRemoveByKeyOperation extends MapOperation {
         super(binName);
         this.key = key;
         this.mapReturnType = mapReturnType;
-        inverted = false;
     }
 
     public Object getKey() {
@@ -60,7 +59,7 @@ public class MapRemoveByKeyOperation extends MapOperation {
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
 
-        return com.aerospike.client.cdt.MapOperation.removeByValue(binName, Value.get(key),
+        return com.aerospike.client.cdt.MapOperation.removeByKey(binName, Value.get(key),
                 mapReturnType.toMapReturnType(inverted), asCTX);
     }
 }

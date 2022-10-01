@@ -28,7 +28,6 @@ public class MapRemoveByIndexOperation extends MapOperation {
         super(binName);
         this.index = index;
         this.mapReturnType = mapReturnType;
-        inverted = false;
     }
 
     public Integer getIndex() {

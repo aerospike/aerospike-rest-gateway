@@ -29,7 +29,6 @@ public class MapGetByKeyOperation extends MapOperation {
         super(binName);
         this.key = key;
         this.mapReturnType = mapReturnType;
-        inverted = false;
     }
 
     public Object getKey() {

@@ -1,7 +1,6 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
-import com.aerospike.client.cdt.ListPolicy;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -64,6 +63,7 @@ public class ListSetOperation extends ListOperation {
             return com.aerospike.client.cdt.ListOperation.set(binName, index, Value.get(value), asCTX);
         }
 
-        return com.aerospike.client.cdt.ListOperation.set(listPolicy, binName, index, Value.get(value), asCTX);
+        return com.aerospike.client.cdt.ListOperation.set(listPolicy.toListPolicy(), binName, index, Value.get(value),
+                asCTX);
     }
 }

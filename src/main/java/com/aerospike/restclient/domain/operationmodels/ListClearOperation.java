@@ -1,10 +1,9 @@
 package com.aerospike.restclient.domain.operationmodels;
 
-import com.aerospike.restclient.domain.ctxmodels.CTX;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.util.List;
 
 @Schema(
         description = " Empty a list stored in the specified bin.",
@@ -19,9 +18,9 @@ public class ListClearOperation extends ListOperation {
     )
     final public String type = OperationTypes.LIST_CLEAR;
 
-    public ListClearOperation(String binName, List<CTX> ctx) {
+    @JsonCreator
+    public ListClearOperation(@JsonProperty("binName") String binName) {
         super(binName);
-        this.ctx = ctx;
     }
 
     @Override
@@ -31,3 +30,4 @@ public class ListClearOperation extends ListOperation {
         return com.aerospike.client.cdt.ListOperation.clear(binName, asCTX);
     }
 }
+

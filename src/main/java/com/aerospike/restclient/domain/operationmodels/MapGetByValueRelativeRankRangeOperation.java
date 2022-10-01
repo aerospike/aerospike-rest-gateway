@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
         description = " TODO",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOperation.html")
 )
-public class MapGetByValueRelativeRankRange extends MapOperation {
+public class MapGetByValueRelativeRankRangeOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE,
@@ -30,7 +30,8 @@ public class MapGetByValueRelativeRankRange extends MapOperation {
 
     private Integer count;
 
-    public MapGetByValueRelativeRankRange(String binName, Integer index, Object value, MapReturnType mapReturnType) {
+    public MapGetByValueRelativeRankRangeOperation(String binName, Integer index, Object value,
+                                                   MapReturnType mapReturnType) {
         super(binName);
         this.rank = index;
         this.value = value;

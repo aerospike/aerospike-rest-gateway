@@ -49,6 +49,14 @@ public class ListRemoveByValueListOperation extends ListOperation {
         this.listReturnType = listReturnType;
     }
 
+    public boolean isInverted() {
+        return inverted;
+    }
+
+    public void setInverted(boolean inverted) {
+        this.inverted = inverted;
+    }
+
     @Override
     public com.aerospike.client.Operation toOperation() {
         List<Value> asVals = values.stream().map(Value::get).toList();

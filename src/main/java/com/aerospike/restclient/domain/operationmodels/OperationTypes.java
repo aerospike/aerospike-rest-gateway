@@ -12,12 +12,14 @@ public final class OperationTypes {
     public static final String DELETE = "DELETE ";
     public static final String LIST_APPEND = "LIST_APPEND";
     public static final String LIST_APPEND_ITEMS = "LIST_APPEND_ITEMS";
+    public static final String LIST_CREATE = "LIST_CREATE";
     public static final String LIST_CLEAR = "LIST_CLEAR";
     public static final String LIST_GET = "LIST_GET";
     public static final String LIST_GET_BY_INDEX = "LIST_GET_BY_INDEX";
     public static final String LIST_GET_BY_INDEX_RANGE = "LIST_GET_BY_INDEX_RANGE";
     public static final String LIST_GET_BY_RANK = "LIST_GET_BY_RANK";
     public static final String LIST_GET_BY_RANK_RANGE = "LIST_GET_BY_RANK_RANGE";
+    public static final String LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE = "LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE";
     public static final String LIST_GET_BY_VALUE = "LIST_GET_BY_VALUE";
     public static final String LIST_GET_BY_VALUE_RANGE = "LIST_GET_BY_VALUE_RANGE";
     public static final String LIST_GET_BY_VALUE_LIST = "LIST_GET_BY_VALUE_LIST";
@@ -32,6 +34,7 @@ public final class OperationTypes {
     public static final String LIST_REMOVE_BY_INDEX_RANGE = "LIST_REMOVE_BY_INDEX_RANGE";
     public static final String LIST_REMOVE_BY_RANK = "LIST_REMOVE_BY_RANK";
     public static final String LIST_REMOVE_BY_RANK_RANGE = "LIST_REMOVE_BY_RANK_RANGE";
+    public static final String LIST_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE = "LIST_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE";
     public static final String LIST_REMOVE_BY_VALUE = "LIST_REMOVE_BY_VALUE";
     public static final String LIST_REMOVE_BY_VALUE_RANGE = "LIST_REMOVE_BY_VALUE_RANGE";
     public static final String LIST_REMOVE_BY_VALUE_LIST = "LIST_REMOVE_BY_VALUE_LIST";

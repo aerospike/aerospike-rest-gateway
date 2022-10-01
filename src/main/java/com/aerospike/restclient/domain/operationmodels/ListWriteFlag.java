@@ -1,0 +1,36 @@
+package com.aerospike.restclient.domain.operationmodels;
+
+import com.aerospike.client.cdt.ListWriteFlags;
+
+public enum ListWriteFlag {
+    /**
+     * Default. Allow duplicate values and insertions at any index.
+     */
+    DEFAULT(ListWriteFlags.DEFAULT),
+
+    /**
+     * Only add unique values
+     */
+    ADD_UNIQUE(ListWriteFlags.ADD_UNIQUE),
+
+    /**
+     * Enforce list boundaries when inserting. Do not allow values to be inserted at index outside current list boundaries.
+     */
+    INSERT_BOUNDED(ListWriteFlags.INSERT_BOUNDED),
+
+    /**
+     * Do not raise error if a list item fails due to write flag constraints.
+     */
+    NO_FAIL(ListWriteFlags.NO_FAIL),
+
+    /**
+     * Allow other valid list items to be committed if a list item fails due to write flag constraints.
+     */
+    PARTIAL(ListWriteFlags.PARTIAL);
+
+    public final int flag;
+
+    private ListWriteFlag(int flag) {
+        this.flag = flag;
+    }
+}

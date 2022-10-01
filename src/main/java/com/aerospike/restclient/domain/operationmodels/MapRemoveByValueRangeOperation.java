@@ -67,8 +67,18 @@ public class MapRemoveByValueRangeOperation extends MapOperation {
     @Override
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
+        Value begin = null;
+        Value end = null;
 
-        return com.aerospike.client.cdt.MapOperation.removeByValueRange(binName, Value.get(valueBegin),
-                Value.get(valueEnd), mapReturnType.toMapReturnType(inverted), asCTX);
+        if (valueBegin != null) {
+            begin = Value.get(valueBegin);
+        }
+
+        if (valueEnd != null) {
+            end = Value.get(valueEnd);
+        }
+
+        return com.aerospike.client.cdt.MapOperation.removeByValueRange(binName, begin, end,
+                mapReturnType.toMapReturnType(inverted), asCTX);
     }
 }

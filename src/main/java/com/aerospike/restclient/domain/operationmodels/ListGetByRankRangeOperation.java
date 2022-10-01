@@ -1,10 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
-import com.aerospike.restclient.domain.ctxmodels.CTX;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.util.List;
 
 @Schema(
         description = " Return `count` items beginning with the specified rank. If `count` is omitted, all items beginning with specified rank will be returned. Requires Aerospike Server `3.16.0.1` or later.",
@@ -28,13 +25,10 @@ public class ListGetByRankRangeOperation extends ListOperation {
 
     private Integer count;
 
-    public ListGetByRankRangeOperation(String binName, Integer rank, ListReturnType listReturnType, List<CTX> ctx,
-                                       Integer count) {
+    public ListGetByRankRangeOperation(String binName, Integer rank, ListReturnType listReturnType) {
         super(binName);
         this.rank = rank;
         this.listReturnType = listReturnType;
-        this.ctx = ctx;
-        this.count = count;
         inverted = false;
     }
 

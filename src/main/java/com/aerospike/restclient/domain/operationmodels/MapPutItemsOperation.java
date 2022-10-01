@@ -1,7 +1,6 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
-import com.aerospike.client.cdt.MapPolicy;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -51,15 +50,18 @@ public class MapPutItemsOperation extends MapOperation {
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
         Map<Value, Value> valueMap = new HashMap<>();
+        com.aerospike.client.cdt.MapPolicy asMapPolicy;
 
         if (mapPolicy == null) {
-            mapPolicy = MapPolicy.Default;
+            asMapPolicy = com.aerospike.client.cdt.MapPolicy.Default;
+        } else {
+            asMapPolicy = mapPolicy.toMapPolicy();
         }
 
         for (Object key : map.keySet()) {
             valueMap.put(Value.get(key), Value.get(map.get(key)));
         }
 
-        return com.aerospike.client.cdt.MapOperation.putItems(mapPolicy, binName, valueMap, asCTX);
+        return com.aerospike.client.cdt.MapOperation.putItems(asMapPolicy, binName, valueMap, asCTX);
     }
 }

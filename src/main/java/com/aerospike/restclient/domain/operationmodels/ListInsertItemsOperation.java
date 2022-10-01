@@ -1,8 +1,6 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
-import com.aerospike.client.cdt.ListPolicy;
-import com.aerospike.restclient.domain.ctxmodels.CTX;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -33,15 +31,6 @@ public class ListInsertItemsOperation extends ListOperation {
         super(binName);
         this.index = index;
         this.values = values;
-    }
-
-    public ListInsertItemsOperation(String binName, Integer index, List<Object> values, List<CTX> ctx,
-                                    ListPolicy listPolicy) {
-        super(binName);
-        this.index = index;
-        this.values = values;
-        this.ctx = ctx;
-        this.listPolicy = listPolicy;
     }
 
     public Integer getIndex() {
@@ -77,6 +66,7 @@ public class ListInsertItemsOperation extends ListOperation {
             return com.aerospike.client.cdt.ListOperation.insertItems(binName, index, asVals, asCTX);
         }
 
-        return com.aerospike.client.cdt.ListOperation.insertItems(listPolicy, binName, index, asVals, asCTX);
+        return com.aerospike.client.cdt.ListOperation.insertItems(listPolicy.toListPolicy(), binName, index, asVals,
+                asCTX);
     }
 }

@@ -13,8 +13,10 @@ import java.util.Optional;
 @JsonSubTypes(
         {
                 @JsonSubTypes.Type(
-                        value = MapClearOperation.class, name = OperationTypes.MAP_CLEAR
+                        value = MapCreateOperation.class, name = OperationTypes.MAP_CREATE
                 ), @JsonSubTypes.Type(
+                value = MapClearOperation.class, name = OperationTypes.MAP_CLEAR
+        ), @JsonSubTypes.Type(
                 value = MapGetByIndexOperation.class, name = OperationTypes.MAP_GET_BY_INDEX
         ), @JsonSubTypes.Type(
                 value = MapGetByIndexRangeOperation.class, name = OperationTypes.MAP_GET_BY_INDEX_RANGE
@@ -34,6 +36,11 @@ import java.util.Optional;
                 value = MapGetByValueRangeOperation.class, name = OperationTypes.MAP_GET_BY_VALUE_RANGE
         ), @JsonSubTypes.Type(
                 value = MapGetByValueListOperation.class, name = OperationTypes.MAP_GET_BY_VALUE_LIST
+        ), @JsonSubTypes.Type(
+                value = MapGetByValueRelativeRankRangeOperation.class,
+                name = OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE
+        ), @JsonSubTypes.Type(
+                value = MapGetByKeyRelativeIndexRange.class, name = OperationTypes.MAP_GET_BY_KEY_RELATIVE_INDEX_RANGE
         ), @JsonSubTypes.Type(
                 value = MapIncrementOperation.class, name = OperationTypes.MAP_INCREMENT
         ), @JsonSubTypes.Type(
@@ -59,6 +66,12 @@ import java.util.Optional;
         ), @JsonSubTypes.Type(
                 value = MapRemoveByValueListOperation.class, name = OperationTypes.MAP_REMOVE_BY_VALUE_LIST
         ), @JsonSubTypes.Type(
+                value = MapRemoveByKeyRelativeIndexRange.class,
+                name = OperationTypes.MAP_REMOVE_BY_KEY_RELATIVE_INDEX_RANGE
+        ), @JsonSubTypes.Type(
+                value = MapRemoveByValueRelativeRankRange.class,
+                name = OperationTypes.MAP_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE
+        ), @JsonSubTypes.Type(
                 value = MapSetPolicyOperation.class, name = OperationTypes.MAP_SET_POLICY
         ), @JsonSubTypes.Type(
                 value = MapSizeOperation.class, name = OperationTypes.MAP_SIZE
@@ -67,6 +80,7 @@ import java.util.Optional;
 )
 @Schema(
         description = "TODO", oneOf = {
+        MapCreateOperation.class,
         MapClearOperation.class,
         MapGetByIndexOperation.class,
         MapGetByIndexRangeOperation.class,
@@ -77,12 +91,14 @@ import java.util.Optional;
         MapGetByRankRangeOperation.class,
         MapGetByValueOperation.class,
         MapGetByValueRangeOperation.class,
+        ListGetByValueRelativeRankRangeOperation.class,
         MapGetByValueListOperation.class,
         MapIncrementOperation.class,
         MapPutOperation.class,
         MapPutItemsOperation.class,
         MapRemoveByIndexOperation.class,
         MapRemoveByIndexRangeOperation.class,
+        MapRemoveByKeyRelativeIndexRange.class,
         MapRemoveByKeyOperation.class,
         MapRemoveByKeyRangeOperation.class,
         MapRemoveByRankOperation.class,

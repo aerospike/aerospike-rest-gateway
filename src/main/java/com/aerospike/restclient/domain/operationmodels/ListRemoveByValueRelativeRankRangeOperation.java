@@ -8,14 +8,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
         description = " TODO",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOperation.html")
 )
-public class MapRemoveByValueRelativeRankRange extends MapOperation {
+public class ListRemoveByValueRelativeRankRangeOperation extends ListOperation {
 
     @Schema(
-            description = "The type of operation. It is always " + OperationTypes.MAP_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE,
+            description = "The type of operation. It is always " + OperationTypes.LIST_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE,
             required = true,
-            allowableValues = OperationTypes.MAP_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE
+            allowableValues = OperationTypes.LIST_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE
     )
-    final public String type = OperationTypes.MAP_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE;
+    final public String type = OperationTypes.LIST_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE;
 
     @Schema(required = true)
     private Integer rank;
@@ -24,17 +24,19 @@ public class MapRemoveByValueRelativeRankRange extends MapOperation {
     private Object value;
 
     @Schema(required = true)
-    private MapReturnType mapReturnType;
+    private ListReturnType listReturnType;
 
-    private boolean inverted = false;
+    private boolean inverted;
 
     private Integer count;
 
-    public MapRemoveByValueRelativeRankRange(String binName, Integer index, Object value, MapReturnType mapReturnType) {
+    public ListRemoveByValueRelativeRankRangeOperation(String binName, Integer index, Object value,
+                                                       ListReturnType listReturnType) {
         super(binName);
         this.rank = index;
         this.value = value;
-        this.mapReturnType = mapReturnType;
+        this.listReturnType = listReturnType;
+        inverted = false;
     }
 
     public Integer getRank() {
@@ -53,12 +55,12 @@ public class MapRemoveByValueRelativeRankRange extends MapOperation {
         this.value = value;
     }
 
-    public MapReturnType getMapReturnType() {
-        return mapReturnType;
+    public ListReturnType getListReturnType() {
+        return listReturnType;
     }
 
-    public void setMapReturnType(MapReturnType mapReturnType) {
-        this.mapReturnType = mapReturnType;
+    public void setListReturnType(ListReturnType listReturnType) {
+        this.listReturnType = listReturnType;
     }
 
     public Integer getCount() {
@@ -80,13 +82,14 @@ public class MapRemoveByValueRelativeRankRange extends MapOperation {
     @Override
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
+        int intMapReturnType = listReturnType.toListReturnType(inverted);
 
         if (count == null) {
-            return com.aerospike.client.cdt.MapOperation.removeByValueRelativeRankRange(binName, Value.get(value), rank,
-                    mapReturnType.toMapReturnType(inverted), asCTX);
+            return com.aerospike.client.cdt.ListOperation.removeByValueRelativeRankRange(binName, Value.get(value),
+                    rank, intMapReturnType, asCTX);
         }
 
-        return com.aerospike.client.cdt.MapOperation.removeByValueRelativeRankRange(binName, Value.get(value), rank,
-                count, mapReturnType.toMapReturnType(inverted), asCTX);
+        return com.aerospike.client.cdt.ListOperation.removeByValueRelativeRankRange(binName, Value.get(value), rank,
+                count, intMapReturnType, asCTX);
     }
 }

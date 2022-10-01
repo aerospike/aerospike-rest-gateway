@@ -1,11 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
-import com.aerospike.restclient.domain.ctxmodels.CTX;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.util.List;
 
 @Schema(
         description = " Return all items in a list with values between `valueBegin` and `valueEnd`. If `valueBegin` is omitted, all items with a value less than `valueEnd` will be returned. If `valueEnd` is omitted, all items with a value greater than `valueBegin` will be returned. Requires Aerospike Server `3.16.0.1` or later.",
@@ -25,17 +22,13 @@ public class ListGetByValueRangeOperation extends ListOperation {
 
     private boolean inverted;
 
-    private Object valueBegin;
+    private Value valueBegin;
 
-    private Object valueEnd;
+    private Value valueEnd;
 
-    public ListGetByValueRangeOperation(String binName, ListReturnType listReturnType, List<CTX> ctx, Object valueBegin,
-                                        Object valueEnd) {
+    public ListGetByValueRangeOperation(String binName, ListReturnType listReturnType) {
         super(binName);
         this.listReturnType = listReturnType;
-        this.ctx = ctx;
-        this.valueBegin = valueBegin;
-        this.valueEnd = valueEnd;
         inverted = false;
     }
 
@@ -52,15 +45,15 @@ public class ListGetByValueRangeOperation extends ListOperation {
     }
 
     public void setValueBegin(Object valueBegin) {
-        this.valueBegin = valueBegin;
+        this.valueBegin = Value.get(valueBegin);
     }
 
-    public Object getValueEnd() {
+    public Value getValueEnd() {
         return valueEnd;
     }
 
     public void setValueEnd(Object valueEnd) {
-        this.valueEnd = valueEnd;
+        this.valueEnd = Value.get(valueEnd);
     }
 
     public boolean isInverted() {
@@ -75,7 +68,7 @@ public class ListGetByValueRangeOperation extends ListOperation {
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
 
-        return com.aerospike.client.cdt.ListOperation.getByValueRange(binName, Value.get(valueBegin),
-                Value.get(valueEnd), listReturnType.toListReturnType(inverted), asCTX);
+        return com.aerospike.client.cdt.ListOperation.getByValueRange(binName, valueBegin, valueEnd,
+                listReturnType.toListReturnType(inverted), asCTX);
     }
 }

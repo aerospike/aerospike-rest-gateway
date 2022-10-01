@@ -1,7 +1,6 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
-import com.aerospike.client.cdt.ListPolicy;
 import com.aerospike.restclient.domain.ctxmodels.CTX;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -53,13 +52,16 @@ public class ListAppendItemsOperation extends ListOperation {
     @Override
     public com.aerospike.client.Operation toOperation() {
         List<Value> asVals = values.stream().map(Value::get).toList();
-        com.aerospike.client.cdt.CTX[] asCTX = Optional.ofNullable(ctx).orElseGet(
-                Collections::emptyList).stream().map(CTX::toCTX).toArray(com.aerospike.client.cdt.CTX[]::new);
+        com.aerospike.client.cdt.CTX[] asCTX = Optional.ofNullable(ctx)
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(CTX::toCTX)
+                .toArray(com.aerospike.client.cdt.CTX[]::new);
 
         if (listPolicy == null) {
             return com.aerospike.client.cdt.ListOperation.appendItems(binName, asVals, asCTX);
         }
 
-        return com.aerospike.client.cdt.ListOperation.appendItems(listPolicy, binName, asVals, asCTX);
+        return com.aerospike.client.cdt.ListOperation.appendItems(listPolicy.toListPolicy(), binName, asVals, asCTX);
     }
 }

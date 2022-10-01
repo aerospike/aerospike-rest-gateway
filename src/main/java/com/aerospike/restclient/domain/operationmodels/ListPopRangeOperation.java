@@ -1,10 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
-import com.aerospike.restclient.domain.ctxmodels.CTX;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.util.List;
 
 @Schema(
         description = " Remove and return `count` items beginning at the specified `index` from the list. If `count` is omitted, all items beginning from `index` will be removed and returned.",
@@ -24,11 +21,9 @@ public class ListPopRangeOperation extends ListOperation {
 
     private Integer count;
 
-    public ListPopRangeOperation(String binName, Integer index, List<CTX> ctx, Integer count) {
+    public ListPopRangeOperation(String binName, Integer index) {
         super(binName);
         this.index = index;
-        this.ctx = ctx;
-        this.count = count;
     }
 
     public Integer getIndex() {

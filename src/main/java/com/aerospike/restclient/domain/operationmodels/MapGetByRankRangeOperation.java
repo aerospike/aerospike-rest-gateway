@@ -78,6 +78,6 @@ public class MapGetByRankRangeOperation extends MapOperation {
             return com.aerospike.client.cdt.MapOperation.getByRankRange(binName, rank, intMapReturnType, asCTX);
         }
 
-        return com.aerospike.client.cdt.MapOperation.getByRankRange(binName, rank, intMapReturnType, count, asCTX);
+        return com.aerospike.client.cdt.MapOperation.getByRankRange(binName, rank, count, intMapReturnType, asCTX);
     }
 }

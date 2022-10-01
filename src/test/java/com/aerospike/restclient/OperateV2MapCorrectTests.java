@@ -129,7 +129,7 @@ public class OperateV2MapCorrectTests {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        Map<String, Object> policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteMode.UPDATE);
+        Map<String, Object> policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteFlags.DEFAULT);
 
         operation.put(OperationConverter.MAP_POLICY_KEY, policy);
         operation.put("binName", mapBinName);
@@ -548,7 +548,6 @@ public class OperateV2MapCorrectTests {
     public void testMapGetByValueRelRankRange() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put("value", 1);
@@ -575,7 +574,7 @@ public class OperateV2MapCorrectTests {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        Map<String, Object> policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteMode.UPDATE);
+        Map<String, Object> policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteFlags.DEFAULT);
 
         operation.put(OperationConverter.MAP_POLICY_KEY, policy);
         operation.put("binName", mapBinName);
@@ -599,7 +598,7 @@ public class OperateV2MapCorrectTests {
         Map<String, Object> operation = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
 
-        Map<String, Object> policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteMode.UPDATE);
+        Map<String, Object> policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteFlags.DEFAULT);
 
         Map<Object, Object> putValues = new HashMap<>();
         putValues.put("five", 5);
@@ -1133,7 +1132,7 @@ public class OperateV2MapCorrectTests {
 
         Assert.assertEquals(newVal, realMapBin.get(newKey));
 
-        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opList, status().isInternalServerError());
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isInternalServerError());
     }
 
     /*
@@ -1157,7 +1156,7 @@ public class OperateV2MapCorrectTests {
         operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_PUT);
 
         opList.add(operation);
-        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opList, status().isInternalServerError());
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isInternalServerError());
         Map<String, Object> bins = client.get(null, testKey).bins;
         Map<Object, Object> realMapBin = (Map<Object, Object>) bins.get(mapBinName);
         Assert.assertNull(newVal, realMapBin.get(newKey));
@@ -1241,40 +1240,6 @@ public class OperateV2MapCorrectTests {
         Map<String, Object> bins = getReturnedBins(
                 opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest));
         Assert.assertTrue(ASTestUtils.compareSimpleValues(bins.get(mapBinName), objectMap.size()));
-    }
-
-    /* HELPERS */
-    private Map<String, Object> getMapPolicyMap(MapOrder order, MapWriteMode writeMode) {
-        Map<String, Object> policyMap = new HashMap<>();
-        String orderString;
-        String writeModeString;
-        switch (order) {
-            case KEY_VALUE_ORDERED:
-                orderString = "KEY_VALUE_ORDERED";
-                break;
-            case KEY_ORDERED:
-                orderString = "KEY_ORDERED";
-                break;
-            case UNORDERED:
-            default:
-                orderString = "UNORDERED";
-        }
-
-        switch (writeMode) {
-            case CREATE_ONLY:
-                writeModeString = "CREATE_ONLY";
-                break;
-            case UPDATE_ONLY:
-                writeModeString = "UPDATE_ONLY";
-                break;
-
-            case UPDATE:
-            default:
-                writeModeString = "UPDATE";
-        }
-        policyMap.put("order", orderString);
-        policyMap.put(OperationConverter.WRITE_MODE_KEY, writeModeString);
-        return policyMap;
     }
 
     private Map<String, Object> getMapPolicyMap(MapOrder order, int flags) {

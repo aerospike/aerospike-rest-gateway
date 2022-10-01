@@ -1,5 +1,6 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.aerospike.client.cdt.MapOrder;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -16,14 +17,26 @@ public class MapCreateOperation extends MapOperation {
     )
     final public String type = OperationTypes.MAP_CREATE;
 
-    public MapCreateOperation(String binName) {
+    @Schema(required = true)
+    private MapOrder mapOrder;
+
+    public MapCreateOperation(String binName, MapOrder mapOrder) {
         super(binName);
+        this.mapOrder = mapOrder;
+    }
+
+    public MapOrder getMapOrder() {
+        return mapOrder;
+    }
+
+    public void setMapOrder(MapOrder mapOrder) {
+        this.mapOrder = mapOrder;
     }
 
     @Override
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
 
-        return com.aerospike.client.cdt.MapOperation.clear(binName, asCTX);
+        return com.aerospike.client.cdt.MapOperation.create(binName, mapOrder, asCTX);
     }
 }

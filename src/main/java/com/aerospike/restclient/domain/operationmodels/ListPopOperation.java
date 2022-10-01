@@ -1,10 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
-import com.aerospike.restclient.domain.ctxmodels.CTX;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.util.List;
 
 @Schema(
         description = " Remove and return a list value at the specified `index`.",
@@ -22,10 +19,9 @@ public class ListPopOperation extends ListOperation {
     @Schema(required = true)
     private Integer index;
 
-    public ListPopOperation(String binName, Integer index, List<CTX> ctx) {
+    public ListPopOperation(String binName, Integer index) {
         super(binName);
         this.index = index;
-        this.ctx = ctx;
     }
 
     public Integer getIndex() {

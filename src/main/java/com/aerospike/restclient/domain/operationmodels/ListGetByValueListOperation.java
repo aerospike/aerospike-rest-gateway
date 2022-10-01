@@ -1,7 +1,6 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
-import com.aerospike.restclient.domain.ctxmodels.CTX;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -28,13 +27,10 @@ public class ListGetByValueListOperation extends ListOperation {
     @Schema(required = true)
     private List<Object> values;
 
-    public ListGetByValueListOperation(String binName, ListReturnType listReturnType, List<Object> values,
-                                       List<CTX> ctx) {
+    public ListGetByValueListOperation(String binName, ListReturnType listReturnType, List<Object> values) {
         super(binName);
         this.listReturnType = listReturnType;
         this.values = values;
-        this.ctx = ctx;
-        inverted = false;
     }
 
     public ListReturnType getListReturnType() {

@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -16,7 +18,8 @@ public class ListSizeOperation extends ListOperation {
     )
     final public String type = OperationTypes.LIST_SIZE;
 
-    public ListSizeOperation(String binName) {
+    @JsonCreator
+    public ListSizeOperation(@JsonProperty("binName") String binName) {
         super(binName);
     }
 

@@ -1,11 +1,10 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
-import com.aerospike.restclient.domain.ctxmodels.CTX;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.util.List;
 
 @Schema(
         description = " Return all items in a list with a value matching a specified value.",
@@ -21,31 +20,31 @@ public class ListGetByValueOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET_BY_VALUE;
 
     @Schema(required = true)
-    private Object value;
+    private Value value;
 
     @Schema(required = true)
     private ListReturnType listReturnType;
 
     private boolean inverted;
 
-    public ListGetByValueOperation(String binName) {
+    @JsonCreator
+    public ListGetByValueOperation(@JsonProperty("binName") String binName) {
         super(binName);
     }
 
-    public ListGetByValueOperation(String binName, Object value, ListReturnType listReturnType, List<CTX> ctx) {
+    public ListGetByValueOperation(String binName, Value value, ListReturnType listReturnType) {
         super(binName);
         this.value = value;
         this.listReturnType = listReturnType;
-        this.ctx = ctx;
         inverted = false;
     }
 
-    public Object getValue() {
+    public Value getValue() {
         return value;
     }
 
     public void setValue(Object value) {
-        this.value = value;
+        this.value = Value.get(value);
     }
 
     public ListReturnType getListReturnType() {
@@ -68,7 +67,7 @@ public class ListGetByValueOperation extends ListOperation {
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
 
-        return com.aerospike.client.cdt.ListOperation.getByValue(binName, Value.get(value),
+        return com.aerospike.client.cdt.ListOperation.getByValue(binName, value,
                 listReturnType.toListReturnType(inverted), asCTX);
     }
 }

@@ -1,6 +1,5 @@
 package com.aerospike.restclient.domain.operationmodels;
 
-import com.aerospike.client.cdt.MapPolicy;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -36,11 +35,14 @@ public class MapSetPolicyOperation extends MapOperation {
     @Override
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
+        com.aerospike.client.cdt.MapPolicy asMapPolicy;
 
         if (mapPolicy == null) {
-            mapPolicy = MapPolicy.Default;
+            asMapPolicy = com.aerospike.client.cdt.MapPolicy.Default;
+        } else {
+            asMapPolicy = mapPolicy.toMapPolicy();
         }
 
-        return com.aerospike.client.cdt.MapOperation.setMapPolicy(mapPolicy, binName, asCTX);
+        return com.aerospike.client.cdt.MapOperation.setMapPolicy(asMapPolicy, binName, asCTX);
     }
 }

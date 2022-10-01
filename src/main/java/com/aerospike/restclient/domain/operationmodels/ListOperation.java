@@ -13,141 +13,90 @@ import java.util.Optional;
 @JsonSubTypes(
         {
                 @JsonSubTypes.Type(
-                        value = ListAppendOperation.class,
-                        name = OperationTypes.LIST_APPEND
-                ),
-                @JsonSubTypes.Type(
-                        value = ListAppendItemsOperation.class,
-                        name = OperationTypes.LIST_APPEND_ITEMS
-                ),
-                @JsonSubTypes.Type(
-                        value = ListClearOperation.class,
-                        name = OperationTypes.LIST_CLEAR
-                ),
-                @JsonSubTypes.Type(
-                        value = ListGetOperation.class,
-                        name = OperationTypes.LIST_GET
-                ),
-                @JsonSubTypes.Type(
-                        value = ListGetByIndexOperation.class,
-                        name = OperationTypes.LIST_GET_BY_INDEX
-                ),
-                @JsonSubTypes.Type(
-                        value = ListGetByIndexRangeOperation.class,
-                        name = OperationTypes.LIST_GET_BY_INDEX_RANGE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListGetByRankOperation.class,
-                        name = OperationTypes.LIST_GET_BY_RANK
-                ),
-                @JsonSubTypes.Type(
-                        value = ListGetByRankRangeOperation.class,
-                        name = OperationTypes.LIST_GET_BY_RANK_RANGE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListGetByValueOperation.class,
-                        name = OperationTypes.LIST_GET_BY_VALUE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListGetByValueRangeOperation.class,
-                        name = OperationTypes.LIST_GET_BY_VALUE_RANGE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListGetByValueListOperation.class,
-                        name = OperationTypes.LIST_GET_BY_VALUE_LIST
-                ),
-                @JsonSubTypes.Type(
-                        value = ListGetRangeOperation.class,
-                        name = OperationTypes.LIST_GET_RANGE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListIncrementOperation.class,
-                        name = OperationTypes.LIST_INCREMENT
-                ),
-                @JsonSubTypes.Type(
-                        value = ListInsertOperation.class,
-                        name = OperationTypes.LIST_INSERT
-                ),
-                @JsonSubTypes.Type(
-                        value = ListInsertItemsOperation.class,
-                        name = OperationTypes.LIST_INSERT_ITEMS
-                ),
-                @JsonSubTypes.Type(
-                        value = ListPopOperation.class,
-                        name = OperationTypes.LIST_POP
-                ),
-                @JsonSubTypes.Type(
-                        value = ListPopRangeOperation.class,
-                        name = OperationTypes.LIST_POP_RANGE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListRemoveOperation.class,
-                        name = OperationTypes.LIST_REMOVE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListRemoveByIndexOperation.class,
-                        name = OperationTypes.LIST_REMOVE_BY_INDEX
-                ),
-                @JsonSubTypes.Type(
-                        value = ListRemoveByIndexRangeOperation.class,
-                        name = OperationTypes.LIST_REMOVE_BY_INDEX_RANGE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListRemoveByRankOperation.class,
-                        name = OperationTypes.LIST_REMOVE_BY_RANK
-                ),
-                @JsonSubTypes.Type(
-                        value = ListRemoveByRankRangeOperation.class,
-                        name = OperationTypes.LIST_REMOVE_BY_RANK_RANGE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListRemoveByValueOperation.class,
-                        name = OperationTypes.LIST_REMOVE_BY_VALUE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListRemoveByValueRangeOperation.class,
-                        name = OperationTypes.LIST_REMOVE_BY_VALUE_RANGE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListRemoveByValueListOperation.class,
-                        name = OperationTypes.LIST_REMOVE_BY_VALUE_LIST
-                ),
-                @JsonSubTypes.Type(
-                        value = ListRemoveRangeOperation.class,
-                        name = OperationTypes.LIST_REMOVE_RANGE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListSetOperation.class,
-                        name = OperationTypes.LIST_SET
-                ),
-                @JsonSubTypes.Type(
-                        value = ListSetOrderOperation.class,
-                        name = OperationTypes.LIST_SET_ORDER
-                ),
-                @JsonSubTypes.Type(
-                        value = ListSizeOperation.class,
-                        name = OperationTypes.LIST_SIZE
-                ),
-                @JsonSubTypes.Type(
-                        value = ListSortOperation.class,
-                        name = OperationTypes.LIST_SORT
-                ),
-                @JsonSubTypes.Type(
-                        value = ListTrimOperation.class,
-                        name = OperationTypes.LIST_TRIM
-                ),
+                        value = ListAppendOperation.class, name = OperationTypes.LIST_APPEND
+                ), @JsonSubTypes.Type(
+                value = ListAppendItemsOperation.class, name = OperationTypes.LIST_APPEND_ITEMS
+        ), @JsonSubTypes.Type(
+                value = ListCreateOperation.class, name = OperationTypes.LIST_CREATE
+        ), @JsonSubTypes.Type(
+                value = ListClearOperation.class, name = OperationTypes.LIST_CLEAR
+        ), @JsonSubTypes.Type(
+                value = ListGetOperation.class, name = OperationTypes.LIST_GET
+        ), @JsonSubTypes.Type(
+                value = ListGetByIndexOperation.class, name = OperationTypes.LIST_GET_BY_INDEX
+        ), @JsonSubTypes.Type(
+                value = ListGetByIndexRangeOperation.class, name = OperationTypes.LIST_GET_BY_INDEX_RANGE
+        ), @JsonSubTypes.Type(
+                value = ListGetByRankOperation.class, name = OperationTypes.LIST_GET_BY_RANK
+        ), @JsonSubTypes.Type(
+                value = ListGetByRankRangeOperation.class, name = OperationTypes.LIST_GET_BY_RANK_RANGE
+        ), @JsonSubTypes.Type(
+                value = ListGetByValueRelativeRankRangeOperation.class,
+                name = OperationTypes.LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE
+        ), @JsonSubTypes.Type(
+                value = ListGetByValueOperation.class, name = OperationTypes.LIST_GET_BY_VALUE
+        ), @JsonSubTypes.Type(
+                value = ListGetByValueRangeOperation.class, name = OperationTypes.LIST_GET_BY_VALUE_RANGE
+        ), @JsonSubTypes.Type(
+                value = ListGetByValueListOperation.class, name = OperationTypes.LIST_GET_BY_VALUE_LIST
+        ), @JsonSubTypes.Type(
+                value = ListGetRangeOperation.class, name = OperationTypes.LIST_GET_RANGE
+        ), @JsonSubTypes.Type(
+                value = ListIncrementOperation.class, name = OperationTypes.LIST_INCREMENT
+        ), @JsonSubTypes.Type(
+                value = ListInsertOperation.class, name = OperationTypes.LIST_INSERT
+        ), @JsonSubTypes.Type(
+                value = ListInsertItemsOperation.class, name = OperationTypes.LIST_INSERT_ITEMS
+        ), @JsonSubTypes.Type(
+                value = ListPopOperation.class, name = OperationTypes.LIST_POP
+        ), @JsonSubTypes.Type(
+                value = ListPopRangeOperation.class, name = OperationTypes.LIST_POP_RANGE
+        ), @JsonSubTypes.Type(
+                value = ListRemoveOperation.class, name = OperationTypes.LIST_REMOVE
+        ), @JsonSubTypes.Type(
+                value = ListRemoveByIndexOperation.class, name = OperationTypes.LIST_REMOVE_BY_INDEX
+        ), @JsonSubTypes.Type(
+                value = ListRemoveByIndexRangeOperation.class, name = OperationTypes.LIST_REMOVE_BY_INDEX_RANGE
+        ), @JsonSubTypes.Type(
+                value = ListRemoveByRankOperation.class, name = OperationTypes.LIST_REMOVE_BY_RANK
+        ), @JsonSubTypes.Type(
+                value = ListRemoveByRankRangeOperation.class, name = OperationTypes.LIST_REMOVE_BY_RANK_RANGE
+        ), @JsonSubTypes.Type(
+                value = ListRemoveByValueRelativeRankRangeOperation.class,
+                name = OperationTypes.LIST_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE
+        ), @JsonSubTypes.Type(
+                value = ListRemoveByValueOperation.class, name = OperationTypes.LIST_REMOVE_BY_VALUE
+        ), @JsonSubTypes.Type(
+                value = ListRemoveByValueRangeOperation.class, name = OperationTypes.LIST_REMOVE_BY_VALUE_RANGE
+        ), @JsonSubTypes.Type(
+                value = ListRemoveByValueListOperation.class, name = OperationTypes.LIST_REMOVE_BY_VALUE_LIST
+        ), @JsonSubTypes.Type(
+                value = ListRemoveRangeOperation.class, name = OperationTypes.LIST_REMOVE_RANGE
+        ), @JsonSubTypes.Type(
+                value = ListSetOperation.class, name = OperationTypes.LIST_SET
+        ), @JsonSubTypes.Type(
+                value = ListSetOrderOperation.class, name = OperationTypes.LIST_SET_ORDER
+        ), @JsonSubTypes.Type(
+                value = ListSizeOperation.class, name = OperationTypes.LIST_SIZE
+        ), @JsonSubTypes.Type(
+                value = ListSortOperation.class, name = OperationTypes.LIST_SORT
+        ), @JsonSubTypes.Type(
+                value = ListTrimOperation.class, name = OperationTypes.LIST_TRIM
+        ),
         }
 )
 @Schema(
         description = "TODO", oneOf = {
         ListAppendOperation.class,
         ListAppendItemsOperation.class,
+        ListCreateOperation.class,
         ListClearOperation.class,
         ListGetOperation.class,
         ListGetByIndexOperation.class,
         ListGetByIndexRangeOperation.class,
         ListGetByRankOperation.class,
         ListGetByRankRangeOperation.class,
+        ListGetByValueRelativeRankRangeOperation.class,
         ListGetByValueOperation.class,
         ListGetByValueRangeOperation.class,
         ListGetByValueListOperation.class,
@@ -162,6 +111,7 @@ import java.util.Optional;
         ListRemoveByIndexRangeOperation.class,
         ListRemoveByRankOperation.class,
         ListRemoveByRankRangeOperation.class,
+        ListRemoveByValueRelativeRankRangeOperation.class,
         ListRemoveByValueOperation.class,
         ListRemoveByValueRangeOperation.class,
         ListRemoveByValueListOperation.class,
