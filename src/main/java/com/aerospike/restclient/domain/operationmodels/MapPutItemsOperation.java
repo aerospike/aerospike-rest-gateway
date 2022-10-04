@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Schema(
-        description = " Store multiple values into the map with the specified keys.",
+        description = "Store multiple values into the map with the specified keys.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOperation.html")
 )
 public class MapPutItemsOperation extends MapOperation {

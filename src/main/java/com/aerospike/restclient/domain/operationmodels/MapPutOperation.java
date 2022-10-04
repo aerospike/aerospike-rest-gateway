@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-        description = " Store the specified value into the map in the specified bin with the specified key. Equivalent to `Map[key] = value`.",
+        description = "Store the specified value into the map in the specified bin with the specified key. Equivalent to `Map[key] = value`.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOperation.html")
 )
 public class MapPutOperation extends MapOperation {

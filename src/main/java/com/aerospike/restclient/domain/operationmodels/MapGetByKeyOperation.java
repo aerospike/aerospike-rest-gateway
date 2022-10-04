@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-        description = " Return the value with the specified key from the map.",
+        description = "Return the value with the specified key from the map.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOperation.html")
 )
 public class MapGetByKeyOperation extends MapOperation {

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-        description = " Get all map items with indexes in the range `[index, index + count)` . If `count` is omitted, all items beginning with the item at the specified index will be returned.",
+        description = "Get all map items with indexes in the range `[index, index + count)` . If `count` is omitted, all items beginning with the item at the specified index will be returned.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOperation.html")
 )
 public class MapGetByIndexRangeOperation extends MapOperation {

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Schema(
-        description = " Append multiple items to a list stored in the specified bin.",
+        description = "Append multiple items to a list stored in the specified bin.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/ListOperation.html")
 )
 public class ListAppendItemsOperation extends ListOperation {

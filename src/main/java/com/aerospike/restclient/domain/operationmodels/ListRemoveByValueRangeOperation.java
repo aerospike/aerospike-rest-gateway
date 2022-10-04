@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-        description = " Remove all items from the list with values between `valueBegin` and `valueEnd`. If `valueBegin` is omitted all items with a value less than `valueEnd` will be removed. If `valueEnd` is omitted all items with a value greater than `valueBegin` will be removed. Requires Aerospike Server `3.16.0.1` or later.",
+        description = "Remove all items from the list with values between `valueBegin` and `valueEnd`. If `valueBegin` is omitted all items with a value less than `valueEnd` will be removed. If `valueEnd` is omitted all items with a value greater than `valueBegin` will be removed. Requires Aerospike Server `3.16.0.1` or later.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/ListOperation.html")
 )
 public class ListRemoveByValueRangeOperation extends ListOperation {

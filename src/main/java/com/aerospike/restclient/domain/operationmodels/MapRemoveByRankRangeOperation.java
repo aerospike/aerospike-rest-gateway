@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-        description = " Remove and return `count` values from the map beginning with the value with the specified rank. If `count` is omitted, all items beginning with the specified `rank` will be removed and returned.",
+        description = "Remove and return `count` values from the map beginning with the value with the specified rank. If `count` is omitted, all items beginning with the specified `rank` will be removed and returned.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOperation.html")
 )
 public class MapRemoveByRankRangeOperation extends MapOperation {

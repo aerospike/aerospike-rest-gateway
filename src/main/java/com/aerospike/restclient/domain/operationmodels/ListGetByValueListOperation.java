@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @Schema(
-        description = " Return all items in a list with values that are contained in the specified list of values. Requires Aerospike Server `3.16.0.1` or later.",
+        description = "Return all items in a list with values that are contained in the specified list of values. Requires Aerospike Server `3.16.0.1` or later.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/ListOperation.html")
 )
 public class ListGetByValueListOperation extends ListOperation {

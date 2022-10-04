@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-        description = " Increment the value of a an item of a list at the specified index, by the value of `incr`",
+        description = "Increment the value of a an item of a list at the specified index, by the value of `incr`",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/ListOperation.html")
 )
 public class ListIncrementOperation extends ListOperation {

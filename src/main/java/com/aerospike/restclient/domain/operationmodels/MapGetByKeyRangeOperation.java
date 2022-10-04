@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-        description = " Return map values with keys in the specified range. If `keyBegin` is omitted, all map values with key values less than `keyEnd` will be returned. If `keyEnd` is omitted, all map values with a key greater than or equal to `keyBegin` will be returned.",
+        description = "Return map values with keys in the specified range. If `keyBegin` is omitted, all map values with key values less than `keyEnd` will be returned. If `keyEnd` is omitted, all map values with a key greater than or equal to `keyBegin` will be returned.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOperation.html")
 )
 public class MapGetByKeyRangeOperation extends MapOperation {

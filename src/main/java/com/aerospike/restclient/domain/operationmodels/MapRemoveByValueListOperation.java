@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @Schema(
-        description = " Remove and return all map items with a value contained in the provided list of values. Requires Aerospike Server `3.16.0.1` or later.",
+        description = "Remove and return all map items with a value contained in the provided list of values. Requires Aerospike Server `3.16.0.1` or later.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOperation.html")
 )
 public class MapRemoveByValueListOperation extends MapOperation {

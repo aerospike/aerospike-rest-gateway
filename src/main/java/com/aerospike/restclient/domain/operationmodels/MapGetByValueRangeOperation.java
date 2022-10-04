@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-        description = " Return all map items with value in the range [`valueBegin`, `valueEnd`). If `valueBegin` is omitted, all map items with a value less than `valueEnd` will be returned. If `valueEnd` is omitted, all map items with a value greater than or equal to `valueBegin` will be returned.",
+        description = "Return all map items with value in the range [`valueBegin`, `valueEnd`). If `valueBegin` is omitted, all map items with a value less than `valueEnd` will be returned. If `valueEnd` is omitted, all map items with a value greater than or equal to `valueBegin` will be returned.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOperation.html")
 )
 public class MapGetByValueRangeOperation extends MapOperation {

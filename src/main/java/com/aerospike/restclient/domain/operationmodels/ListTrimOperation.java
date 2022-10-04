@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-        description = " Trim the list to the specified range. Items with indexes in the range `[index, index + count)` will be retained.",
+        description = "Trim the list to the specified range. Items with indexes in the range `[index, index + count)` will be retained.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/ListOperation.html")
 )
 public class ListTrimOperation extends ListOperation {

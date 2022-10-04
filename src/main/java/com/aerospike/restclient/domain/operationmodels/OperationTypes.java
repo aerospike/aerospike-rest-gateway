@@ -74,4 +74,37 @@ public final class OperationTypes {
     public static final String MAP_REMOVE_BY_VALUE_LIST = "MAP_REMOVE_BY_VALUE_LIST";
     public static final String MAP_SET_POLICY = "MAP_SET_POLICY";
     public static final String MAP_SIZE = "MAP_SIZE";
+
+    // Bit Operation Constants
+    public static final String BIT_RESIZE = "BIT_RESIZE";
+    public static final String BIT_INSERT = "BIT_INSERT";
+    public static final String BIT_REMOVE = "BIT_REMOVE";
+    public static final String BIT_SET = "BIT_SET";
+    public static final String BIT_OR = "BIT_OR";
+    public static final String BIT_XOR = "BIT_XOR";
+    public static final String BIT_AND = "BIT_AND";
+    public static final String BIT_NOT = "BIT_NOT";
+    public static final String BIT_LSHIFT = "BIT_LSHIFT";
+    public static final String BIT_RSHIFT = "BIT_RSHIFT";
+    public static final String BIT_ADD = "BIT_ADD";
+    public static final String BIT_SUBTRACT = "BIT_SUBTRACT";
+    public static final String BIT_SET_INT = "BIT_SET_INT";
+    public static final String BIT_GET = "BIT_GET";
+    public static final String BIT_COUNT = "BIT_COUNT";
+    public static final String BIT_LSCAN = "BIT_LSCAN";
+    public static final String BIT_RSCAN = "BIT_RSCAN";
+    public static final String BIT_GET_INT = "BIT_GET_INT";
+
+    // HyperLogLog Operation Constants
+    public static final String HLL_INIT = "HLL_INIT";
+    public static final String HLL_ADD = "HLL_ADD";
+    public static final String HLL_SET_UNION = "HLL_SET_UNION";
+    public static final String HLL_SET_COUNT = "HLL_SET_COUNT";
+    public static final String HLL_FOLD = "HLL_FOLD";
+    public static final String HLL_COUNT = "HLL_COUNT";
+    public static final String HLL_UNION = "HLL_UNION";
+    public static final String HLL_UNION_COUNT = "HLL_UNION_COUNT";
+    public static final String HLL_INTERSECT_COUNT = "HLL_INTERSECT_COUNT";
+    public static final String HLL_SIMILARITY = "HLL_SIMILARITY";
+    public static final String HLL_DESCRIBE = "HLL_DESCRIBE";
 }

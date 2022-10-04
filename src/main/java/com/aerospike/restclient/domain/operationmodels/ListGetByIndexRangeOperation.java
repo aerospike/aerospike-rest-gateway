@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @Schema(
-        description = " Return a specified amount of items beginning at a specific index, from a list in the specified bin. If `count` is not provided, all items from `index` until the end of the list will be returned. Requires Aerospike Server `3.16.0.1` or later",
+        description = "Return a specified amount of items beginning at a specific index, from a list in the specified bin. If `count` is not provided, all items from `index` until the end of the list will be returned. Requires Aerospike Server `3.16.0.1` or later",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/ListOperation.html")
 )
 public class ListGetByIndexRangeOperation extends ListOperation {

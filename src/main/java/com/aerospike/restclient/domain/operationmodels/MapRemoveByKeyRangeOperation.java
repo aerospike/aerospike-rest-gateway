@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-        description = " Remove and return map values with keys in the specified range. If `keyBegin` is omitted, all map values with key values less than `keyEnd` will be removed and returned. If `keyEnd` is omitted, all map values with a key greater than or equal to `keyBegin` will be removed and returned.",
+        description = "Remove and return map values with keys in the specified range. If `keyBegin` is omitted, all map values with key values less than `keyEnd` will be removed and returned. If `keyEnd` is omitted, all map values with a key greater than or equal to `keyBegin` will be removed and returned.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOperation.html")
 )
 public class MapRemoveByKeyRangeOperation extends MapOperation {
