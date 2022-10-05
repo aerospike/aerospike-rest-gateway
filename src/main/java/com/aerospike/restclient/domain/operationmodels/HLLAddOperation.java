@@ -28,6 +28,7 @@ public class HLLAddOperation extends HLLOperation {
 
     public HLLAddOperation(String binName, List<Object> values) {
         super(binName);
+        this.values = values;
     }
 
     public List<Object> getValues() {

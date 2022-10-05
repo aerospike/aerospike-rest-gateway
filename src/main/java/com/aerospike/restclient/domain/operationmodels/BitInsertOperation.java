@@ -4,8 +4,6 @@ import com.aerospike.client.operation.BitPolicy;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.Base64;
-
 @Schema(
         description = "Server inserts value bytes into byte[] bin at byteOffset. Server does not return a value.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/latest/com/aerospike/client/operation/BitOperation.html")
@@ -19,35 +17,34 @@ public class BitInsertOperation extends BitOperation {
     final public String type = OperationTypes.BIT_INSERT;
 
     @Schema(required = true)
-    private Integer byteOffset;
+    private int byteOffset;
 
-    @Schema(required = true, format = "byte")
-    private String value;
+    @Schema(required = true)
+    private byte[] value;
 
-    public BitInsertOperation(String binName, Integer byteOffset, String value) {
+    public BitInsertOperation(String binName, int byteOffset, byte[] value) {
         super(binName);
         this.byteOffset = byteOffset;
         this.value = value;
     }
 
-    public Integer getByteOffset() {
+    public int getByteOffset() {
         return byteOffset;
     }
 
-    public void setByteOffset(Integer byteOffset) {
+    public void setByteOffset(int byteOffset) {
         this.byteOffset = byteOffset;
     }
 
-    public String getValue() {
+    public byte[] getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(byte[] value) {
         this.value = value;
     }
 
     public com.aerospike.client.Operation toOperation() {
-        return com.aerospike.client.operation.BitOperation.insert(BitPolicy.Default, binName, byteOffset,
-                Base64.getDecoder().decode(value));
+        return com.aerospike.client.operation.BitOperation.insert(BitPolicy.Default, binName, byteOffset, value);
     }
 }

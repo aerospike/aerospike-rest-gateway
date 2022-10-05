@@ -25,7 +25,7 @@ import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALU
 
 @RunWith(Parameterized.class)
 @SpringBootTest
-public class OperateHLLTestsCorrect {
+public class OperateV1HLLCorrectTests {
 
     @ClassRule
     public static final SpringClassRule springClassRule = new SpringClassRule();
@@ -71,7 +71,7 @@ public class OperateHLLTestsCorrect {
     }
 
     /* Set up the correct msgpack/json performer for this set of runs. Also decided whether to use the endpoint with a set or without */
-    public OperateHLLTestsCorrect(OperationV1Performer performer, boolean useSet) {
+    public OperateV1HLLCorrectTests(OperationV1Performer performer, boolean useSet) {
         this.opPerformer = performer;
         if (useSet) {
             testKey = new Key("test", "junit", "hllop");
@@ -271,3 +271,4 @@ public class OperateHLLTestsCorrect {
     }
 
 }
+

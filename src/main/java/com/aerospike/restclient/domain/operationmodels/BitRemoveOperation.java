@@ -17,30 +17,30 @@ public class BitRemoveOperation extends BitOperation {
     final public String type = OperationTypes.BIT_REMOVE;
 
     @Schema(required = true)
-    private Integer byteOffset;
+    private int byteOffset;
 
     @Schema(required = true)
-    private Integer byteSize;
+    private int byteSize;
 
-    public BitRemoveOperation(String binName, Integer byteOffset, Integer byteSize) {
+    public BitRemoveOperation(String binName, int byteOffset, int byteSize) {
         super(binName);
         this.byteOffset = byteOffset;
         this.byteSize = byteSize;
     }
 
-    public Integer getByteOffset() {
+    public int getByteOffset() {
         return byteOffset;
     }
 
-    public void setByteOffset(Integer byteOffset) {
+    public void setByteOffset(int byteOffset) {
         this.byteOffset = byteOffset;
     }
 
-    public Integer getByteSize() {
+    public int getByteSize() {
         return byteSize;
     }
 
-    public void setByteSize(Integer byteSize) {
+    public void setByteSize(int byteSize) {
         this.byteSize = byteSize;
     }
 

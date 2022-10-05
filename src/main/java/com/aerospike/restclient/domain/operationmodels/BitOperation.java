@@ -16,14 +16,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
                 @JsonSubTypes.Type(value = BitAndOperation.class, name = OperationTypes.BIT_AND),
                 @JsonSubTypes.Type(value = BitNotOperation.class, name = OperationTypes.BIT_NOT),
                 @JsonSubTypes.Type(value = BitLShiftOperation.class, name = OperationTypes.BIT_LSHIFT),
-                @JsonSubTypes.Type(value = BitRShiftOperation.class, name = OperationTypes.BIT_LSHIFT),
+                @JsonSubTypes.Type(value = BitRShiftOperation.class, name = OperationTypes.BIT_RSHIFT),
                 @JsonSubTypes.Type(value = BitAddOperation.class, name = OperationTypes.BIT_ADD),
                 @JsonSubTypes.Type(value = BitSubtractOperation.class, name = OperationTypes.BIT_SUBTRACT),
-                @JsonSubTypes.Type(value = BitSetIntOperation.class, name = OperationTypes.BIT_SET),
+                @JsonSubTypes.Type(value = BitSetOperation.class, name = OperationTypes.BIT_SET),
                 @JsonSubTypes.Type(value = BitGetOperation.class, name = OperationTypes.BIT_GET),
                 @JsonSubTypes.Type(value = BitCountOperation.class, name = OperationTypes.BIT_COUNT),
                 @JsonSubTypes.Type(value = BitLScanOperation.class, name = OperationTypes.BIT_LSCAN),
                 @JsonSubTypes.Type(value = BitRScanOperation.class, name = OperationTypes.BIT_RSCAN),
+                @JsonSubTypes.Type(value = BitSetIntOperation.class, name = OperationTypes.BIT_SET_INT),
                 @JsonSubTypes.Type(value = BitGetIntOperation.class, name = OperationTypes.BIT_GET_INT)
         }
 )

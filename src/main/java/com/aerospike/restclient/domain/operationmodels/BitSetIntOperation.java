@@ -10,42 +10,42 @@ import io.swagger.v3.oas.annotations.media.Schema;
 )
 public class BitSetIntOperation extends BitOperation {
     @Schema(
-            description = "The type of operation. It is always " + OperationTypes.BIT_SET,
+            description = "The type of operation. It is always " + OperationTypes.BIT_SET_INT,
             required = true,
-            allowableValues = OperationTypes.BIT_SET
+            allowableValues = OperationTypes.BIT_SET_INT
     )
-    final public String type = OperationTypes.BIT_SET;
+    final public String type = OperationTypes.BIT_SET_INT;
 
     @Schema(required = true)
-    private int byteOffset;
+    private int bitOffset;
 
     @Schema(required = true)
-    private int byteSize;
+    private int bitSize;
 
-    @Schema(required = true, format = "byte")
+    @Schema(required = true)
     private long value;
 
-    public BitSetIntOperation(String binName, int byteOffset, int byteSize, long value) {
+    public BitSetIntOperation(String binName, int bitOffset, int bitSize, long value) {
         super(binName);
-        this.byteOffset = byteOffset;
-        this.byteSize = byteSize;
+        this.bitOffset = bitOffset;
+        this.bitSize = bitSize;
         this.value = value;
     }
 
     public int getByteOffset() {
-        return byteOffset;
+        return bitOffset;
     }
 
-    public void setByteOffset(int byteOffset) {
-        this.byteOffset = byteOffset;
+    public void setByteOffset(int bitOffset) {
+        this.bitOffset = bitOffset;
     }
 
-    public int getByteSize() {
-        return byteSize;
+    public int getBitSize() {
+        return bitSize;
     }
 
-    public void setByteSize(int byteSize) {
-        this.byteSize = byteSize;
+    public void setBitSize(int bitSize) {
+        this.bitSize = bitSize;
     }
 
     public long getValue() {
@@ -57,7 +57,7 @@ public class BitSetIntOperation extends BitOperation {
     }
 
     public com.aerospike.client.Operation toOperation() {
-        return com.aerospike.client.operation.BitOperation.setInt(BitPolicy.Default, binName, byteOffset, byteSize,
+        return com.aerospike.client.operation.BitOperation.setInt(BitPolicy.Default, binName, bitOffset, bitSize,
                 value);
     }
 }

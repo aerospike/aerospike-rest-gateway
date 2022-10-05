@@ -17,35 +17,35 @@ public class BitRShiftOperation extends BitOperation {
     final public String type = OperationTypes.BIT_LSHIFT;
 
     @Schema(required = true)
-    private int byteOffset;
+    private int bitOffset;
 
     @Schema(required = true)
-    private int byteSize;
+    private Integer bitSize;
 
     @Schema(required = true)
     private int shift;
 
-    public BitRShiftOperation(String binName, int byteOffset, int byteSize, int shift) {
+    public BitRShiftOperation(String binName, int bitOffset, int bitSize, int shift) {
         super(binName);
-        this.byteOffset = byteOffset;
-        this.byteSize = byteSize;
+        this.bitOffset = bitOffset;
+        this.bitSize = bitSize;
         this.shift = shift;
     }
 
-    public int getByteOffset() {
-        return byteOffset;
+    public int getBitOffset() {
+        return bitOffset;
     }
 
-    public void setByteOffset(int byteOffset) {
-        this.byteOffset = byteOffset;
+    public void setBitOffset(int bitOffset) {
+        this.bitOffset = bitOffset;
     }
 
-    public int getByteSize() {
-        return byteSize;
+    public int getBitSize() {
+        return bitSize;
     }
 
-    public void setByteSize(int byteSize) {
-        this.byteSize = byteSize;
+    public void setBitSize(int bitSize) {
+        this.bitSize = bitSize;
     }
 
     public int getShift() {
@@ -57,7 +57,7 @@ public class BitRShiftOperation extends BitOperation {
     }
 
     public com.aerospike.client.Operation toOperation() {
-        return com.aerospike.client.operation.BitOperation.rshift(BitPolicy.Default, binName, byteOffset, byteSize,
+        return com.aerospike.client.operation.BitOperation.rshift(BitPolicy.Default, binName, bitOffset, bitSize,
                 shift);
     }
 }

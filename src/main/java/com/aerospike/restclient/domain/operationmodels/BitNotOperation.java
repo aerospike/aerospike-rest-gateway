@@ -17,34 +17,34 @@ public class BitNotOperation extends BitOperation {
     final public String type = OperationTypes.BIT_NOT;
 
     @Schema(required = true)
-    private int byteOffset;
+    private int bitOffset;
 
     @Schema(required = true)
-    private int byteSize;
+    private int bitSize;
 
-    public BitNotOperation(String binName, int byteOffset, int byteSize) {
+    public BitNotOperation(String binName, int bitOffset, int byteSize) {
         super(binName);
-        this.byteOffset = byteOffset;
-        this.byteSize = byteSize;
+        this.bitOffset = bitOffset;
+        this.bitSize = byteSize;
     }
 
-    public int getByteOffset() {
-        return byteOffset;
+    public int getBitOffset() {
+        return bitOffset;
     }
 
-    public void setByteOffset(int byteOffset) {
-        this.byteOffset = byteOffset;
+    public void setBitOffset(int bitOffset) {
+        this.bitOffset = bitOffset;
     }
 
-    public int getByteSize() {
-        return byteSize;
+    public int getBitSize() {
+        return bitSize;
     }
 
-    public void setByteSize(int byteSize) {
-        this.byteSize = byteSize;
+    public void setBitSize(int byteSize) {
+        this.bitSize = byteSize;
     }
 
     public com.aerospike.client.Operation toOperation() {
-        return com.aerospike.client.operation.BitOperation.not(BitPolicy.Default, binName, byteOffset, byteSize);
+        return com.aerospike.client.operation.BitOperation.not(BitPolicy.Default, binName, bitOffset, bitSize);
     }
 }

@@ -5,13 +5,7 @@ import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.cdt.ListOrder;
 import com.aerospike.client.cdt.ListWriteFlags;
-import com.aerospike.restclient.config.JSONMessageConverter;
-import com.aerospike.restclient.config.MsgPackConverter;
 import com.aerospike.restclient.domain.operationmodels.OperationTypes;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -21,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.*;
 
@@ -100,10 +93,10 @@ public class OperateListV2CorrectTests {
         this.opPerformer = performer;
         if (useSet) {
             testKey = new Key("test", "junit", "listop");
-            testEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "junit", "listop").replace("v1", "v2");
+            testEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "junit", "listop");
         } else {
             testKey = new Key("test", null, "listop");
-            testEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "listop").replace("v1", "v2");
+            testEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "listop");
         }
     }
 
@@ -1408,82 +1401,3 @@ public class OperateListV2CorrectTests {
     }
 
 }
-
-//
-class MsgPackOperationV2Performer implements OperationV2Performer {
-
-    private static final Logger logger = LogManager.getLogger(MsgPackOperationV1Performer.class);
-
-    private final ObjectMapper mapper;
-    private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {
-    };
-
-    public MsgPackOperationV2Performer() {
-        this.mapper = MsgPackConverter.getASMsgPackObjectMapper();
-    }
-
-    @Override
-    public Map<String, Object> performOperationsAndReturn(MockMvc mockMVC, String testEndpoint,
-                                                          Map<String, Object> ops) {
-        try {
-            byte[] payload = mapper.writeValueAsBytes(ops);
-            byte[] response = ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, payload);
-            return mapper.readValue(response, recordType);
-        } catch (Exception e) {
-            logger.error("Error performing operation", e);
-        }
-        return null;
-    }
-
-    @Override
-    public void performOperationsAndExpect(MockMvc mockMVC, String testEndpoint, Map<String, Object> ops,
-                                           ResultMatcher matcher) throws Exception {
-        byte[] payload = mapper.writeValueAsBytes(ops);
-        ASTestUtils.performOperationAndExpect(mockMVC, testEndpoint, payload, matcher);
-    }
-
-    public byte[] performOperationsAndReturnRaw(MockMvc mockMVC, String testEndpoint,
-                                                List<Map<String, Object>> ops) throws Exception {
-        byte[] payload = mapper.writeValueAsBytes(ops);
-        return ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, payload);
-    }
-
-    public byte[] performOperationsAndReturnRaw(MockMvc mockMVC, String testEndpoint, byte[] opsByte) throws Exception {
-        return ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, opsByte);
-    }
-}
-
-class JSONOperationV2Performer implements OperationV2Performer {
-
-    private static final Logger logger = LogManager.getLogger(JSONOperationV1Performer.class);
-
-    private final ObjectMapper mapper;
-    private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {
-    };
-
-    public JSONOperationV2Performer() {
-        this.mapper = JSONMessageConverter.getJSONObjectMapper();
-    }
-
-    @Override
-    public Map<String, Object> performOperationsAndReturn(MockMvc mockMVC, String testEndpoint,
-                                                          Map<String, Object> ops) {
-        try {
-            String jsonString = mapper.writeValueAsString(ops);
-            String response = ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, jsonString);
-            return mapper.readValue(response, recordType);
-        } catch (Exception e) {
-            logger.error("Error performing operation", e);
-        }
-        return null;
-    }
-
-    @Override
-    public void performOperationsAndExpect(MockMvc mockMVC, String testEndpoint, Map<String, Object> ops,
-                                           ResultMatcher matcher) throws Exception {
-        String jsonString = mapper.writeValueAsString(ops);
-        ASTestUtils.performOperationAndExpect(mockMVC, testEndpoint, jsonString, matcher);
-    }
-
-}
-

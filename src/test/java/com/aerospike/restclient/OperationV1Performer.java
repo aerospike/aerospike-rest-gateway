@@ -16,16 +16,98 @@
  */
 package com.aerospike.restclient;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.List;
 import java.util.Map;
 
-public interface OperationV1Performer {
+interface OperationV1Performer {
     Map<String, Object> performOperationsAndReturn(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>> ops);
 
     void performOperationsAndExpect(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>> ops,
                                     ResultMatcher matcher) throws Exception;
 }
 
+class JSONOperationV1Performer implements OperationV1Performer {
+
+    private static final Logger logger = LogManager.getLogger(JSONOperationV1Performer.class);
+
+    private final ObjectMapper mapper;
+    private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {
+    };
+
+    public JSONOperationV1Performer() {
+        this.mapper = new ObjectMapper();
+    }
+
+    @Override
+    public Map<String, Object> performOperationsAndReturn(MockMvc mockMVC, String testEndpoint,
+                                                          List<Map<String, Object>> ops) {
+        try {
+            String jsonString = mapper.writeValueAsString(ops);
+            String response = ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, jsonString);
+            return mapper.readValue(response, recordType);
+        } catch (Exception e) {
+            logger.error("Error performing operation", e);
+        }
+        return null;
+    }
+
+    @Override
+    public void performOperationsAndExpect(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>> ops,
+                                           ResultMatcher matcher) throws Exception {
+        String jsonString = mapper.writeValueAsString(ops);
+        ASTestUtils.performOperationAndExpect(mockMVC, testEndpoint, jsonString, matcher);
+    }
+
+}
+
+class MsgPackOperationV1Performer implements OperationV1Performer {
+
+    private static final Logger logger = LogManager.getLogger(MsgPackOperationV1Performer.class);
+
+    private final ObjectMapper mapper;
+    private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {
+    };
+
+    public MsgPackOperationV1Performer() {
+        this.mapper = new ObjectMapper(new MessagePackFactory());
+    }
+
+    @Override
+    public Map<String, Object> performOperationsAndReturn(MockMvc mockMVC, String testEndpoint,
+                                                          List<Map<String, Object>> ops) {
+        try {
+            byte[] payload = mapper.writeValueAsBytes(ops);
+            byte[] response = ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, payload);
+            return mapper.readValue(response, recordType);
+        } catch (Exception e) {
+            logger.error("Error performing operation", e);
+        }
+        return null;
+    }
+
+    @Override
+    public void performOperationsAndExpect(MockMvc mockMVC, String testEndpoint, List<Map<String, Object>> ops,
+                                           ResultMatcher matcher) throws Exception {
+        byte[] payload = mapper.writeValueAsBytes(ops);
+        ASTestUtils.performOperationAndExpect(mockMVC, testEndpoint, payload, matcher);
+    }
+
+    public byte[] performOperationsAndReturnRaw(MockMvc mockMVC, String testEndpoint,
+                                                List<Map<String, Object>> ops) throws Exception {
+        byte[] payload = mapper.writeValueAsBytes(ops);
+        return ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, payload);
+    }
+
+    public byte[] performOperationsAndReturnRaw(MockMvc mockMVC, String testEndpoint, byte[] opsByte) throws Exception {
+        return ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, opsByte);
+    }
+
+}

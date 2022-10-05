@@ -16,35 +16,35 @@ public class BitRScanOperation extends BitOperation {
     final public String type = OperationTypes.BIT_RSCAN;
 
     @Schema(required = true)
-    private int byteOffset;
+    private int bitOffset;
 
     @Schema(required = true)
-    private int byteSize;
+    private int bitSize;
 
     @Schema(required = true)
     private boolean value;
 
-    public BitRScanOperation(String binName, int byteOffset, int byteSize, boolean value) {
+    public BitRScanOperation(String binName, int bitOffset, int bitSize, boolean value) {
         super(binName);
-        this.byteOffset = byteOffset;
-        this.byteSize = byteSize;
+        this.bitOffset = bitOffset;
+        this.bitSize = bitSize;
         this.value = value;
     }
 
-    public int getByteOffset() {
-        return byteOffset;
+    public int getBitOffset() {
+        return bitOffset;
     }
 
-    public void setByteOffset(int byteOffset) {
-        this.byteOffset = byteOffset;
+    public void setBitOffset(int bitOffset) {
+        this.bitOffset = bitOffset;
     }
 
-    public int getByteSize() {
-        return byteSize;
+    public int getBitSize() {
+        return bitSize;
     }
 
-    public void setByteSize(int byteSize) {
-        this.byteSize = byteSize;
+    public void setBitSize(int bitSize) {
+        this.bitSize = bitSize;
     }
 
     public boolean isValue() {
@@ -56,6 +56,6 @@ public class BitRScanOperation extends BitOperation {
     }
 
     public com.aerospike.client.Operation toOperation() {
-        return com.aerospike.client.operation.BitOperation.rscan(binName, byteOffset, byteSize, value);
+        return com.aerospike.client.operation.BitOperation.rscan(binName, bitOffset, bitSize, value);
     }
 }

@@ -9,7 +9,7 @@ public final class OperationTypes {
     public static final String GET_HEADER = "GET_HEADER";
     public static final String TOUCH = "TOUCH";
     public static final String PUT = "PUT";
-    public static final String DELETE = "DELETE ";
+    public static final String DELETE = "DELETE";
     public static final String LIST_APPEND = "LIST_APPEND";
     public static final String LIST_APPEND_ITEMS = "LIST_APPEND_ITEMS";
     public static final String LIST_CREATE = "LIST_CREATE";

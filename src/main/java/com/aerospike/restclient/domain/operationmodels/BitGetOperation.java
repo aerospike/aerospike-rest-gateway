@@ -16,34 +16,34 @@ public class BitGetOperation extends BitOperation {
     final public String type = OperationTypes.BIT_GET;
 
     @Schema(required = true)
-    private int byteOffset;
+    private int bitOffset;
 
     @Schema(required = true)
-    private int byteSize;
+    private int bitSize;
 
-    public BitGetOperation(String binName, int byteOffset, int byteSize) {
+    public BitGetOperation(String binName, int bitOffset, int bitSize) {
         super(binName);
-        this.byteOffset = byteOffset;
-        this.byteSize = byteSize;
+        this.bitOffset = bitOffset;
+        this.bitSize = bitSize;
     }
 
-    public int getByteOffset() {
-        return byteOffset;
+    public int getBitOffset() {
+        return bitOffset;
     }
 
-    public void setByteOffset(int byteOffset) {
-        this.byteOffset = byteOffset;
+    public void setBitOffset(int bitOffset) {
+        this.bitOffset = bitOffset;
     }
 
-    public int getByteSize() {
-        return byteSize;
+    public int getBitSize() {
+        return bitSize;
     }
 
-    public void setByteSize(int byteSize) {
-        this.byteSize = byteSize;
+    public void setBitSize(int bitSize) {
+        this.bitSize = bitSize;
     }
 
     public com.aerospike.client.Operation toOperation() {
-        return com.aerospike.client.operation.BitOperation.get(binName, byteOffset, byteSize);
+        return com.aerospike.client.operation.BitOperation.get(binName, bitOffset, bitSize);
     }
 }

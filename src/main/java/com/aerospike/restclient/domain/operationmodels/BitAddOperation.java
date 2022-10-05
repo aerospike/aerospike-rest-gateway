@@ -18,10 +18,10 @@ public class BitAddOperation extends BitOperation {
     final public String type = OperationTypes.BIT_ADD;
 
     @Schema(required = true)
-    private int byteOffset;
+    private int bitOffset;
 
     @Schema(required = true)
-    private int byteSize;
+    private int bitSize;
 
     @Schema(required = true)
     private long value;
@@ -30,27 +30,27 @@ public class BitAddOperation extends BitOperation {
     @Schema(defaultValue = "FAIL")
     private BitOverflowAction action = BitOverflowAction.FAIL;
 
-    public BitAddOperation(String binName, int byteOffset, int byteSize, long value) {
+    public BitAddOperation(String binName, int bitOffset, int bitSize, long value) {
         super(binName);
-        this.byteOffset = byteOffset;
-        this.byteSize = byteSize;
+        this.bitOffset = bitOffset;
+        this.bitSize = bitSize;
         this.value = value;
     }
 
-    public int getByteOffset() {
-        return byteOffset;
+    public int getBitOffset() {
+        return bitOffset;
     }
 
-    public void setByteOffset(int byteOffset) {
-        this.byteOffset = byteOffset;
+    public void setBitOffset(int bitOffset) {
+        this.bitOffset = bitOffset;
     }
 
-    public int getByteSize() {
-        return byteSize;
+    public int getBitSize() {
+        return bitSize;
     }
 
-    public void setByteSize(int byteSize) {
-        this.byteSize = byteSize;
+    public void setBitSize(int bitSize) {
+        this.bitSize = bitSize;
     }
 
     public long getValue() {
@@ -78,7 +78,7 @@ public class BitAddOperation extends BitOperation {
     }
 
     public com.aerospike.client.Operation toOperation() {
-        return com.aerospike.client.operation.BitOperation.add(BitPolicy.Default, binName, byteOffset, byteSize, value,
+        return com.aerospike.client.operation.BitOperation.add(BitPolicy.Default, binName, bitOffset, bitSize, value,
                 signed, action);
     }
 }

@@ -20,27 +20,27 @@ public class BitResizeOperation extends BitOperation {
     private int byteSize;
 
     @Schema(required = true)
-    private Integer resizeFlags;
+    private int resizeFlags;
 
-    public BitResizeOperation(String binName, Integer byteSize, Integer resizeFlags) {
+    public BitResizeOperation(String binName, int byteSize, int resizeFlags) {
         super(binName);
         this.byteSize = byteSize;
         this.resizeFlags = resizeFlags;
     }
 
-    public Integer getByteSize() {
+    public int getByteSize() {
         return byteSize;
     }
 
-    public void setByteSize(Integer byteSize) {
+    public void setByteSize(int byteSize) {
         this.byteSize = byteSize;
     }
 
-    public Integer getResizeFlags() {
+    public int getResizeFlags() {
         return resizeFlags;
     }
 
-    public void setResizeFlags(Integer resizeFlags) {
+    public void setResizeFlags(int resizeFlags) {
         this.resizeFlags = resizeFlags;
     }
 

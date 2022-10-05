@@ -4,8 +4,6 @@ import com.aerospike.client.operation.BitPolicy;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.Base64;
-
 @Schema(
         description = "Server performs bitwise \"or\" on value and byte[] bin at bitOffset for bitSize. Server does not return a value.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/latest/com/aerospike/client/operation/BitOperation.html")
@@ -19,38 +17,46 @@ public class BitOrOperation extends BitOperation {
     final public String type = OperationTypes.BIT_OR;
 
     @Schema(required = true)
-    private Integer byteOffset;
+    private int bitOffset;
 
     @Schema(required = true)
-    private Integer byteSize;
+    private int bitSize;
 
-    @Schema(required = true, format = "byte")
-    private String value;
+    @Schema(required = true)
+    private byte[] value;
 
-    public BitOrOperation(String binName, Integer byteOffset, Integer byteSize) {
+    public BitOrOperation(String binName, int bitOffset, int bitSize, byte[] value) {
         super(binName);
-        this.byteOffset = byteOffset;
-        this.byteSize = byteSize;
+        this.bitOffset = bitOffset;
+        this.bitSize = bitSize;
+        this.value = value;
     }
 
-    public Integer getByteOffset() {
-        return byteOffset;
+    public int getByteOffset() {
+        return bitOffset;
     }
 
-    public void setByteOffset(Integer byteOffset) {
-        this.byteOffset = byteOffset;
+    public void setByteOffset(int bitOffset) {
+        this.bitOffset = bitOffset;
     }
 
-    public Integer getByteSize() {
-        return byteSize;
+    public int getBitSize() {
+        return bitSize;
     }
 
-    public void setByteSize(Integer byteSize) {
-        this.byteSize = byteSize;
+    public void setBitSize(int bitSize) {
+        this.bitSize = bitSize;
+    }
+
+    public byte[] getValue() {
+        return value;
+    }
+
+    public void setValue(byte[] value) {
+        this.value = value;
     }
 
     public com.aerospike.client.Operation toOperation() {
-        return com.aerospike.client.operation.BitOperation.or(BitPolicy.Default, binName, byteOffset, byteSize,
-                Base64.getDecoder().decode(value));
+        return com.aerospike.client.operation.BitOperation.or(BitPolicy.Default, binName, bitOffset, bitSize, value);
     }
 }

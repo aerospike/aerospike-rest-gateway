@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -15,7 +17,8 @@ public class HLLDescribeOperation extends HLLOperation {
     )
     final public String type = OperationTypes.HLL_DESCRIBE;
 
-    public HLLDescribeOperation(String binName) {
+    @JsonCreator
+    public HLLDescribeOperation(@JsonProperty("binName") String binName) {
         super(binName);
     }
 
