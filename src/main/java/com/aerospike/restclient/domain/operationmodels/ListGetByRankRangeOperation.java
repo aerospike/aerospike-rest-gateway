@@ -17,7 +17,7 @@ public class ListGetByRankRangeOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET_BY_RANK_RANGE;
 
     @Schema(required = true)
-    private Integer rank;
+    private int rank;
 
     @Schema(required = true)
     private ListReturnType listReturnType;
@@ -25,18 +25,17 @@ public class ListGetByRankRangeOperation extends ListOperation {
 
     private Integer count;
 
-    public ListGetByRankRangeOperation(String binName, Integer rank, ListReturnType listReturnType) {
+    public ListGetByRankRangeOperation(String binName, int rank, ListReturnType listReturnType) {
         super(binName);
         this.rank = rank;
         this.listReturnType = listReturnType;
-        inverted = false;
     }
 
-    public Integer getRank() {
+    public int getRank() {
         return rank;
     }
 
-    public void setRank(Integer rank) {
+    public void setRank(int rank) {
         this.rank = rank;
     }
 

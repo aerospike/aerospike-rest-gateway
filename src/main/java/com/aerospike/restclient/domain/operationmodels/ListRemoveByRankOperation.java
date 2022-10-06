@@ -17,24 +17,24 @@ public class ListRemoveByRankOperation extends ListOperation {
     final public String type = OperationTypes.LIST_REMOVE_BY_RANK;
 
     @Schema(required = true)
-    private Integer rank;
+    private int rank;
 
     @Schema(required = true)
     private ListReturnType listReturnType;
 
     private boolean inverted;
 
-    public ListRemoveByRankOperation(String binName, Integer rank, ListReturnType listReturnType) {
+    public ListRemoveByRankOperation(String binName, int rank, ListReturnType listReturnType) {
         super(binName);
         this.rank = rank;
         this.listReturnType = listReturnType;
     }
 
-    public Integer getRank() {
+    public int getRank() {
         return rank;
     }
 
-    public void setRank(Integer rank) {
+    public void setRank(int rank) {
         this.rank = rank;
     }
 

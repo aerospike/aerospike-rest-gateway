@@ -17,7 +17,7 @@ public class MapGetByIndexRangeOperation extends MapOperation {
     final public String type = OperationTypes.MAP_GET_BY_INDEX_RANGE;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
     @Schema(required = true)
     private MapReturnType mapReturnType;
@@ -26,17 +26,17 @@ public class MapGetByIndexRangeOperation extends MapOperation {
 
     private Integer count;
 
-    public MapGetByIndexRangeOperation(String binName, Integer index, MapReturnType mapReturnType) {
+    public MapGetByIndexRangeOperation(String binName, int index, MapReturnType mapReturnType) {
         super(binName);
         this.index = index;
         this.mapReturnType = mapReturnType;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

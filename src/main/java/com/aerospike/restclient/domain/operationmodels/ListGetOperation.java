@@ -17,18 +17,18 @@ public class ListGetOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
-    public ListGetOperation(String binName, Integer index) {
+    public ListGetOperation(String binName, int index) {
         super(binName);
         this.index = index;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

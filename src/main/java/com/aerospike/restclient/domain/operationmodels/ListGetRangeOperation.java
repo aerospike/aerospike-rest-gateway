@@ -17,20 +17,20 @@ public class ListGetRangeOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET_RANGE;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
     private Integer count;
 
-    public ListGetRangeOperation(String binName, Integer index) {
+    public ListGetRangeOperation(String binName, int index) {
         super(binName);
         this.index = index;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

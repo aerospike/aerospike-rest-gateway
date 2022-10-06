@@ -20,17 +20,16 @@ public class MapGetByRankRangeOperation extends MapOperation {
     private MapReturnType mapReturnType;
 
     @Schema(required = true)
-    private Integer rank;
+    private int rank;
 
     private Integer count;
 
     private boolean inverted;
 
-    public MapGetByRankRangeOperation(String binName, MapReturnType mapReturnType, Integer rank) {
+    public MapGetByRankRangeOperation(String binName, MapReturnType mapReturnType, int rank) {
         super(binName);
         this.mapReturnType = mapReturnType;
         this.rank = rank;
-        inverted = false;
     }
 
     public MapReturnType getMapReturnType() {
@@ -41,11 +40,11 @@ public class MapGetByRankRangeOperation extends MapOperation {
         this.mapReturnType = mapReturnType;
     }
 
-    public Integer getRank() {
+    public int getRank() {
         return rank;
     }
 
-    public void setRank(Integer rank) {
+    public void setRank(int rank) {
         this.rank = rank;
     }
 

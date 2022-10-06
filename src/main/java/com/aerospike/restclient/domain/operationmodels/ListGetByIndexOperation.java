@@ -1,10 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
-import com.aerospike.restclient.domain.ctxmodels.CTX;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.util.List;
 
 @Schema(
         description = "Return an item, located a specific index, from a list in the specified bin. The value of `listReturnType` determines what will be returned. Requires Aerospike Server `3.16.0.1` or greater.",
@@ -20,26 +17,24 @@ public class ListGetByIndexOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET_BY_INDEX;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
     @Schema(required = true)
     private ListReturnType listReturnType;
 
     private boolean inverted;
 
-    public ListGetByIndexOperation(String binName, Integer index, ListReturnType listReturnType, List<CTX> ctx) {
+    public ListGetByIndexOperation(String binName, int index, ListReturnType listReturnType) {
         super(binName);
         this.index = index;
         this.listReturnType = listReturnType;
-        this.ctx = ctx;
-        inverted = false;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

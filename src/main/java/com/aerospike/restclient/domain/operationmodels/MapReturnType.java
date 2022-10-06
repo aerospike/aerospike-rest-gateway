@@ -1,7 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 public enum MapReturnType {
-    COUNT, INDEX, KEY, KEY_VALUE, NONE, RANK, REVERSE_INDEX, REVERSE_RANK, VALUE;
+    COUNT, INDEX, KEY, KEY_VALUE, NONE, RANK, REVERSE_INDEX, REVERSE_RANK, VALUE, EXISTS;
 
     public int toMapReturnType(boolean inverted) {
         int invertedFlag = inverted ? com.aerospike.client.cdt.MapReturnType.INVERTED : 0;
@@ -16,6 +16,7 @@ public enum MapReturnType {
             case REVERSE_INDEX -> com.aerospike.client.cdt.MapReturnType.REVERSE_INDEX | invertedFlag;
             case REVERSE_RANK -> com.aerospike.client.cdt.MapReturnType.REVERSE_RANK | invertedFlag;
             case VALUE -> com.aerospike.client.cdt.MapReturnType.VALUE | invertedFlag;
+            case EXISTS -> com.aerospike.client.cdt.MapReturnType.EXISTS | invertedFlag;
         };
     }
 }

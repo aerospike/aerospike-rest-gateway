@@ -17,25 +17,25 @@ public class MapRemoveByRankOperation extends MapOperation {
     final public String type = OperationTypes.MAP_REMOVE_BY_RANK;
 
     @Schema(required = true)
-    private Integer rank;
+    private int rank;
 
     @Schema(required = true)
     private MapReturnType mapReturnType;
 
     private boolean inverted;
 
-    public MapRemoveByRankOperation(String binName, Integer rank, MapReturnType mapReturnType) {
+    public MapRemoveByRankOperation(String binName, int rank, MapReturnType mapReturnType) {
         super(binName);
         this.rank = rank;
         this.mapReturnType = mapReturnType;
         inverted = false;
     }
 
-    public Integer getRank() {
+    public int getRank() {
         return rank;
     }
 
-    public void setRank(Integer rank) {
+    public void setRank(int rank) {
         this.rank = rank;
     }
 

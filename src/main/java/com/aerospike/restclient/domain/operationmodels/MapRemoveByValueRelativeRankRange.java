@@ -18,7 +18,7 @@ public class MapRemoveByValueRelativeRankRange extends MapOperation {
     final public String type = OperationTypes.MAP_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE;
 
     @Schema(required = true)
-    private Integer rank;
+    private int rank;
 
     @Schema(required = true)
     private Object value;
@@ -30,18 +30,18 @@ public class MapRemoveByValueRelativeRankRange extends MapOperation {
 
     private Integer count;
 
-    public MapRemoveByValueRelativeRankRange(String binName, Integer index, Object value, MapReturnType mapReturnType) {
+    public MapRemoveByValueRelativeRankRange(String binName, int index, Object value, MapReturnType mapReturnType) {
         super(binName);
         this.rank = index;
         this.value = value;
         this.mapReturnType = mapReturnType;
     }
 
-    public Integer getRank() {
+    public int getRank() {
         return rank;
     }
 
-    public void setRank(Integer rank) {
+    public void setRank(int rank) {
         this.rank = rank;
     }
 

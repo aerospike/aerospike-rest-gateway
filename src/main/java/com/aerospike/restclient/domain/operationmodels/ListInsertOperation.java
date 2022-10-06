@@ -18,24 +18,24 @@ public class ListInsertOperation extends ListOperation {
     final public String type = OperationTypes.LIST_INSERT;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
     @Schema(required = true)
     private Object value;
 
     private ListPolicy listPolicy;
 
-    public ListInsertOperation(String binName, Integer index, Object value) {
+    public ListInsertOperation(String binName, int index, Object value) {
         super(binName);
         this.index = index;
         this.value = value;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

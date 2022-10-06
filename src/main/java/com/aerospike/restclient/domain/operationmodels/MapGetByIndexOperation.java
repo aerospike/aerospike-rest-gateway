@@ -17,24 +17,24 @@ public class MapGetByIndexOperation extends MapOperation {
     final public String type = OperationTypes.MAP_GET_BY_INDEX;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
     @Schema(required = true)
     private MapReturnType mapReturnType;
 
     private boolean inverted;
 
-    public MapGetByIndexOperation(String binName, Integer index, MapReturnType mapReturnType) {
+    public MapGetByIndexOperation(String binName, int index, MapReturnType mapReturnType) {
         super(binName);
         this.index = index;
         this.mapReturnType = mapReturnType;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

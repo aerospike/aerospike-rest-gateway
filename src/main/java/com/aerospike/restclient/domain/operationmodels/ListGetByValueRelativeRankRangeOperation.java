@@ -18,7 +18,7 @@ public class ListGetByValueRelativeRankRangeOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE;
 
     @Schema(required = true)
-    private Integer rank;
+    private int rank;
 
     @Schema(required = true)
     private Object value;
@@ -30,20 +30,19 @@ public class ListGetByValueRelativeRankRangeOperation extends ListOperation {
 
     private Integer count;
 
-    public ListGetByValueRelativeRankRangeOperation(String binName, Integer index, Object value,
+    public ListGetByValueRelativeRankRangeOperation(String binName, int index, Object value,
                                                     ListReturnType listReturnType) {
         super(binName);
         this.rank = index;
         this.value = value;
         this.listReturnType = listReturnType;
-        inverted = false;
     }
 
-    public Integer getRank() {
+    public int getRank() {
         return rank;
     }
 
-    public void setRank(Integer rank) {
+    public void setRank(int rank) {
         this.rank = rank;
     }
 

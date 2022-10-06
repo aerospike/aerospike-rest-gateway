@@ -17,7 +17,7 @@ public class ListRemoveRangeOperation extends ListOperation {
     final public String type = OperationTypes.LIST_REMOVE_RANGE;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
     private Integer count;
 
@@ -26,11 +26,11 @@ public class ListRemoveRangeOperation extends ListOperation {
         this.index = index;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

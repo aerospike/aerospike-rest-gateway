@@ -17,18 +17,18 @@ public class ListRemoveOperation extends ListOperation {
     final public String type = OperationTypes.LIST_REMOVE;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
-    public ListRemoveOperation(String binName, Integer index) {
+    public ListRemoveOperation(String binName, int index) {
         super(binName);
         this.index = index;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

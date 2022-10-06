@@ -18,7 +18,7 @@ public class MapGetByValueRelativeRankRangeOperation extends MapOperation {
     final public String type = OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE;
 
     @Schema(required = true)
-    private Integer rank;
+    private int rank;
 
     @Schema(required = true)
     private Object value;
@@ -30,7 +30,7 @@ public class MapGetByValueRelativeRankRangeOperation extends MapOperation {
 
     private Integer count;
 
-    public MapGetByValueRelativeRankRangeOperation(String binName, Integer index, Object value,
+    public MapGetByValueRelativeRankRangeOperation(String binName, int index, Object value,
                                                    MapReturnType mapReturnType) {
         super(binName);
         this.rank = index;
@@ -39,11 +39,11 @@ public class MapGetByValueRelativeRankRangeOperation extends MapOperation {
         inverted = false;
     }
 
-    public Integer getRank() {
+    public int getRank() {
         return rank;
     }
 
-    public void setRank(Integer rank) {
+    public void setRank(int rank) {
         this.rank = rank;
     }
 

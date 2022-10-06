@@ -1,7 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 public enum ListReturnType {
-    COUNT, INDEX, KEY, NONE, RANK, REVERSE_INDEX, REVERSE_RANK, VALUE;
+    COUNT, INDEX, EXISTS, NONE, RANK, REVERSE_INDEX, REVERSE_RANK, VALUE;
 
     public int toListReturnType(boolean inverted) {
         int invertedFlag = inverted ? com.aerospike.client.cdt.ListReturnType.INVERTED : 0;
@@ -14,7 +14,7 @@ public enum ListReturnType {
             case REVERSE_INDEX -> com.aerospike.client.cdt.ListReturnType.REVERSE_INDEX | invertedFlag;
             case REVERSE_RANK -> com.aerospike.client.cdt.ListReturnType.REVERSE_RANK | invertedFlag;
             case VALUE -> com.aerospike.client.cdt.ListReturnType.VALUE | invertedFlag;
-            case KEY -> com.aerospike.client.cdt.ListReturnType.EXISTS | invertedFlag;
+            case EXISTS -> com.aerospike.client.cdt.ListReturnType.EXISTS | invertedFlag;
         };
     }
 }

@@ -18,7 +18,7 @@ public class MapGetByKeyRelativeIndexRange extends MapOperation {
     final public String type = OperationTypes.MAP_GET_BY_KEY_RELATIVE_INDEX_RANGE;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
     @Schema(required = true)
     private Object value;
@@ -30,7 +30,7 @@ public class MapGetByKeyRelativeIndexRange extends MapOperation {
 
     private Integer count;
 
-    public MapGetByKeyRelativeIndexRange(String binName, Integer index, Object value, MapReturnType mapReturnType) {
+    public MapGetByKeyRelativeIndexRange(String binName, int index, Object value, MapReturnType mapReturnType) {
         super(binName);
         this.index = index;
         this.value = value;
@@ -38,11 +38,11 @@ public class MapGetByKeyRelativeIndexRange extends MapOperation {
         inverted = false;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

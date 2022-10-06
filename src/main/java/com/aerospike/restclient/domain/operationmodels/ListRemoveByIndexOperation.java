@@ -17,24 +17,24 @@ public class ListRemoveByIndexOperation extends ListOperation {
     final public String type = OperationTypes.LIST_REMOVE_BY_INDEX;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
     @Schema(required = true)
     private ListReturnType listReturnType;
 
     private boolean inverted;
 
-    public ListRemoveByIndexOperation(String binName, Integer index, ListReturnType listReturnType) {
+    public ListRemoveByIndexOperation(String binName, int index, ListReturnType listReturnType) {
         super(binName);
         this.index = index;
         this.listReturnType = listReturnType;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

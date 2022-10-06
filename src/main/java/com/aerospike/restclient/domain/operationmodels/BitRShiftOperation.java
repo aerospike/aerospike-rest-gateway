@@ -20,7 +20,7 @@ public class BitRShiftOperation extends BitOperation {
     private int bitOffset;
 
     @Schema(required = true)
-    private Integer bitSize;
+    private int bitSize;
 
     @Schema(required = true)
     private int shift;

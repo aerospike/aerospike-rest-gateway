@@ -18,24 +18,24 @@ public class ListIncrementOperation extends ListOperation {
     final public String type = OperationTypes.LIST_INCREMENT;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
     @Schema(required = true)
     private Number incr;
 
     private ListPolicy listPolicy;
 
-    public ListIncrementOperation(String binName, Integer index, Number incr) {
+    public ListIncrementOperation(String binName, int index, Number incr) {
         super(binName);
         this.index = index;
         this.incr = incr;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

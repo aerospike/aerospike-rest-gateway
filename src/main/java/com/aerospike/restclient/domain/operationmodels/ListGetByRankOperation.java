@@ -1,10 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
-import com.aerospike.restclient.domain.ctxmodels.CTX;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.util.List;
 
 @Schema(
         description = "Return a list item with the specified `rank`. Requires Aerospike Server `3.16.0.1` or later.",
@@ -20,26 +17,24 @@ public class ListGetByRankOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET_BY_RANK;
 
     @Schema(required = true)
-    private Integer rank;
+    private int rank;
 
     @Schema(required = true)
     private ListReturnType listReturnType;
 
     private boolean inverted;
 
-    public ListGetByRankOperation(String binName, Integer rank, ListReturnType listReturnType, List<CTX> ctx) {
+    public ListGetByRankOperation(String binName, int rank, ListReturnType listReturnType) {
         super(binName);
         this.rank = rank;
         this.listReturnType = listReturnType;
-        this.ctx = ctx;
-        inverted = false;
     }
 
-    public Integer getRank() {
+    public int getRank() {
         return rank;
     }
 
-    public void setRank(Integer rank) {
+    public void setRank(int rank) {
         this.rank = rank;
     }
 

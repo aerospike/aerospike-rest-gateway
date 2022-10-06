@@ -17,7 +17,7 @@ public class ListRemoveByIndexRangeOperation extends ListOperation {
     final public String type = OperationTypes.LIST_REMOVE_BY_INDEX_RANGE;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
     @Schema(required = true)
     private ListReturnType listReturnType;
@@ -26,17 +26,17 @@ public class ListRemoveByIndexRangeOperation extends ListOperation {
 
     private Integer count;
 
-    public ListRemoveByIndexRangeOperation(String binName, Integer index, ListReturnType listReturnType) {
+    public ListRemoveByIndexRangeOperation(String binName, int index, ListReturnType listReturnType) {
         super(binName);
         this.index = index;
         this.listReturnType = listReturnType;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

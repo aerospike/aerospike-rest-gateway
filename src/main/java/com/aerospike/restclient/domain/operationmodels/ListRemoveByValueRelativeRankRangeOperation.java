@@ -18,7 +18,7 @@ public class ListRemoveByValueRelativeRankRangeOperation extends ListOperation {
     final public String type = OperationTypes.LIST_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE;
 
     @Schema(required = true)
-    private Integer rank;
+    private int rank;
 
     @Schema(required = true)
     private Object value;
@@ -30,7 +30,7 @@ public class ListRemoveByValueRelativeRankRangeOperation extends ListOperation {
 
     private Integer count;
 
-    public ListRemoveByValueRelativeRankRangeOperation(String binName, Integer index, Object value,
+    public ListRemoveByValueRelativeRankRangeOperation(String binName, int index, Object value,
                                                        ListReturnType listReturnType) {
         super(binName);
         this.rank = index;
@@ -39,11 +39,11 @@ public class ListRemoveByValueRelativeRankRangeOperation extends ListOperation {
         inverted = false;
     }
 
-    public Integer getRank() {
+    public int getRank() {
         return rank;
     }
 
-    public void setRank(Integer rank) {
+    public void setRank(int rank) {
         this.rank = rank;
     }
 

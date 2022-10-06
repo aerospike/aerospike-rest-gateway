@@ -17,30 +17,30 @@ public class ListTrimOperation extends ListOperation {
     final public String type = OperationTypes.LIST_TRIM;
 
     @Schema(required = true)
-    private Integer index;
+    private int index;
 
     @Schema(required = true)
-    private Integer count;
+    private int count;
 
-    public ListTrimOperation(String binName, Integer index, Integer count) {
+    public ListTrimOperation(String binName, int index, int count) {
         super(binName);
         this.index = index;
         this.count = count;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 
-    public Integer getCount() {
+    public int getCount() {
         return count;
     }
 
-    public void setCount(Integer count) {
+    public void setCount(int count) {
         this.count = count;
     }
 
