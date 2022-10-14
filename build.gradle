@@ -39,6 +39,7 @@ apply plugin: "org.springframework.boot"
 apply plugin: "io.spring.dependency-management"
 
 group = "com.aerospike"
+sourceCompatibility = 17
 version = appVersion
 
 bootJar {
