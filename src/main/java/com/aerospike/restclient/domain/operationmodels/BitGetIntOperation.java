@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -16,42 +18,22 @@ public class BitGetIntOperation extends BitOperation {
     final public String type = OperationTypes.BIT_GET_INT;
 
     @Schema(required = true)
-    private int bitOffset;
+    private final int bitOffset;
 
     @Schema(required = true)
-    private int bitSize;
+    private final int bitSize;
 
-    @Schema(required = true)
-    private boolean signed;
+    private final boolean signed;
 
-    public BitGetIntOperation(String binName, int bitOffset, int bitSize, boolean signed) {
+    @JsonCreator
+    public BitGetIntOperation(@JsonProperty(value = "binName", required = true) String binName,
+                              @JsonProperty(value = "bitOffset", required = true) int bitOffset,
+                              @JsonProperty(value = "bitSize", required = true) int bitSize, @JsonProperty(
+            value = "signed", defaultValue = "false"
+    ) boolean signed) {
         super(binName);
         this.bitOffset = bitOffset;
         this.bitSize = bitSize;
-        this.signed = signed;
-    }
-
-    public int getBitOffset() {
-        return bitOffset;
-    }
-
-    public void setBitOffset(int bitOffset) {
-        this.bitOffset = bitOffset;
-    }
-
-    public int getBitSize() {
-        return bitSize;
-    }
-
-    public void setBitSize(int bitSize) {
-        this.bitSize = bitSize;
-    }
-
-    public boolean isSigned() {
-        return signed;
-    }
-
-    public void setSigned(boolean signed) {
         this.signed = signed;
     }
 

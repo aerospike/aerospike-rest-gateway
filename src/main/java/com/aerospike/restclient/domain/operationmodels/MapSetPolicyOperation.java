@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,18 +19,12 @@ public class MapSetPolicyOperation extends MapOperation {
     final public String type = OperationTypes.MAP_SET_POLICY;
 
     @Schema(required = true)
-    private MapPolicy mapPolicy;
+    private final MapPolicy mapPolicy;
 
-    public MapSetPolicyOperation(String binName, MapPolicy mapPolicy) {
+    @JsonCreator
+    public MapSetPolicyOperation(@JsonProperty(value = "binName", required = true) String binName,
+                                 @JsonProperty(value = "mapPolicy", required = true) MapPolicy mapPolicy) {
         super(binName);
-        this.mapPolicy = mapPolicy;
-    }
-
-    public MapPolicy getMapPolicy() {
-        return mapPolicy;
-    }
-
-    public void setMapPolicy(MapPolicy mapPolicy) {
         this.mapPolicy = mapPolicy;
     }
 

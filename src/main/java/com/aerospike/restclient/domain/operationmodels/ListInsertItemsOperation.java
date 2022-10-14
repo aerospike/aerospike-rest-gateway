@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -20,32 +22,18 @@ public class ListInsertItemsOperation extends ListOperation {
     final public String type = OperationTypes.LIST_INSERT_ITEMS;
 
     @Schema(required = true)
-    private int index;
+    private final int index;
 
     @Schema(required = true)
-    private List<Object> values;
+    private final List<Object> values;
 
     private ListPolicy listPolicy;
 
-    public ListInsertItemsOperation(String binName, int index, List<Object> values) {
+    @JsonCreator
+    public ListInsertItemsOperation(@JsonProperty("binName") String binName, @JsonProperty("index") int index,
+                                    @JsonProperty("values") List<Object> values) {
         super(binName);
         this.index = index;
-        this.values = values;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public List<Object> getValues() {
-        return values;
-    }
-
-    public void setValues(List<Object> values) {
         this.values = values;
     }
 

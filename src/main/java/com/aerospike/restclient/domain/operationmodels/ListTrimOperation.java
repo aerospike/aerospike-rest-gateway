@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,30 +19,17 @@ public class ListTrimOperation extends ListOperation {
     final public String type = OperationTypes.LIST_TRIM;
 
     @Schema(required = true)
-    private int index;
+    private final int index;
 
     @Schema(required = true)
-    private int count;
+    private final int count;
 
-    public ListTrimOperation(String binName, int index, int count) {
+    @JsonCreator
+    public ListTrimOperation(@JsonProperty(value = "binName", required = true) String binName,
+                             @JsonProperty(value = "index", required = true) int index,
+                             @JsonProperty(value = "count", required = true) int count) {
         super(binName);
         this.index = index;
-        this.count = count;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
         this.count = count;
     }
 

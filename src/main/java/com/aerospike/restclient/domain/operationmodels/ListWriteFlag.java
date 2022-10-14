@@ -2,6 +2,9 @@ package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.cdt.ListWriteFlags;
 
+/*
+ * Wraps constants in Aerospike client class ListWriteFlags
+ */
 public enum ListWriteFlag {
     /**
      * Default. Allow duplicate values and insertions at any index.
@@ -30,7 +33,7 @@ public enum ListWriteFlag {
 
     public final int flag;
 
-    private ListWriteFlag(int flag) {
+    ListWriteFlag(int flag) {
         this.flag = flag;
     }
 }

@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.operation.BitPolicy;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,42 +19,22 @@ public class BitSetOperation extends BitOperation {
     final public String type = OperationTypes.BIT_SET;
 
     @Schema(required = true)
-    private int bitOffset;
+    private final int bitOffset;
 
     @Schema(required = true)
-    private int bitSize;
+    private final int bitSize;
 
     @Schema(required = true)
-    private byte[] value;
+    private final byte[] value;
 
-    public BitSetOperation(String binName, int bitOffset, int bitSize, byte[] value) {
+    @JsonCreator
+    public BitSetOperation(@JsonProperty(value = "binName", required = true) String binName,
+                           @JsonProperty(value = "bitOffset", required = true) int bitOffset,
+                           @JsonProperty(value = "bitSize", required = true) int bitSize,
+                           @JsonProperty(value = "value", required = true) byte[] value) {
         super(binName);
         this.bitOffset = bitOffset;
         this.bitSize = bitSize;
-        this.value = value;
-    }
-
-    public int getByteOffset() {
-        return bitOffset;
-    }
-
-    public void setByteOffset(int bitOffset) {
-        this.bitOffset = bitOffset;
-    }
-
-    public int getBitSize() {
-        return bitSize;
-    }
-
-    public void setBitSize(int bitSize) {
-        this.bitSize = bitSize;
-    }
-
-    public byte[] getValue() {
-        return value;
-    }
-
-    public void setValue(byte[] value) {
         this.value = value;
     }
 

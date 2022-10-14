@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -15,19 +17,14 @@ public class HLLFoldOperation extends HLLOperation {
     )
     final public String type = OperationTypes.HLL_FOLD;
 
-    private int indexBitCount;
+    @Schema(required = true)
+    private final int indexBitCount;
 
-    public HLLFoldOperation(String binName, int indexBitCount) {
+    @JsonCreator
+    public HLLFoldOperation(@JsonProperty(value = "binName", required = true) String binName,
+                            @JsonProperty(value = "indexBitCount", required = true) int indexBitCount) {
         super(binName);
         this.indexBitCount = indexBitCount;
-    }
-
-    public void setIndexBitCount(int indexBitCount) {
-        this.indexBitCount = indexBitCount;
-    }
-
-    public int getIndexBitCount() {
-        return indexBitCount;
     }
 
     public com.aerospike.client.Operation toOperation() {

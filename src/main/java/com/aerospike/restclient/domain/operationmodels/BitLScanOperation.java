@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -16,42 +18,22 @@ public class BitLScanOperation extends BitOperation {
     final public String type = OperationTypes.BIT_LSCAN;
 
     @Schema(required = true)
-    private int bitOffset;
+    private final int bitOffset;
 
     @Schema(required = true)
-    private int bitSize;
+    private final int bitSize;
 
     @Schema(required = true)
-    private boolean value;
+    private final boolean value;
 
-    public BitLScanOperation(String binName, int bitOffset, int bitSize, boolean value) {
+    @JsonCreator
+    public BitLScanOperation(@JsonProperty(value = "binName", required = true) String binName,
+                             @JsonProperty(value = "bitOffset", required = true) int bitOffset,
+                             @JsonProperty(value = "bitSize", required = true) int bitSize,
+                             @JsonProperty(value = "value", required = true) boolean value) {
         super(binName);
         this.bitOffset = bitOffset;
         this.bitSize = bitSize;
-        this.value = value;
-    }
-
-    public int getBitOffset() {
-        return bitOffset;
-    }
-
-    public void setBitOffset(int bitOffset) {
-        this.bitOffset = bitOffset;
-    }
-
-    public int getBitSize() {
-        return bitSize;
-    }
-
-    public void setBitSize(int bitSize) {
-        this.bitSize = bitSize;
-    }
-
-    public boolean isValue() {
-        return value;
-    }
-
-    public void setValue(boolean value) {
         this.value = value;
     }
 

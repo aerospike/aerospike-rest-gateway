@@ -19,7 +19,7 @@ public class ListClearOperation extends ListOperation {
     final public String type = OperationTypes.LIST_CLEAR;
 
     @JsonCreator
-    public ListClearOperation(@JsonProperty("binName") String binName) {
+    public ListClearOperation(@JsonProperty(value = "binName", required = true) String binName) {
         super(binName);
     }
 

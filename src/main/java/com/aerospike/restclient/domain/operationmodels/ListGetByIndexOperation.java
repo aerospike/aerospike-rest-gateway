@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,32 +19,21 @@ public class ListGetByIndexOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET_BY_INDEX;
 
     @Schema(required = true)
-    private int index;
+    private final int index;
 
     @Schema(required = true)
-    private ListReturnType listReturnType;
+    private final ListReturnType listReturnType;
 
     private boolean inverted;
 
-    public ListGetByIndexOperation(String binName, int index, ListReturnType listReturnType) {
+    @JsonCreator
+    public ListGetByIndexOperation(@JsonProperty(value = "binName", required = true) String binName,
+                                   @JsonProperty(value = "index", required = true) int index, @JsonProperty(
+            value = "listReturnType",
+            required = true
+    ) ListReturnType listReturnType) {
         super(binName);
         this.index = index;
-        this.listReturnType = listReturnType;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public ListReturnType getListReturnType() {
-        return listReturnType;
-    }
-
-    public void setListReturnType(ListReturnType listReturnType) {
         this.listReturnType = listReturnType;
     }
 

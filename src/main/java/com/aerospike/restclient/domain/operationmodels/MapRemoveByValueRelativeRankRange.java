@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -18,46 +20,28 @@ public class MapRemoveByValueRelativeRankRange extends MapOperation {
     final public String type = OperationTypes.MAP_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE;
 
     @Schema(required = true)
-    private int rank;
+    private final int rank;
 
     @Schema(required = true)
-    private Object value;
+    private final Object value;
 
     @Schema(required = true)
-    private MapReturnType mapReturnType;
+    private final MapReturnType mapReturnType;
 
     private boolean inverted = false;
 
     private Integer count;
 
-    public MapRemoveByValueRelativeRankRange(String binName, int index, Object value, MapReturnType mapReturnType) {
+    @JsonCreator
+    public MapRemoveByValueRelativeRankRange(@JsonProperty(value = "binName", required = true) String binName,
+                                             @JsonProperty(value = "rank", required = true) int rank,
+                                             @JsonProperty(value = "value", required = true) Object value,
+                                             @JsonProperty(
+                                                     value = "mapReturnType", required = true
+                                             ) MapReturnType mapReturnType) {
         super(binName);
-        this.rank = index;
-        this.value = value;
-        this.mapReturnType = mapReturnType;
-    }
-
-    public int getRank() {
-        return rank;
-    }
-
-    public void setRank(int rank) {
         this.rank = rank;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
         this.value = value;
-    }
-
-    public MapReturnType getMapReturnType() {
-        return mapReturnType;
-    }
-
-    public void setMapReturnType(MapReturnType mapReturnType) {
         this.mapReturnType = mapReturnType;
     }
 

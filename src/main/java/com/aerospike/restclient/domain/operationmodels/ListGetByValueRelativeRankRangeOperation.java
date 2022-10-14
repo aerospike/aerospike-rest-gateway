@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -18,47 +20,25 @@ public class ListGetByValueRelativeRankRangeOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE;
 
     @Schema(required = true)
-    private int rank;
+    private final int rank;
 
     @Schema(required = true)
-    private Object value;
+    private final Object value;
 
     @Schema(required = true)
-    private ListReturnType listReturnType;
+    private final ListReturnType listReturnType;
 
     private boolean inverted;
 
     private Integer count;
 
-    public ListGetByValueRelativeRankRangeOperation(String binName, int index, Object value,
-                                                    ListReturnType listReturnType) {
+    @JsonCreator
+    public ListGetByValueRelativeRankRangeOperation(@JsonProperty("binName") String binName,
+                                                    @JsonProperty("rank") int rank, @JsonProperty("value") Object value,
+                                                    @JsonProperty("listReturnType") ListReturnType listReturnType) {
         super(binName);
-        this.rank = index;
-        this.value = value;
-        this.listReturnType = listReturnType;
-    }
-
-    public int getRank() {
-        return rank;
-    }
-
-    public void setRank(int rank) {
         this.rank = rank;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
         this.value = value;
-    }
-
-    public ListReturnType getListReturnType() {
-        return listReturnType;
-    }
-
-    public void setListReturnType(ListReturnType listReturnType) {
         this.listReturnType = listReturnType;
     }
 

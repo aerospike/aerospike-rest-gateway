@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
         }
 )
 @Schema(
-        description = "TODO", oneOf = {
+        description = "The base type for describing all HLL operations. Should not be used directly.", oneOf = {
         HLLInitOperation.class,
         HLLAddOperation.class,
         HLLSetUnionOperation.class,
@@ -34,8 +34,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
         HLLGetUnionCountOperation.class,
         HLLGetIntersectionCountOperation.class,
         HLLGetSimilarityOperation.class,
-        HLLDescribeOperation.class,
-
+        HLLDescribeOperation.class
 }
 )
 abstract public class HLLOperation extends Operation {
@@ -43,14 +42,6 @@ abstract public class HLLOperation extends Operation {
     protected String binName;
 
     public HLLOperation(String binName) {
-        this.binName = binName;
-    }
-
-    public String getBinName() {
-        return binName;
-    }
-
-    public void setBinName(String binName) {
         this.binName = binName;
     }
 }

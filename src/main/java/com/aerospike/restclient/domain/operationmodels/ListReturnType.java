@@ -1,5 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+/*
+ * Wraps constants in Aerospike client class ListReturnType
+ */
 public enum ListReturnType {
     COUNT, INDEX, EXISTS, NONE, RANK, REVERSE_INDEX, REVERSE_RANK, VALUE;
 

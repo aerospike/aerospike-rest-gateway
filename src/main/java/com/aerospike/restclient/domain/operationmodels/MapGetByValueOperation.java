@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -18,33 +20,19 @@ public class MapGetByValueOperation extends MapOperation {
     final public String type = OperationTypes.MAP_GET_BY_VALUE;
 
     @Schema(required = true)
-    private Object value;
+    private final Object value;
 
     @Schema(required = true)
-    private MapReturnType mapReturnType;
+    private final MapReturnType mapReturnType;
 
     private boolean inverted;
 
-    public MapGetByValueOperation(String binName, Object value, MapReturnType mapReturnType) {
+    @JsonCreator
+    public MapGetByValueOperation(@JsonProperty(value = "binName", required = true) String binName,
+                                  @JsonProperty(value = "value", required = true) Object value,
+                                  @JsonProperty(value = "mapReturnType", required = true) MapReturnType mapReturnType) {
         super(binName);
         this.value = value;
-        this.mapReturnType = mapReturnType;
-        inverted = false;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
-    public MapReturnType getMapReturnType() {
-        return mapReturnType;
-    }
-
-    public void setMapReturnType(MapReturnType mapReturnType) {
         this.mapReturnType = mapReturnType;
     }
 

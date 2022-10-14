@@ -22,8 +22,8 @@ import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.client.query.Statement;
 import com.aerospike.client.task.ExecuteTask;
-import com.aerospike.restclient.domain.RestClientExecuteTask;
-import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTask;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTaskStatus;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.converters.PolicyValueConverter;
 
@@ -37,8 +37,8 @@ public class ExecuteHandler {
         this.client = client;
     }
 
-    public RestClientExecuteTask executeScan(String namespace, String set, Operation[] opsList,
-                                             WritePolicy policy, Map<String, String> requestParams) {
+    public RestClientExecuteTask executeScan(String namespace, String set, Operation[] opsList, WritePolicy policy,
+                                             Map<String, String> requestParams) {
         Statement stmt = new Statement();
         stmt.setNamespace(namespace);
         stmt.setSetName(set);
@@ -67,10 +67,7 @@ public class ExecuteHandler {
         ExecuteTask task = new ExecuteTask(client.getCluster(), new Policy(), statement, id);
         int status = task.queryStatus();
 
-        return new RestClientExecuteTaskStatus(
-                new RestClientExecuteTask(id, true),
-                status
-        );
+        return new RestClientExecuteTaskStatus(new RestClientExecuteTask(id, true), status);
     }
 
     public static ExecuteHandler create(AerospikeClient client) {

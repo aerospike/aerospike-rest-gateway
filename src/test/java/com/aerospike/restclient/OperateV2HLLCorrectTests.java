@@ -1,9 +1,7 @@
 package com.aerospike.restclient;
 
-import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.Key;
 import com.aerospike.client.Record;
-import com.aerospike.client.Value;
+import com.aerospike.client.*;
 import com.aerospike.client.operation.HLLOperation;
 import com.aerospike.client.operation.HLLPolicy;
 import com.aerospike.restclient.util.AerospikeOperation;
@@ -19,6 +17,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(Parameterized.class)
 @SpringBootTest
@@ -59,6 +59,7 @@ public class OperateV2HLLCorrectTests {
 
     @After
     public void clean() {
+        client.delete(null, testKey);
     }
 
     private final OperationV2Performer opPerformer;
@@ -91,6 +92,102 @@ public class OperateV2HLLCorrectTests {
 
         Record record = client.operate(null, testKey, HLLOperation.getCount("hll"));
         long count = (long) record.bins.get("hll");
+
+        Assert.assertEquals(7, count);
+    }
+
+    @Test
+    public void testHLLAddWithIndexBitCount() throws Exception {
+        Map<String, Object> opMap = new HashMap<>();
+        opMap.put("binName", "hll");
+        opMap.put("values", values);
+        opMap.put("indexBitCount", 4);
+        opMap.put(OPERATION_TYPE_KEY, AerospikeOperation.HLL_ADD);
+        opList.add(opMap);
+
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isOk());
+
+        Record record = client.operate(null, testKey, HLLOperation.getCount("hll"));
+        long count = (long) record.bins.get("hll");
+
+        Assert.assertEquals(7, count);
+    }
+
+    @Test
+    public void testHLLAddWithMinHashBitCount() throws Exception {
+        Map<String, Object> opMap = new HashMap<>();
+        opMap.put("binName", "hll");
+        opMap.put("values", values);
+        opMap.put("indexBitCount", 4);
+        opMap.put("minHashBitCount", 16);
+        opMap.put(OPERATION_TYPE_KEY, AerospikeOperation.HLL_ADD);
+        opList.add(opMap);
+
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isOk());
+
+        Record record = client.operate(null, testKey, HLLOperation.getCount("hll"));
+        long count = (long) record.bins.get("hll");
+
+        Assert.assertEquals(7, count);
+    }
+
+    private boolean isWithinRelativeError(long expected, long estimate, double relativeError) {
+        return expected * (1 - relativeError) <= estimate || estimate <= expected * (1 + relativeError);
+    }
+
+    @Test
+    public void testHLLFold() throws Exception {
+        List<Value> vals0 = new ArrayList<>();
+        List<Value> vals1 = new ArrayList<>();
+        int nEntries = 1 << 18;
+        String binName = "hll";
+
+        for (int i = 0; i < nEntries / 2; i++) {
+            vals0.add(new Value.StringValue("key " + i));
+        }
+
+        for (int i = nEntries / 2; i < nEntries; i++) {
+            vals1.add(new Value.StringValue("key " + i));
+        }
+
+        client.operate(null, testKey, Operation.delete(), HLLOperation.add(HLLPolicy.Default, binName, vals0, 4),
+                HLLOperation.getCount(binName), HLLOperation.refreshCount(binName));
+
+        Map<String, Object> opMap = new HashMap<>();
+        opMap.put("binName", binName);
+        opMap.put("indexBitCount", 4);
+        opMap.put(OPERATION_TYPE_KEY, AerospikeOperation.HLL_FOLD);
+        opList.add(opMap);
+
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isOk());
+
+        Record record = client.operate(null, testKey, HLLOperation.fold(binName, 4), HLLOperation.getCount(binName),
+                HLLOperation.add(HLLPolicy.Default, binName, vals0),
+                HLLOperation.add(HLLPolicy.Default, binName, vals1), HLLOperation.getCount(binName));
+
+        List<?> result = record.getList(binName);
+
+        long countb = (Long) result.get(1);
+        long countb1 = (Long) result.get(4);
+        double countErr = (1.04 / Math.sqrt(Math.pow(2, 4))) * 6;
+
+        Assert.assertTrue(isWithinRelativeError(vals0.size(), countb, countErr));
+        Assert.assertTrue(isWithinRelativeError(vals0.size() + vals1.size(), countb1, countErr));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testHLLGetCount() {
+        createHLLBin("hll", values);
+
+        Map<String, Object> opMap = new HashMap<>();
+        opMap.put("binName", "hll");
+        opMap.put(OPERATION_TYPE_KEY, AerospikeOperation.HLL_COUNT);
+        opList.add(opMap);
+
+        Map<String, Object> resp = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
+        Map<String, Object> bins = (Map<String, Object>) resp.get("bins");
+        int count = (int) bins.get("hll");
 
         Assert.assertEquals(7, count);
     }
@@ -180,6 +277,48 @@ public class OperateV2HLLCorrectTests {
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
         Integer count = ((Map<String, Integer>) res.get("bins")).get("hll");
         Assert.assertEquals(10, count.intValue());
+    }
+
+    @Test
+    public void testHLLInit() throws Exception {
+        int indexBits = 16;
+        int minHashBits = 16;
+
+        Map<String, Object> opMap = new HashMap<>();
+
+        opMap.put("binName", "hll");
+        opMap.put("indexBitCount", indexBits);
+        opMap.put("minHashBitCount", minHashBits);
+        opMap.put(OPERATION_TYPE_KEY, AerospikeOperation.HLL_INIT);
+        opList.add(opMap);
+
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isOk());
+
+        Record record = client.operate(null, testKey, HLLOperation.describe("hll"));
+        List<?> description = record.getList("hll");
+
+        Assert.assertEquals(16L, description.get(0));
+        Assert.assertEquals(16L, description.get(1));
+    }
+
+    @Test
+    public void testHLLInitWithNullMinHashBits() throws Exception {
+        int indexBits = 16;
+
+        Map<String, Object> opMap = new HashMap<>();
+
+        opMap.put("binName", "hll");
+        opMap.put("indexBitCount", indexBits);
+        opMap.put(OPERATION_TYPE_KEY, AerospikeOperation.HLL_INIT);
+        opList.add(opMap);
+
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isOk());
+
+        Record record = client.operate(null, testKey, HLLOperation.describe("hll"));
+        List<?> description = record.getList("hll");
+
+        Assert.assertEquals(16L, description.get(0));
+        Assert.assertEquals(8L, description.get(1));
     }
 
     @SuppressWarnings("unchecked")

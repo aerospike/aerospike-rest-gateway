@@ -2,6 +2,8 @@ package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Bin;
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -19,29 +21,15 @@ public class AddOperation extends Operation {
     final public String type = OperationTypes.ADD;
 
     @Schema(required = true)
-    private String binName;
+    private final String binName;
 
     @Schema(required = true)
-    private Number incr;
+    private final Number incr;
 
-    public AddOperation(String binName, Number incr) {
+    @JsonCreator
+    public AddOperation(@JsonProperty(value = "binName", required = true) String binName,
+                        @JsonProperty(value = "incr", required = true) Number incr) {
         this.binName = binName;
-        this.incr = incr;
-    }
-
-    public String getBinName() {
-        return binName;
-    }
-
-    public void setBinName(String binName) {
-        this.binName = binName;
-    }
-
-    public Number getIncr() {
-        return incr;
-    }
-
-    public void setIncr(Number incr) {
         this.incr = incr;
     }
 

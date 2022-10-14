@@ -2,6 +2,9 @@ package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.cdt.ListSortFlags;
 
+/*
+ * Wraps constants in Aerospike client class ListSortFlags
+ */
 public enum ListSortFlag {
     /**
      * Default.  Preserve duplicate values when sorting list.
@@ -15,7 +18,7 @@ public enum ListSortFlag {
 
     public final int flag;
 
-    private ListSortFlag(int flag) {
+    ListSortFlag(int flag) {
         this.flag = flag;
     }
 }

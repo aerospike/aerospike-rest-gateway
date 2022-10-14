@@ -18,10 +18,10 @@ package com.aerospike.restclient.controllers;
 
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.RestClientError;
-import com.aerospike.restclient.domain.RestClientExecuteTask;
-import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
-import com.aerospike.restclient.domain.RestClientOperation;
 import com.aerospike.restclient.domain.auth.AuthDetails;
+import com.aerospike.restclient.domain.executemodels.ExecuteRequestBody;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTask;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTaskStatus;
 import com.aerospike.restclient.service.AerospikeExecuteService;
 import com.aerospike.restclient.util.APIParamDescriptors;
 import com.aerospike.restclient.util.HeaderHandler;
@@ -38,9 +38,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
-
 
 @Tag(name = "Execute Operations", description = "Execute operations in background scan/query.")
 @RestController
@@ -61,27 +59,23 @@ public class ExecuteV2Controller {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Multiple operations in background scan/query run successfully."
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Invalid parameters or request.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Not authorized to access the resource.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Namespace or set does not exist.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    ),
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "Generation conflict.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    )
+                    ), @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid parameters or request.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
+                    responseCode = "403",
+                    description = "Not authorized to access the resource.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
+                    responseCode = "404",
+                    description = "Namespace or set does not exist.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
+                    responseCode = "409",
+                    description = "Generation conflict.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
             }
     )
     @DefaultRestClientAPIResponses
@@ -91,24 +85,23 @@ public class ExecuteV2Controller {
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientWritePolicyQueryParams
-    public RestClientExecuteTask executeScanNamespaceSet(
-            @Parameter(
-                    description = APIParamDescriptors.NAMESPACE_NOTES,
-                    required = true
-            ) @PathVariable(value = "namespace") String namespace,
-            @Parameter(
-                    description = APIParamDescriptors.SET_NOTES,
-                    required = true
-            ) @PathVariable(value = "set") String set,
-            @Parameter(description = OPERATIONS_PARAM_NOTES, required = true)
-            @RequestBody List<RestClientOperation> operations,
-            @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public RestClientExecuteTask executeScanNamespaceSet(@Parameter(
+            description = APIParamDescriptors.NAMESPACE_NOTES, required = true
+    ) @PathVariable(value = "namespace") String namespace, @Parameter(
+            description = APIParamDescriptors.SET_NOTES, required = true
+    ) @PathVariable(value = "set") String set, @Parameter(
+            description = OPERATIONS_PARAM_NOTES,
+            required = true
+    ) @RequestBody ExecuteRequestBody body, @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
+                                                         @RequestHeader(
+                                                                 value = "Authorization",
+                                                                 required = false
+                                                         ) String basicAuth) {
 
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.executeV1Scan(authDetails, namespace, set, operations, policy, requestParams);
+        return service.executeV2Scan(authDetails, namespace, set, body.opsList, policy, requestParams);
     }
 
     @Operation(summary = EXECUTE_NOTES, operationId = "executeScanNamespace")
@@ -117,27 +110,23 @@ public class ExecuteV2Controller {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Multiple operations in background scan/query run successfully."
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Invalid parameters or request.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Not authorized to access the resource.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Namespace or set does not exist.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    ),
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "Generation conflict.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    )
+                    ), @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid parameters or request.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
+                    responseCode = "403",
+                    description = "Not authorized to access the resource.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
+                    responseCode = "404",
+                    description = "Namespace or set does not exist.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
+                    responseCode = "409",
+                    description = "Generation conflict.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
             }
     )
     @DefaultRestClientAPIResponses
@@ -147,39 +136,37 @@ public class ExecuteV2Controller {
             produces = {"application/json", "application/msgpack"}
     )
     @ASRestClientWritePolicyQueryParams
-    public RestClientExecuteTask executeScanNamespace(
-            @Parameter(
-                    description = APIParamDescriptors.NAMESPACE_NOTES,
-                    required = true
-            ) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = OPERATIONS_PARAM_NOTES, required = true)
-            @RequestBody List<RestClientOperation> operations,
-            @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public RestClientExecuteTask executeScanNamespace(@Parameter(
+            description = APIParamDescriptors.NAMESPACE_NOTES, required = true
+    ) @PathVariable(value = "namespace") String namespace, @Parameter(
+            description = OPERATIONS_PARAM_NOTES,
+            required = true
+    ) @RequestBody ExecuteRequestBody body, @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
+                                                      @RequestHeader(
+                                                              value = "Authorization",
+                                                              required = false
+                                                      ) String basicAuth) {
 
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
 
-        return service.executeV1Scan(authDetails, namespace, null, operations, policy, requestParams);
+        return service.executeV2Scan(authDetails, namespace, null, body.opsList, policy, requestParams);
     }
 
     @Operation(description = EXECUTE_STATUS_NOTES, operationId = "executeScanStatus")
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "200",
-                            description = "Status of background scan read successfully."
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Invalid parameters or request.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Not authorized to access the resource.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    )
+                            responseCode = "200", description = "Status of background scan read successfully."
+                    ), @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid parameters or request.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
+                    responseCode = "403",
+                    description = "Not authorized to access the resource.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
             }
     )
     @DefaultRestClientAPIResponses

@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -18,32 +20,19 @@ public class MapIncrementOperation extends MapOperation {
     final public String type = OperationTypes.MAP_INCREMENT;
 
     @Schema(required = true)
-    private Number incr;
+    private final Number incr;
 
     @Schema(required = true)
-    private Object key;
+    private final Object key;
 
     private MapPolicy mapPolicy;
 
-    public MapIncrementOperation(String binName, Number incr, Object key) {
+    @JsonCreator
+    public MapIncrementOperation(@JsonProperty(value = "binName", required = true) String binName,
+                                 @JsonProperty(value = "incr", required = true) Number incr,
+                                 @JsonProperty(value = "key", required = true) Object key) {
         super(binName);
         this.incr = incr;
-        this.key = key;
-    }
-
-    public Number getIncr() {
-        return incr;
-    }
-
-    public void setIncr(Number incr) {
-        this.incr = incr;
-    }
-
-    public Object getKey() {
-        return key;
-    }
-
-    public void setKey(Object key) {
         this.key = key;
     }
 

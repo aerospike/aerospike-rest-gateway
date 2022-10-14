@@ -1,8 +1,12 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.Optional;
 
 @Schema(
         description = "Return all items in a list with values between `valueBegin` and `valueEnd`. If `valueBegin` is omitted, all items with a value less than `valueEnd` will be returned. If `valueEnd` is omitted, all items with a value greater than `valueBegin` will be returned. Requires Aerospike Server `3.16.0.1` or later.",
@@ -18,26 +22,22 @@ public class ListGetByValueRangeOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET_BY_VALUE_RANGE;
 
     @Schema(required = true)
-    private ListReturnType listReturnType;
+    private final ListReturnType listReturnType;
 
     private boolean inverted;
 
-    private Value valueBegin;
+    private Object valueBegin;
 
-    private Value valueEnd;
+    private Object valueEnd;
 
-    public ListGetByValueRangeOperation(String binName, ListReturnType listReturnType) {
+    @JsonCreator
+    public ListGetByValueRangeOperation(@JsonProperty(value = "binName", required = true) String binName, @JsonProperty(
+            value = "listReturnType",
+            required = true
+    ) ListReturnType listReturnType) {
         super(binName);
         this.listReturnType = listReturnType;
         inverted = false;
-    }
-
-    public ListReturnType getListReturnType() {
-        return listReturnType;
-    }
-
-    public void setListReturnType(ListReturnType listReturnType) {
-        this.listReturnType = listReturnType;
     }
 
     public Object getValueBegin() {
@@ -45,15 +45,15 @@ public class ListGetByValueRangeOperation extends ListOperation {
     }
 
     public void setValueBegin(Object valueBegin) {
-        this.valueBegin = Value.get(valueBegin);
+        this.valueBegin = valueBegin;
     }
 
-    public Value getValueEnd() {
+    public Object getValueEnd() {
         return valueEnd;
     }
 
     public void setValueEnd(Object valueEnd) {
-        this.valueEnd = Value.get(valueEnd);
+        this.valueEnd = valueEnd;
     }
 
     public boolean isInverted() {
@@ -68,7 +68,9 @@ public class ListGetByValueRangeOperation extends ListOperation {
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
 
-        return com.aerospike.client.cdt.ListOperation.getByValueRange(binName, valueBegin, valueEnd,
-                listReturnType.toListReturnType(inverted), asCTX);
+        return com.aerospike.client.cdt.ListOperation.getByValueRange(binName,
+                Optional.ofNullable(valueBegin).map(Value::get).orElse(null),
+                Optional.ofNullable(valueEnd).map(Value::get).orElse(null), listReturnType.toListReturnType(inverted),
+                asCTX);
     }
 }

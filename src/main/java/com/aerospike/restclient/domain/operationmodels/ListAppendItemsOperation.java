@@ -2,6 +2,8 @@ package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
 import com.aerospike.restclient.domain.ctxmodels.CTX;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -23,21 +25,15 @@ public class ListAppendItemsOperation extends ListOperation {
     final public String type = OperationTypes.LIST_APPEND_ITEMS;
 
     @Schema(required = true)
-    private List<Object> values;
+    private final List<Object> values;
 
     // TODO, this probably needs an intermediate type
     private ListPolicy listPolicy;
 
-    public ListAppendItemsOperation(String binName, List<Object> values) {
+    @JsonCreator
+    public ListAppendItemsOperation(@JsonProperty("binName") String binName,
+                                    @JsonProperty("values") List<Object> values) {
         super(binName);
-        this.values = values;
-    }
-
-    public List<Object> getValues() {
-        return values;
-    }
-
-    public void setValues(List<Object> values) {
         this.values = values;
     }
 

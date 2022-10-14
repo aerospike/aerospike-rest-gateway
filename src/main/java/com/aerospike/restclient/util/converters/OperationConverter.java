@@ -37,6 +37,7 @@ import java.util.stream.Stream;
  * Class containing static methods used for converting Java Maps to Aerospike Operations.
  */
 @SuppressWarnings("unchecked")
+@Deprecated
 public class OperationConverter {
 
     // Constants for accessing values from maps
@@ -100,321 +101,120 @@ public class OperationConverter {
         if (opValues == null) {
             throw new InvalidOperationError("Operation must contain the \"opValues\" field");
         }
-        switch (opName) {
+        return switch (opName) {
             /* Basic Operations */
-            case ADD:
-                return mapToAddOp(opValues);
-
-            case APPEND:
-                return mapToAppendOp(opValues);
-
-            case GET:
-                return mapToGetOp(opValues);
-
-            case PREPEND:
-                return mapToPrependOp(opValues);
-
-            case READ:
-                return mapToReadOp(opValues);
-
-            case GET_HEADER:
-                return mapToGetHeaderOp(opValues);
-
-            case TOUCH:
-                return mapToTouchOp(opValues);
-
-            case PUT:
-                return mapToPutOp(opValues);
-
-            case DELETE:
-                return mapToDeleteOp(opValues);
+            case ADD -> mapToAddOp(opValues);
+            case APPEND -> mapToAppendOp(opValues);
+            case GET -> mapToGetOp(opValues);
+            case PREPEND -> mapToPrependOp(opValues);
+            case READ -> mapToReadOp(opValues);
+            case GET_HEADER -> mapToGetHeaderOp(opValues);
+            case TOUCH -> mapToTouchOp(opValues);
+            case PUT -> mapToPutOp(opValues);
+            case DELETE -> mapToDeleteOp(opValues);
 
             /* List Operations */
-            case LIST_APPEND:
-                return mapToListAppendOp(opValues);
-
-            case LIST_APPEND_ITEMS:
-                return mapToListAppendItemsOp(opValues);
-
-            case LIST_CLEAR:
-                return mapToListClearOp(opValues);
-
-            case LIST_GET:
-                return mapToListGetOp(opValues);
-
-            case LIST_GET_BY_INDEX:
-                return mapToListGetByIndexOp(opValues);
-
-            case LIST_GET_BY_INDEX_RANGE:
-                return mapToListGetByIndexRangeOp(opValues);
-
-            case LIST_GET_BY_RANK:
-                return mapToListGetByRankOp(opValues);
-
-            case LIST_GET_BY_RANK_RANGE:
-                return mapToListGetByRankRangeOp(opValues);
-
-            case LIST_GET_BY_VALUE_REL_RANK_RANGE:
-                return mapToListGetByValueRelRankRangeOp(opValues);
-
-            case LIST_GET_BY_VALUE:
-                return mapToListGetByValueOp(opValues);
-
-            case LIST_GET_BY_VALUE_RANGE:
-                return mapToListGetByValueRangeOp(opValues);
-
-            case LIST_GET_BY_VALUE_LIST:
-                return mapToListGetByValueListOp(opValues);
-
-            case LIST_GET_RANGE:
-                return mapToListGetRangeOp(opValues);
-
-            case LIST_INCREMENT:
-                return mapToListIncrementOp(opValues);
-
-            case LIST_INSERT:
-                return mapToListInsertOp(opValues);
-
-            case LIST_INSERT_ITEMS:
-                return mapToListInsertItemsOp(opValues);
-
-            case LIST_POP:
-                return mapToListPopOp(opValues);
-
-            case LIST_POP_RANGE:
-                return mapToListPopRangeOp(opValues);
-
-            case LIST_REMOVE:
-                return mapToListRemoveOp(opValues);
-
-            case LIST_REMOVE_BY_INDEX:
-                return mapToListRemoveByIndexOp(opValues);
-
-            case LIST_REMOVE_BY_INDEX_RANGE:
-                return mapToListRemoveByIndexRangeOp(opValues);
-
-            case LIST_REMOVE_BY_RANK:
-                return mapToListRemoveByRankOp(opValues);
-
-            case LIST_REMOVE_BY_RANK_RANGE:
-                return mapToListRemoveByRankRangeOp(opValues);
-
-            case LIST_REMOVE_BY_VALUE_REL_RANK_RANGE:
-                return mapToListRemoveByValueRelRankRangeOp(opValues);
-
-            case LIST_REMOVE_BY_VALUE:
-                return mapToListRemoveByValueOp(opValues);
-
-            case LIST_REMOVE_BY_VALUE_RANGE:
-                return mapToListRemoveByValueRangeOp(opValues);
-
-            case LIST_REMOVE_BY_VALUE_LIST:
-                return mapToListRemoveByValueListOp(opValues);
-
-            case LIST_REMOVE_RANGE:
-                return mapToListRemoveRangeOp(opValues);
-
-            case LIST_SET:
-                return mapToListSetOp(opValues);
-
-            case LIST_SET_ORDER:
-                return mapToListSetOrderOp(opValues);
-
-            case LIST_SIZE:
-                return mapToListSizeOp(opValues);
-
-            case LIST_SORT:
-                return mapToListSortOp(opValues);
-
-            case LIST_TRIM:
-                return mapToListTrimOp(opValues);
-
-            case LIST_CREATE:
-                return mapToListCreateOp(opValues);
+            case LIST_APPEND -> mapToListAppendOp(opValues);
+            case LIST_APPEND_ITEMS -> mapToListAppendItemsOp(opValues);
+            case LIST_CLEAR -> mapToListClearOp(opValues);
+            case LIST_GET -> mapToListGetOp(opValues);
+            case LIST_GET_BY_INDEX -> mapToListGetByIndexOp(opValues);
+            case LIST_GET_BY_INDEX_RANGE -> mapToListGetByIndexRangeOp(opValues);
+            case LIST_GET_BY_RANK -> mapToListGetByRankOp(opValues);
+            case LIST_GET_BY_RANK_RANGE -> mapToListGetByRankRangeOp(opValues);
+            case LIST_GET_BY_VALUE_REL_RANK_RANGE -> mapToListGetByValueRelRankRangeOp(opValues);
+            case LIST_GET_BY_VALUE -> mapToListGetByValueOp(opValues);
+            case LIST_GET_BY_VALUE_RANGE -> mapToListGetByValueRangeOp(opValues);
+            case LIST_GET_BY_VALUE_LIST -> mapToListGetByValueListOp(opValues);
+            case LIST_GET_RANGE -> mapToListGetRangeOp(opValues);
+            case LIST_INCREMENT -> mapToListIncrementOp(opValues);
+            case LIST_INSERT -> mapToListInsertOp(opValues);
+            case LIST_INSERT_ITEMS -> mapToListInsertItemsOp(opValues);
+            case LIST_POP -> mapToListPopOp(opValues);
+            case LIST_POP_RANGE -> mapToListPopRangeOp(opValues);
+            case LIST_REMOVE -> mapToListRemoveOp(opValues);
+            case LIST_REMOVE_BY_INDEX -> mapToListRemoveByIndexOp(opValues);
+            case LIST_REMOVE_BY_INDEX_RANGE -> mapToListRemoveByIndexRangeOp(opValues);
+            case LIST_REMOVE_BY_RANK -> mapToListRemoveByRankOp(opValues);
+            case LIST_REMOVE_BY_RANK_RANGE -> mapToListRemoveByRankRangeOp(opValues);
+            case LIST_REMOVE_BY_VALUE_REL_RANK_RANGE -> mapToListRemoveByValueRelRankRangeOp(opValues);
+            case LIST_REMOVE_BY_VALUE -> mapToListRemoveByValueOp(opValues);
+            case LIST_REMOVE_BY_VALUE_RANGE -> mapToListRemoveByValueRangeOp(opValues);
+            case LIST_REMOVE_BY_VALUE_LIST -> mapToListRemoveByValueListOp(opValues);
+            case LIST_REMOVE_RANGE -> mapToListRemoveRangeOp(opValues);
+            case LIST_SET -> mapToListSetOp(opValues);
+            case LIST_SET_ORDER -> mapToListSetOrderOp(opValues);
+            case LIST_SIZE -> mapToListSizeOp(opValues);
+            case LIST_SORT -> mapToListSortOp(opValues);
+            case LIST_TRIM -> mapToListTrimOp(opValues);
+            case LIST_CREATE -> mapToListCreateOp(opValues);
 
             /* Map Operations */
-            case MAP_CLEAR:
-                return mapToMapClearOp(opValues);
-
-            case MAP_GET_BY_INDEX:
-                return mapToMapGetByIndexOp(opValues);
-
-            case MAP_GET_BY_INDEX_RANGE:
-                return mapToMapGetByIndexRangeOp(opValues);
-
-            case MAP_GET_BY_KEY:
-                return mapToMapGetByKeyOp(opValues);
-
-            case MAP_GET_BY_KEY_LIST:
-                return mapToMapGetByKeyListOp(opValues);
-
-            case MAP_GET_BY_KEY_RANGE:
-                return mapToMapGetByKeyRangeOp(opValues);
-
-            case MAP_GET_BY_RANK:
-                return mapToMapGetByRankOp(opValues);
-
-            case MAP_GET_BY_RANK_RANGE:
-                return mapToMapGetByRankRangeOp(opValues);
-
-            case MAP_GET_BY_VALUE:
-                return mapToMapGetByValueOp(opValues);
-
-            case MAP_GET_BY_VALUE_RANGE:
-                return mapToMapGetByValueRangeOp(opValues);
-
-            case MAP_GET_BY_VALUE_LIST:
-                return mapToMapGetByValueListOp(opValues);
-
-            case MAP_GET_BY_KEY_REL_INDEX_RANGE:
-                return mapToMapGetByKeyRelIndexRangeOp(opValues);
-
-            case MAP_GET_BY_VALUE_REL_RANK_RANGE:
-                return mapToMapGetByValueRelRankRangeOp(opValues);
-
-            case MAP_INCREMENT:
-                return mapToMapIncrementOp(opValues);
-
-            case MAP_PUT:
-                return mapToMapPutOp(opValues);
-
-            case MAP_PUT_ITEMS:
-                return mapToMapPutItemsOp(opValues);
-
-            case MAP_REMOVE_BY_INDEX:
-                return mapToMapRemoveByIndexOp(opValues);
-
-            case MAP_REMOVE_BY_INDEX_RANGE:
-                return mapToMapRemoveByIndexRangeOp(opValues);
-
-            case MAP_REMOVE_BY_KEY:
-                return mapToMapRemoveByKeyOp(opValues);
-
-            case MAP_REMOVE_BY_KEY_RANGE:
-                return mapToMapRemoveByKeyRangeOp(opValues);
-
-            case MAP_REMOVE_BY_RANK:
-                return mapToMapRemoveByRankOp(opValues);
-
-            case MAP_REMOVE_BY_RANK_RANGE:
-                return mapToMapRemoveByRankRangeOp(opValues);
-
-            case MAP_REMOVE_BY_KEY_REL_INDEX_RANGE:
-                return mapToMapRemoveByKeyRelIndexRangeOp(opValues);
-
-            case MAP_REMOVE_BY_VALUE_REL_RANK_RANGE:
-                return mapToMapRemoveByValueRelRankRangeOp(opValues);
-
-            case MAP_REMOVE_BY_VALUE:
-                return mapToMapRemoveByValueOp(opValues);
-
-            case MAP_REMOVE_BY_VALUE_RANGE:
-                return mapToMapRemoveByValueRangeOp(opValues);
-
-            case MAP_REMOVE_BY_VALUE_LIST:
-                return mapToMapRemoveByValueListOp(opValues);
-
-            case MAP_SET_MAP_POLICY:
-                return mapToMapSetMapPolicyOp(opValues);
-
-            case MAP_SIZE:
-                return mapToMapSizeOp(opValues);
-
-            case MAP_CREATE:
-                return mapToMapCreateOp(opValues);
+            case MAP_CLEAR -> mapToMapClearOp(opValues);
+            case MAP_GET_BY_INDEX -> mapToMapGetByIndexOp(opValues);
+            case MAP_GET_BY_INDEX_RANGE -> mapToMapGetByIndexRangeOp(opValues);
+            case MAP_GET_BY_KEY -> mapToMapGetByKeyOp(opValues);
+            case MAP_GET_BY_KEY_LIST -> mapToMapGetByKeyListOp(opValues);
+            case MAP_GET_BY_KEY_RANGE -> mapToMapGetByKeyRangeOp(opValues);
+            case MAP_GET_BY_RANK -> mapToMapGetByRankOp(opValues);
+            case MAP_GET_BY_RANK_RANGE -> mapToMapGetByRankRangeOp(opValues);
+            case MAP_GET_BY_VALUE -> mapToMapGetByValueOp(opValues);
+            case MAP_GET_BY_VALUE_RANGE -> mapToMapGetByValueRangeOp(opValues);
+            case MAP_GET_BY_VALUE_LIST -> mapToMapGetByValueListOp(opValues);
+            case MAP_GET_BY_KEY_REL_INDEX_RANGE -> mapToMapGetByKeyRelIndexRangeOp(opValues);
+            case MAP_GET_BY_VALUE_REL_RANK_RANGE -> mapToMapGetByValueRelRankRangeOp(opValues);
+            case MAP_INCREMENT -> mapToMapIncrementOp(opValues);
+            case MAP_PUT -> mapToMapPutOp(opValues);
+            case MAP_PUT_ITEMS -> mapToMapPutItemsOp(opValues);
+            case MAP_REMOVE_BY_INDEX -> mapToMapRemoveByIndexOp(opValues);
+            case MAP_REMOVE_BY_INDEX_RANGE -> mapToMapRemoveByIndexRangeOp(opValues);
+            case MAP_REMOVE_BY_KEY -> mapToMapRemoveByKeyOp(opValues);
+            case MAP_REMOVE_BY_KEY_RANGE -> mapToMapRemoveByKeyRangeOp(opValues);
+            case MAP_REMOVE_BY_RANK -> mapToMapRemoveByRankOp(opValues);
+            case MAP_REMOVE_BY_RANK_RANGE -> mapToMapRemoveByRankRangeOp(opValues);
+            case MAP_REMOVE_BY_KEY_REL_INDEX_RANGE -> mapToMapRemoveByKeyRelIndexRangeOp(opValues);
+            case MAP_REMOVE_BY_VALUE_REL_RANK_RANGE -> mapToMapRemoveByValueRelRankRangeOp(opValues);
+            case MAP_REMOVE_BY_VALUE -> mapToMapRemoveByValueOp(opValues);
+            case MAP_REMOVE_BY_VALUE_RANGE -> mapToMapRemoveByValueRangeOp(opValues);
+            case MAP_REMOVE_BY_VALUE_LIST -> mapToMapRemoveByValueListOp(opValues);
+            case MAP_SET_MAP_POLICY -> mapToMapSetMapPolicyOp(opValues);
+            case MAP_SIZE -> mapToMapSizeOp(opValues);
+            case MAP_CREATE -> mapToMapCreateOp(opValues);
 
             /* Bit Operations */
-            case BIT_RESIZE:
-                return mapToBitResizeOp(opValues);
-
-            case BIT_INSERT:
-                return mapToBitInsertOp(opValues);
-
-            case BIT_REMOVE:
-                return mapToBitRemoveOp(opValues);
-
-            case BIT_SET:
-                return mapToBitSetOp(opValues);
-
-            case BIT_OR:
-                return mapToBitOrOp(opValues);
-
-            case BIT_XOR:
-                return mapToBitXorOp(opValues);
-
-            case BIT_AND:
-                return mapToBitAndOp(opValues);
-
-            case BIT_NOT:
-                return mapToBitNotOp(opValues);
-
-            case BIT_LSHIFT:
-                return mapToBitLshiftOp(opValues);
-
-            case BIT_RSHIFT:
-                return mapToBitRshiftOp(opValues);
-
-            case BIT_ADD:
-                return mapToBitAddOp(opValues);
-
-            case BIT_SUBTRACT:
-                return mapToBitSubtractOp(opValues);
-
-            case BIT_SET_INT:
-                return mapToBitSetIntOp(opValues);
-
-            case BIT_GET:
-                return mapToBitGetOp(opValues);
-
-            case BIT_COUNT:
-                return mapToBitCountOp(opValues);
-
-            case BIT_LSCAN:
-                return mapToBitLscanOp(opValues);
-
-            case BIT_RSCAN:
-                return mapToBitRscanOp(opValues);
-
-            case BIT_GET_INT:
-                return mapToBitGetIntOp(opValues);
+            case BIT_RESIZE -> mapToBitResizeOp(opValues);
+            case BIT_INSERT -> mapToBitInsertOp(opValues);
+            case BIT_REMOVE -> mapToBitRemoveOp(opValues);
+            case BIT_SET -> mapToBitSetOp(opValues);
+            case BIT_OR -> mapToBitOrOp(opValues);
+            case BIT_XOR -> mapToBitXorOp(opValues);
+            case BIT_AND -> mapToBitAndOp(opValues);
+            case BIT_NOT -> mapToBitNotOp(opValues);
+            case BIT_LSHIFT -> mapToBitLshiftOp(opValues);
+            case BIT_RSHIFT -> mapToBitRshiftOp(opValues);
+            case BIT_ADD -> mapToBitAddOp(opValues);
+            case BIT_SUBTRACT -> mapToBitSubtractOp(opValues);
+            case BIT_SET_INT -> mapToBitSetIntOp(opValues);
+            case BIT_GET -> mapToBitGetOp(opValues);
+            case BIT_COUNT -> mapToBitCountOp(opValues);
+            case BIT_LSCAN -> mapToBitLscanOp(opValues);
+            case BIT_RSCAN -> mapToBitRscanOp(opValues);
+            case BIT_GET_INT -> mapToBitGetIntOp(opValues);
 
             /* HLL Operations */
-            case HLL_INIT:
-                return mapToHLLInitOp(opValues);
-
-            case HLL_ADD:
-                return mapToHLLAddOp(opValues);
-
-            case HLL_SET_UNION:
-                return mapToHLLSetUnionOp(opValues);
-
-            case HLL_SET_COUNT:
-                return mapToHLLRefreshCountOp(opValues);
-
-            case HLL_FOLD:
-                return mapToHLLFoldOp(opValues);
-
-            case HLL_COUNT:
-                return mapToHLLGetCountOp(opValues);
-
-            case HLL_UNION:
-                return mapToHLLGetUnionOp(opValues);
-
-            case HLL_UNION_COUNT:
-                return mapToHLLGetUnionCountOp(opValues);
-
-            case HLL_INTERSECT_COUNT:
-                return mapToHLLGetIntersectCountOp(opValues);
-
-            case HLL_SIMILARITY:
-                return mapToHLLGetSimilarityOp(opValues);
-
-            case HLL_DESCRIBE:
-                return mapToHLLDescribeOp(opValues);
-
-            default:
-                throw new InvalidOperationError("Invalid operation: " + opName);
-        }
+            case HLL_INIT -> mapToHLLInitOp(opValues);
+            case HLL_ADD -> mapToHLLAddOp(opValues);
+            case HLL_SET_UNION -> mapToHLLSetUnionOp(opValues);
+            case HLL_SET_COUNT -> mapToHLLRefreshCountOp(opValues);
+            case HLL_FOLD -> mapToHLLFoldOp(opValues);
+            case HLL_COUNT -> mapToHLLGetCountOp(opValues);
+            case HLL_UNION -> mapToHLLGetUnionOp(opValues);
+            case HLL_UNION_COUNT -> mapToHLLGetUnionCountOp(opValues);
+            case HLL_INTERSECT_COUNT -> mapToHLLGetIntersectCountOp(opValues);
+            case HLL_SIMILARITY -> mapToHLLGetSimilarityOp(opValues);
+            case HLL_DESCRIBE -> mapToHLLDescribeOp(opValues);
+            default -> throw new InvalidOperationError("Invalid operation: " + opName);
+        };
     }
 
     private static Operation mapToAddOp(Map<String, Object> opValues) {
@@ -1776,14 +1576,11 @@ public class OperationConverter {
 
     private static BitOverflowAction getBitOverflowAction(Map<String, Object> map) {
         if (map.containsKey(BIT_OVERFLOW_ACTION_KEY)) {
-            switch (((String) map.get(BIT_OVERFLOW_ACTION_KEY)).toUpperCase()) {
-                case "SATURATE":
-                    return BitOverflowAction.SATURATE;
-                case "WRAP":
-                    return BitOverflowAction.WRAP;
-                default:
-                    return BitOverflowAction.FAIL;
-            }
+            return switch (((String) map.get(BIT_OVERFLOW_ACTION_KEY)).toUpperCase()) {
+                case "SATURATE" -> BitOverflowAction.SATURATE;
+                case "WRAP" -> BitOverflowAction.WRAP;
+                default -> BitOverflowAction.FAIL;
+            };
         } else {
             return BitOverflowAction.FAIL;
         }
@@ -2134,7 +1931,6 @@ public class OperationConverter {
     }
 
     private static com.aerospike.client.cdt.CTX[] extractCTX(Map<String, Object> opValues) {
-        // TODO: Represent all the Operation with models.  They can then be automatically deserialized and documented via swagger
         List<Map<String, Object>> ctxList = (List<Map<String, Object>>) opValues.get("ctx");
 
         if (ctxList == null) {

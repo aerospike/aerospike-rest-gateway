@@ -1118,8 +1118,6 @@ public class OperateV1MapCorrectTests {
         Assert.assertTrue(ASTestUtils.compareMap(objectMapInt, realMapBin));
     }
 
-    /* TODO: Test setMapPolicy */
-
     /*
      * Test that a create_only map write flag prevents updating an existing value
      */

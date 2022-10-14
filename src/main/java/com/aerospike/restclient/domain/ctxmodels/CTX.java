@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
         name = "CTX",
-        description = "Nested CDT context. Identifies the location of nested list/map to apply the operation.",
+        description = "The base type for describing a nested CDT context. Identifies the location of nested list/map to apply the operation.",
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/CTX.html"),
         oneOf = {
                 ListIndexCTX.class,
@@ -34,8 +34,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
                 @JsonSubTypes.Type(value = MapValueCTX.class, name = AerospikeAPIConstants.CTX.MAP_VALUE),
                 @JsonSubTypes.Type(value = MapKeyCreateCTX.class, name = AerospikeAPIConstants.CTX.MAP_KEY_CREATE),
                 @JsonSubTypes.Type(
-                        value = ListIndexCreateCTX.class,
-                        name = AerospikeAPIConstants.CTX.LIST_INDEX_CREATE
+                        value = ListIndexCreateCTX.class, name = AerospikeAPIConstants.CTX.LIST_INDEX_CREATE
                 ),
         }
 )

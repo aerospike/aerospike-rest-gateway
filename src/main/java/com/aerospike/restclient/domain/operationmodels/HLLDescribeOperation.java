@@ -7,7 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
         description = "Server returns indexBitCount and minHashBitCount used to create HLL bin in a list of longs. The list size is 2.",
-        externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/latest/com/aerospike/client/operation/HLLOperation.html")
+        externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/latest/com/aerospike/client/operation/HLLOperation.html"),
+        hidden = true
 )
 public class HLLDescribeOperation extends HLLOperation {
     @Schema(
@@ -18,7 +19,7 @@ public class HLLDescribeOperation extends HLLOperation {
     final public String type = OperationTypes.HLL_DESCRIBE;
 
     @JsonCreator
-    public HLLDescribeOperation(@JsonProperty("binName") String binName) {
+    public HLLDescribeOperation(@JsonProperty(value = "binName", required = true) String binName) {
         super(binName);
     }
 

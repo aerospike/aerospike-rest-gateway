@@ -2,6 +2,8 @@ package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
 import com.aerospike.client.operation.HLLPolicy;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -20,22 +22,15 @@ public class HLLAddOperation extends HLLOperation {
     final public String type = OperationTypes.HLL_ADD;
 
     @Schema(required = true)
-    private List<Object> values;
+    private final List<Object> values;
 
     private Integer indexBitCount;
 
     private Integer minHashBitCount;
 
-    public HLLAddOperation(String binName, List<Object> values) {
+    @JsonCreator
+    public HLLAddOperation(@JsonProperty("binName") String binName, @JsonProperty("values") List<Object> values) {
         super(binName);
-        this.values = values;
-    }
-
-    public List<Object> getValues() {
-        return values;
-    }
-
-    public void setValues(List<Object> values) {
         this.values = values;
     }
 

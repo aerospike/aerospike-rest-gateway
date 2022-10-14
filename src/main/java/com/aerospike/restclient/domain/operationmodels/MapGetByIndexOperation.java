@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,32 +19,19 @@ public class MapGetByIndexOperation extends MapOperation {
     final public String type = OperationTypes.MAP_GET_BY_INDEX;
 
     @Schema(required = true)
-    private int index;
+    private final int index;
 
     @Schema(required = true)
-    private MapReturnType mapReturnType;
+    private final MapReturnType mapReturnType;
 
     private boolean inverted;
 
-    public MapGetByIndexOperation(String binName, int index, MapReturnType mapReturnType) {
+    @JsonCreator
+    public MapGetByIndexOperation(@JsonProperty(value = "binName", required = true) String binName,
+                                  @JsonProperty(value = "index", required = true) int index,
+                                  @JsonProperty(value = "mapReturnType", required = true) MapReturnType mapReturnType) {
         super(binName);
         this.index = index;
-        this.mapReturnType = mapReturnType;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public MapReturnType getMapReturnType() {
-        return mapReturnType;
-    }
-
-    public void setMapReturnType(MapReturnType mapReturnType) {
         this.mapReturnType = mapReturnType;
     }
 

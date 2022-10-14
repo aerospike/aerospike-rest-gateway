@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Bin;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,32 +19,15 @@ public class PrependOperation extends Operation {
     )
     final public String type = OperationTypes.PREPEND;
 
-    public String getBinName() {
-        return binName;
-    }
-
-    public void setBinName(String binName) {
-        this.binName = binName;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
+    @Schema(required = true)
+    private final String binName;
 
     @Schema(required = true)
-    private String binName;
+    private final String value;
 
-    @Schema(required = true)
-    private String value;
-
-    public PrependOperation() {
-    }
-
-    public PrependOperation(String binName, String value) {
+    @JsonCreator
+    public PrependOperation(@JsonProperty(value = "binName", required = true) String binName,
+                            @JsonProperty(value = "value", required = true) String value) {
         this.binName = binName;
         this.value = value;
     }

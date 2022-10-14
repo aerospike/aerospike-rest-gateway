@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -18,7 +20,7 @@ public class ListRemoveByValueRangeOperation extends ListOperation {
     final public String type = OperationTypes.LIST_REMOVE_BY_VALUE_RANGE;
 
     @Schema(required = true)
-    private ListReturnType listReturnType;
+    private final ListReturnType listReturnType;
 
     private boolean inverted;
 
@@ -26,16 +28,13 @@ public class ListRemoveByValueRangeOperation extends ListOperation {
 
     private Object valueEnd;
 
-    public ListRemoveByValueRangeOperation(String binName, ListReturnType listReturnType) {
+    @JsonCreator
+    public ListRemoveByValueRangeOperation(@JsonProperty(value = "binName", required = true) String binName,
+                                           @JsonProperty(
+                                                   value = "listReturnType",
+                                                   required = true
+                                           ) ListReturnType listReturnType) {
         super(binName);
-        this.listReturnType = listReturnType;
-    }
-
-    public ListReturnType getListReturnType() {
-        return listReturnType;
-    }
-
-    public void setListReturnType(ListReturnType listReturnType) {
         this.listReturnType = listReturnType;
     }
 

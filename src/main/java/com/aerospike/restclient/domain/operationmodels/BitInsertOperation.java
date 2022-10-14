@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.operation.BitPolicy;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,30 +19,16 @@ public class BitInsertOperation extends BitOperation {
     final public String type = OperationTypes.BIT_INSERT;
 
     @Schema(required = true)
-    private int byteOffset;
+    private final int byteOffset;
 
     @Schema(required = true)
-    private byte[] value;
+    private final byte[] value;
 
-    public BitInsertOperation(String binName, int byteOffset, byte[] value) {
+    @JsonCreator
+    public BitInsertOperation(@JsonProperty("binName") String binName, @JsonProperty("byteOffset") int byteOffset,
+                              @JsonProperty("value") byte[] value) {
         super(binName);
         this.byteOffset = byteOffset;
-        this.value = value;
-    }
-
-    public int getByteOffset() {
-        return byteOffset;
-    }
-
-    public void setByteOffset(int byteOffset) {
-        this.byteOffset = byteOffset;
-    }
-
-    public byte[] getValue() {
-        return value;
-    }
-
-    public void setValue(byte[] value) {
         this.value = value;
     }
 

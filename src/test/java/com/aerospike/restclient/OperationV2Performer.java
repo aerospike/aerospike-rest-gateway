@@ -22,10 +22,10 @@ public interface OperationV2Performer {
 
 class JSONOperationV2Performer implements OperationV2Performer {
 
-    private static final Logger logger = LogManager.getLogger(JSONOperationV1Performer.class);
+    private static final Logger logger = LogManager.getLogger(JSONOperationV2Performer.class);
 
     private final ObjectMapper mapper;
-    private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {
+    private final TypeReference<Map<String, Object>> recordType = new TypeReference<>() {
     };
 
     public JSONOperationV2Performer() {
@@ -59,7 +59,7 @@ class MsgPackOperationV2Performer implements OperationV2Performer {
     private static final Logger logger = LogManager.getLogger(MsgPackOperationV1Performer.class);
 
     private final ObjectMapper mapper;
-    private final TypeReference<Map<String, Object>> recordType = new TypeReference<Map<String, Object>>() {
+    private final TypeReference<Map<String, Object>> recordType = new TypeReference<>() {
     };
 
     public MsgPackOperationV2Performer() {

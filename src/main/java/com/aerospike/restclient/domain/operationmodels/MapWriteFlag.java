@@ -2,6 +2,9 @@ package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.cdt.MapWriteFlags;
 
+/*
+ * Wraps constants in Aerospike client class MapWriteFlags
+ */
 public enum MapWriteFlag {
     /**
      * Default.  Allow create or update.
@@ -33,7 +36,7 @@ public enum MapWriteFlag {
 
     public final int flag;
 
-    private MapWriteFlag(int flag) {
+    MapWriteFlag(int flag) {
         this.flag = flag;
     }
 }

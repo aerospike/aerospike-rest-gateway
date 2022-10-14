@@ -19,7 +19,7 @@ public class MapClearOperation extends MapOperation {
     final public String type = OperationTypes.MAP_CLEAR;
 
     @JsonCreator
-    public MapClearOperation(@JsonProperty("binName") String binName) {
+    public MapClearOperation(@JsonProperty(value = "binName", required = true) String binName) {
         super(binName);
     }
 

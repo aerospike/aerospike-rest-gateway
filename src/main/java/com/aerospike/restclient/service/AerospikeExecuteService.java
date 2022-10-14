@@ -17,10 +17,10 @@
 package com.aerospike.restclient.service;
 
 import com.aerospike.client.policy.WritePolicy;
-import com.aerospike.restclient.domain.RestClientExecuteTask;
-import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
 import com.aerospike.restclient.domain.RestClientOperation;
 import com.aerospike.restclient.domain.auth.AuthDetails;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTask;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTaskStatus;
 import com.aerospike.restclient.domain.operationmodels.Operation;
 
 import java.util.List;
@@ -32,9 +32,8 @@ public interface AerospikeExecuteService {
                                         List<RestClientOperation> opsList, WritePolicy policy,
                                         Map<String, String> requestParams);
 
-    RestClientExecuteTask executeV2Scan(AuthDetails authDetails, String namespace, String set,
-                                        List<Operation> opsList, WritePolicy policy,
-                                        Map<String, String> requestParams);
+    RestClientExecuteTask executeV2Scan(AuthDetails authDetails, String namespace, String set, List<Operation> opsList,
+                                        WritePolicy policy, Map<String, String> requestParams);
 
     RestClientExecuteTaskStatus queryScanStatus(AuthDetails authDetails, String taskId);
 }

@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.restclient.domain.ctxmodels.CTX;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -79,7 +81,8 @@ import java.util.Optional;
         }
 )
 @Schema(
-        description = "TODO", oneOf = {
+        description = "The base type for describing all cdt map operations. Should not be used directly.", oneOf = {
+
         MapCreateOperation.class,
         MapClearOperation.class,
         MapGetByIndexOperation.class,
@@ -91,14 +94,14 @@ import java.util.Optional;
         MapGetByRankRangeOperation.class,
         MapGetByValueOperation.class,
         MapGetByValueRangeOperation.class,
-        ListGetByValueRelativeRankRangeOperation.class,
         MapGetByValueListOperation.class,
+        MapGetByValueRelativeRankRangeOperation.class,
+        MapGetByKeyRelativeIndexRange.class,
         MapIncrementOperation.class,
         MapPutOperation.class,
         MapPutItemsOperation.class,
         MapRemoveByIndexOperation.class,
         MapRemoveByIndexRangeOperation.class,
-        MapRemoveByKeyRelativeIndexRange.class,
         MapRemoveByKeyOperation.class,
         MapRemoveByKeyRangeOperation.class,
         MapRemoveByRankOperation.class,
@@ -106,6 +109,7 @@ import java.util.Optional;
         MapRemoveByValueOperation.class,
         MapRemoveByValueRangeOperation.class,
         MapRemoveByValueListOperation.class,
+        MapRemoveByValueRelativeRankRange.class,
         MapSetPolicyOperation.class,
         MapSizeOperation.class,
 }
@@ -117,15 +121,8 @@ abstract public class MapOperation extends Operation {
 
     protected List<CTX> ctx;
 
-    public MapOperation(String binName) {
-        this.binName = binName;
-    }
-
-    public String getBinName() {
-        return binName;
-    }
-
-    public void setBinName(String binName) {
+    @JsonCreator
+    public MapOperation(@JsonProperty(value = "binName", required = true) String binName) {
         this.binName = binName;
     }
 
@@ -136,8 +133,6 @@ abstract public class MapOperation extends Operation {
     public void setCtx(List<CTX> ctx) {
         this.ctx = ctx;
     }
-
-    abstract public com.aerospike.client.Operation toOperation();
 
     protected com.aerospike.client.cdt.CTX[] getASCTX() {
         return Optional.ofNullable(ctx)

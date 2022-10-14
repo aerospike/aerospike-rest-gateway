@@ -1,5 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+/*
+ * Wraps constants in Aerospike client class MapReturnType
+ */
 public enum MapReturnType {
     COUNT, INDEX, KEY, KEY_VALUE, NONE, RANK, REVERSE_INDEX, REVERSE_RANK, VALUE, EXISTS;
 

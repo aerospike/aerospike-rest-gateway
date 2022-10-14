@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,33 +19,22 @@ public class ListGetByRankRangeOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET_BY_RANK_RANGE;
 
     @Schema(required = true)
-    private int rank;
+    private final int rank;
 
     @Schema(required = true)
-    private ListReturnType listReturnType;
+    private final ListReturnType listReturnType;
     private boolean inverted;
 
     private Integer count;
 
-    public ListGetByRankRangeOperation(String binName, int rank, ListReturnType listReturnType) {
+    @JsonCreator
+    public ListGetByRankRangeOperation(@JsonProperty(value = "binName", required = true) String binName,
+                                       @JsonProperty(value = "rank", required = true) int rank, @JsonProperty(
+            value = "listReturnType",
+            required = true
+    ) ListReturnType listReturnType) {
         super(binName);
         this.rank = rank;
-        this.listReturnType = listReturnType;
-    }
-
-    public int getRank() {
-        return rank;
-    }
-
-    public void setRank(int rank) {
-        this.rank = rank;
-    }
-
-    public ListReturnType getListReturnType() {
-        return listReturnType;
-    }
-
-    public void setListReturnType(ListReturnType listReturnType) {
         this.listReturnType = listReturnType;
     }
 

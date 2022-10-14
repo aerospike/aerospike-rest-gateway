@@ -24,7 +24,7 @@ public class ListSortOperation extends ListOperation {
     private List<ListSortFlag> sortFlags;
 
     @JsonCreator
-    public ListSortOperation(@JsonProperty("binName") String binName) {
+    public ListSortOperation(@JsonProperty(value = "binName", required = true) String binName) {
         super(binName);
     }
 

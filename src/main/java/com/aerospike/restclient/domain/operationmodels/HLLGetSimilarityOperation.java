@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -19,18 +21,12 @@ public class HLLGetSimilarityOperation extends HLLOperation {
     final public String type = OperationTypes.HLL_SIMILARITY;
 
     @Schema(required = true)
-    private List<byte[]> values;
+    private final List<byte[]> values;
 
-    public HLLGetSimilarityOperation(String binName, List<byte[]> values) {
+    @JsonCreator
+    public HLLGetSimilarityOperation(@JsonProperty("binName") String binName,
+                                     @JsonProperty("values") List<byte[]> values) {
         super(binName);
-        this.values = values;
-    }
-
-    public List<byte[]> getValues() {
-        return values;
-    }
-
-    public void setValues(List<byte[]> values) {
         this.values = values;
     }
 

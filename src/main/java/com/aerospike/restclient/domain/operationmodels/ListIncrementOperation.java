@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -18,32 +20,19 @@ public class ListIncrementOperation extends ListOperation {
     final public String type = OperationTypes.LIST_INCREMENT;
 
     @Schema(required = true)
-    private int index;
+    private final int index;
 
     @Schema(required = true)
-    private Number incr;
+    private final Number incr;
 
     private ListPolicy listPolicy;
 
-    public ListIncrementOperation(String binName, int index, Number incr) {
+    @JsonCreator
+    public ListIncrementOperation(@JsonProperty(value = "binName", required = true) String binName,
+                                  @JsonProperty(value = "index", required = true) int index,
+                                  @JsonProperty(value = "incr", required = true) Number incr) {
         super(binName);
         this.index = index;
-        this.incr = incr;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public Number getIncr() {
-        return incr;
-    }
-
-    public void setIncr(Number incr) {
         this.incr = incr;
     }
 

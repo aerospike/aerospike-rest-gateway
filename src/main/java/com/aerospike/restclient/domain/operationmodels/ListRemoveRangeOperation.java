@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,20 +19,14 @@ public class ListRemoveRangeOperation extends ListOperation {
     final public String type = OperationTypes.LIST_REMOVE_RANGE;
 
     @Schema(required = true)
-    private int index;
+    private final int index;
 
     private Integer count;
 
-    public ListRemoveRangeOperation(String binName, Integer index) {
+    @JsonCreator
+    public ListRemoveRangeOperation(@JsonProperty(value = "binName", required = true) String binName,
+                                    @JsonProperty(value = "index", required = true) Integer index) {
         super(binName);
-        this.index = index;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
         this.index = index;
     }
 

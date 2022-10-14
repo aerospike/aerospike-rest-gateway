@@ -3,8 +3,8 @@ package com.aerospike.restclient;
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
-import com.aerospike.restclient.domain.RestClientExecuteTask;
-import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTask;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTaskStatus;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.*;
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(Parameterized.class)
 @SpringBootTest
-public class ExecuteTests {
+public class ExecuteV1Tests {
 
     @ClassRule
     public static final SpringClassRule springClassRule = new SpringClassRule();
@@ -82,15 +82,12 @@ public class ExecuteTests {
     @Parameterized.Parameters
     public static Object[][] getParams() {
         return new Object[][]{
-                {new ObjectMapper(), new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString(), true},
-                {
-                        new ObjectMapper(new MessagePackFactory()),
-                        new MsgPackResponseDeserializer(),
-                        "application/msgpack",
-                        true
-                },
-                {new ObjectMapper(), new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString(), false},
-                {
+                {new ObjectMapper(), new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString(), true}, {
+                new ObjectMapper(new MessagePackFactory()),
+                new MsgPackResponseDeserializer(),
+                "application/msgpack",
+                true
+        }, {new ObjectMapper(), new JSONResponseDeserializer(), MediaType.APPLICATION_JSON.toString(), false}, {
                         new ObjectMapper(new MessagePackFactory()),
                         new MsgPackResponseDeserializer(),
                         "application/msgpack",
@@ -99,7 +96,7 @@ public class ExecuteTests {
         };
     }
 
-    public ExecuteTests(ObjectMapper mapper, ResponseDeserializer deserializer, String mt, boolean useSet) {
+    public ExecuteV1Tests(ObjectMapper mapper, ResponseDeserializer deserializer, String mt, boolean useSet) {
         objectMapper = mapper;
         responseDeserializer = deserializer;
         currentMediaType = mt;
@@ -135,22 +132,23 @@ public class ExecuteTests {
         opList.add(opMap);
 
         byte[] payload = objectMapper.writeValueAsBytes(opList);
-        MockHttpServletResponse response = mockMVC.perform(post(testEndpoint)
-                        .contentType(currentMediaType)
-                        .content(payload)
-                        .accept(currentMediaType))
-                .andExpect(status().isOk()).andReturn().getResponse();
+        MockHttpServletResponse response = mockMVC.perform(
+                        post(testEndpoint).contentType(currentMediaType).content(payload).accept(currentMediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
 
         RestClientExecuteTask task = responseDeserializer.getResponse(response, RestClientExecuteTask.class);
 
         Thread.sleep(200);
         String endpoint = queryStatusEndpoint + task.getTaskId();
-        MockHttpServletResponse statusResponse = mockMVC.perform(
-                get(endpoint).accept(currentMediaType)
-                                                                ).andExpect(status().isOk()).andReturn().getResponse();
+        MockHttpServletResponse statusResponse = mockMVC.perform(get(endpoint).accept(currentMediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
 
-        RestClientExecuteTaskStatus status = responseDeserializer
-                .getResponse(statusResponse, RestClientExecuteTaskStatus.class);
+        RestClientExecuteTaskStatus status = responseDeserializer.getResponse(statusResponse,
+                RestClientExecuteTaskStatus.class);
 
         Assert.assertEquals("COMPLETE", status.getStatus());
 
@@ -160,3 +158,4 @@ public class ExecuteTests {
         }
     }
 }
+

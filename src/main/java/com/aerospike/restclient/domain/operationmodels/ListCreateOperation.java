@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.cdt.ListOrder;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -18,20 +20,14 @@ public class ListCreateOperation extends ListOperation {
     final public String type = OperationTypes.LIST_CREATE;
 
     @Schema(required = true)
-    private ListOrder order;
+    private final ListOrder order;
 
     private boolean pad;
 
-    public ListCreateOperation(String binName, ListOrder order) {
+    @JsonCreator
+    public ListCreateOperation(@JsonProperty(value = "binName", required = true) String binName,
+                               @JsonProperty(value = "order", required = true) ListOrder order) {
         super(binName);
-        this.order = order;
-    }
-
-    public ListOrder getOrder() {
-        return order;
-    }
-
-    public void setOrder(ListOrder order) {
         this.order = order;
     }
 

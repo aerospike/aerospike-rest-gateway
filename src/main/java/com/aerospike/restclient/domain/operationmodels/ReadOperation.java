@@ -18,17 +18,9 @@ public class ReadOperation extends Operation {
     final public String type = OperationTypes.READ;
 
     @Schema(required = true)
-    private String binName;
+    private final String binName;
 
-    public ReadOperation(@JsonProperty("binName") String binName) {
-        this.binName = binName;
-    }
-
-    public String getBinName() {
-        return binName;
-    }
-
-    public void setBinName(String binName) {
+    public ReadOperation(@JsonProperty(value = "binName", required = true) String binName) {
         this.binName = binName;
     }
 

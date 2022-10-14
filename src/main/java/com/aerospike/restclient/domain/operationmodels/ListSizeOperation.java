@@ -19,7 +19,7 @@ public class ListSizeOperation extends ListOperation {
     final public String type = OperationTypes.LIST_SIZE;
 
     @JsonCreator
-    public ListSizeOperation(@JsonProperty("binName") String binName) {
+    public ListSizeOperation(@JsonProperty(value = "binName", required = true) String binName) {
         super(binName);
     }
 

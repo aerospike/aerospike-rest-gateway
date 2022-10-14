@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -15,7 +17,8 @@ public class HLLGetCountOperation extends HLLOperation {
     )
     final public String type = OperationTypes.HLL_COUNT;
 
-    public HLLGetCountOperation(String binName) {
+    @JsonCreator
+    public HLLGetCountOperation(@JsonProperty(value = "binName", required = true) String binName) {
         super(binName);
     }
 

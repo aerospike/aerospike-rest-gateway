@@ -18,7 +18,7 @@ public class HLLRefreshCountOperation extends HLLOperation {
     final public String type = OperationTypes.HLL_SET_UNION;
 
     @JsonCreator
-    public HLLRefreshCountOperation(@JsonProperty("binName") String binName) {
+    public HLLRefreshCountOperation(@JsonProperty(value = "binName", required = true) String binName) {
         super(binName);
     }
 

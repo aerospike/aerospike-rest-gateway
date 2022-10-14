@@ -19,7 +19,6 @@ public class JSONMessageConverter extends MappingJackson2HttpMessageConverter {
         jsonMapper.registerModule(recordModule);
         jsonMapper.registerModule(new ParameterNamesModule());
         jsonMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//        jsonMapper.setConstructorDetector(ConstructorDetector.USE_PROPERTIES_BASED);
         return jsonMapper;
     }
 }

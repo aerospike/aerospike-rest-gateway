@@ -21,11 +21,11 @@ import com.aerospike.client.Operation;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class OperationsConverter {
 
     public static Operation[] mapListToOperationsArray(List<Map<String, Object>> ops) {
 
-        return ops.stream()
-                .map(OperationConverter::convertMapToOperation).toArray(Operation[]::new);
+        return ops.stream().map(OperationConverter::convertMapToOperation).toArray(Operation[]::new);
     }
 }

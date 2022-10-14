@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.operation.BitPolicy;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,30 +19,17 @@ public class BitResizeOperation extends BitOperation {
     final public String type = OperationTypes.BIT_RESIZE;
 
     @Schema(required = true)
-    private int byteSize;
+    private final int byteSize;
 
     @Schema(required = true)
-    private int resizeFlags;
+    private final int resizeFlags;
 
-    public BitResizeOperation(String binName, int byteSize, int resizeFlags) {
+    @JsonCreator
+    public BitResizeOperation(@JsonProperty(value = "binName", required = true) String binName,
+                              @JsonProperty(value = "byteSize", required = true) int byteSize,
+                              @JsonProperty(value = "resizeFlags", required = true) int resizeFlags) {
         super(binName);
         this.byteSize = byteSize;
-        this.resizeFlags = resizeFlags;
-    }
-
-    public int getByteSize() {
-        return byteSize;
-    }
-
-    public void setByteSize(int byteSize) {
-        this.byteSize = byteSize;
-    }
-
-    public int getResizeFlags() {
-        return resizeFlags;
-    }
-
-    public void setResizeFlags(int resizeFlags) {
         this.resizeFlags = resizeFlags;
     }
 

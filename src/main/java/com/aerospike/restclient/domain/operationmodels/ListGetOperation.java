@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,18 +19,12 @@ public class ListGetOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET;
 
     @Schema(required = true)
-    private int index;
+    private final int index;
 
-    public ListGetOperation(String binName, int index) {
+    @JsonCreator
+    public ListGetOperation(@JsonProperty(value = "binName", required = true) String binName,
+                            @JsonProperty(value = "index", required = true) int index) {
         super(binName);
-        this.index = index;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
         this.index = index;
     }
 

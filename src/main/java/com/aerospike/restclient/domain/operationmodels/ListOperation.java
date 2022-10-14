@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.restclient.domain.ctxmodels.CTX;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -86,7 +88,7 @@ import java.util.Optional;
         }
 )
 @Schema(
-        description = "TODO", oneOf = {
+        description = "The base type for describing all cdt list operations. Should not be used directly.", oneOf = {
         ListAppendOperation.class,
         ListAppendItemsOperation.class,
         ListCreateOperation.class,
@@ -121,6 +123,7 @@ import java.util.Optional;
         ListSizeOperation.class,
         ListSortOperation.class,
         ListTrimOperation.class,
+
 }
 )
 abstract public class ListOperation extends Operation {
@@ -129,15 +132,8 @@ abstract public class ListOperation extends Operation {
 
     protected List<CTX> ctx;
 
-    public ListOperation(String binName) {
-        this.binName = binName;
-    }
-
-    public String getBinName() {
-        return binName;
-    }
-
-    public void setBinName(String binName) {
+    @JsonCreator
+    public ListOperation(@JsonProperty(value = "binName", required = true) String binName) {
         this.binName = binName;
     }
 

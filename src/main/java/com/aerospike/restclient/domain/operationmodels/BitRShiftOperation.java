@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.operation.BitPolicy;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,42 +19,22 @@ public class BitRShiftOperation extends BitOperation {
     final public String type = OperationTypes.BIT_LSHIFT;
 
     @Schema(required = true)
-    private int bitOffset;
+    private final int bitOffset;
 
     @Schema(required = true)
-    private int bitSize;
+    private final int bitSize;
 
     @Schema(required = true)
-    private int shift;
+    private final int shift;
 
-    public BitRShiftOperation(String binName, int bitOffset, int bitSize, int shift) {
+    @JsonCreator
+    public BitRShiftOperation(@JsonProperty(value = "binName", required = true) String binName,
+                              @JsonProperty(value = "bitOffset", required = true) int bitOffset,
+                              @JsonProperty(value = "bitSize", required = true) int bitSize,
+                              @JsonProperty(value = "shift", required = true) int shift) {
         super(binName);
         this.bitOffset = bitOffset;
         this.bitSize = bitSize;
-        this.shift = shift;
-    }
-
-    public int getBitOffset() {
-        return bitOffset;
-    }
-
-    public void setBitOffset(int bitOffset) {
-        this.bitOffset = bitOffset;
-    }
-
-    public int getBitSize() {
-        return bitSize;
-    }
-
-    public void setBitSize(int bitSize) {
-        this.bitSize = bitSize;
-    }
-
-    public int getShift() {
-        return shift;
-    }
-
-    public void setShift(Integer shift) {
         this.shift = shift;
     }
 

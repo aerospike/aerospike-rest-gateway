@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(Parameterized.class)
 @SpringBootTest
-public class QueryTestError {
+public class QueryErrorTest {
 
     @ClassRule
     public static final SpringClassRule springClassRule = new SpringClassRule();
@@ -43,7 +43,6 @@ public class QueryTestError {
 
     @Autowired
     private WebApplicationContext wac;
-
 
     private final String namespace = "test";
     private final String setName = "queryError";
@@ -73,7 +72,7 @@ public class QueryTestError {
         };
     }
 
-    public QueryTestError(QueryErrorHandler handler, boolean useSet) {
+    public QueryErrorTest(QueryErrorHandler handler, boolean useSet) {
         queryHandler = handler;
 
         if (useSet) {
@@ -143,8 +142,8 @@ public class QueryTestError {
  * Implementations are provided for specifying JSON and MsgPack as return formats
  */
 interface QueryErrorHandler {
-    RestClientError perform(MockMvc mockMVC, String testEndpoint, QueryRequestBody payload, ResultMatcher matcher)
-            throws Exception;
+    RestClientError perform(MockMvc mockMVC, String testEndpoint, QueryRequestBody payload,
+                            ResultMatcher matcher) throws Exception;
 }
 
 class MsgPackQueryErrorHandler implements QueryErrorHandler {
@@ -167,8 +166,7 @@ class MsgPackQueryErrorHandler implements QueryErrorHandler {
 
     @Override
     public RestClientError perform(MockMvc mockMVC, String testEndpoint, QueryRequestBody payload,
-                                   ResultMatcher matcher)
-            throws Exception {
+                                   ResultMatcher matcher) throws Exception {
 
         byte[] response = ASTestUtils.performOperationAndExpect(mockMVC, testEndpoint,
                 msgPackMapper.objectToBytes(payload), matcher);
@@ -196,14 +194,12 @@ class JSONQueryErrorHandler implements QueryErrorHandler {
         return queryResponse;
     }
 
-
     @Override
     public RestClientError perform(MockMvc mockMVC, String testEndpoint, QueryRequestBody payload,
-                                   ResultMatcher matcher)
-            throws Exception {
+                                   ResultMatcher matcher) throws Exception {
         byte[] response = ASTestUtils.performOperationAndExpect(mockMVC, testEndpoint,
-                new String(msgPackMapper.objectToBytes(payload), StandardCharsets.UTF_8), matcher).getBytes(
-                StandardCharsets.UTF_8);
+                        new String(msgPackMapper.objectToBytes(payload), StandardCharsets.UTF_8), matcher)
+                .getBytes(StandardCharsets.UTF_8);
         return getQueryResponse(response);
     }
 }

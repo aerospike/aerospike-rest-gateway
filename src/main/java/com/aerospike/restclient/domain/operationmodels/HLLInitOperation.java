@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.operation.HLLPolicy;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,28 +19,22 @@ public class HLLInitOperation extends HLLOperation {
     final public String type = OperationTypes.HLL_INIT;
 
     @Schema(required = true)
-    private int indexBitCount;
+    private final int indexBitCount;
 
     private Integer minHashBitCount;
 
-    public HLLInitOperation(String binName, int indexBitCount) {
+    @JsonCreator
+    public HLLInitOperation(@JsonProperty(value = "binName", required = true) String binName,
+                            @JsonProperty(value = "indexBitCount", required = true) int indexBitCount) {
         super(binName);
         this.indexBitCount = indexBitCount;
     }
 
-    public int getIndexBitCount() {
-        return indexBitCount;
-    }
-
-    public void setIndexBitCount(int indexBitCount) {
-        this.indexBitCount = indexBitCount;
-    }
-
-    public int getMinHashBitCount() {
+    public Integer getMinHashBitCount() {
         return minHashBitCount;
     }
 
-    public void setMinHashBitCount(int minHashBitCount) {
+    public void setMinHashBitCount(Integer minHashBitCount) {
         this.minHashBitCount = minHashBitCount;
     }
 

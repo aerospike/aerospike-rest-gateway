@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.aerospike.restclient.domain;
+package com.aerospike.restclient.domain.executemodels;
 
 import com.aerospike.client.task.Task;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,16 +37,12 @@ public class RestClientExecuteTaskStatus {
     }
 
     private String translateStatusCode(int statusCode) {
-        switch (statusCode) {
-            case Task.IN_PROGRESS:
-                return "IN_PROGRESS";
-            case Task.COMPLETE:
-                return "COMPLETE";
-            case Task.NOT_FOUND:
-                return "NOT_FOUND";
-            default:
-                return "UNKNOWN";
-        }
+        return switch (statusCode) {
+            case Task.IN_PROGRESS -> "IN_PROGRESS";
+            case Task.COMPLETE -> "COMPLETE";
+            case Task.NOT_FOUND -> "NOT_FOUND";
+            default -> "UNKNOWN";
+        };
     }
 
     public RestClientExecuteTask getTask() {

@@ -1,5 +1,7 @@
 package com.aerospike.restclient.domain.operationmodels;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,7 +31,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
         }
 )
 @Schema(
-        description = "TODO", oneOf = {
+        description = "The base type for describing all bit operations. Should not be used directly.", oneOf = {
+        BitResizeOperation.class,
         BitInsertOperation.class,
         BitRemoveOperation.class,
         BitSetOperation.class,
@@ -41,27 +44,24 @@ import io.swagger.v3.oas.annotations.media.Schema;
         BitRShiftOperation.class,
         BitAddOperation.class,
         BitSubtractOperation.class,
-        BitSetIntOperation.class,
+        BitSetOperation.class,
         BitGetOperation.class,
         BitCountOperation.class,
         BitLScanOperation.class,
         BitRScanOperation.class,
+        BitSetIntOperation.class,
         BitGetIntOperation.class,
 }
-)
+
+//        public (\w*)Operation\((\w*) (\w*)\, (\w*) (\w*)\) \{
+//        public $1Operation($2 $3\, $4 $5\) {
+        )
 abstract public class BitOperation extends Operation {
     @Schema(required = true)
     protected String binName;
 
-    public BitOperation(String binName) {
-        this.binName = binName;
-    }
-
-    public String getBinName() {
-        return binName;
-    }
-
-    public void setBinName(String binName) {
+    @JsonCreator
+    public BitOperation(@JsonProperty(value = "binName", required = true) String binName) {
         this.binName = binName;
     }
 }

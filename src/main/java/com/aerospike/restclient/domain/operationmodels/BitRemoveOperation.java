@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.operation.BitPolicy;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,30 +19,17 @@ public class BitRemoveOperation extends BitOperation {
     final public String type = OperationTypes.BIT_REMOVE;
 
     @Schema(required = true)
-    private int byteOffset;
+    private final int byteOffset;
 
     @Schema(required = true)
-    private int byteSize;
+    private final int byteSize;
 
-    public BitRemoveOperation(String binName, int byteOffset, int byteSize) {
+    @JsonCreator
+    public BitRemoveOperation(@JsonProperty(value = "binName", required = true) String binName,
+                              @JsonProperty(value = "byteOffset", required = true) int byteOffset,
+                              @JsonProperty(value = "byteSize", required = true) int byteSize) {
         super(binName);
         this.byteOffset = byteOffset;
-        this.byteSize = byteSize;
-    }
-
-    public int getByteOffset() {
-        return byteOffset;
-    }
-
-    public void setByteOffset(int byteOffset) {
-        this.byteOffset = byteOffset;
-    }
-
-    public int getByteSize() {
-        return byteSize;
-    }
-
-    public void setByteSize(int byteSize) {
         this.byteSize = byteSize;
     }
 

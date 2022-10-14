@@ -16,56 +16,65 @@
  */
 package com.aerospike.restclient.domain;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.HashMap;
+import java.util.Map;
+
+@Deprecated
+@Schema(
+        description = "Deprecated in favor of more descriptive models.  The documentation for the old models can be found in the external documentation.",
+        externalDocs = @ExternalDocumentation(url = "@Schema(description = \"Deprecated in favor of more descriptive models.  The documentation for the old models can be found in the external documentation.\", externalDocs = @ExternalDocumentation(url= \"\"))\n")
+)
 public class RestClientOperation {
 
-	public RestClientOperation() {}
+    public RestClientOperation() {
+    }
 
-	public RestClientOperation(AerospikeOperation operation, Map<String, Object>values) {
-		this.operation = operation;
-		this.opValues = values;
-	}
+    public RestClientOperation(AerospikeOperation operation, Map<String, Object> values) {
+        this.operation = operation;
+        this.opValues = values;
+    }
 
-	@SuppressWarnings("unchecked")
-	public RestClientOperation(Map<String, Object>opMap) {
-		this.operation = AerospikeOperation.valueOf((String) opMap.get(AerospikeAPIConstants.OPERATION_FIELD));
-		this.opValues = (Map<String, Object>) opMap.get(AerospikeAPIConstants.OPERATION_VALUES_FIELD);
-	}
+    @SuppressWarnings("unchecked")
+    public RestClientOperation(Map<String, Object> opMap) {
+        this.operation = AerospikeOperation.valueOf((String) opMap.get(AerospikeAPIConstants.OPERATION_FIELD));
+        this.opValues = (Map<String, Object>) opMap.get(AerospikeAPIConstants.OPERATION_VALUES_FIELD);
+    }
 
-	@Schema(required = true, description = "Aerospike operation to perform on the record", example = "LIST_APPEND_ITEMS")
-	private AerospikeOperation operation;
+    @Schema(
+            required = true, description = "Aerospike operation to perform on the record", example = "LIST_APPEND_ITEMS"
+    )
+    private AerospikeOperation operation;
 
-	@Schema(required = true, example = "{\"bin\":\"listbin\", \"values\":[1,2,3]}")
-	private Map<String, Object> opValues;
+    @Schema(required = true, example = "{\"bin\":\"listbin\", \"values\":[1,2,3]}")
+    private Map<String, Object> opValues;
 
-	public AerospikeOperation getOperation() {
-		return this.operation;
-	}
+    public AerospikeOperation getOperation() {
+        return this.operation;
+    }
 
-	public Map<String, Object>getOpValues(){
-		return this.opValues;
-	}
+    public Map<String, Object> getOpValues() {
+        return this.opValues;
+    }
 
-	public void setOperation(AerospikeOperation op) {
-		this.operation = op;
-	}
+    public void setOperation(AerospikeOperation op) {
+        this.operation = op;
+    }
 
-	public void setOpValues(Map<String, Object>opVals) {
-		this.opValues = opVals;
-	}
+    public void setOpValues(Map<String, Object> opVals) {
+        this.opValues = opVals;
+    }
 
-	@JsonIgnore
-	public Map<String, Object>toMap() {
-		Map<String, Object>mapRepresentation = new HashMap<>();
-		mapRepresentation.put(AerospikeAPIConstants.OPERATION_FIELD, operation);
-		mapRepresentation.put(AerospikeAPIConstants.OPERATION_VALUES_FIELD, opValues);
-		return mapRepresentation;
-	}
+    @JsonIgnore
+    public Map<String, Object> toMap() {
+        Map<String, Object> mapRepresentation = new HashMap<>();
+        mapRepresentation.put(AerospikeAPIConstants.OPERATION_FIELD, operation);
+        mapRepresentation.put(AerospikeAPIConstants.OPERATION_VALUES_FIELD, opValues);
+        return mapRepresentation;
+    }
 }

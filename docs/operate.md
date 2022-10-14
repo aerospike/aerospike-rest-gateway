@@ -1,5 +1,9 @@
 <!-- markdownlint-disable no-duplicate-heading no-trailing-punctuation -->
 
+# DEPRECATED
+
+    Operatation documentation is now imbedded in the swagger documentation.
+
 # Rest Client Operations
 
 * [ADD](#add)

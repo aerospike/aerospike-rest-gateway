@@ -19,7 +19,7 @@ public class MapSizeOperation extends MapOperation {
     final public String type = OperationTypes.MAP_SIZE;
 
     @JsonCreator
-    public MapSizeOperation(@JsonProperty("binName") String binName) {
+    public MapSizeOperation(@JsonProperty(value = "binName", required = true) String binName) {
         super(binName);
     }
 

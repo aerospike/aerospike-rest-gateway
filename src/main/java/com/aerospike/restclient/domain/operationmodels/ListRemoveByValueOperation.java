@@ -2,6 +2,8 @@ package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
 import com.aerospike.restclient.domain.ctxmodels.CTX;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -22,32 +24,21 @@ public class ListRemoveByValueOperation extends ListOperation {
     final public String type = OperationTypes.LIST_REMOVE_BY_VALUE;
 
     @Schema(required = true)
-    private Object value;
+    private final Object value;
 
     @Schema(required = true)
-    private ListReturnType listReturnType;
+    private final ListReturnType listReturnType;
 
     private boolean inverted;
 
-    public ListRemoveByValueOperation(String binName, Object value, ListReturnType listReturnType) {
+    @JsonCreator
+    public ListRemoveByValueOperation(@JsonProperty(value = "binName", required = true) String binName,
+                                      @JsonProperty(value = "value", required = true) Object value, @JsonProperty(
+            value = "listReturnType",
+            required = true
+    ) ListReturnType listReturnType) {
         super(binName);
         this.value = value;
-        this.listReturnType = listReturnType;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
-    public ListReturnType getListReturnType() {
-        return listReturnType;
-    }
-
-    public void setListReturnType(ListReturnType listReturnType) {
         this.listReturnType = listReturnType;
     }
 

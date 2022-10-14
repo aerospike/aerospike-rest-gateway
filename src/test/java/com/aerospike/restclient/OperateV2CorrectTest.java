@@ -8,14 +8,13 @@ import com.aerospike.restclient.domain.operationmodels.OperationTypes;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.rules.SpringClassRule;
+import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -26,9 +25,15 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@RunWith(Parameterized.class)
 @SpringBootTest
 public class OperateV2CorrectTest {
+
+    @ClassRule
+    public static final SpringClassRule springClassRule = new SpringClassRule();
+
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     String OPERATION_TYPE_KEY = "type";
 
@@ -43,22 +48,57 @@ public class OperateV2CorrectTest {
     @Autowired
     private WebApplicationContext wac;
 
-    private final Key testKey = new Key("test", "junit", "operate");
-    private final Key testKey2 = new Key("test", "junit", "operate2");
-    private final Key intKey = new Key("test", "junit", 1);
-    private final Key bytesKey = new Key("test", "junit", new byte[]{1, 127, 127, 1});
-    private final String testEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "junit", "operate");
-    private final String batchEndpoint = "/v2/operate/read/test/junit";
-    private final TypeReference<Map<String, Object>> binType = new TypeReference<Map<String, Object>>() {
-    };
+    private final Key testKey;
+    private final Key testKey2;
+
+    private final Key testKey3;
+    private final Key intKey;
+    private final Key bytesKey;
+    private final String testEndpoint;
+    private final String batchEndpoint;
+    private final OperationV2Performer opPerformer;
+
+    @Parameterized.Parameters
+    public static Object[][] getParams() {
+        return new Object[][]{
+                {new JSONOperationV2Performer(), true},
+                {new MsgPackOperationV2Performer(), true},
+                {new JSONOperationV2Performer(), false},
+                {new MsgPackOperationV2Performer(), false}
+        };
+    }
+
+    /* Set up the correct msgpack/json performer for this set of runs. Also decided whether to use the endpoint with a set or without */
+    public OperateV2CorrectTest(OperationV2Performer performer, boolean useSet) {
+        this.opPerformer = performer;
+        if (useSet) {
+            testKey = new Key("test", "junit", "operate");
+            testEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "junit", "operate");
+            testKey2 = new Key("test", "junit", "operate2");
+            testKey3 = new Key("test", "junit", "operate3");
+            intKey = new Key("test", "junit", 1);
+            bytesKey = new Key("test", "junit", new byte[]{1, 127, 127, 1});
+            batchEndpoint = "/v2/operate/read/test/junit";
+        } else {
+            testKey = new Key("test", null, "operate");
+            testEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "operate");
+            testKey2 = new Key("test", null, "operate2");
+            testKey3 = new Key("test", null, "operate3");
+            intKey = new Key("test", null, 1);
+            bytesKey = new Key("test", null, new byte[]{1, 127, 127, 1});
+            batchEndpoint = "/v2/operate/read/test";
+        }
+    }
 
     @Before
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
         Bin strBin = new Bin("str", "bin");
         Bin intBin = new Bin("int", 5);
+        Bin doubleBin = new Bin("double", 5.2);
         client.put(null, testKey, strBin, intBin);
         client.put(null, testKey2, strBin, intBin);
+        client.put(null, testKey3, doubleBin);
         client.put(null, intKey, strBin, intBin);
         client.put(null, bytesKey, strBin, intBin);
     }
@@ -67,12 +107,13 @@ public class OperateV2CorrectTest {
     public void clean() {
         client.delete(null, testKey);
         client.delete(null, testKey2);
+        client.delete(null, testKey3);
         client.delete(null, intKey);
         client.delete(null, bytesKey);
     }
 
     @Test
-    public void testGetHeaderOp() throws Exception {
+    public void testGetHeaderOp() {
         Map<String, Object> opRequest = new HashMap<>();
         List<Map<String, Object>> opList = new ArrayList<>();
         Map<String, Object> opMap = new HashMap<>();
@@ -81,10 +122,8 @@ public class OperateV2CorrectTest {
 
         opMap.put(OPERATION_TYPE_KEY, OperationTypes.GET_HEADER);
 
-        String jsString = objectMapper.writeValueAsString(opRequest);
-        String jsonResult = ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, jsString);
+        Map<String, Object> rcRecord = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
 
-        Map<String, Object> rcRecord = objectMapper.readValue(jsonResult, binType);
         Assert.assertNull(rcRecord.get(AerospikeAPIConstants.RECORD_BINS));
 
         Record realRecord = client.getHeader(null, testKey);
@@ -95,7 +134,7 @@ public class OperateV2CorrectTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testGetOp() throws Exception {
+    public void testGetOp() {
         Map<String, Object> opRequest = new HashMap<>();
         List<Map<String, Object>> opList = new ArrayList<>();
         Map<String, Object> opMap = new HashMap<>();
@@ -104,17 +143,14 @@ public class OperateV2CorrectTest {
 
         opMap.put(OPERATION_TYPE_KEY, OperationTypes.GET);
 
-        String jsString = objectMapper.writeValueAsString(opRequest);
-        String jsonResult = ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, jsString);
-
-        Map<String, Object> binsObject = objectMapper.readValue(jsonResult, binType);
+        Map<String, Object> rcRecord = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
         Map<String, Object> realBins = client.get(null, testKey).bins;
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj((Map<String, Object>) binsObject.get("bins"), realBins));
+        Assert.assertTrue(ASTestUtils.compareMapStringObj((Map<String, Object>) rcRecord.get("bins"), realBins));
     }
 
     @Test
-    public void testAddOp() throws Exception {
+    public void testAddIntOp() throws Exception {
         Map<String, Object> opRequest = new HashMap<>();
         List<Map<String, Object>> opList = new ArrayList<>();
         Map<String, Object> opMap = new HashMap<>();
@@ -125,8 +161,7 @@ public class OperateV2CorrectTest {
         opMap.put("incr", 2);
         opMap.put(OPERATION_TYPE_KEY, OperationTypes.ADD);
 
-        String payload = objectMapper.writeValueAsString(opRequest);
-        ASTestUtils.performOperation(mockMVC, testEndpoint, payload);
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isOk());
 
         Map<String, Object> expectedBins = new HashMap<>();
         expectedBins.put("str", "bin");
@@ -137,9 +172,32 @@ public class OperateV2CorrectTest {
         Assert.assertTrue(ASTestUtils.compareMapStringObj(expectedBins, realBins));
     }
 
+    @Test
+    public void testAddDoubleOp() throws Exception {
+        Map<String, Object> opRequest = new HashMap<>();
+        List<Map<String, Object>> opList = new ArrayList<>();
+        Map<String, Object> opMap = new HashMap<>();
+        opRequest.put("opsList", opList);
+        opList.add(opMap);
+
+        opMap.put("binName", "double");
+        opMap.put("incr", 2.2);
+        opMap.put(OPERATION_TYPE_KEY, OperationTypes.ADD);
+
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint + "3", opRequest, status().isOk());
+
+        Map<String, Object> expectedBins = new HashMap<>();
+        expectedBins.put("str", "bin");
+        expectedBins.put("double", 7.2);
+
+        Map<String, Object> realBins = client.get(null, testKey).bins;
+
+        Assert.assertTrue(ASTestUtils.compareMapStringObj(expectedBins, realBins));
+    }
+
     @SuppressWarnings("unchecked")
     @Test
-    public void testReadOp() throws Exception {
+    public void testReadOp() {
         Map<String, Object> opRequest = new HashMap<>();
         List<Map<String, Object>> opList = new ArrayList<>();
         Map<String, Object> opMap = new HashMap<>();
@@ -149,13 +207,11 @@ public class OperateV2CorrectTest {
         opMap.put(OPERATION_TYPE_KEY, OperationTypes.READ);
         opMap.put("binName", "str");
 
-        String jsString = objectMapper.writeValueAsString(opRequest);
-        String jsonResult = ASTestUtils.performOperationAndReturn(mockMVC, testEndpoint, jsString);
-        Map<String, Object> binsObject = objectMapper.readValue(jsonResult, binType);
+        Map<String, Object> rcRecord = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
         /* Only read the str bin on the get*/
         Map<String, Object> realBins = client.get(null, testKey, "str").bins;
 
-        Assert.assertTrue(ASTestUtils.compareMapStringObj((Map<String, Object>) binsObject.get("bins"), realBins));
+        Assert.assertTrue(ASTestUtils.compareMapStringObj((Map<String, Object>) rcRecord.get("bins"), realBins));
     }
 
     @Test
@@ -172,9 +228,7 @@ public class OperateV2CorrectTest {
 
         opList.add(opMap);
 
-        String payload = objectMapper.writeValueAsString(opRequest);
-
-        ASTestUtils.performOperation(mockMVC, testEndpoint, payload);
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isOk());
 
         Map<String, Object> expectedBins = new HashMap<>();
         expectedBins.put("str", "bin");
@@ -198,9 +252,7 @@ public class OperateV2CorrectTest {
         opMap.put("value", "ary");
         opMap.put("binName", "str");
 
-        String jsString = objectMapper.writeValueAsString(opRequest);
-
-        ASTestUtils.performOperation(mockMVC, testEndpoint, jsString);
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isOk());
 
         /* Only read the str bin on the get*/
         Map<String, Object> expectedBins = new HashMap<>();
@@ -222,9 +274,7 @@ public class OperateV2CorrectTest {
         opMap.put("value", "ro");
         opMap.put("binName", "str");
 
-        String jsString = objectMapper.writeValueAsString(opRequest);
-
-        ASTestUtils.performOperation(mockMVC, testEndpoint, jsString);
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isOk());
 
         /* Only read the str bin on the get*/
         Map<String, Object> expectedBins = new HashMap<>();
@@ -249,9 +299,7 @@ public class OperateV2CorrectTest {
 
         opList.add(opMap);
 
-        String jsString = objectMapper.writeValueAsString(opRequest);
-
-        ASTestUtils.performOperation(mockMVC, testEndpoint, jsString);
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isOk());
 
         record = client.get(null, testKey);
         Assert.assertEquals(oldGeneration + 1, record.generation);
@@ -265,7 +313,14 @@ public class OperateV2CorrectTest {
         opRequest.put("opsList", opList);
         opList.add(opMap);
 
-        String intEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "junit", "1") + "?keytype=INTEGER";
+        String intEndpoint;
+
+        if (bytesKey.setName == null) {
+            intEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "1") + "?keytype=INTEGER";
+        } else {
+            intEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "junit", "1") + "?keytype=INTEGER";
+        }
+
         Record record = client.get(null, intKey);
         int oldGeneration = record.generation;
 
@@ -273,9 +328,7 @@ public class OperateV2CorrectTest {
 
         opList.add(opMap);
 
-        String jsString = objectMapper.writeValueAsString(opRequest);
-
-        ASTestUtils.performOperation(mockMVC, intEndpoint, jsString);
+        opPerformer.performOperationsAndExpect(mockMVC, intEndpoint, opRequest, status().isOk());
 
         record = client.get(null, intKey);
         Assert.assertEquals(oldGeneration + 1, record.generation);
@@ -290,16 +343,20 @@ public class OperateV2CorrectTest {
         opList.add(opMap);
 
         String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
-        String bytesEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "junit", urlBytes) + "?keytype=BYTES";
+        String bytesEndpoint;
+
+        if (bytesKey.setName == null) {
+            bytesEndpoint = ASTestUtils.buildEndpointV2("operate", "test", urlBytes) + "?keytype=BYTES";
+        } else {
+            bytesEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "junit", urlBytes) + "?keytype=BYTES";
+        }
 
         Record record = client.get(null, bytesKey);
         int oldGeneration = record.generation;
 
         opMap.put(OPERATION_TYPE_KEY, OperationTypes.TOUCH);
 
-        String jsString = objectMapper.writeValueAsString(opRequest);
-
-        ASTestUtils.performOperation(mockMVC, bytesEndpoint, jsString);
+        opPerformer.performOperationsAndExpect(mockMVC, bytesEndpoint, opRequest, status().isOk());
 
         record = client.get(null, bytesKey);
         Assert.assertEquals(oldGeneration + 1, record.generation);
@@ -317,7 +374,13 @@ public class OperateV2CorrectTest {
         opList.add(opMap);
 
         String urlBytes = Base64.getUrlEncoder().encodeToString(testKey.digest);
-        String bytesEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "junit", urlBytes) + "?keytype=DIGEST";
+        String bytesEndpoint;
+
+        if (testKey.setName == null) {
+            bytesEndpoint = ASTestUtils.buildEndpointV2("operate", "test", urlBytes) + "?keytype=DIGEST";
+        } else {
+            bytesEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "junit", urlBytes) + "?keytype=DIGEST";
+        }
 
         Record record = client.get(null, testKey);
         int oldGeneration = record.generation;
@@ -326,8 +389,7 @@ public class OperateV2CorrectTest {
 
         opList.add(opMap);
 
-        String jsString = objectMapper.writeValueAsString(opRequest);
-        ASTestUtils.performOperation(mockMVC, bytesEndpoint, jsString);
+        opPerformer.performOperationsAndExpect(mockMVC, bytesEndpoint, opRequest, status().isOk());
 
         record = client.get(null, testKey);
         Assert.assertEquals(oldGeneration + 1, record.generation);
@@ -336,7 +398,6 @@ public class OperateV2CorrectTest {
     @Test
     public void testGetOpNonExistentRecord() throws Exception {
         // Key that does not exist
-//        String fakeEndpoint = "/v2/operate/test/junit12345/operate";
         String fakeEndpoint = ASTestUtils.buildEndpointV2("operate", "test", "junit12345", "operate");
         Map<String, Object> opRequest = new HashMap<>();
         List<Map<String, Object>> opList = new ArrayList<>();
@@ -360,9 +421,7 @@ public class OperateV2CorrectTest {
 
         opMap.put(OPERATION_TYPE_KEY, OperationTypes.DELETE);
 
-        String jsString = objectMapper.writeValueAsString(opRequest);
-
-        ASTestUtils.performOperation(mockMVC, testEndpoint, jsString);
+        opPerformer.performOperationsAndExpect(mockMVC, testEndpoint, opRequest, status().isOk());
 
         Record record = client.get(null, testKey);
         Assert.assertNull(record);
@@ -384,7 +443,7 @@ public class OperateV2CorrectTest {
         String batchUrl = batchEndpoint + "?key=operate&key=operate2";
         String jsonResult = ASTestUtils.performOperationAndReturn(mockMVC, batchUrl, jsString);
 
-        TypeReference<List<Map<String, Object>>> ref = new TypeReference<List<Map<String, Object>>>() {
+        TypeReference<List<Map<String, Object>>> ref = new TypeReference<>() {
         };
         List<Object> recordBins = objectMapper.readValue(jsonResult, ref)
                 .stream()
@@ -418,7 +477,7 @@ public class OperateV2CorrectTest {
         String batchUrl = batchEndpoint + "?key=operate&key=operate2";
         String jsonResult = ASTestUtils.performOperationAndReturn(mockMVC, batchUrl, jsString);
 
-        TypeReference<List<Map<String, Object>>> ref = new TypeReference<List<Map<String, Object>>>() {
+        TypeReference<List<Map<String, Object>>> ref = new TypeReference<>() {
         };
         List<Object> recordBins = objectMapper.readValue(jsonResult, ref)
                 .stream()

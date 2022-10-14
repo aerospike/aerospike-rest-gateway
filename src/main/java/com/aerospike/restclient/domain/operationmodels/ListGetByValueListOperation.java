@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -20,32 +22,19 @@ public class ListGetByValueListOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET_BY_VALUE_LIST;
 
     @Schema(required = true)
-    private ListReturnType listReturnType;
+    private final ListReturnType listReturnType;
+
+    @Schema(required = true)
+    private final List<Object> values;
 
     private boolean inverted;
 
-    @Schema(required = true)
-    private List<Object> values;
-
-    public ListGetByValueListOperation(String binName, ListReturnType listReturnType, List<Object> values) {
+    @JsonCreator
+    public ListGetByValueListOperation(@JsonProperty("binName") String binName,
+                                       @JsonProperty("listReturnType") ListReturnType listReturnType,
+                                       @JsonProperty("values") List<Object> values) {
         super(binName);
         this.listReturnType = listReturnType;
-        this.values = values;
-    }
-
-    public ListReturnType getListReturnType() {
-        return listReturnType;
-    }
-
-    public void setListReturnType(ListReturnType listReturnType) {
-        this.listReturnType = listReturnType;
-    }
-
-    public List<Object> getValues() {
-        return values;
-    }
-
-    public void setValues(List<Object> values) {
         this.values = values;
     }
 

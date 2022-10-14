@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -18,48 +20,25 @@ public class MapGetByValueRelativeRankRangeOperation extends MapOperation {
     final public String type = OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE;
 
     @Schema(required = true)
-    private int rank;
+    private final int rank;
 
     @Schema(required = true)
-    private Object value;
+    private final Object value;
 
     @Schema(required = true)
-    private MapReturnType mapReturnType;
+    private final MapReturnType mapReturnType;
 
     private boolean inverted;
 
     private Integer count;
 
-    public MapGetByValueRelativeRankRangeOperation(String binName, int index, Object value,
-                                                   MapReturnType mapReturnType) {
+    @JsonCreator
+    public MapGetByValueRelativeRankRangeOperation(@JsonProperty("binName") String binName,
+                                                   @JsonProperty("rank") int rank, @JsonProperty("value") Object value,
+                                                   @JsonProperty("mapReturnType") MapReturnType mapReturnType) {
         super(binName);
-        this.rank = index;
-        this.value = value;
-        this.mapReturnType = mapReturnType;
-        inverted = false;
-    }
-
-    public int getRank() {
-        return rank;
-    }
-
-    public void setRank(int rank) {
         this.rank = rank;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
         this.value = value;
-    }
-
-    public MapReturnType getMapReturnType() {
-        return mapReturnType;
-    }
-
-    public void setMapReturnType(MapReturnType mapReturnType) {
         this.mapReturnType = mapReturnType;
     }
 

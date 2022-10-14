@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.cdt.MapOrder;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -18,18 +20,12 @@ public class MapCreateOperation extends MapOperation {
     final public String type = OperationTypes.MAP_CREATE;
 
     @Schema(required = true)
-    private MapOrder mapOrder;
+    private final MapOrder mapOrder;
 
-    public MapCreateOperation(String binName, MapOrder mapOrder) {
+    @JsonCreator
+    public MapCreateOperation(@JsonProperty(value = "binName", required = true) String binName,
+                              @JsonProperty(value = "mapOrder", required = true) MapOrder mapOrder) {
         super(binName);
-        this.mapOrder = mapOrder;
-    }
-
-    public MapOrder getMapOrder() {
-        return mapOrder;
-    }
-
-    public void setMapOrder(MapOrder mapOrder) {
         this.mapOrder = mapOrder;
     }
 

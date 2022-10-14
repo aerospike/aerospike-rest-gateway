@@ -1,6 +1,8 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 import com.aerospike.client.Value;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -18,32 +20,19 @@ public class MapPutOperation extends MapOperation {
     final public String type = OperationTypes.MAP_PUT;
 
     @Schema(required = true)
-    private Object key;
+    private final Object key;
 
     @Schema(required = true)
-    private Object value;
+    private final Object value;
 
     private MapPolicy mapPolicy;
 
-    public MapPutOperation(String binName, Object key, Object value) {
+    @JsonCreator
+    public MapPutOperation(@JsonProperty(value = "binName", required = true) String binName,
+                           @JsonProperty(value = "key", required = true) Object key,
+                           @JsonProperty(value = "value", required = true) Object value) {
         super(binName);
         this.key = key;
-        this.value = value;
-    }
-
-    public Object getKey() {
-        return key;
-    }
-
-    public void setKey(Object key) {
-        this.key = key;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
         this.value = value;
     }
 

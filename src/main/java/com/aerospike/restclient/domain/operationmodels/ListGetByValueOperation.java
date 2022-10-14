@@ -20,39 +20,23 @@ public class ListGetByValueOperation extends ListOperation {
     final public String type = OperationTypes.LIST_GET_BY_VALUE;
 
     @Schema(required = true)
-    private Value value;
+    private final Object value;
 
     @Schema(required = true)
-    private ListReturnType listReturnType;
+    private final ListReturnType listReturnType;
 
     private boolean inverted;
 
     @JsonCreator
-    public ListGetByValueOperation(@JsonProperty("binName") String binName) {
-        super(binName);
-    }
-
-    public ListGetByValueOperation(String binName, Value value, ListReturnType listReturnType) {
+    public ListGetByValueOperation(@JsonProperty(value = "binName", required = true) String binName,
+                                   @JsonProperty(value = "value", required = true) Object value, @JsonProperty(
+            value = "listReturnType",
+            required = true
+    ) ListReturnType listReturnType) {
         super(binName);
         this.value = value;
         this.listReturnType = listReturnType;
         inverted = false;
-    }
-
-    public Value getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = Value.get(value);
-    }
-
-    public ListReturnType getListReturnType() {
-        return listReturnType;
-    }
-
-    public void setListReturnType(ListReturnType listReturnType) {
-        this.listReturnType = listReturnType;
     }
 
     public boolean isInverted() {
@@ -67,7 +51,7 @@ public class ListGetByValueOperation extends ListOperation {
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
 
-        return com.aerospike.client.cdt.ListOperation.getByValue(binName, value,
+        return com.aerospike.client.cdt.ListOperation.getByValue(binName, Value.get(value),
                 listReturnType.toListReturnType(inverted), asCTX);
     }
 }

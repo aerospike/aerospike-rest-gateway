@@ -16,16 +16,15 @@ public class MsgPackConverter extends AbstractJackson2HttpMessageConverter {
 
     MsgPackConverter() {
         super(getASMsgPackObjectMapper(), mediaType);
-        ObjectMapper mapper = getObjectMapper();
-        mapper.registerModule(new ParameterNamesModule());
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//        mapper.setConstructorDetector(ConstructorDetector.USE_PROPERTIES_BASED);
-        addSerializerModules(mapper);
     }
 
     public static ObjectMapper getASMsgPackObjectMapper() {
         MessagePackFactory aerospikeMsgPackFactory = new MessagePackFactory();
-        return new ObjectMapper(aerospikeMsgPackFactory);
+        ObjectMapper mapper = new ObjectMapper(aerospikeMsgPackFactory);
+        mapper.registerModule(new ParameterNamesModule());
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        addSerializerModules(mapper);
+        return mapper;
     }
 
     private static void addSerializerModules(ObjectMapper mapper) {
