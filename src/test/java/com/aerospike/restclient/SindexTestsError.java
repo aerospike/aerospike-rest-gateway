@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -48,8 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SindexTestsError {
 
     String endpoint = "/v1/index";
-    /* List of index [ns, name] pairs to delete after each test */
-    List<String[]> createdIndexPairs;
+    /* List of index [ns, name] pairs to delete after each test */ List<String[]> createdIndexPairs;
 
     RestClientIndex createdRCIndex;
     String testNS = "test";
@@ -101,9 +100,7 @@ public class SindexTestsError {
         postTestIdx.setCollectionType(testIndexCollectionType);
 
         String indexPayload = objectMapper.writeValueAsString(postTestIdx);
-        mockMVC.perform(post(endpoint).
-                        contentType(MediaType.APPLICATION_JSON)
-                        .content(indexPayload))
+        mockMVC.perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(indexPayload))
                 .andExpect(status().isAccepted()); // Server changed in 6.1 to return 'ok'
     }
 
@@ -118,17 +115,13 @@ public class SindexTestsError {
         postTestIdx.setCollectionType(testIndexCollectionType);
 
         String indexPayload = objectMapper.writeValueAsString(postTestIdx);
-        mockMVC.perform(post(endpoint).
-                        contentType(MediaType.APPLICATION_JSON)
-                        .content(indexPayload))
+        mockMVC.perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(indexPayload))
                 .andExpect(status().isAccepted()); // Server changed in 6.1 to return 'ok'
     }
 
-
     @Test
     public void getIndexesForNonExistentNS() throws Exception {
-        mockMVC.perform(get(endpoint + "/NotARealNS"))
-                .andExpect(status().isNotFound());
+        mockMVC.perform(get(endpoint + "/NotARealNS")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -140,16 +133,13 @@ public class SindexTestsError {
         idxMap.put("name", "cool_index");
 
         String indexPayload = objectMapper.writeValueAsString(idxMap);
-        mockMVC.perform(post(endpoint).
-                        contentType(MediaType.APPLICATION_JSON)
-                        .content(indexPayload))
+        mockMVC.perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(indexPayload))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void getIndexStatsForNonExistentIndex() throws Exception {
-        mockMVC.perform(get(endpoint + "/" + testNS + "/" + "NOTREALIDX"))
-                .andExpect(status().isNotFound());
+        mockMVC.perform(get(endpoint + "/" + testNS + "/" + "NOTREALIDX")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -169,8 +159,8 @@ public class SindexTestsError {
         createdRCIndex.setCollectionType(testIndexCollectionType);
 
         try {
-            client.createIndex(null, testNS, testIndexSet,
-                    indexName, binName, testIndexType, testIndexCollectionType).waitTillComplete(500, 5000);
+            client.createIndex(null, testNS, testIndexSet, indexName, binName, testIndexType, testIndexCollectionType)
+                    .waitTillComplete(500, 5000);
         } catch (AerospikeException e) {
         }
         // Wait for the index to exist.

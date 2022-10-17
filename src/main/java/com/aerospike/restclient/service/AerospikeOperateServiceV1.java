@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -23,6 +23,8 @@ import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.restclient.domain.RestClientOperation;
 import com.aerospike.restclient.domain.RestClientRecord;
 import com.aerospike.restclient.domain.auth.AuthDetails;
+import com.aerospike.restclient.domain.operationmodels.OperateResponseRecordBody;
+import com.aerospike.restclient.domain.operationmodels.OperateResponseRecordsBody;
 import com.aerospike.restclient.domain.operationmodels.Operation;
 import com.aerospike.restclient.handlers.OperateHandler;
 import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
@@ -38,7 +40,6 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class AerospikeOperateServiceV1 implements AerospikeOperateService {
@@ -53,8 +54,7 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
     @Override
     public RestClientRecord operateV1(AuthDetails authDetails, String namespace, String set, String key,
                                       List<RestClientOperation> opsList, RecordKeyType keyType, WritePolicy policy) {
-        List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap)
-                .collect(Collectors.toList());
+        List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap).toList();
         com.aerospike.client.Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
         return operate(authDetails, namespace, set, key, operations, keyType, policy);
     }
@@ -63,26 +63,27 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
     @Override
     public RestClientRecord[] operateV1(AuthDetails authDetails, String namespace, String set, String[] keys,
                                         List<RestClientOperation> opsList, RecordKeyType keyType, BatchPolicy policy) {
-        List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap)
-                .collect(Collectors.toList());
+        List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap).toList();
         com.aerospike.client.Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
         return operate(authDetails, namespace, set, keys, operations, keyType, policy);
     }
 
     @Override
-    public RestClientRecord operateV2(AuthDetails authDetails, String namespace, String set, String key,
-                                      List<Operation> opsList, RecordKeyType keyType, WritePolicy policy) {
-        com.aerospike.client.Operation[] operations = opsList.stream().map(Operation::toOperation).toArray(
-                com.aerospike.client.Operation[]::new);
-        return operate(authDetails, namespace, set, key, operations, keyType, policy);
+    public OperateResponseRecordBody operateV2(AuthDetails authDetails, String namespace, String set, String key,
+                                               List<Operation> opsList, RecordKeyType keyType, WritePolicy policy) {
+        com.aerospike.client.Operation[] operations = opsList.stream()
+                .map(Operation::toOperation)
+                .toArray(com.aerospike.client.Operation[]::new);
+        return new OperateResponseRecordBody(operate(authDetails, namespace, set, key, operations, keyType, policy));
     }
 
     @Override
-    public RestClientRecord[] operateV2(AuthDetails authDetails, String namespace, String set, String[] keys,
-                                        List<Operation> opsList, RecordKeyType keyType, BatchPolicy policy) {
-        com.aerospike.client.Operation[] operations = opsList.stream().map(Operation::toOperation).toArray(
-                com.aerospike.client.Operation[]::new);
-        return operate(authDetails, namespace, set, keys, operations, keyType, policy);
+    public OperateResponseRecordsBody operateV2(AuthDetails authDetails, String namespace, String set, String[] keys,
+                                                List<Operation> opsList, RecordKeyType keyType, BatchPolicy policy) {
+        com.aerospike.client.Operation[] operations = opsList.stream()
+                .map(Operation::toOperation)
+                .toArray(com.aerospike.client.Operation[]::new);
+        return new OperateResponseRecordsBody(operate(authDetails, namespace, set, keys, operations, keyType, policy));
     }
 
     public RestClientRecord operate(AuthDetails authDetails, String namespace, String set, String key,
@@ -91,8 +92,8 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("rest-client");
 
         Key opKey = KeyBuilder.buildKey(namespace, set, key, keyType);
-        Record fetchedRecord = circuitBreaker.run(() -> OperateHandler.create(clientPool.getClient(authDetails))
-                .operate(policy, opKey, opsList));
+        Record fetchedRecord = circuitBreaker.run(
+                () -> OperateHandler.create(clientPool.getClient(authDetails)).operate(policy, opKey, opsList));
         if (fetchedRecord == null) {
             throw new RestClientErrors.RecordNotFoundError();
         }
@@ -108,8 +109,8 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
         Key[] opKeys = Arrays.stream(keys)
                 .map(k -> KeyBuilder.buildKey(namespace, set, k, keyType))
                 .toArray(Key[]::new);
-        Record[] fetchedRecords = circuitBreaker.run(() -> OperateHandler.create(clientPool.getClient(authDetails))
-                .operate(policy, opKeys, opsList));
+        Record[] fetchedRecords = circuitBreaker.run(
+                () -> OperateHandler.create(clientPool.getClient(authDetails)).operate(policy, opKeys, opsList));
 
         return Arrays.stream(fetchedRecords).map(RestClientRecord::new).toArray(RestClientRecord[]::new);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -90,12 +90,10 @@ public class ExecuteV2Controller {
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
             description = APIParamDescriptors.SET_NOTES, required = true
     ) @PathVariable(value = "set") String set, @Parameter(
-            description = OPERATIONS_PARAM_NOTES,
-            required = true
+            description = OPERATIONS_PARAM_NOTES, required = true
     ) @RequestBody ExecuteRequestBody body, @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                                          @RequestHeader(
-                                                                 value = "Authorization",
-                                                                 required = false
+                                                                 value = "Authorization", required = false
                                                          ) String basicAuth) {
 
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);
@@ -139,12 +137,10 @@ public class ExecuteV2Controller {
     public RestClientExecuteTask executeScanNamespace(@Parameter(
             description = APIParamDescriptors.NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
-            description = OPERATIONS_PARAM_NOTES,
-            required = true
+            description = OPERATIONS_PARAM_NOTES, required = true
     ) @RequestBody ExecuteRequestBody body, @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                                       @RequestHeader(
-                                                              value = "Authorization",
-                                                              required = false
+                                                              value = "Authorization", required = false
                                                       ) String basicAuth) {
 
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams);

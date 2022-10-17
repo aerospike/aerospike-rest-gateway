@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 Aerospike, Inc.
+ *
+ * Portions may be licensed to Aerospike, Inc. under one or more contributor
+ * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.aerospike.restclient;
 
 import com.aerospike.client.Record;
@@ -186,7 +202,8 @@ public class OperateV2HLLCorrectTests {
         opList.add(opMap);
 
         Map<String, Object> resp = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
-        Map<String, Object> bins = (Map<String, Object>) resp.get("bins");
+        Map<String, Object> record = (Map<String, Object>) resp.get("record");
+        Map<String, Object> bins = (Map<String, Object>) record.get("bins");
         int count = (int) bins.get("hll");
 
         Assert.assertEquals(7, count);
@@ -248,12 +265,15 @@ public class OperateV2HLLCorrectTests {
         opList.add(opMap);
 
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
+        Map<String, Object> record = (Map<String, Object>) res.get("record");
         byte[] expected;
         try {
             expected = Base64.getDecoder()
-                    .decode(((Map<String, Map<String, String>>) res.get("bins")).get("hll").get("object").getBytes());
+                    .decode(((Map<String, Map<String, String>>) record.get("bins")).get("hll")
+                            .get("object")
+                            .getBytes());
         } catch (ClassCastException e) {
-            expected = (byte[]) ((Map<String, Map<String, Object>>) res.get("bins")).get("hll").get("object");
+            expected = (byte[]) ((Map<String, Map<String, Object>>) record.get("bins")).get("hll").get("object");
         }
         Value.HLLValue value = new Value.HLLValue(expected);
         Assert.assertNotNull(value);
@@ -275,7 +295,8 @@ public class OperateV2HLLCorrectTests {
         opList.add(opMap);
 
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
-        Integer count = ((Map<String, Integer>) res.get("bins")).get("hll");
+        Map<String, Object> record = (Map<String, Object>) res.get("record");
+        Integer count = ((Map<String, Integer>) record.get("bins")).get("hll");
         Assert.assertEquals(10, count.intValue());
     }
 
@@ -337,7 +358,8 @@ public class OperateV2HLLCorrectTests {
         opList.add(opMap);
 
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
-        Integer count = ((Map<String, Integer>) res.get("bins")).get("hll");
+        Map<String, Object> record = (Map<String, Object>) res.get("record");
+        Integer count = ((Map<String, Integer>) record.get("bins")).get("hll");
         Assert.assertEquals(5, count.intValue());
     }
 
@@ -357,7 +379,8 @@ public class OperateV2HLLCorrectTests {
         opList.add(opMap);
 
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
-        Double count = ((Map<String, Double>) res.get("bins")).get("hll");
+        Map<String, Object> record = (Map<String, Object>) res.get("record");
+        Double count = ((Map<String, Double>) record.get("bins")).get("hll");
         Assert.assertEquals(0.5, count, 0.005);
     }
 
@@ -373,7 +396,8 @@ public class OperateV2HLLCorrectTests {
         opList.add(opMap);
 
         Map<String, Object> res = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
-        List<Integer> values = ((Map<String, List<Integer>>) res.get("bins")).get("hll");
+        Map<String, Object> record = (Map<String, Object>) res.get("record");
+        List<Integer> values = ((Map<String, List<Integer>>) record.get("bins")).get("hll");
         Assert.assertEquals(Arrays.asList(8, 8), values);
     }
 

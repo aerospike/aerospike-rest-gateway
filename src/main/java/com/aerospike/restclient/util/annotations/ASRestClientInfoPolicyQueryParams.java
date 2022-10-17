@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -26,11 +26,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@Parameters(value = {@Parameter(
-        name = AerospikeAPIConstants.TIMEOUT,
-        description = APIDescriptors.INFO_POLICY_TIMEOUT,
-        schema = @Schema(type = "int"),
-        in = ParameterIn.QUERY)})
+@Parameters(
+        value = {
+                @Parameter(
+                        name = AerospikeAPIConstants.TIMEOUT,
+                        description = APIDescriptors.INFO_POLICY_TIMEOUT,
+                        schema = @Schema(type = "int"),
+                        in = ParameterIn.QUERY
+                )
+        }
+)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ASRestClientInfoPolicyQueryParams {
 

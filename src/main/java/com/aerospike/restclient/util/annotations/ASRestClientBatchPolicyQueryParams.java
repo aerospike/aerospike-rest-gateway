@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -28,28 +28,31 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Parameters(value = {
-        @Parameter(
-                name = AerospikeAPIConstants.ALLOW_INLINE,
-                description = APIDescriptors.BATCH_POLICY_ALLOW_INLINE_NOTES,
-                schema = @Schema(type = "boolean"),
-                in = ParameterIn.QUERY),
-        @Parameter(
+@Parameters(
+        value = {
+                @Parameter(
+                        name = AerospikeAPIConstants.ALLOW_INLINE,
+                        description = APIDescriptors.BATCH_POLICY_ALLOW_INLINE_NOTES,
+                        schema = @Schema(type = "boolean"),
+                        in = ParameterIn.QUERY
+                ), @Parameter(
                 name = AerospikeAPIConstants.ALLOW_INLINE_SSD,
                 description = APIDescriptors.BATCH_POLICY_ALLOW_INLINE_SSD_NOTES,
                 schema = @Schema(type = "boolean"),
-                in = ParameterIn.QUERY),
-        @Parameter(
+                in = ParameterIn.QUERY
+        ), @Parameter(
                 name = AerospikeAPIConstants.MAX_CONCURRENT_THREADS,
                 description = APIDescriptors.BATCH_POLICY_MAX_CONCURRENT_THREADS_NOTES,
                 schema = @Schema(type = "integer"),
-                in = ParameterIn.QUERY),
-        @Parameter(
+                in = ParameterIn.QUERY
+        ), @Parameter(
                 name = AerospikeAPIConstants.RESPOND_ALL_KEYS,
                 description = APIDescriptors.BATCH_POLICY_RESPOND_ALL_KEYS_NOTES,
                 schema = @Schema(type = "boolean"),
-                in = ParameterIn.QUERY),
-})
+                in = ParameterIn.QUERY
+        ),
+        }
+)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @ASRestClientPolicyQueryParams

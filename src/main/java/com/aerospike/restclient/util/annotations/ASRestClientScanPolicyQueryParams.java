@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -29,33 +29,36 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /* Annotation which tells swagger to render all of the Scan Policy options as query parameters */
-@Parameters(value = {
-        @Parameter(
-                name = AerospikeAPIConstants.MAX_RECORDS,
-                description = APIDescriptors.SCAN_POLICY_MAX_RECORDS_NOTES,
-                schema = @Schema(type = "integer"),
-                in = ParameterIn.QUERY),
-        @Parameter(
+@Parameters(
+        value = {
+                @Parameter(
+                        name = AerospikeAPIConstants.MAX_RECORDS,
+                        description = APIDescriptors.SCAN_POLICY_MAX_RECORDS_NOTES,
+                        schema = @Schema(type = "integer"),
+                        in = ParameterIn.QUERY
+                ), @Parameter(
                 name = AerospikeAPIConstants.RECORDS_PER_SECOND,
                 description = APIDescriptors.SCAN_POLICY_RECORDS_PER_SECOND_NOTES,
                 schema = @Schema(type = "integer"),
-                in = ParameterIn.QUERY),
-        @Parameter(
+                in = ParameterIn.QUERY
+        ), @Parameter(
                 name = AerospikeAPIConstants.MAX_CONCURRENT_NODES,
                 description = APIDescriptors.SCAN_POLICY_MAX_CONCURRENT_NODES_NOTES,
                 schema = @Schema(type = "integer"),
-                in = ParameterIn.QUERY),
-        @Parameter(
+                in = ParameterIn.QUERY
+        ), @Parameter(
                 name = AerospikeAPIConstants.CONCURRENT_NODES,
                 description = APIDescriptors.SCAN_POLICY_CONCURRENT_NODES_NOTES,
                 schema = @Schema(type = "boolean"),
-                in = ParameterIn.QUERY),
-        @Parameter(
+                in = ParameterIn.QUERY
+        ), @Parameter(
                 name = AerospikeAPIConstants.INCLUDE_BIN_DATA,
                 description = APIDescriptors.SCAN_POLICY_INCLUDE_BIN_DATA_NOTES,
                 schema = @Schema(type = "boolean"),
-                in = ParameterIn.QUERY),
-})
+                in = ParameterIn.QUERY
+        ),
+        }
+)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @ASRestClientPolicyQueryParams

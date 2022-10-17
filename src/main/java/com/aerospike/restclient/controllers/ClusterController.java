@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -28,7 +28,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -39,17 +42,28 @@ class ClusterController {
     @Autowired
     private AerospikeClusterService service;
 
-    @Operation(summary = "Return an object containing information about the Aerospike cluster.", operationId = "getClusterInfo")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Cluster information read successfully.",
-                    content = @Content(examples = @ExampleObject(name = ResponseExamples.CLUSTER_INFO_NAME,
-                            value = ResponseExamples.CLUSTER_INFO_VALUE)))
-    })
+    @Operation(
+            summary = "Return an object containing information about the Aerospike cluster.",
+            operationId = "getClusterInfo"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Cluster information read successfully.",
+                            content = @Content(
+                                    examples = @ExampleObject(
+                                            name = ResponseExamples.CLUSTER_INFO_NAME,
+                                            value = ResponseExamples.CLUSTER_INFO_VALUE
+                                    )
+                            )
+                    )
+            }
+    )
     @DefaultRestClientAPIResponses
     @GetMapping(produces = {"application/json", "application/msgpack"})
-    public Map<String, Object> getClusterInfo(@RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public Map<String, Object> getClusterInfo(
+            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         return service.getClusterInfo(authDetails);
     }

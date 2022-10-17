@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,39 +16,39 @@
  */
 package com.aerospike.restclient;
 
+import com.aerospike.client.AerospikeException;
+import com.aerospike.restclient.util.InfoResponseParser;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.aerospike.client.AerospikeException;
-import com.aerospike.restclient.util.InfoResponseParser;
-
 public class InfoResponseParserTests {
 
-	@Test
-	public void getNewStyleReplicationFactor() {
-		int repl_factor = 2;
-		String repl_factor_string = String.format("'ns_cluster_size=1;effective_replication_factor=%d;objects=0;", repl_factor);
-		Assert.assertEquals(repl_factor, InfoResponseParser.getReplicationFactor(repl_factor_string, "irrelevant"));
-	}
+    @Test
+    public void getNewStyleReplicationFactor() {
+        int repl_factor = 2;
+        String repl_factor_string = String.format("'ns_cluster_size=1;effective_replication_factor=%d;objects=0;",
+                repl_factor);
+        Assert.assertEquals(repl_factor, InfoResponseParser.getReplicationFactor(repl_factor_string, "irrelevant"));
+    }
 
-	@Test
-	public void getoldstyleReplicationFactor1() {
-		int repl_factor = 2;
-		String repl_factor_string = String.format("'ns_cluster_size=1;repl-factor=%d;objects=0;", repl_factor);
-		Assert.assertEquals(repl_factor, InfoResponseParser.getReplicationFactor(repl_factor_string, "irrelevant"));
-	}
+    @Test
+    public void getoldstyleReplicationFactor1() {
+        int repl_factor = 2;
+        String repl_factor_string = String.format("'ns_cluster_size=1;repl-factor=%d;objects=0;", repl_factor);
+        Assert.assertEquals(repl_factor, InfoResponseParser.getReplicationFactor(repl_factor_string, "irrelevant"));
+    }
 
-	@Test
-	public void getoldstyleReplicationFactor2() {
-		int repl_factor = 2;
-		String repl_factor_string = String.format("'ns_cluster_size=1;replication-factor=%d;objects=0;", repl_factor);
-		Assert.assertEquals(repl_factor, InfoResponseParser.getReplicationFactor(repl_factor_string, "irrelevant"));
-	}
+    @Test
+    public void getoldstyleReplicationFactor2() {
+        int repl_factor = 2;
+        String repl_factor_string = String.format("'ns_cluster_size=1;replication-factor=%d;objects=0;", repl_factor);
+        Assert.assertEquals(repl_factor, InfoResponseParser.getReplicationFactor(repl_factor_string, "irrelevant"));
+    }
 
-	@Test(expected=AerospikeException.class)
-	public void invalidReplicationFactorResponse() {
-		int repl_factor = 2;
-		String repl_factor_string = "";
-		Assert.assertEquals(repl_factor, InfoResponseParser.getReplicationFactor(repl_factor_string, "irrelevant"));
-	}
+    @Test(expected = AerospikeException.class)
+    public void invalidReplicationFactorResponse() {
+        int repl_factor = 2;
+        String repl_factor_string = "";
+        Assert.assertEquals(repl_factor, InfoResponseParser.getReplicationFactor(repl_factor_string, "irrelevant"));
+    }
 }

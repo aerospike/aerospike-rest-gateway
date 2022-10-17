@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -37,7 +37,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
@@ -332,17 +331,17 @@ public class MsgPackOperateTest {
 
         TypeReference<List<Map<String, Object>>> ref = new TypeReference<List<Map<String, Object>>>() {
         };
-        List<Object> recordBins = objectMapper.readValue(opResult, ref)
+        List<Object> recordBins = Collections.singletonList(objectMapper.readValue(opResult, ref)
                 .stream()
                 .map(r -> (Map<String, Object>) r.get("bins"))
                 .map(Map::keySet)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-        List<Object> expected = Arrays.stream(client.get(null, new Key[]{testKey, testKey2}))
+                .toList());
+        List<Object> expected = Collections.singletonList(Arrays.stream(client.get(null, new Key[]{testKey, testKey2}))
                 .map(r -> r.bins)
                 .map(Map::keySet)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList());
 
         assertIterableEquals(expected, recordBins);
     }
@@ -364,18 +363,18 @@ public class MsgPackOperateTest {
 
         TypeReference<List<Map<String, Object>>> ref = new TypeReference<List<Map<String, Object>>>() {
         };
-        List<Object> recordBins = objectMapper.readValue(opResult, ref)
+        List<Object> recordBins = Collections.singletonList(objectMapper.readValue(opResult, ref)
                 .stream()
                 .map(r -> (Map<String, Object>) r.get("bins"))
                 .map(Map::keySet)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-        List<Object> expected = Arrays.stream(client.get(null, new Key[]{testKey, testKey2}))
+                .toList());
+        List<Object> expected = Collections.singletonList(Arrays.stream(client.get(null, new Key[]{testKey, testKey2}))
                 .map(r -> r.bins)
                 .map(Map::keySet)
                 .flatMap(Collection::stream)
                 .filter(k -> k.equals("str"))
-                .collect(Collectors.toList());
+                .toList());
 
         assertIterableEquals(expected, recordBins);
     }

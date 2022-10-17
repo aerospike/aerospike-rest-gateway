@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -25,6 +25,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Deprecated. This class, in conjunction with OperationConverter should only be used in /v1/operate and /v1/execute until removed.
+ * The class was designed to convert maps in the format "{"operation": operation, "opValues":{...}}" to
+ * the appropriate aerospike java client operation. Now that the rest gateway has been transitioned to use swagger docs
+ * all the Operations need to be represented with a model so that its format can be auto documented. An added plus is improved
+ * error messages and the ability to independently design the schema for each model i.e. no need for "operation" and "opValues" keys.
+ * Class containing static methods used for converting Java Maps to Aerospike Operations.
+ */
 @Deprecated
 @Schema(
         description = "Deprecated in favor of more descriptive models.  The documentation for the old models can be found in the external documentation.",

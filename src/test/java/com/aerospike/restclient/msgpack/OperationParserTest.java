@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -110,8 +110,7 @@ public class OperationParserTest {
         Map<String, Object> convertedValues = convertedOp.getOpValues();
         Object fetchedGeo = convertedValues.get("value");
         Assert.assertTrue(fetchedGeo instanceof GeoJSONValue);
-        Assert.assertEquals(
-                ((GeoJSONValue) fetchedGeo).toString(), geoString);
+        Assert.assertEquals(((GeoJSONValue) fetchedGeo).toString(), geoString);
     }
 
     @Test
@@ -125,7 +124,6 @@ public class OperationParserTest {
         Map<String, Object> testOpVals = new HashMap<>();
         testOpVals.put("value", value);
         testOp.put(AerospikeAPIConstants.OPERATION_VALUES_FIELD, testOpVals);
-
 
         byte[] msgpackBin = singleOperationList(testOp);
         MsgPackOperationsParser parser = new MsgPackOperationsParser(new ByteArrayInputStream(msgpackBin));

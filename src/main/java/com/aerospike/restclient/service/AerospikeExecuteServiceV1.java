@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class AerospikeExecuteServiceV1 implements AerospikeExecuteService {
@@ -43,9 +42,7 @@ public class AerospikeExecuteServiceV1 implements AerospikeExecuteService {
     public RestClientExecuteTask executeV1Scan(AuthDetails authDetails, String namespace, String set,
                                                List<RestClientOperation> opsList, WritePolicy policy,
                                                Map<String, String> requestParams) {
-        List<Map<String, Object>> opsMapsList = opsList.stream()
-                .map(RestClientOperation::toMap)
-                .collect(Collectors.toList());
+        List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap).toList();
         com.aerospike.client.Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
 
         return ExecuteHandler.create(clientPool.getClient(authDetails))

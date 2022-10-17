@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -31,9 +31,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.MultiValueMap;
@@ -52,11 +52,9 @@ public class DocumentApiController {
     public static final String SET_NOTES = "Set for the record; equivalent to database table.";
     public static final String USER_KEY_NOTES = "User key for the record.";
     public static final String BIN_NAME_NOTES = "Bin name for the document.";
-    public static final String JSON_PATH_NOTES = "JSONPath expression specifies a path to an element " +
-            "(or a set of elements) in a JSON structure. ";
+    public static final String JSON_PATH_NOTES = "JSONPath expression specifies a path to an element " + "(or a set of elements) in a JSON structure. ";
 
-    public static final String GET_DOCUMENT_NOTES = "Retrieve the object in the document with key documentKey" +
-            " that is referenced by the JSON path.";
+    public static final String GET_DOCUMENT_NOTES = "Retrieve the object in the document with key documentKey" + " that is referenced by the JSON path.";
     public static final String PUT_DOCUMENT_NOTES = "Put a document.";
     public static final String APPEND_DOCUMENT_NOTES = "Append an object to a list in a document specified by a JSON path.";
     public static final String DELETE_DOCUMENT_NOTES = "Delete an object in a document specified by a JSON path.";
@@ -71,34 +69,43 @@ public class DocumentApiController {
      **************************************************
      */
     @Operation(summary = GET_DOCUMENT_NOTES, operationId = "getDocumentObject")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Document read successfully.",
-                    content = @Content(examples = @ExampleObject(name = ResponseExamples.GET_DOCUMENT_OBJECT_NAME,
-                        value = ResponseExamples.GET_DOCUMENT_OBJECT_VALUE))),
-            @ApiResponse(
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200", description = "Document read successfully.", content = @Content(
+                            examples = @ExampleObject(
+                                    name = ResponseExamples.GET_DOCUMENT_OBJECT_NAME,
+                                    value = ResponseExamples.GET_DOCUMENT_OBJECT_VALUE
+                            )
+                    )
+                    ), @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
+            }
+    )
     @DefaultRestClientAPIResponses
     @GetMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentPolicyQueryParams
-    public Map<String, Object> getDocumentObject(
-            @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public Map<String, Object> getDocumentObject(@Parameter(
+            description = NAMESPACE_NOTES, required = true
+    ) @PathVariable(value = "namespace") String namespace, @Parameter(
+            description = USER_KEY_NOTES, required = true
+    ) @PathVariable(value = "key") String key,
+                                                 @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
+                                                 @RequestHeader(
+                                                         value = "Authorization", required = false
+                                                 ) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         Policy policy = RequestParamHandler.getPolicy(requestParams);
@@ -110,32 +117,46 @@ public class DocumentApiController {
     }
 
     @Operation(summary = GET_DOCUMENT_NOTES, operationId = "getDocumentObjectSet")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Document read successfully.",
-                    content = @Content(examples = @ExampleObject(name = ResponseExamples.GET_DOCUMENT_OBJECT_NAME,
-                        value = ResponseExamples.GET_DOCUMENT_OBJECT_VALUE))),
-            @ApiResponse(responseCode = "400",
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200", description = "Document read successfully.", content = @Content(
+                            examples = @ExampleObject(
+                                    name = ResponseExamples.GET_DOCUMENT_OBJECT_NAME,
+                                    value = ResponseExamples.GET_DOCUMENT_OBJECT_VALUE
+                            )
+                    )
+                    ), @ApiResponse(
+                    responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(responseCode = "403",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
+                    responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
+                    responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
+            }
+    )
     @DefaultRestClientAPIResponses
     @GetMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentPolicyQueryParams
-    public Map<String, Object> getDocumentObjectSet(
-            @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
-            @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public Map<String, Object> getDocumentObjectSet(@Parameter(
+            description = NAMESPACE_NOTES, required = true
+    ) @PathVariable(value = "namespace") String namespace,
+                                                    @Parameter(description = SET_NOTES, required = true) @PathVariable(
+                                                            value = "set"
+                                                    ) String set, @Parameter(
+            description = USER_KEY_NOTES, required = true
+    ) @PathVariable(value = "key") String key,
+                                                    @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
+                                                    @RequestHeader(
+                                                            value = "Authorization", required = false
+                                                    ) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         Policy policy = RequestParamHandler.getPolicy(requestParams);
@@ -152,37 +173,43 @@ public class DocumentApiController {
      **************************************************
      */
     @Operation(summary = PUT_DOCUMENT_NOTES, operationId = "putDocumentObject")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "202",
-                    description = "Request to put a document has been accepted."),
-            @ApiResponse(
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "202", description = "Request to put a document has been accepted."
+                    ), @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
+            }
+    )
     @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentWritePolicyQueryParams
-    public void putDocumentObject(
-            @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = JSON_OBJECT_NOTES,
-                    required = true,
-                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE))) @RequestBody Object jsonObject,
-            @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void putDocumentObject(@Parameter(
+            description = NAMESPACE_NOTES, required = true
+    ) @PathVariable(value = "namespace") String namespace, @Parameter(
+            description = USER_KEY_NOTES, required = true
+    ) @PathVariable(value = "key") String key, @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = JSON_OBJECT_NOTES, required = true, content = @Content(
+            examples = @ExampleObject(
+                    name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE
+            )
+    )
+    ) @RequestBody Object jsonObject,
+                                  @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
+                                  @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams.toSingleValueMap());
@@ -194,38 +221,45 @@ public class DocumentApiController {
     }
 
     @Operation(summary = PUT_DOCUMENT_NOTES, operationId = "putDocumentObjectSet")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "202",
-                    description = "Request to put a document has been accepted."),
-            @ApiResponse(
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "202", description = "Request to put a document has been accepted."
+                    ), @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
+            }
+    )
     @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentWritePolicyQueryParams
-    public void putDocumentObjectSet(
-            @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
-            @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = JSON_OBJECT_NOTES,
-                    required = true,
-                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE))) @RequestBody Object jsonObject,
-            @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void putDocumentObjectSet(@Parameter(
+            description = NAMESPACE_NOTES, required = true
+    ) @PathVariable(value = "namespace") String namespace, @Parameter(
+            description = SET_NOTES, required = true
+    ) @PathVariable(value = "set") String set, @Parameter(
+            description = USER_KEY_NOTES, required = true
+    ) @PathVariable(value = "key") String key, @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = JSON_OBJECT_NOTES, required = true, content = @Content(
+            examples = @ExampleObject(
+                    name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE
+            )
+    )
+    ) @RequestBody Object jsonObject,
+                                     @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
+                                     @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams.toSingleValueMap());
@@ -242,37 +276,44 @@ public class DocumentApiController {
      **************************************************
      */
     @Operation(summary = APPEND_DOCUMENT_NOTES, operationId = "appendDocumentObject")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "202",
-                    description = "Request to append an object to a list in a document has been accepted."),
-            @ApiResponse(
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "202",
+                            description = "Request to append an object to a list in a document has been accepted."
+                    ), @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
+            }
+    )
     @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentWritePolicyQueryParams
-    public void appendDocumentObject(
-            @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = JSON_OBJECT_NOTES,
-                    required = true,
-                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE))) @RequestBody Object jsonObject,
-            @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void appendDocumentObject(@Parameter(
+            description = NAMESPACE_NOTES, required = true
+    ) @PathVariable(value = "namespace") String namespace, @Parameter(
+            description = USER_KEY_NOTES, required = true
+    ) @PathVariable(value = "key") String key, @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = JSON_OBJECT_NOTES, required = true, content = @Content(
+            examples = @ExampleObject(
+                    name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE
+            )
+    )
+    ) @RequestBody Object jsonObject,
+                                     @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
+                                     @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams.toSingleValueMap());
@@ -284,38 +325,46 @@ public class DocumentApiController {
     }
 
     @Operation(summary = APPEND_DOCUMENT_NOTES, operationId = "appendDocumentObjectSet")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "202",
-                    description = "Request to append an object to a list in a document has been accepted."),
-            @ApiResponse(
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "202",
+                            description = "Request to append an object to a list in a document has been accepted."
+                    ), @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
+            }
+    )
     @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentWritePolicyQueryParams
-    public void appendDocumentObjectSet(
-            @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
-            @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = JSON_OBJECT_NOTES,
-                    required = true,
-                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE))) @RequestBody Object jsonObject,
-            @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void appendDocumentObjectSet(@Parameter(
+            description = NAMESPACE_NOTES, required = true
+    ) @PathVariable(value = "namespace") String namespace, @Parameter(
+            description = SET_NOTES, required = true
+    ) @PathVariable(value = "set") String set, @Parameter(
+            description = USER_KEY_NOTES, required = true
+    ) @PathVariable(value = "key") String key, @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = JSON_OBJECT_NOTES, required = true, content = @Content(
+            examples = @ExampleObject(
+                    name = RequestBodyExamples.JSON_OBJECT_NAME, value = RequestBodyExamples.JSON_OBJECT_VALUE
+            )
+    )
+    ) @RequestBody Object jsonObject,
+                                        @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
+                                        @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams.toSingleValueMap());
@@ -332,33 +381,38 @@ public class DocumentApiController {
      **************************************************
      */
     @Operation(summary = DELETE_DOCUMENT_NOTES, operationId = "deleteDocumentObject")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "Deleted an object in a document successfully, no content expected."),
-            @ApiResponse(
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Deleted an object in a document successfully, no content expected."
+                    ), @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
+            }
+    )
     @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{namespace}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentWritePolicyQueryParams
-    public void deleteDocumentObject(
-            @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void deleteDocumentObject(@Parameter(
+            description = NAMESPACE_NOTES, required = true
+    ) @PathVariable(value = "namespace") String namespace, @Parameter(
+            description = USER_KEY_NOTES, required = true
+    ) @PathVariable(value = "key") String key,
+                                     @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
+                                     @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams.toSingleValueMap());
@@ -370,34 +424,40 @@ public class DocumentApiController {
     }
 
     @Operation(summary = DELETE_DOCUMENT_NOTES, operationId = "deleteDocumentObjectSet")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "Deleted an object in a document successfully, no content expected."),
-            @ApiResponse(
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Deleted an object in a document successfully, no content expected."
+                    ), @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "404",
                     description = "Record not found.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
+            }
+    )
     @DefaultRestClientAPIResponses
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{namespace}/{set}/{key}", produces = {"application/json", "application/msgpack"})
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestDocumentWritePolicyQueryParams
-    public void deleteDocumentObjectSet(
-            @Parameter(description = NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = SET_NOTES, required = true) @PathVariable(value = "set") String set,
-            @Parameter(description = USER_KEY_NOTES, required = true) @PathVariable(value = "key") String key,
-            @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void deleteDocumentObjectSet(@Parameter(
+            description = NAMESPACE_NOTES, required = true
+    ) @PathVariable(value = "namespace") String namespace, @Parameter(
+            description = SET_NOTES, required = true
+    ) @PathVariable(value = "set") String set, @Parameter(
+            description = USER_KEY_NOTES, required = true
+    ) @PathVariable(value = "key") String key,
+                                        @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
+                                        @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         AerospikeAPIConstants.RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams.toSingleValueMap());

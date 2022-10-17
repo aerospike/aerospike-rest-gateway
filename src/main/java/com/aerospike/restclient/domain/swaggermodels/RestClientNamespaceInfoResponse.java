@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -19,9 +19,9 @@ package com.aerospike.restclient.domain.swaggermodels;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RestClientNamespaceInfoResponse {
-	@Schema(example = "testNS")
-	public String name;
+    @Schema(example = "testNS")
+    public String name;
 
-	@Schema
-	public RestClientSetInformation[] sets;
+    @Schema
+    public RestClientSetInformation[] sets;
 }

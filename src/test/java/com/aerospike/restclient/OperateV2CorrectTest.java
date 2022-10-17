@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 Aerospike, Inc.
+ *
+ * Portions may be licensed to Aerospike, Inc. under one or more contributor
+ * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.aerospike.restclient;
 
 import com.aerospike.client.AerospikeClient;
@@ -20,7 +36,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -122,7 +137,8 @@ public class OperateV2CorrectTest {
 
         opMap.put(OPERATION_TYPE_KEY, OperationTypes.GET_HEADER);
 
-        Map<String, Object> rcRecord = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
+        Map<String, Object> resp = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
+        Map<String, Object> rcRecord = (Map<String, Object>) resp.get("record");
 
         Assert.assertNull(rcRecord.get(AerospikeAPIConstants.RECORD_BINS));
 
@@ -143,7 +159,8 @@ public class OperateV2CorrectTest {
 
         opMap.put(OPERATION_TYPE_KEY, OperationTypes.GET);
 
-        Map<String, Object> rcRecord = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
+        Map<String, Object> resp = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
+        Map<String, Object> rcRecord = (Map<String, Object>) resp.get("record");
         Map<String, Object> realBins = client.get(null, testKey).bins;
 
         Assert.assertTrue(ASTestUtils.compareMapStringObj((Map<String, Object>) rcRecord.get("bins"), realBins));
@@ -207,7 +224,8 @@ public class OperateV2CorrectTest {
         opMap.put(OPERATION_TYPE_KEY, OperationTypes.READ);
         opMap.put("binName", "str");
 
-        Map<String, Object> rcRecord = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
+        Map<String, Object> resp = opPerformer.performOperationsAndReturn(mockMVC, testEndpoint, opRequest);
+        Map<String, Object> rcRecord = (Map<String, Object>) resp.get("record");
         /* Only read the str bin on the get*/
         Map<String, Object> realBins = client.get(null, testKey, "str").bins;
 
@@ -443,19 +461,20 @@ public class OperateV2CorrectTest {
         String batchUrl = batchEndpoint + "?key=operate&key=operate2";
         String jsonResult = ASTestUtils.performOperationAndReturn(mockMVC, batchUrl, jsString);
 
-        TypeReference<List<Map<String, Object>>> ref = new TypeReference<>() {
+        TypeReference<Map<String, Object>> ref = new TypeReference<>() {
         };
-        List<Object> recordBins = objectMapper.readValue(jsonResult, ref)
-                .stream()
+        List<Map<String, Object>> records = (List<Map<String, Object>>) objectMapper.readValue(jsonResult, ref)
+                .get("records");
+        List<Object> recordBins = Collections.singletonList(records.stream()
                 .map(r -> (Map<String, Object>) r.get("bins"))
                 .map(Map::keySet)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-        List<Object> expected = Arrays.stream(client.get(null, new Key[]{testKey, testKey2}))
+                .toList());
+        List<Object> expected = Collections.singletonList(Arrays.stream(client.get(null, new Key[]{testKey, testKey2}))
                 .map(r -> r.bins)
                 .map(Map::keySet)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList());
 
         assertIterableEquals(expected, recordBins);
     }
@@ -477,20 +496,21 @@ public class OperateV2CorrectTest {
         String batchUrl = batchEndpoint + "?key=operate&key=operate2";
         String jsonResult = ASTestUtils.performOperationAndReturn(mockMVC, batchUrl, jsString);
 
-        TypeReference<List<Map<String, Object>>> ref = new TypeReference<>() {
+        TypeReference<Map<String, Object>> ref = new TypeReference<>() {
         };
-        List<Object> recordBins = objectMapper.readValue(jsonResult, ref)
-                .stream()
+        List<Map<String, Object>> records = (List<Map<String, Object>>) objectMapper.readValue(jsonResult, ref)
+                .get("records");
+        List<Object> recordBins = Collections.singletonList(records.stream()
                 .map(r -> (Map<String, Object>) r.get("bins"))
                 .map(Map::keySet)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-        List<Object> expected = Arrays.stream(client.get(null, new Key[]{testKey, testKey2}))
+                .toList());
+        List<Object> expected = Collections.singletonList(Arrays.stream(client.get(null, new Key[]{testKey, testKey2}))
                 .map(r -> r.bins)
                 .map(Map::keySet)
                 .flatMap(Collection::stream)
                 .filter(k -> k.equals("str"))
-                .collect(Collectors.toList());
+                .toList());
 
         assertIterableEquals(expected, recordBins);
     }

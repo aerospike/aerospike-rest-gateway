@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -21,6 +21,9 @@ import com.aerospike.client.Operation;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Deprecated. This class should only be used in /v1/operate and /v1/execute until removed.
+ */
 @Deprecated
 public class OperationsConverter {
 

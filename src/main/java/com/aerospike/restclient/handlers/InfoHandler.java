@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -99,7 +99,8 @@ public class InfoHandler {
         String response = singleInfoRequest(null, request);
 
         if (response.equals(nsNotFound)) {
-            throw new AerospikeException(ResultCode.INVALID_NAMESPACE, String.format("Namespace: %s not found.", namespace));
+            throw new AerospikeException(ResultCode.INVALID_NAMESPACE,
+                    String.format("Namespace: %s not found.", namespace));
         }
         return InfoResponseParser.getSetsFromResponse(response);
     }
@@ -148,7 +149,8 @@ public class InfoHandler {
             return objects / Math.min(responses.size(), replFactor);
         }
 
-        throw new AerospikeException(ResultCode.INVALID_NAMESPACE, String.format("Namspace/Set: %s/%s not found", namespace, set));
+        throw new AerospikeException(ResultCode.INVALID_NAMESPACE,
+                String.format("Namspace/Set: %s/%s not found", namespace, set));
     }
 
     private Map<String, Object> getNamespaceInfoMap(String ns) {

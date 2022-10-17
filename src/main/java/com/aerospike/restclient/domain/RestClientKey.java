@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -31,49 +31,53 @@ import java.util.Base64.Encoder;
 
 public class RestClientKey {
 
-	@Schema(required = true, example = "testNS")
-	public String namespace;
+    @Schema(required = true, example = "testNS")
+    public String namespace;
 
-	@JsonProperty(value="setName")
-	@Schema(example = "testSet")
-	public String setName;
+    @JsonProperty(value = "setName")
+    @Schema(example = "testSet")
+    public String setName;
 
-	@JsonProperty(value="keytype")
-	@Schema(
-			description = "Enum describing the type of the userKey. This field is omitted in MessagePack responses.",
-			example = "STRING")
-	public RecordKeyType keyType;
+    @JsonProperty(value = "keytype")
+    @Schema(
+            description = "Enum describing the type of the userKey. This field is omitted in MessagePack responses.",
+            example = "STRING"
+    )
+    public RecordKeyType keyType;
 
-	@Schema(required = true,
-			description = "The user key, it may be a string, integer, or URL safe Base64 encoded bytes.",
-			example = "userKey")
-	public Object userKey;
+    @Schema(
+            required = true,
+            description = "The user key, it may be a string, integer, or URL safe Base64 encoded bytes.",
+            example = "userKey"
+    )
+    public Object userKey;
 
-	public RestClientKey() {}
+    public RestClientKey() {
+    }
 
-	public RestClientKey(Key realKey) {
-		Encoder encoder = Base64.getUrlEncoder();
-		namespace = realKey.namespace;
-		setName = realKey.setName;
+    public RestClientKey(Key realKey) {
+        Encoder encoder = Base64.getUrlEncoder();
+        namespace = realKey.namespace;
+        setName = realKey.setName;
 
-		if (realKey.userKey != null) {
-			if (realKey.userKey instanceof StringValue) {
-				userKey = realKey.userKey.toString();
-				keyType = RecordKeyType.STRING;
-			} else if (realKey.userKey instanceof IntegerValue || realKey.userKey instanceof LongValue) {
-				userKey = realKey.userKey.getObject();
-				keyType = RecordKeyType.INTEGER;
-			} else if(realKey.userKey instanceof BytesValue) {
-				userKey = encoder.encodeToString((byte[])realKey.userKey.getObject());
-				keyType = RecordKeyType.BYTES;
-			}
-		} else {
-			userKey = encoder.encodeToString(realKey.digest);
-			keyType = RecordKeyType.DIGEST;
-		}
-	}
+        if (realKey.userKey != null) {
+            if (realKey.userKey instanceof StringValue) {
+                userKey = realKey.userKey.toString();
+                keyType = RecordKeyType.STRING;
+            } else if (realKey.userKey instanceof IntegerValue || realKey.userKey instanceof LongValue) {
+                userKey = realKey.userKey.getObject();
+                keyType = RecordKeyType.INTEGER;
+            } else if (realKey.userKey instanceof BytesValue) {
+                userKey = encoder.encodeToString((byte[]) realKey.userKey.getObject());
+                keyType = RecordKeyType.BYTES;
+            }
+        } else {
+            userKey = encoder.encodeToString(realKey.digest);
+            keyType = RecordKeyType.DIGEST;
+        }
+    }
 
-	public Key toKey() {
-		return KeyBuilder.buildKey(namespace, setName, userKey.toString(), keyType);
-	}
+    public Key toKey() {
+        return KeyBuilder.buildKey(namespace, setName, userKey.toString(), keyType);
+    }
 }

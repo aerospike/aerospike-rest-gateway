@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -31,7 +31,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class AerospikeSIndexServiceV1 implements AerospikeSIndexService {
@@ -71,7 +70,7 @@ public class AerospikeSIndexServiceV1 implements AerospikeSIndexService {
         String response = InfoHandler.create(clientPool.getClient(authDetails)).singleInfoRequest(policy, request);
 
         List<Map<String, String>> sindexInfos = InfoResponseParser.getIndexInformation(response);
-        return sindexInfos.stream().map(RestClientIndex::new).collect(Collectors.toList());
+        return sindexInfos.stream().map(RestClientIndex::new).toList();
     }
 
     @Override

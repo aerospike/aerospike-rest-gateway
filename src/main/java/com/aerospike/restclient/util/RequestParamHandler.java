@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -61,8 +61,8 @@ public final class RequestParamHandler {
             return RecordKeyType.valueOf(keyTypeStr);
         } catch (IllegalArgumentException e) {
             throw new RestClientErrors.InvalidPolicyValueError(
-                    String.format("Invalid keytype: %s , valid choices are STRING, INTEGER, BYTES, DIGEST", keyTypeStr)
-            );
+                    String.format("Invalid keytype: %s , valid choices are STRING, INTEGER, BYTES, DIGEST",
+                            keyTypeStr));
         }
     }
 
@@ -75,8 +75,8 @@ public final class RequestParamHandler {
             return RecordKeyType.valueOf(keyTypeStr);
         } catch (IllegalArgumentException e) {
             throw new RestClientErrors.InvalidPolicyValueError(
-                    String.format("Invalid keytype: %s , valid choices are STRING, INTEGER, BYTES, DIGEST", keyTypeStr)
-            );
+                    String.format("Invalid keytype: %s , valid choices are STRING, INTEGER, BYTES, DIGEST",
+                            keyTypeStr));
         }
     }
 
