@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "Batch Read Operations", description = "Retrieve multiple records from the server.")
+@Tag(name = "Batch Operations", description = "Retrieve multiple records from the server.")
 @RestController
 @RequestMapping("/v1/batch")
 public class BatchController {
@@ -50,8 +50,7 @@ public class BatchController {
     private AerospikeBatchService service;
 
     @Operation(
-            summary = "Return multiple records from the server in a single request.",
-            operationId = "performBatchGet"
+            summary = "Return multiple records from the server in a single request.", operationId = "performBatchGet"
     )
     @ApiResponses(
             value = {
@@ -59,22 +58,19 @@ public class BatchController {
                             responseCode = "200",
                             description = "Batch Operation completed successfully.",
                             content = @Content(array = @ArraySchema(schema = @Schema(implementation = BatchRecordResponse.class)))
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Invalid parameters or request.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Not authorized to access the resource.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Non existent namespace used in one or more key.",
-                            content = @Content(schema = @Schema(implementation = RestClientError.class))
-                    )
+                    ), @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid parameters or request.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
+                    responseCode = "403",
+                    description = "Not authorized to access the resource.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
+                    responseCode = "404",
+                    description = "Non existent namespace used in one or more key.",
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
             }
     )
     @DefaultRestClientAPIResponses
@@ -86,8 +82,7 @@ public class BatchController {
     public BatchResponseBody performBatch(@RequestBody List<BatchRecord> batchRecords,
                                           @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                           @RequestHeader(
-                                                  value = "Authorization",
-                                                  required = false
+                                                  value = "Authorization", required = false
                                           ) String basicAuth) {
         BatchPolicy policy = RequestParamHandler.getBatchPolicy(requestParams);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,6 +16,7 @@
  */
 package com.aerospike.restclient;
 
+import com.aerospike.client.Record;
 import com.aerospike.client.*;
 import org.junit.After;
 import org.junit.Assert;
@@ -50,7 +51,6 @@ public class TruncateTestsCorrect {
     private List<Key> postCutoffKeys;
     @Autowired
     private AerospikeClient client;
-
 
     @Autowired
     private WebApplicationContext wac;

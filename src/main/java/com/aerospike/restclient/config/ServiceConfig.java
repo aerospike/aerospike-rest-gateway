@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -18,18 +18,13 @@ package com.aerospike.restclient.config;
 
 import com.aerospike.client.AerospikeException;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
-import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
-import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
-import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreaker;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
-import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
+import org.springframework.cloud.client.circuitbreaker.Customizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.cloud.client.circuitbreaker.Customizer;
 
 import java.time.Duration;
-import java.util.function.Function;
 
 @Configuration
 public class ServiceConfig {
@@ -46,7 +41,8 @@ public class ServiceConfig {
                 .recordException(e -> e instanceof AerospikeException.Connection)
                 .build();
 
-        return factory -> factory.configure(builder -> builder.circuitBreakerConfig(circuitBreakerConfig)
-                .timeLimiterConfig(timeLimiterConfig), "rest-client");
+        return factory -> factory.configure(
+                builder -> builder.circuitBreakerConfig(circuitBreakerConfig).timeLimiterConfig(timeLimiterConfig),
+                "rest-client");
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -99,32 +99,32 @@ public class RecordPatchCorrectTests {
 
     public RecordPatchCorrectTests(UpdatePerformer performer, boolean useSet) {
         if (useSet) {
-            this.testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
+            this.testEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", "getput");
             this.testKey = new Key("test", "junit", "getput");
             this.intKey = new Key("test", "junit", 1);
             this.bytesKey = new Key("test", "junit", new byte[]{1, 127, 127, 1});
 
             String urlDigest = Base64.getUrlEncoder().encodeToString(testKey.digest);
-            digestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", urlDigest) + "?keytype=DIGEST";
+            digestEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", urlDigest) + "?keytype=DIGEST";
 
             String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
-            bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", urlBytes) + "?keytype=BYTES";
+            bytesEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", urlBytes) + "?keytype=BYTES";
 
-            intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "1") + "?keytype=INTEGER";
+            intEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", "1") + "?keytype=INTEGER";
 
         } else {
-            this.testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "getput");
+            this.testEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "getput");
             this.testKey = new Key("test", null, "getput");
             this.intKey = new Key("test", null, 1);
             this.bytesKey = new Key("test", null, new byte[]{1, 127, 127, 1});
 
             String urlDigest = Base64.getUrlEncoder().encodeToString(testKey.digest);
-            digestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", urlDigest) + "?keytype=DIGEST";
+            digestEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", urlDigest) + "?keytype=DIGEST";
 
             String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
-            bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", urlBytes) + "?keytype=BYTES";
+            bytesEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", urlBytes) + "?keytype=BYTES";
 
-            intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "1") + "?keytype=INTEGER";
+            intEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "1") + "?keytype=INTEGER";
         }
         this.patchPerformer = performer;
     }
@@ -244,8 +244,7 @@ public class RecordPatchCorrectTests {
         binMap.put("integer", 12345);
 
         mockMVC.perform(patch(testEndpoint + queryParams).contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(binMap)))
-                .andExpect(status().isConflict());
+                .content(objectMapper.writeValueAsString(binMap))).andExpect(status().isConflict());
 
         Record record = client.get(null, this.testKey);
         Assert.assertFalse(record.bins.containsKey("integer"));
@@ -253,8 +252,7 @@ public class RecordPatchCorrectTests {
 }
 
 interface UpdatePerformer {
-    void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
-            throws Exception;
+    void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap) throws Exception;
 }
 
 class JSONUpdatePerformer implements UpdatePerformer {
@@ -267,10 +265,8 @@ class JSONUpdatePerformer implements UpdatePerformer {
     }
 
     @Override
-    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
-            throws Exception {
-        mockMVC.perform(patch(testEndpoint).contentType(mediaType)
-                        .content(mapper.writeValueAsString(binMap)))
+    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap) throws Exception {
+        mockMVC.perform(patch(testEndpoint).contentType(mediaType).content(mapper.writeValueAsString(binMap)))
                 .andExpect(status().isNoContent());
     }
 }
@@ -285,10 +281,8 @@ class MsgPackUpdatePerformer implements UpdatePerformer {
     }
 
     @Override
-    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
-            throws Exception {
-        mockMVC.perform(patch(testEndpoint).contentType(mediaType)
-                        .content(mapper.writeValueAsBytes(binMap)))
+    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap) throws Exception {
+        mockMVC.perform(patch(testEndpoint).contentType(mediaType).content(mapper.writeValueAsBytes(binMap)))
                 .andExpect(status().isNoContent());
     }
 }

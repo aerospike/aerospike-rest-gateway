@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 Aerospike, Inc.
+ *
+ * Portions may be licensed to Aerospike, Inc. under one or more contributor
+ * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.aerospike.restclient.domain.querymodels;
 
 import com.aerospike.restclient.ASTestMapper;
@@ -12,6 +28,8 @@ import org.junit.runners.Parameterized;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.aerospike.restclient.util.AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG;
+
 @RunWith(Parameterized.class)
 public class QueryRequestBodyTest {
 
@@ -22,8 +40,7 @@ public class QueryRequestBodyTest {
     @Parameterized.Parameters
     public static Object[] getParams() {
         return new Object[]{
-                new JsonQueryBodyMapper(),
-                new MsgPackQueryBodyMapper(),
+                new JsonQueryBodyMapper(), new MsgPackQueryBodyMapper(),
                 };
     }
 
@@ -47,14 +64,18 @@ public class QueryRequestBodyTest {
     public void testMapsToRestClientQueryBody() {
         Map<String, Object> restMap = new HashMap<>();
         restMap.put("from", "from-pagination-token");
-        QueryEqualLongFilter filter = new QueryEqualLongFilter();
-        filter.value = 1L;
+        Map<String, Object> filter = new HashMap<>();
+        filter.put("type", EQUAL_LONG);
+        filter.put("value", 1L);
         restMap.put("filter", filter);
+
+        QueryEqualLongFilter expectedFilter = new QueryEqualLongFilter();
+        expectedFilter.value = 1L;
 
         try {
             QueryRequestBody restQuery = (QueryRequestBody) mapper.bytesToObject(mapper.objectToBytes(restMap));
             Assert.assertEquals(restQuery.from, "from-pagination-token");
-            ASTestUtils.compareFilter(filter.toFilter(), restQuery.filter.toFilter());
+            ASTestUtils.compareFilter(expectedFilter.toFilter(), restQuery.filter.toFilter());
         } catch (Exception e) {
             Assert.fail(String.format("Should have mapped to RestClientQueryBody %s", e));
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -20,25 +20,25 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RestClientUserResponse {
 
-	@Schema(example = "testUser")
-	String name;
+    @Schema(example = "testUser")
+    String name;
 
-	@Schema(example = "[customRole1, customRole2]")
-	String[] roles;
+    @Schema(example = "[customRole1, customRole2]")
+    String[] roles;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setRoles(String[] roles) {
-		this.roles = roles;
-	}
+    public void setRoles(String[] roles) {
+        this.roles = roles;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String[] getRoles() {
-		return roles;
-	}
+    public String[] getRoles() {
+        return roles;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,41 +16,39 @@
  */
 package com.aerospike.restclient.domain;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import javax.validation.constraints.NotNull;
+
 @JsonInclude(Include.NON_NULL)
 public class RestClientUserModel {
 
-	@NotNull
-	String username;
-	@NotNull
-	String password;
-	@NotNull
-	String[] roles;
+    @NotNull String username;
+    @NotNull String password;
+    @NotNull String[] roles;
 
-	public String getUsername() {
-		return this.username;
-	}
+    public String getUsername() {
+        return this.username;
+    }
 
-	public String getPassword() {
-		return this.password;
-	}
+    public String getPassword() {
+        return this.password;
+    }
 
-	public String[] getRoles() {
-		return this.roles;
-	}
+    public String[] getRoles() {
+        return this.roles;
+    }
 
-	public void setUsername(String userName) {
-		this.username = userName;
-	}
+    public void setUsername(String userName) {
+        this.username = userName;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setRoles(String[] roles) {
-		this.roles = roles;
-	}
+    public void setRoles(String[] roles) {
+        this.roles = roles;
+    }
 }
