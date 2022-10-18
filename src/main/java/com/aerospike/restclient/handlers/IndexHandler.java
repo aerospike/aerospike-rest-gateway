@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -29,24 +29,13 @@ public class IndexHandler {
         this.client = client;
     }
 
-    public void createIndex(
-            Policy policy,
-            String namespace,
-            String setName,
-            String indexName,
-            String binName,
-            IndexType indexType) {
+    public void createIndex(Policy policy, String namespace, String setName, String indexName, String binName,
+                            IndexType indexType) {
         client.createIndex(policy, namespace, setName, indexName, binName, indexType);
     }
 
-    public void createIndex(
-            Policy policy,
-            String namespace,
-            String setName,
-            String indexName,
-            String binName,
-            IndexType indexType,
-            IndexCollectionType collectionType) {
+    public void createIndex(Policy policy, String namespace, String setName, String indexName, String binName,
+                            IndexType indexType, IndexCollectionType collectionType) {
         client.createIndex(policy, namespace, setName, indexName, binName, indexType, collectionType);
     }
 

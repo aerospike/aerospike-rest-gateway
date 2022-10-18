@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -55,8 +55,8 @@ public class AerospikeClientConfig {
 
     @Bean
     @Retryable(
-            value = {AerospikeException.class},
-            backoff = @Backoff(delay = 2000, multiplier = 2))
+            value = {AerospikeException.class}, backoff = @Backoff(delay = 2000, multiplier = 2)
+    )
     public AerospikeClient configAerospikeClient() {
         if (requireAuthentication) {
             return null;
@@ -86,14 +86,6 @@ public class AerospikeClientConfig {
 
     @Bean
     public AerospikeClientPool configAerospikeClientPool() {
-        return new AerospikeClientPool(
-                poolSize,
-                policy,
-                port,
-                hostList,
-                hostname,
-                defaultClient,
-                useBoolBin
-        );
+        return new AerospikeClientPool(poolSize, policy, port, hostList, hostname, defaultClient, useBoolBin);
     }
 }

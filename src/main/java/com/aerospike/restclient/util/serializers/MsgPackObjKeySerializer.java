@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -15,34 +15,33 @@
  * the License.
  */
 package com.aerospike.restclient.util.serializers;
-import java.io.IOException;
-
-import org.msgpack.jackson.dataformat.MessagePackGenerator;
-import org.msgpack.jackson.dataformat.MessagePackSerializedString;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.msgpack.jackson.dataformat.MessagePackGenerator;
+import org.msgpack.jackson.dataformat.MessagePackSerializedString;
 
+import java.io.IOException;
 
 /*
  * When we are using MessagePack, we can have non string keys. This lets us write an arbitrary Object as a key
  * Instead of key.toString()
  */
-public class MsgPackObjKeySerializer extends StdSerializer<Object>{
+public class MsgPackObjKeySerializer extends StdSerializer<Object> {
 
-	public MsgPackObjKeySerializer() {
-		this(null);
-	}
+    public MsgPackObjKeySerializer() {
+        this(null);
+    }
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public MsgPackObjKeySerializer(Class<Object> object) {
-		super(object);
-	}
+    public MsgPackObjKeySerializer(Class<Object> object) {
+        super(object);
+    }
 
-	@Override
-	public void serialize(Object value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-		((MessagePackGenerator)gen).writeFieldName(new MessagePackSerializedString(value));
-	}
+    @Override
+    public void serialize(Object value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        ((MessagePackGenerator) gen).writeFieldName(new MessagePackSerializedString(value));
+    }
 }

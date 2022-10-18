@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -142,8 +142,7 @@ public class MsgPackParserTest {
 
         MsgPackParser parser = new MsgPackParser(new ByteArrayInputStream(packer.toByteArray()));
 
-        @SuppressWarnings("unchecked")
-        List<Object> val = (List<Object>) parser.unpackValue();
+        @SuppressWarnings("unchecked") List<Object> val = (List<Object>) parser.unpackValue();
 
         Assert.assertArrayEquals(objects, val.toArray());
 
@@ -171,8 +170,7 @@ public class MsgPackParserTest {
 
         MsgPackParser parser = new MsgPackParser(new ByteArrayInputStream(packer.toByteArray()));
 
-        @SuppressWarnings("unchecked")
-        Map<Object, Object> val = (Map<Object, Object>) parser.unpackValue();
+        @SuppressWarnings("unchecked") Map<Object, Object> val = (Map<Object, Object>) parser.unpackValue();
 
         Assert.assertTrue(ASTestUtils.compareMap(map, val));
 
@@ -197,8 +195,7 @@ public class MsgPackParserTest {
 
         MsgPackParser parser = new MsgPackParser(new ByteArrayInputStream(packer.toByteArray()));
 
-        @SuppressWarnings("unchecked")
-        List<Object> val = (List<Object>) parser.unpackValue();
+        @SuppressWarnings("unchecked") List<Object> val = (List<Object>) parser.unpackValue();
 
         Assert.assertArrayEquals(objects, val.toArray());
 
@@ -219,8 +216,7 @@ public class MsgPackParserTest {
         Object val = parser.unpackValue();
 
         Assert.assertTrue(val instanceof GeoJSONValue);
-        Assert.assertEquals(
-                ((GeoJSONValue) val).toString(), geoString);
+        Assert.assertEquals(((GeoJSONValue) val).toString(), geoString);
     }
 
     @Test(expected = MalformedMsgPackError.class)

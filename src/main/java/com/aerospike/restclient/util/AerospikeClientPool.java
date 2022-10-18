@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -43,8 +43,7 @@ public class AerospikeClientPool {
     private final String hostList;
     private final String hostname;
 
-    public AerospikeClientPool(int poolSize, ClientPolicy clientPolicy,
-                               int port, String hostList, String hostname,
+    public AerospikeClientPool(int poolSize, ClientPolicy clientPolicy, int port, String hostList, String hostname,
                                AerospikeClient defaultClient, boolean useBoolBin) {
         RemovalListener<String, AerospikeClient> removalListener = AerospikeClientPool::onClientRemoval;
 

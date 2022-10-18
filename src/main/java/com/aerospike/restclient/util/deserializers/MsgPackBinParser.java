@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,61 +16,60 @@
  */
 package com.aerospike.restclient.util.deserializers;
 
+import com.aerospike.restclient.util.RestClientErrors.MalformedMsgPackError;
+import org.msgpack.core.MessageFormat;
+import org.msgpack.core.MessagePackException;
+import org.msgpack.value.ImmutableValue;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.msgpack.core.MessageFormat;
-import org.msgpack.core.MessagePackException;
-import org.msgpack.value.ImmutableValue;
+public class MsgPackBinParser extends MsgPackParser {
+    private Map<String, Object> bins = null;
 
-import com.aerospike.restclient.util.RestClientErrors.MalformedMsgPackError;
+    public MsgPackBinParser(InputStream stream) {
+        super(stream);
+    }
 
-public class MsgPackBinParser extends MsgPackParser{
-	private Map<String, Object>bins = null;
+    public Map<String, Object> parseBins() {
+        try {
+            unpackBins();
+        } catch (IOException e) {
+            throw new MalformedMsgPackError("Invalid msgpack representation");
+        }
 
-	public MsgPackBinParser(InputStream stream) {
-		super(stream);
-	}
+        return bins;
+    }
 
-	public Map<String, Object>parseBins() {
-		try {
-			unpackBins();
-		} catch (IOException e) {
-			throw new MalformedMsgPackError("Invalid msgpack representation");
-		}
+    private void unpackBins() throws IOException {
+        try {
+            MessageFormat form = unpacker.getNextFormat();
+            if (form != MessageFormat.MAP16 && form != MessageFormat.MAP32 && form != MessageFormat.FIXMAP) {
+                throw new MalformedMsgPackError(
+                        String.format("Bins must be a map<String, Object> got  %s", form.toString()));
 
-		return bins;
-	}
+            }
+            int size = unpacker.unpackMapHeader();
+            bins = new HashMap<String, Object>(size);
+            for (int i = 0; i < size; i++) {
+                ImmutableValue keyValue = unpacker.unpackValue();
+                if (!keyValue.isStringValue()) {
+                    throw new MalformedMsgPackError(
+                            String.format("Binnames must be strings got %s", keyValue.getValueType().toString()));
+                }
+                String binName = keyValue.toString();
+                Object binValue = unpackValue();
+                bins.put(binName, binValue);
+            }
 
-	private void unpackBins() throws IOException {
-		try {
-			MessageFormat form = unpacker.getNextFormat();
-			if (form != MessageFormat.MAP16 &&
-					form != MessageFormat.MAP32 &&
-					form != MessageFormat.FIXMAP) {
-				throw new MalformedMsgPackError(String.format("Bins must be a map<String, Object> got  %s", form.toString()));
-
-			}
-			int size = unpacker.unpackMapHeader();
-			bins = new HashMap<String, Object>(size);
-			for (int i = 0; i < size; i++) {
-				ImmutableValue keyValue = unpacker.unpackValue();
-				if (!keyValue.isStringValue()) {
-					throw new MalformedMsgPackError(String.format("Binnames must be strings got %s", keyValue.getValueType().toString()));
-				}
-				String binName = keyValue.toString();
-				Object binValue = unpackValue();
-				bins.put(binName, binValue);
-			}
-
-			if(unpacker.hasNext()) {
-				throw new MalformedMsgPackError();
-			}
-		} catch (MessagePackException e) {
-			throw new MalformedMsgPackError("Failed to deserialize MsgPack data");
-		}
-	}
+            if (unpacker.hasNext()) {
+                throw new MalformedMsgPackError();
+            }
+        } catch (MessagePackException e) {
+            throw new MalformedMsgPackError("Failed to deserialize MsgPack data");
+        }
+    }
 
 }

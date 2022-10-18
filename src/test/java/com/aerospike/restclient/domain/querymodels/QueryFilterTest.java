@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 Aerospike, Inc.
+ *
+ * Portions may be licensed to Aerospike, Inc. under one or more contributor
+ * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.aerospike.restclient.domain.querymodels;
 
 import com.aerospike.client.Value;
@@ -36,8 +52,7 @@ public class QueryFilterTest {
     @Parameterized.Parameters
     public static Object[] getParams() {
         return new Object[]{
-                new JsonQueryBinFilterMapper(),
-                new MsgPackQueryBinFilterMapper(),
+                new JsonQueryBinFilterMapper(), new MsgPackQueryBinFilterMapper(),
                 };
     }
 
@@ -157,8 +172,7 @@ public class QueryFilterTest {
     @Test
     public void testBinRangeFilterToASFilter() {
         Filter expected = Filter.range(bin, IndexCollectionType.LIST, 10, 100,
-                com.aerospike.client.cdt.CTX.listRank(-1),
-                com.aerospike.client.cdt.CTX.mapValue(Value.get(3.14159)));
+                com.aerospike.client.cdt.CTX.listRank(-1), com.aerospike.client.cdt.CTX.mapValue(Value.get(3.14159)));
 
         QueryRangeFilter restClientFilter = new QueryRangeFilter();
         restClientFilter.binName = bin;
@@ -198,8 +212,7 @@ public class QueryFilterTest {
     @Test
     public void testBinContainsFilterWithIntegerToASFilter() {
         Filter expected = Filter.contains(bin, IndexCollectionType.MAPKEYS, 5,
-                com.aerospike.client.cdt.CTX.listIndex(-1),
-                com.aerospike.client.cdt.CTX.mapKey(Value.get("key")));
+                com.aerospike.client.cdt.CTX.listIndex(-1), com.aerospike.client.cdt.CTX.mapKey(Value.get("key")));
 
         QueryContainsLongFilter restClientFilter = new QueryContainsLongFilter();
         restClientFilter.binName = bin;
@@ -215,8 +228,7 @@ public class QueryFilterTest {
     @Test
     public void testBinContainsFilterWithStringToASFilter() {
         Filter expected = Filter.contains(bin, IndexCollectionType.LIST, "str-val",
-                com.aerospike.client.cdt.CTX.listIndex(-1),
-                com.aerospike.client.cdt.CTX.mapKey(Value.get("key")));
+                com.aerospike.client.cdt.CTX.listIndex(-1), com.aerospike.client.cdt.CTX.mapKey(Value.get("key")));
 
         QueryContainsStringFilter restClientFilter = new QueryContainsStringFilter();
         restClientFilter.binName = bin;
@@ -233,9 +245,7 @@ public class QueryFilterTest {
     public void testMapsToQueryBinGeoWithinRegionFilter() {
         Map<String, Object> filterMap = new HashMap<>();
         double[][] coord = new double[][]{
-                new double[]{1, 2},
-                new double[]{3, 4},
-                new double[]{4, 5},
+                new double[]{1, 2}, new double[]{3, 4}, new double[]{4, 5},
                 };
         filterMap.put("type", AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION);
         filterMap.put("binName", bin);
@@ -334,7 +344,6 @@ public class QueryFilterTest {
         filterMap.put("ctx", new ArrayList<CTX>() {
         });
         filterMap.put("point", new double[]{1.2, 2.3});
-
 
         try {
             QueryGeoContainsPointFilter restCTX = (QueryGeoContainsPointFilter) mapper.bytesToObject(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -48,26 +48,41 @@ public class InfoController {
     private AerospikeInfoService service;
 
     @Operation(summary = "Send a list of info commands to a random node in the cluster", operationId = "infoAny")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Commands sent successfully.",
-                    content = @Content(examples = @ExampleObject(name = ResponseExamples.SUCCESS_INFO_NAME, value = ResponseExamples.SUCCESS_INFO_VALUE))),
-            @ApiResponse(
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Commands sent successfully.",
+                            content = @Content(
+                                    examples = @ExampleObject(
+                                            name = ResponseExamples.SUCCESS_INFO_NAME,
+                                            value = ResponseExamples.SUCCESS_INFO_VALUE
+                                    )
+                            )
+                    ), @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to perform the info command.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
+            }
+    )
     @DefaultRestClientAPIResponses
     @ASRestClientInfoPolicyQueryParams
-    @PostMapping(consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
-    Map<String, String> infoAny(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.",
-                    required = true,
-                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.REQUESTS_INFO_NAME, value = RequestBodyExamples.REQUESTS_INFO_VALUE))) @RequestBody String[] requests,
-            @Parameter(hidden = true) @RequestParam Map<String, String> infoMap,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    @PostMapping(
+            consumes = {"application/json", "application/msgpack"},
+            produces = {"application/json", "application/msgpack"}
+    )
+    Map<String, String> infoAny(@io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.",
+            required = true,
+            content = @Content(
+                    examples = @ExampleObject(
+                            name = RequestBodyExamples.REQUESTS_INFO_NAME,
+                            value = RequestBodyExamples.REQUESTS_INFO_VALUE
+                    )
+            )
+    ) @RequestBody String[] requests, @Parameter(hidden = true) @RequestParam Map<String, String> infoMap,
+                                @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         InfoPolicy policy = InfoPolicyConverter.policyFromMap(infoMap);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
@@ -76,30 +91,49 @@ public class InfoController {
     }
 
     @Operation(summary = "Send a list of info commands to a specific node in the cluster.", operationId = "infoNode")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Commands sent successfully.",
-                    content = @Content(examples = @ExampleObject(name = ResponseExamples.SUCCESS_INFO_NAME, value = ResponseExamples.SUCCESS_INFO_VALUE))),
-            @ApiResponse(
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Commands sent successfully.",
+                            content = @Content(
+                                    examples = @ExampleObject(
+                                            name = ResponseExamples.SUCCESS_INFO_NAME,
+                                            value = ResponseExamples.SUCCESS_INFO_VALUE
+                                    )
+                            )
+                    ), @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to perform the info command",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "404",
                     description = "The specified Node does not exist.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
+            }
+    )
     @DefaultRestClientAPIResponses
-    @PostMapping(value = "/{node}", consumes = {"application/json", "application/msgpack"}, produces = {"application/json", "application/msgpack"})
-    Map<String, String> infoNode(
-            @Parameter(name = "node", description = "The node ID for the node which will receive the info commands.", required = true) @PathVariable(value = "node") String node,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.",
-                    required = true,
-                    content = @Content(examples = @ExampleObject(name = RequestBodyExamples.REQUESTS_INFO_NAME, value = RequestBodyExamples.REQUESTS_INFO_VALUE))) @RequestBody String[] requests,
-            @Parameter(hidden = true) @RequestParam Map<String, String> infoMap,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    @PostMapping(
+            value = "/{node}",
+            consumes = {"application/json", "application/msgpack"},
+            produces = {"application/json", "application/msgpack"}
+    )
+    Map<String, String> infoNode(@Parameter(
+            name = "node",
+            description = "The node ID for the node which will receive the info commands.",
+            required = true
+    ) @PathVariable(value = "node") String node, @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "An array of info commands to send to the server. See https://www.aerospike.com/docs/reference/info/ for a list of valid commands.",
+            required = true,
+            content = @Content(
+                    examples = @ExampleObject(
+                            name = RequestBodyExamples.REQUESTS_INFO_NAME,
+                            value = RequestBodyExamples.REQUESTS_INFO_VALUE
+                    )
+            )
+    ) @RequestBody String[] requests, @Parameter(hidden = true) @RequestParam Map<String, String> infoMap,
+                                 @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
         InfoPolicy policy = InfoPolicyConverter.policyFromMap(infoMap);
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
