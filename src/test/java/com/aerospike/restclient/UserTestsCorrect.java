@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -41,12 +41,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -184,8 +179,7 @@ public class UserTestsCorrect {
     @Test
     public void deleteUser() throws Exception {
         /* Delete a user we just created and verify that it no longer exists*/
-        mockMVC.perform(delete(endpoint + "/" + userName)
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMVC.perform(delete(endpoint + "/" + userName).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAccepted());
 
         int resultCode = ResultCode.OK;
@@ -305,55 +299,47 @@ class JSONRestUserHandler implements RestUserHandler {
 
     @Override
     public List<Map<String, Object>> getUsers(MockMvc mockMVC, String endpoint) throws Exception {
-        String resJson = mockMVC.perform(get(endpoint)
-                .accept(mediaType))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        String resJson = mockMVC.perform(get(endpoint).accept(mediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
         return mapper.readValue(resJson, UserTestsCorrect.userListType);
     }
 
     @Override
     public Map<String, Object> getUser(MockMvc mockMVC, String endpoint) throws Exception {
-        String resJson = mockMVC.perform(get(endpoint)
-                .accept(mediaType))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        String resJson = mockMVC.perform(get(endpoint).accept(mediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
         return mapper.readValue(resJson, UserTestsCorrect.userType);
     }
 
     @Override
     public void createUser(MockMvc mockMVC, String endpoint, RestClientUserModel user) throws Exception {
         String userJson = mapper.writeValueAsString(user);
-        mockMVC.perform(post(endpoint)
-                .contentType(mediaType)
-                .content(userJson))
-                .andExpect(status().isAccepted());
+        mockMVC.perform(post(endpoint).contentType(mediaType).content(userJson)).andExpect(status().isAccepted());
     }
 
     @Override
     public void patchUser(MockMvc mockMVC, String endpoint, String newPassword) throws Exception {
         String passJson = mapper.writeValueAsString(newPassword);
-        mockMVC.perform(patch(endpoint)
-                .contentType(mediaType)
-                .content(passJson))
-                .andExpect(status().isAccepted());
+        mockMVC.perform(patch(endpoint).contentType(mediaType).content(passJson)).andExpect(status().isAccepted());
     }
 
     @Override
     public void grantRoles(MockMvc mockMVC, String endpoint, List<String> roles) throws Exception {
         String rolesJson = mapper.writeValueAsString(roles);
-        mockMVC.perform(post(endpoint)
-                .contentType(mediaType)
-                .content(rolesJson))
-                .andExpect(status().isAccepted());
+        mockMVC.perform(post(endpoint).contentType(mediaType).content(rolesJson)).andExpect(status().isAccepted());
     }
 
     @Override
     public void revokeRoles(MockMvc mockMVC, String endpoint, List<String> roles) throws Exception {
         String rolesJson = mapper.writeValueAsString(roles);
-        mockMVC.perform(patch(endpoint)
-                .contentType(mediaType)
-                .content(rolesJson))
-                .andExpect(status().isAccepted());
+        mockMVC.perform(patch(endpoint).contentType(mediaType).content(rolesJson)).andExpect(status().isAccepted());
     }
 
 }
@@ -368,55 +354,48 @@ class MsgPackRestUserHandler implements RestUserHandler {
 
     @Override
     public List<Map<String, Object>> getUsers(MockMvc mockMVC, String endpoint) throws Exception {
-        byte[] resBytes = mockMVC.perform(get(endpoint)
-                .accept(mediaType))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
+        byte[] resBytes = mockMVC.perform(get(endpoint).accept(mediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
 
         return mapper.readValue(resBytes, UserTestsCorrect.userListType);
     }
 
     @Override
     public Map<String, Object> getUser(MockMvc mockMVC, String endpoint) throws Exception {
-        byte[] userBytes = mockMVC.perform(get(endpoint)
-                .accept(mediaType))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
+        byte[] userBytes = mockMVC.perform(get(endpoint).accept(mediaType))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
         return mapper.readValue(userBytes, UserTestsCorrect.userType);
     }
 
     @Override
     public void createUser(MockMvc mockMVC, String endpoint, RestClientUserModel user) throws Exception {
         byte[] userPayload = mapper.writeValueAsBytes(user);
-        mockMVC.perform(post(endpoint)
-                .contentType(mediaType)
-                .content(userPayload))
-                .andExpect(status().isAccepted());
+        mockMVC.perform(post(endpoint).contentType(mediaType).content(userPayload)).andExpect(status().isAccepted());
     }
 
     @Override
     public void patchUser(MockMvc mockMVC, String endpoint, String newPassword) throws Exception {
         byte[] passwordPayload = mapper.writeValueAsBytes(newPassword);
-        mockMVC.perform(patch(endpoint)
-                .contentType(mediaType)
-                .content(passwordPayload))
+        mockMVC.perform(patch(endpoint).contentType(mediaType).content(passwordPayload))
                 .andExpect(status().isAccepted());
     }
 
     @Override
     public void grantRoles(MockMvc mockMVC, String endpoint, List<String> roles) throws Exception {
         byte[] rolesPayload = mapper.writeValueAsBytes(roles);
-        mockMVC.perform(post(endpoint)
-                .contentType(mediaType)
-                .content(rolesPayload))
-                .andExpect(status().isAccepted());
+        mockMVC.perform(post(endpoint).contentType(mediaType).content(rolesPayload)).andExpect(status().isAccepted());
     }
 
     @Override
     public void revokeRoles(MockMvc mockMVC, String endpoint, List<String> roles) throws Exception {
         byte[] rolesPayload = mapper.writeValueAsBytes(roles);
-        mockMVC.perform(patch(endpoint)
-                .contentType(mediaType)
-                .content(rolesPayload))
-                .andExpect(status().isAccepted());
+        mockMVC.perform(patch(endpoint).contentType(mediaType).content(rolesPayload)).andExpect(status().isAccepted());
     }
 
 }

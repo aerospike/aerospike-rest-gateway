@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -135,7 +135,7 @@ public class RestClientIndex {
 
     static IndexCollectionType normalizeCollectionType(String collType) {
         collType = collType.toUpperCase();
-        
+
         if (collType.equals("NONE")) {
             return IndexCollectionType.DEFAULT;
         }

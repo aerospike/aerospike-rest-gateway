@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -56,8 +56,7 @@ public class QueryHandler {
         return queryPartition(policy, stmt, partitionFilter, getToken);
     }
 
-    public QueryResponseBody queryPartition(QueryPolicy policy, Statement stmt, String fromToken,
-                                            Boolean getToken) {
+    public QueryResponseBody queryPartition(QueryPolicy policy, Statement stmt, String fromToken, Boolean getToken) {
         PartitionFilter partitionFilter;
         partitionFilter = getPartitionFilter(fromToken);
         return queryPartition(policy, stmt, partitionFilter, getToken);
@@ -137,9 +136,7 @@ public class QueryHandler {
             packer.packInt(status);
 
             if (status == PARTITION_STATE_STARTED) {
-                packer
-                        .packBinaryHeader(digest.length)
-                        .writePayload(digest);
+                packer.packBinaryHeader(digest.length).writePayload(digest);
             }
         }
 

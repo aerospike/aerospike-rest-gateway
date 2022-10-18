@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -46,64 +46,54 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest
 public class KVControllerGetRecordKeyTypeTests {
 
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
-	@Rule
-	public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    @ClassRule
+    public static final SpringClassRule springClassRule = new SpringClassRule();
+    @Rule
+    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-	@Autowired KeyValueController controller;
-	@MockBean AerospikeRecordService recordService;
+    @Autowired
+    KeyValueController controller;
+    @MockBean
+    AerospikeRecordService recordService;
 
-	private final String ns = "test";
-	private final String set = "set";
-	private final String key = "key";
+    private final String ns = "test";
+    private final String set = "set";
+    private final String key = "key";
 
-	private MultiValueMap<String, String> queryParams;
-	private final RecordKeyType expectedKeyType;
+    private MultiValueMap<String, String> queryParams;
+    private final RecordKeyType expectedKeyType;
 
-	@Parameters
-	public static Object[] keyType() {
-		return new Object[] {
-				RecordKeyType.STRING,
-				RecordKeyType.BYTES,
-				RecordKeyType.DIGEST,
-				RecordKeyType.INTEGER,
-				null
-		};
-	}
-	public KVControllerGetRecordKeyTypeTests(RecordKeyType keyType) {
-		this.expectedKeyType = keyType;
-	}
+    @Parameters
+    public static Object[] keyType() {
+        return new Object[]{
+                RecordKeyType.STRING, RecordKeyType.BYTES, RecordKeyType.DIGEST, RecordKeyType.INTEGER, null
+        };
+    }
 
-	@Before
-	public void setup() {
-		queryParams = new LinkedMultiValueMap<>();
-		if (expectedKeyType != null) {
-			queryParams.put(AerospikeAPIConstants.KEY_TYPE, Collections.singletonList(expectedKeyType.toString()));
-		}
-	}
+    public KVControllerGetRecordKeyTypeTests(RecordKeyType keyType) {
+        this.expectedKeyType = keyType;
+    }
 
-	@Test
-	public void testKeyTypeForNSSetKey() {
-		controller.getRecordNamespaceSetKey(ns, set, key, queryParams, null);
-		verify(recordService, Mockito.only()).fetchRecord(
-				isNull(),
-				any(String.class),
-				any(String.class),
-				any(String.class),
-				any(String[].class),
-				eq(expectedKeyType), isA(Policy.class));
-	}
-	@Test
-	public void testKeyTypeForNSKey() {
-		controller.getRecordNamespaceKey(ns, key, queryParams, null);
-		verify(recordService, Mockito.only()).fetchRecord(
-				isNull(),
-				any(String.class),
-				isNull(),
-				any(String.class),
-				any(String[].class),
-				eq(expectedKeyType), isA(Policy.class));
-	}
+    @Before
+    public void setup() {
+        queryParams = new LinkedMultiValueMap<>();
+        if (expectedKeyType != null) {
+            queryParams.put(AerospikeAPIConstants.KEY_TYPE, Collections.singletonList(expectedKeyType.toString()));
+        }
+    }
+
+    @Test
+    public void testKeyTypeForNSSetKey() {
+        controller.getRecordNamespaceSetKey(ns, set, key, queryParams, null);
+        verify(recordService, Mockito.only()).fetchRecord(isNull(), any(String.class), any(String.class),
+                any(String.class), any(String[].class), eq(expectedKeyType), isA(Policy.class));
+    }
+
+    @Test
+    public void testKeyTypeForNSKey() {
+        controller.getRecordNamespaceKey(ns, key, queryParams, null);
+        verify(recordService, Mockito.only()).fetchRecord(isNull(), any(String.class), isNull(), any(String.class),
+                any(String[].class), eq(expectedKeyType), isA(Policy.class));
+    }
 
 }

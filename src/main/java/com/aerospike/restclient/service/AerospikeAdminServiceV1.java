@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -31,7 +31,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 class AerospikeAdminServiceV1 implements AerospikeAdminService {
@@ -89,30 +88,21 @@ class AerospikeAdminServiceV1 implements AerospikeAdminService {
     @Override
     public List<RestClientRole> getRoles(AuthDetails authDetails) {
         List<Role> roleList = AdminHandler.create(clientPool.getClient(authDetails)).getRoles(null);
-        return roleList.stream().map(RestClientRole::new).collect(Collectors.toList());
+        return roleList.stream().map(RestClientRole::new).toList();
     }
 
     @Override
     public void createRole(AuthDetails authDetails, RestClientRole rcRole) {
         Role asRole = rcRole.toRole();
-        AdminHandler.create(clientPool.getClient(authDetails)).createRole(
-                null,
-                asRole.name,
-                asRole.privileges,
-                asRole.whitelist,
-                asRole.readQuota,
-                asRole.writeQuota
-        );
+        AdminHandler.create(clientPool.getClient(authDetails))
+                .createRole(null, asRole.name, asRole.privileges, asRole.whitelist, asRole.readQuota,
+                        asRole.writeQuota);
     }
 
     @Override
     public void setRoleQuotas(AuthDetails authDetails, String roleName, RestClientRoleQuota roleQuota) {
-        AdminHandler.create(clientPool.getClient(authDetails)).setRoleQuotas(
-                null,
-                roleName,
-                roleQuota.getReadQuota(),
-                roleQuota.getWriteQuota()
-        );
+        AdminHandler.create(clientPool.getClient(authDetails))
+                .setRoleQuotas(null, roleName, roleQuota.getReadQuota(), roleQuota.getWriteQuota());
     }
 
     @Override
@@ -128,15 +118,13 @@ class AerospikeAdminServiceV1 implements AerospikeAdminService {
 
     @Override
     public void grantPrivileges(AuthDetails authDetails, String roleName, List<RestClientPrivilege> rcPrivileges) {
-        List<Privilege> privileges = rcPrivileges.stream().map(RestClientPrivilege::toPrivilege)
-                .collect(Collectors.toList());
+        List<Privilege> privileges = rcPrivileges.stream().map(RestClientPrivilege::toPrivilege).toList();
         AdminHandler.create(clientPool.getClient(authDetails)).grantPrivileges(null, roleName, privileges);
     }
 
     @Override
     public void revokePrivileges(AuthDetails authDetails, String roleName, List<RestClientPrivilege> rcPrivileges) {
-        List<Privilege> privileges = rcPrivileges.stream().map(RestClientPrivilege::toPrivilege)
-                .collect(Collectors.toList());
+        List<Privilege> privileges = rcPrivileges.stream().map(RestClientPrivilege::toPrivilege).toList();
 
         AdminHandler.create(clientPool.getClient(authDetails)).revokePrivileges(null, roleName, privileges);
     }

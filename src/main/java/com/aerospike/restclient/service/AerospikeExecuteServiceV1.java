@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -17,12 +17,14 @@
 package com.aerospike.restclient.service;
 
 import com.aerospike.client.policy.WritePolicy;
-import com.aerospike.restclient.domain.RestClientExecuteTask;
-import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
 import com.aerospike.restclient.domain.RestClientOperation;
 import com.aerospike.restclient.domain.auth.AuthDetails;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTask;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTaskStatus;
+import com.aerospike.restclient.domain.operationmodels.Operation;
 import com.aerospike.restclient.handlers.ExecuteHandler;
 import com.aerospike.restclient.util.AerospikeClientPool;
+import com.aerospike.restclient.util.converters.OperationsConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,12 +37,27 @@ public class AerospikeExecuteServiceV1 implements AerospikeExecuteService {
     @Autowired
     private AerospikeClientPool clientPool;
 
+    @Deprecated
     @Override
-    public RestClientExecuteTask executeScan(AuthDetails authDetails, String namespace, String set,
-                                             List<RestClientOperation> opsList, WritePolicy policy,
-                                             Map<String, String> requestParams) {
+    public RestClientExecuteTask executeV1Scan(AuthDetails authDetails, String namespace, String set,
+                                               List<RestClientOperation> opsList, WritePolicy policy,
+                                               Map<String, String> requestParams) {
+        List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap).toList();
+        com.aerospike.client.Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
+
         return ExecuteHandler.create(clientPool.getClient(authDetails))
-                .executeScan(namespace, set, opsList, policy, requestParams);
+                .executeScan(namespace, set, operations, policy, requestParams);
+    }
+
+    @Override
+    public RestClientExecuteTask executeV2Scan(AuthDetails authDetails, String namespace, String set,
+                                               List<Operation> opsList, WritePolicy policy,
+                                               Map<String, String> requestParams) {
+        com.aerospike.client.Operation[] operations = opsList.stream()
+                .map(Operation::toOperation)
+                .toArray(com.aerospike.client.Operation[]::new);
+        return ExecuteHandler.create(clientPool.getClient(authDetails))
+                .executeScan(namespace, set, operations, policy, requestParams);
     }
 
     @Override

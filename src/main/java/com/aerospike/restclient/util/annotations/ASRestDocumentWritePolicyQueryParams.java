@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -33,20 +33,23 @@ import java.lang.annotation.Target;
  * Annotations used by Swagger to report correct query parameters for the given API method.
  */
 @ASRestClientWritePolicyQueryParams
-@Parameters(value = {
-        @Parameter(
-                name = AerospikeAPIConstants.JSON_PATH,
-                description = APIDescriptors.JSON_PATH_NOTES,
-                schema = @Schema(type = "string", required = true),
-                required = true,
-                in = ParameterIn.QUERY),
-        @Parameter(
+@Parameters(
+        value = {
+                @Parameter(
+                        name = AerospikeAPIConstants.JSON_PATH,
+                        description = APIDescriptors.JSON_PATH_NOTES,
+                        schema = @Schema(type = "string", required = true),
+                        required = true,
+                        in = ParameterIn.QUERY
+                ), @Parameter(
                 name = AerospikeAPIConstants.RECORD_BINS,
                 description = APIDescriptors.JSON_PATH_BINS_NOTES,
                 array = @ArraySchema(schema = @Schema(type = "string", required = true)),
                 required = true,
-                in = ParameterIn.QUERY),
-})
+                in = ParameterIn.QUERY
+        ),
+        }
+)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ASRestDocumentWritePolicyQueryParams {

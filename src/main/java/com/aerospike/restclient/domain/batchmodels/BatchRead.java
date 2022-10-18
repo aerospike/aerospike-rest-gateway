@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,28 +16,22 @@
  */
 package com.aerospike.restclient.domain.batchmodels;
 
-import com.aerospike.client.Operation;
-import com.aerospike.restclient.domain.RestClientOperation;
+import com.aerospike.restclient.domain.operationmodels.Operation;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.RestClientErrors;
-import com.aerospike.restclient.util.converters.OperationsConverter;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Schema(
         description = "An object that describes a batch read operation to be used in a batch request.",
         externalDocs = @ExternalDocumentation(
-                url =
-                        "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/BatchRead.html"
+                url = "https://javadoc.io/doc/com.aerospike/aerospike-client/" + AerospikeAPIConstants.AS_CLIENT_VERSION + "/com/aerospike/client/BatchRead.html"
         )
 )
 public class BatchRead extends BatchRecord {
-    // TODO add operations.  It is needed for CTX get operation I believe.
     @Schema(
             description = "The type of batch request. It is always " + AerospikeAPIConstants.BATCH_TYPE_READ,
             allowableValues = AerospikeAPIConstants.BATCH_TYPE_READ,
@@ -49,14 +43,13 @@ public class BatchRead extends BatchRecord {
     public boolean readAllBins;
 
     @Schema(description = "List of operation. Useful for reading from nested CDTs.")
-    public List<RestClientOperation> opsList;
+    public List<Operation> opsList;
 
     @Schema(description = "List of bins to limit the record response to.", example = "[\"bin1\"]")
     public String[] binNames;
 
     @Schema(description = "Policy attributes used for this batch read operation.")
     public BatchReadPolicy policy;
-
 
     public BatchRead() {
     }
@@ -67,23 +60,20 @@ public class BatchRead extends BatchRecord {
             throw new RestClientErrors.InvalidKeyError("Key for a batch read may not be null");
         }
 
-        com.aerospike.client.policy.BatchReadPolicy batchReadPolicy = Optional.ofNullable(policy).map(
-                BatchReadPolicy::toBatchReadPolicy).orElse(null);
+        com.aerospike.client.policy.BatchReadPolicy batchReadPolicy = Optional.ofNullable(policy)
+                .map(BatchReadPolicy::toBatchReadPolicy)
+                .orElse(null);
 
         if (readAllBins) {
             return new com.aerospike.client.BatchRead(batchReadPolicy, key.toKey(), true);
         } else if (opsList != null) {
-            List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap)
-                    .collect(Collectors.toList());
-            Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
+            com.aerospike.client.Operation[] operations = opsList.stream()
+                    .map(Operation::toOperation)
+                    .toArray(com.aerospike.client.Operation[]::new);
 
-            return new com.aerospike.client.BatchRead(
-                    batchReadPolicy, key.toKey(),
-                    operations);
+            return new com.aerospike.client.BatchRead(batchReadPolicy, key.toKey(), operations);
         } else {
-            return new com.aerospike.client.BatchRead(
-                    batchReadPolicy, key.toKey(),
-                    binNames);
+            return new com.aerospike.client.BatchRead(batchReadPolicy, key.toKey(), binNames);
         }
     }
 }

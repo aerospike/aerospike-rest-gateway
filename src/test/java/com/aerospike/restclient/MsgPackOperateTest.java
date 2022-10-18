@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -36,14 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_FIELD;
 import static com.aerospike.restclient.util.AerospikeAPIConstants.OPERATION_VALUES_FIELD;
@@ -68,7 +61,7 @@ public class MsgPackOperateTest {
     private final Key intKey = new Key("test", "junit", 1);
     private final Key bytesKey = new Key("test", "junit", new byte[]{1, 127, 127, 1});
 
-    private final String testEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "operate");
+    private final String testEndpoint = ASTestUtils.buildEndpointV1("operate", "test", "junit", "operate");
     private final String batchEndpoint = "/v1/operate/read/test/junit";
     private final TypeReference<Map<String, Object>> binType = new TypeReference<Map<String, Object>>() {
     };
@@ -256,7 +249,7 @@ public class MsgPackOperateTest {
         List<Map<String, Object>> opList = new ArrayList<>();
         Map<String, Object> opMap = new HashMap<>();
         Map<String, Object> opValues = new HashMap<>();
-        String intEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", "1") + "?keytype=INTEGER";
+        String intEndpoint = ASTestUtils.buildEndpointV1("operate", "test", "junit", "1") + "?keytype=INTEGER";
         Record record = client.get(null, intKey);
         int oldGeneration = record.generation;
 
@@ -279,7 +272,7 @@ public class MsgPackOperateTest {
         Map<String, Object> opValues = new HashMap<>();
 
         String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
-        String bytesEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", urlBytes) + "?keytype=BYTES";
+        String bytesEndpoint = ASTestUtils.buildEndpointV1("operate", "test", "junit", urlBytes) + "?keytype=BYTES";
 
         Record record = client.get(null, bytesKey);
         int oldGeneration = record.generation;
@@ -306,7 +299,7 @@ public class MsgPackOperateTest {
         Map<String, Object> opValues = new HashMap<>();
 
         String urlBytes = Base64.getUrlEncoder().encodeToString(testKey.digest);
-        String bytesEndpoint = ASTestUtils.buildEndpoint("operate", "test", "junit", urlBytes) + "?keytype=DIGEST";
+        String bytesEndpoint = ASTestUtils.buildEndpointV1("operate", "test", "junit", urlBytes) + "?keytype=DIGEST";
 
         Record record = client.get(null, testKey);
         int oldGeneration = record.generation;
@@ -338,12 +331,17 @@ public class MsgPackOperateTest {
 
         TypeReference<List<Map<String, Object>>> ref = new TypeReference<List<Map<String, Object>>>() {
         };
-        List<Object> recordBins = objectMapper.readValue(opResult, ref).stream()
-                .map(r -> (Map<String, Object>) r.get("bins")).map(Map::keySet)
-                .flatMap(Collection::stream).collect(Collectors.toList());
-        List<Object> expected = Arrays.stream(client.get(null, new Key[]{testKey, testKey2}))
-                .map(r -> r.bins).map(Map::keySet)
-                .flatMap(Collection::stream).collect(Collectors.toList());
+        List<Object> recordBins = Collections.singletonList(objectMapper.readValue(opResult, ref)
+                .stream()
+                .map(r -> (Map<String, Object>) r.get("bins"))
+                .map(Map::keySet)
+                .flatMap(Collection::stream)
+                .toList());
+        List<Object> expected = Collections.singletonList(Arrays.stream(client.get(null, new Key[]{testKey, testKey2}))
+                .map(r -> r.bins)
+                .map(Map::keySet)
+                .flatMap(Collection::stream)
+                .toList());
 
         assertIterableEquals(expected, recordBins);
     }
@@ -365,12 +363,18 @@ public class MsgPackOperateTest {
 
         TypeReference<List<Map<String, Object>>> ref = new TypeReference<List<Map<String, Object>>>() {
         };
-        List<Object> recordBins = objectMapper.readValue(opResult, ref).stream()
-                .map(r -> (Map<String, Object>) r.get("bins")).map(Map::keySet)
-                .flatMap(Collection::stream).collect(Collectors.toList());
-        List<Object> expected = Arrays.stream(client.get(null, new Key[]{testKey, testKey2}))
-                .map(r -> r.bins).map(Map::keySet).flatMap(Collection::stream)
-                .filter(k -> k.equals("str")).collect(Collectors.toList());
+        List<Object> recordBins = Collections.singletonList(objectMapper.readValue(opResult, ref)
+                .stream()
+                .map(r -> (Map<String, Object>) r.get("bins"))
+                .map(Map::keySet)
+                .flatMap(Collection::stream)
+                .toList());
+        List<Object> expected = Collections.singletonList(Arrays.stream(client.get(null, new Key[]{testKey, testKey2}))
+                .map(r -> r.bins)
+                .map(Map::keySet)
+                .flatMap(Collection::stream)
+                .filter(k -> k.equals("str"))
+                .toList());
 
         assertIterableEquals(expected, recordBins);
     }

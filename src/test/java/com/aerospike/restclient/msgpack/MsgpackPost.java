@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -55,7 +55,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class MsgpackPost {
 
-
     private MockMvc mockMVC;
 
     @Autowired
@@ -68,7 +67,7 @@ public class MsgpackPost {
     private ObjectMapper mapper;
     private final Key testKey = new Key("test", "msgpack", "post");
 
-    private final String testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "msgpack", "post");
+    private final String testEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "msgpack", "post");
     private final TypeReference<Map<String, Object>> sOMapType = new TypeReference<Map<String, Object>>() {
     };
 
@@ -89,11 +88,8 @@ public class MsgpackPost {
         byte[] testBytes = new byte[]{1, 127, 127, 1};
         byteBins.put("byte", testBytes);
 
-
-        mockMVC.perform(post(testEndpoint).contentType(mtString)
-                        .content(mapper.writeValueAsBytes(byteBins)))
+        mockMVC.perform(post(testEndpoint).contentType(mtString).content(mapper.writeValueAsBytes(byteBins)))
                 .andExpect(status().isCreated());
-
 
         Record rec = client.get(null, testKey);
         byte[] realBytes = (byte[]) rec.bins.get("byte");
@@ -114,10 +110,7 @@ public class MsgpackPost {
 
         byte[] payload = packer.toByteArray();
 
-        mockMVC.perform(post(testEndpoint).contentType(mtString)
-                        .content(payload))
-                .andExpect(status().isCreated());
-
+        mockMVC.perform(post(testEndpoint).contentType(mtString).content(payload)).andExpect(status().isCreated());
 
         Record rec = client.get(null, testKey);
         byte[] realBytes = (byte[]) rec.bins.get("my_bytes");
@@ -129,19 +122,19 @@ public class MsgpackPost {
         byte[] testBytes = new byte[]{1, 127, 127, 1};
         client.put(null, testKey, new Bin("byte", testBytes));
 
-
         byte[] resContent = mockMVC.perform(get(testEndpoint).accept(mtString))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
 
         Map<String, Object> retRec = mapper.readValue(resContent, sOMapType);
-        @SuppressWarnings("unchecked")
-        Map<String, Object> bins = (Map<String, Object>) retRec.get("bins");
+        @SuppressWarnings("unchecked") Map<String, Object> bins = (Map<String, Object>) retRec.get("bins");
 
         byte[] realBytes = (byte[]) bins.get("byte");
 
         Assert.assertArrayEquals(testBytes, realBytes);
     }
-
 
     @Test
     public void testStoringGeoJson() throws Exception {
@@ -152,8 +145,7 @@ public class MsgpackPost {
         packer.packExtensionTypeHeader((byte) 23, geoString.length());
         packer.addPayload(geoString.getBytes(StandardCharsets.UTF_8));
 
-        mockMVC.perform(post(testEndpoint).contentType(mtString)
-                        .content(packer.toByteArray()))
+        mockMVC.perform(post(testEndpoint).contentType(mtString).content(packer.toByteArray()))
                 .andExpect(status().isCreated());
 
         Record rec = client.get(null, testKey);
@@ -169,12 +161,14 @@ public class MsgpackPost {
         client.put(null, testKey, new Bin("geo", geoV));
 
         byte[] resContent = mockMVC.perform(get(testEndpoint).accept(mtString))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
 
         Map<String, Object> retRec = mapper.readValue(resContent, sOMapType);
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> bins = (Map<String, Object>) retRec.get("bins");
+        @SuppressWarnings("unchecked") Map<String, Object> bins = (Map<String, Object>) retRec.get("bins");
         MessagePackExtensionType etype = (MessagePackExtensionType) bins.get("geo");
 
         Assert.assertEquals(etype.getType(), ParticleType.GEOJSON);
@@ -191,13 +185,11 @@ public class MsgpackPost {
         packer.packLong(1);
         packer.packLong(2);
 
-        mockMVC.perform(post(testEndpoint).contentType(mtString)
-                        .content(packer.toByteArray()))
+        mockMVC.perform(post(testEndpoint).contentType(mtString).content(packer.toByteArray()))
                 .andExpect(status().isCreated());
 
         Record rec = client.get(null, testKey);
-        @SuppressWarnings("unchecked")
-        Map<Long, Long> retMap = (Map<Long, Long>) rec.bins.get("map");
+        @SuppressWarnings("unchecked") Map<Long, Long> retMap = (Map<Long, Long>) rec.bins.get("map");
 
         Assert.assertEquals(retMap.size(), 1);
         Assert.assertEquals(retMap.get(1L), (Long) 2l);
@@ -212,17 +204,18 @@ public class MsgpackPost {
         client.put(null, testKey, new Bin("map", iMap));
 
         byte[] resContent = mockMVC.perform(get(testEndpoint).accept(mtString))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
 
         // This helper lets us parse out a Map<String, Object>
         // Since that's the format of a returned record, this works.
         // We end up using Rec["bins"]
         MsgPackBinParser bParser = new MsgPackBinParser(new ByteArrayInputStream(resContent));
         Map<String, Object> retRec = bParser.parseBins();
-        @SuppressWarnings("unchecked")
-        Map<String, Object> bins = (Map<String, Object>) retRec.get("bins");
-        @SuppressWarnings("unchecked")
-        Map<Object, Object> lMap = (Map<Object, Object>) bins.get("map");
+        @SuppressWarnings("unchecked") Map<String, Object> bins = (Map<String, Object>) retRec.get("bins");
+        @SuppressWarnings("unchecked") Map<Object, Object> lMap = (Map<Object, Object>) bins.get("map");
 
         Assert.assertEquals(lMap.size(), 1);
         Assert.assertEquals(lMap.get(1L), 2l);
@@ -233,8 +226,7 @@ public class MsgpackPost {
     @Test
     public void testInvalidMsgpack() throws Exception {
 
-        mockMVC.perform(post(testEndpoint).contentType(mtString)
-                        .content(new byte[]{}))
+        mockMVC.perform(post(testEndpoint).contentType(mtString).content(new byte[]{}))
                 .andExpect(status().isBadRequest());
 
     }
@@ -247,8 +239,7 @@ public class MsgpackPost {
         packer.packMapHeader(1);
         packer.packString("map");
 
-        mockMVC.perform(post(testEndpoint).contentType(mtString)
-                        .content(new byte[]{}))
+        mockMVC.perform(post(testEndpoint).contentType(mtString).content(new byte[]{}))
                 .andExpect(status().isBadRequest());
 
     }
@@ -261,8 +252,7 @@ public class MsgpackPost {
         packer.packString("map");
         packer.packString("value");
 
-        mockMVC.perform(post(testEndpoint).contentType(mtString)
-                        .content(new byte[]{}))
+        mockMVC.perform(post(testEndpoint).contentType(mtString).content(new byte[]{}))
                 .andExpect(status().isBadRequest());
 
     }

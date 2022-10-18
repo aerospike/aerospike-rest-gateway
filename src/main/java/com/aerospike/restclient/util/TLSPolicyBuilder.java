@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 Aerospike, Inc.
+ *
+ * Portions may be licensed to Aerospike, Inc. under one or more contributor
+ * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.aerospike.restclient.util;
 
 import com.aerospike.client.policy.TlsPolicy;
@@ -14,7 +30,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.List;
 
-public class TLSPolicyBuilder  {
+public class TLSPolicyBuilder {
 
     boolean enabled;
     String keystorePath;
@@ -26,17 +42,9 @@ public class TLSPolicyBuilder  {
     List<String> allowedProtocols;
     Boolean forLoginOnly;
 
-    public TLSPolicyBuilder(
-        boolean enabled,
-        String keystorePath,
-        char[] keystorePassword,
-        char[] keyPassword,
-        String truststorePath,
-        char[] truststorePassword,
-        List<String> allowedCiphers,
-        List<String> allowedProtocols,
-        Boolean forLoginOnly
-    ) {
+    public TLSPolicyBuilder(boolean enabled, String keystorePath, char[] keystorePassword, char[] keyPassword,
+                            String truststorePath, char[] truststorePassword, List<String> allowedCiphers,
+                            List<String> allowedProtocols, Boolean forLoginOnly) {
         this.enabled = enabled;
         this.keystorePath = keystorePath;
         this.keystorePassword = keystorePassword;
@@ -52,18 +60,18 @@ public class TLSPolicyBuilder  {
         if (!enabled) {
             return null;
         }
-   
+
         TlsPolicy policy = new TlsPolicy();
         if (keystorePath != null || truststorePath != null) {
             addSSLContext(policy);
         }
 
         if (allowedCiphers != null) {
-            policy.ciphers = allowedCiphers.toArray(new String[] {});
+            policy.ciphers = allowedCiphers.toArray(new String[]{});
         }
 
         if (allowedProtocols != null) {
-            policy.protocols = allowedProtocols.toArray(new String[] {});
+            policy.protocols = allowedProtocols.toArray(new String[]{});
         }
 
         if (forLoginOnly != null) {
@@ -123,7 +131,8 @@ public class TLSPolicyBuilder  {
             } else {
                 ctxBuilder.loadKeyMaterial(ksFile, keystorePassword, keyPassword);
             }
-        } catch (NoSuchAlgorithmException | KeyStoreException | CertificateException | UnrecoverableKeyException | IOException e) {
+        } catch (NoSuchAlgorithmException | KeyStoreException | CertificateException | UnrecoverableKeyException |
+                 IOException e) {
             throw new ASTLSConfigException("Failed To load keystore.");
         }
     }
@@ -132,10 +141,10 @@ public class TLSPolicyBuilder  {
 
 class ASTLSConfigException extends RuntimeException {
 
-	private static final long serialVersionUID = 7499868056464128887L;
+    private static final long serialVersionUID = 7499868056464128887L;
 
-	public ASTLSConfigException(String msg) {
-		super(msg);
-	}
+    public ASTLSConfigException(String msg) {
+        super(msg);
+    }
 
 }

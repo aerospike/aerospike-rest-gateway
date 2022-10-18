@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -29,7 +29,6 @@ public class BatchHandler {
     public BatchHandler(AerospikeClient client) {
         this.client = client;
     }
-
 
     public void batchRecord(BatchPolicy policy, List<BatchRecord> batchRecords) {
         client.operate(policy, batchRecords);

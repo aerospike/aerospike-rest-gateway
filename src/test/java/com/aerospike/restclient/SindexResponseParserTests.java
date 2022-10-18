@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,86 +16,80 @@
  */
 package com.aerospike.restclient;
 
-import java.util.List;
-import java.util.Map;
-
+import com.aerospike.client.AerospikeException;
+import com.aerospike.restclient.util.InfoResponseParser;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.aerospike.client.AerospikeException;
-import com.aerospike.restclient.util.InfoResponseParser;
+import java.util.List;
+import java.util.Map;
 
 public class SindexResponseParserTests {
-	@Test
-	public void
-	testSindexResponseSplitsIntoMaps() throws Exception {
-		String responseString = "ns=bar:set=demo:indexname=int_index_1:bin=intbin1:type=NUMERIC:indextype=NONE:path=intbin1:state=RW;"
-				+ "ns=test:set=demo:indexname=int_index_1:bin=intbin1:type=NUMERIC:indextype=NONE:path=intbin1:state=RW;"
-				+ "ns=test:set=demo:indexname=str_index1:bin=strbin1:type=STRING:indextype=NONE:path=strbin1:state=RW;\n";
+    @Test
+    public void testSindexResponseSplitsIntoMaps() throws Exception {
+        String responseString = "ns=bar:set=demo:indexname=int_index_1:bin=intbin1:type=NUMERIC:indextype=NONE:path=intbin1:state=RW;" + "ns=test:set=demo:indexname=int_index_1:bin=intbin1:type=NUMERIC:indextype=NONE:path=intbin1:state=RW;" + "ns=test:set=demo:indexname=str_index1:bin=strbin1:type=STRING:indextype=NONE:path=strbin1:state=RW;\n";
 
-		List<Map<String, String>> indexInfoAry = InfoResponseParser.getIndexInformation(responseString);
+        List<Map<String, String>> indexInfoAry = InfoResponseParser.getIndexInformation(responseString);
 
-		Assert.assertEquals(indexInfoAry.size(), 3);
-	}
-	@Test
-	public void
-	testSindexResponseGetsIndexInfo() throws Exception {
-		String responseString = "ns=bar:set=demo:indexname=int_index_1:bin=intbin1:type=NUMERIC:indextype=NONE:path=intbin1:state=RW;";
-		List<Map<String, String>> indexInfoAry = InfoResponseParser.getIndexInformation(responseString);
-		Map<String, String> indexInfo = indexInfoAry.get(0);
+        Assert.assertEquals(indexInfoAry.size(), 3);
+    }
 
-		Assert.assertTrue(indexInfoNameEquals(indexInfo, "int_index_1"));
-		Assert.assertTrue(indexInfoBinEquals(indexInfo, "intbin1"));
-		Assert.assertTrue(indexInfoNamespaceEquals(indexInfo, "bar"));
-		Assert.assertTrue(indexInfoSetEquals(indexInfo, "demo"));
-		Assert.assertTrue(indexInfoTypeEquals(indexInfo, "NUMERIC"));
-		Assert.assertTrue(indexInfoIndexTypeEquals(indexInfo, "NONE"));
-	}
+    @Test
+    public void testSindexResponseGetsIndexInfo() throws Exception {
+        String responseString = "ns=bar:set=demo:indexname=int_index_1:bin=intbin1:type=NUMERIC:indextype=NONE:path=intbin1:state=RW;";
+        List<Map<String, String>> indexInfoAry = InfoResponseParser.getIndexInformation(responseString);
+        Map<String, String> indexInfo = indexInfoAry.get(0);
 
-	@Test
-	public void
-	testEmptySindexResponse() throws Exception {
-		/*
-		 * If there are no indexes we expect an empty list
-		 */
-		String responseString = "";
-		List<Map<String, String>> indexInfoAry = InfoResponseParser.getIndexInformation(responseString);
-		Assert.assertEquals(0, indexInfoAry.size());
-	}
+        Assert.assertTrue(indexInfoNameEquals(indexInfo, "int_index_1"));
+        Assert.assertTrue(indexInfoBinEquals(indexInfo, "intbin1"));
+        Assert.assertTrue(indexInfoNamespaceEquals(indexInfo, "bar"));
+        Assert.assertTrue(indexInfoSetEquals(indexInfo, "demo"));
+        Assert.assertTrue(indexInfoTypeEquals(indexInfo, "NUMERIC"));
+        Assert.assertTrue(indexInfoIndexTypeEquals(indexInfo, "NONE"));
+    }
 
-	@Test(expected=AerospikeException.class)
-	public void
-	testInvalidNamespaceResponse() throws Exception {
-		/*
-		 * If there are no indexes we expect an empty list
-		 */
-		String responseString = "ns_type=unknown\n";
-		InfoResponseParser.getIndexInformation(responseString);
-	}
+    @Test
+    public void testEmptySindexResponse() throws Exception {
+        /*
+         * If there are no indexes we expect an empty list
+         */
+        String responseString = "";
+        List<Map<String, String>> indexInfoAry = InfoResponseParser.getIndexInformation(responseString);
+        Assert.assertEquals(0, indexInfoAry.size());
+    }
 
-	private boolean indexInfoNameEquals(Map<String, String>indexInfo, String name) {
-		return name.equals(indexInfo.get("indexname"));
-	}
+    @Test(expected = AerospikeException.class)
+    public void testInvalidNamespaceResponse() throws Exception {
+        /*
+         * If there are no indexes we expect an empty list
+         */
+        String responseString = "ns_type=unknown\n";
+        InfoResponseParser.getIndexInformation(responseString);
+    }
 
-	private boolean indexInfoBinEquals(Map<String, String>indexInfo, String binName) {
-		return binName.equals(indexInfo.get("bin"));
-	}
+    private boolean indexInfoNameEquals(Map<String, String> indexInfo, String name) {
+        return name.equals(indexInfo.get("indexname"));
+    }
 
-	private boolean indexInfoNamespaceEquals(Map<String, String>indexInfo, String namespace) {
-		return namespace.equals(indexInfo.get("ns"));
-	}
+    private boolean indexInfoBinEquals(Map<String, String> indexInfo, String binName) {
+        return binName.equals(indexInfo.get("bin"));
+    }
 
-	private boolean indexInfoSetEquals(Map<String, String>indexInfo, String set) {
-		return set.equals(indexInfo.get("set"));
-	}
+    private boolean indexInfoNamespaceEquals(Map<String, String> indexInfo, String namespace) {
+        return namespace.equals(indexInfo.get("ns"));
+    }
 
-	private boolean indexInfoTypeEquals(Map<String, String>indexInfo, String type) {
-		return type.equals(indexInfo.get("type"));
-	}
+    private boolean indexInfoSetEquals(Map<String, String> indexInfo, String set) {
+        return set.equals(indexInfo.get("set"));
+    }
 
-	private boolean indexInfoIndexTypeEquals(Map<String, String>indexInfo, String indexType) {
-		return indexType.equals(indexInfo.get("indextype"));
-	}
+    private boolean indexInfoTypeEquals(Map<String, String> indexInfo, String type) {
+        return type.equals(indexInfo.get("type"));
+    }
+
+    private boolean indexInfoIndexTypeEquals(Map<String, String> indexInfo, String indexType) {
+        return indexType.equals(indexInfo.get("indextype"));
+    }
 
 }
 
