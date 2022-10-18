@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -49,145 +49,99 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class KVControllerGetRecordTests {
 
-	@Autowired KeyValueController controller;
-	@MockBean AerospikeRecordService recordService;
+    @Autowired
+    KeyValueController controller;
+    @MockBean
+    AerospikeRecordService recordService;
 
-	private final AerospikeException expectedException = new AerospikeException("test exception");
+    private final AerospikeException expectedException = new AerospikeException("test exception");
 
-	private final String ns = "test";
-	private final String set = "set";
-	private final String key = "key";
+    private final String ns = "test";
+    private final String set = "set";
+    private final String key = "key";
 
-	private MultiValueMap<String, String> queryParams;
-	private final String[] binAry = {"bin1", "bin2", "bin3"};
-	private final List<String> binList = Arrays.asList(binAry);
+    private MultiValueMap<String, String> queryParams;
+    private final String[] binAry = {"bin1", "bin2", "bin3"};
+    private final List<String> binList = Arrays.asList(binAry);
 
-	private RestClientRecord testRecord;
+    private RestClientRecord testRecord;
 
-	@Before
-	/* Initialize the query params argument */
-	public void setup() {
-		Map<String, Object>testBins = new HashMap<>();
-		testBins.put("bin1", "val1");
-		testBins.put("bin2", "val2");
-		testRecord = new RestClientRecord(new Record(testBins, 2, 2));
+    @Before
+    /* Initialize the query params argument */ public void setup() {
+        Map<String, Object> testBins = new HashMap<>();
+        testBins.put("bin1", "val1");
+        testBins.put("bin2", "val2");
+        testRecord = new RestClientRecord(new Record(testBins, 2, 2));
 
-		queryParams = new LinkedMultiValueMap<>();
-	}
+        queryParams = new LinkedMultiValueMap<>();
+    }
 
-	@Test
-	public void tesNSSetKey() {
-		controller.getRecordNamespaceSetKey(ns, set, key, queryParams, null);
-		verify(recordService, Mockito.only()).fetchRecord(
-				isNull(),
-				eq(ns),
-				eq(set),
-				eq(key),
-				any(),
-				isNull(),
-				isA(Policy.class));
-	}
+    @Test
+    public void tesNSSetKey() {
+        controller.getRecordNamespaceSetKey(ns, set, key, queryParams, null);
+        verify(recordService, Mockito.only()).fetchRecord(isNull(), eq(ns), eq(set), eq(key), any(), isNull(),
+                isA(Policy.class));
+    }
 
-	@Test
-	public void testNSKey() {
-		controller.getRecordNamespaceKey(ns, key, queryParams, null);
-		verify(recordService, Mockito.only()).fetchRecord(
-				isNull(),
-				eq(ns),
-				isNull(),
-				eq(key),
-				any(String[].class),
-				isNull(),
-				isA(Policy.class));
-	}
+    @Test
+    public void testNSKey() {
+        controller.getRecordNamespaceKey(ns, key, queryParams, null);
+        verify(recordService, Mockito.only()).fetchRecord(isNull(), eq(ns), isNull(), eq(key), any(String[].class),
+                isNull(), isA(Policy.class));
+    }
 
-	@Test
-	public void tesBinsNSSetKey() {
-		queryParams.put(AerospikeAPIConstants.RECORD_BINS, binList);
-		controller.getRecordNamespaceSetKey(ns, set, key, queryParams, null);
-		verify(recordService, Mockito.only()).fetchRecord(
-				isNull(),
-				eq(ns),
-				eq(set),
-				eq(key),
-				aryEq(binAry),
-				isNull(),
-				isA(Policy.class));
-	}
+    @Test
+    public void tesBinsNSSetKey() {
+        queryParams.put(AerospikeAPIConstants.RECORD_BINS, binList);
+        controller.getRecordNamespaceSetKey(ns, set, key, queryParams, null);
+        verify(recordService, Mockito.only()).fetchRecord(isNull(), eq(ns), eq(set), eq(key), aryEq(binAry), isNull(),
+                isA(Policy.class));
+    }
 
-	@Test
-	public void testBinsNSKey() {
-		queryParams.put(AerospikeAPIConstants.RECORD_BINS, binList);
-		controller.getRecordNamespaceKey(ns, key, queryParams, null);
-		verify(recordService, Mockito.only()).fetchRecord(
-				isNull(),
-				eq(ns),
-				isNull(),
-				eq(key),
-				aryEq(binAry),
-				isNull(),
-				isA(Policy.class));
-	}
+    @Test
+    public void testBinsNSKey() {
+        queryParams.put(AerospikeAPIConstants.RECORD_BINS, binList);
+        controller.getRecordNamespaceKey(ns, key, queryParams, null);
+        verify(recordService, Mockito.only()).fetchRecord(isNull(), eq(ns), isNull(), eq(key), aryEq(binAry), isNull(),
+                isA(Policy.class));
+    }
 
-	@Test
-	public void testNSSetKeyReturn() {
-		when(recordService.fetchRecord(
-				isNull(),
-				anyString(),
-				anyString(),
-				anyString(),
-				any(),
-				isNull(),
-				any(Policy.class))).thenReturn(testRecord);
-		RestClientRecord actualRecord = controller.getRecordNamespaceSetKey(ns, set, key, queryParams, null);
-		Assert.assertTrue(recordsEqual(testRecord, actualRecord));
-	}
+    @Test
+    public void testNSSetKeyReturn() {
+        when(recordService.fetchRecord(isNull(), anyString(), anyString(), anyString(), any(), isNull(),
+                any(Policy.class))).thenReturn(testRecord);
+        RestClientRecord actualRecord = controller.getRecordNamespaceSetKey(ns, set, key, queryParams, null);
+        Assert.assertTrue(recordsEqual(testRecord, actualRecord));
+    }
 
-	@Test
-	public void testBinsNSKeyReturn() {
-		when(recordService.fetchRecord(
-				isNull(),
-				anyString(),
-				isNull(),
-				anyString(),
-				any(),
-				any(),
-				any(Policy.class))).thenReturn(testRecord);
-		RestClientRecord actualRecord = controller.getRecordNamespaceKey(ns, key, queryParams, null);
-		Assert.assertTrue(recordsEqual(testRecord, actualRecord));
-	}
+    @Test
+    public void testBinsNSKeyReturn() {
+        when(recordService.fetchRecord(isNull(), anyString(), isNull(), anyString(), any(), any(),
+                any(Policy.class))).thenReturn(testRecord);
+        RestClientRecord actualRecord = controller.getRecordNamespaceKey(ns, key, queryParams, null);
+        Assert.assertTrue(recordsEqual(testRecord, actualRecord));
+    }
 
-	@Test(expected=AerospikeException.class)
-	public void testErrorNSSetKey() {
-		Mockito.doThrow(expectedException)
-		.when(recordService).fetchRecord(
-				isNull(),
-				any(String.class),
-				any(String.class),
-				any(String.class),
-				any(),
-				any(),
-				any(Policy.class));
-		controller.getRecordNamespaceSetKey(ns, set, key, queryParams, null);
-	}
+    @Test(expected = AerospikeException.class)
+    public void testErrorNSSetKey() {
+        Mockito.doThrow(expectedException)
+                .when(recordService)
+                .fetchRecord(isNull(), any(String.class), any(String.class), any(String.class), any(), any(),
+                        any(Policy.class));
+        controller.getRecordNamespaceSetKey(ns, set, key, queryParams, null);
+    }
 
-	@Test(expected=AerospikeException.class)
-	public void testErrorNSKey() {
-		Mockito.doThrow(expectedException)
-		.when(recordService).fetchRecord(
-				isNull(),
-				any(String.class),
-				isNull(),
-				any(String.class),
-				any(),
-				isNull(),
-				any(Policy.class));
-		controller.getRecordNamespaceKey(ns, key, queryParams, null);
-	}
+    @Test(expected = AerospikeException.class)
+    public void testErrorNSKey() {
+        Mockito.doThrow(expectedException)
+                .when(recordService)
+                .fetchRecord(isNull(), any(String.class), isNull(), any(String.class), any(), isNull(),
+                        any(Policy.class));
+        controller.getRecordNamespaceKey(ns, key, queryParams, null);
+    }
 
-	private boolean recordsEqual(RestClientRecord expected, RestClientRecord actual) {
-		return expected.generation == actual.generation &&
-				expected.ttl == actual.ttl &&
-				expected.bins.equals(actual.bins);
-	}
+    private boolean recordsEqual(RestClientRecord expected, RestClientRecord actual) {
+        return expected.generation == actual.generation && expected.ttl == actual.ttl && expected.bins.equals(
+                actual.bins);
+    }
 }

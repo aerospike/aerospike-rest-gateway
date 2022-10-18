@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 Aerospike, Inc.
+ *
+ * Portions may be licensed to Aerospike, Inc. under one or more contributor
+ * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.aerospike.restclient.domain.ctxmodels;
 
 import com.aerospike.client.Value;
@@ -27,8 +43,7 @@ public class RestClientCTXTest {
     @Parameterized.Parameters
     public static Object[] getParams() {
         return new Object[]{
-                new JsonCTXMapper(),
-                new MsgPackCTXMapper()
+                new JsonCTXMapper(), new MsgPackCTXMapper()
         };
     }
 
@@ -81,7 +96,6 @@ public class RestClientCTXTest {
         ctxMap.put("order", ListOrder.ORDERED);
         ctxMap.put("pad", true);
 
-
         try {
             ListIndexCreateCTX restCTX = (ListIndexCreateCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
             Assert.assertEquals(restCTX.type, AerospikeAPIConstants.CTX.LIST_INDEX_CREATE);
@@ -111,7 +125,6 @@ public class RestClientCTXTest {
         Map<String, Object> ctxMap = new HashMap<>();
         ctxMap.put("type", AerospikeAPIConstants.CTX.LIST_RANK);
         ctxMap.put("rank", 1);
-
 
         try {
             ListRankCTX restCTX = (ListRankCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
@@ -210,7 +223,6 @@ public class RestClientCTXTest {
         ctxMap.put("type", AerospikeAPIConstants.CTX.MAP_INDEX);
         ctxMap.put("index", 11);
 
-
         try {
             MapIndexCTX restCTX = (MapIndexCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));
             Assert.assertEquals(restCTX.type, AerospikeAPIConstants.CTX.MAP_INDEX);
@@ -235,7 +247,6 @@ public class RestClientCTXTest {
         Map<String, Object> ctxMap = new HashMap<>();
         ctxMap.put("type", AerospikeAPIConstants.CTX.MAP_RANK);
         ctxMap.put("rank", 11);
-
 
         try {
             MapRankCTX restCTX = (MapRankCTX) mapper.bytesToObject(mapper.objectToBytes(ctxMap));

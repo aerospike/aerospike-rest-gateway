@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -75,17 +75,17 @@ public class AuthenticationTest {
 
     @Test
     public void testDefaultAuthentication() throws Exception {
-        mockMVC.perform(get(testEndpoint))
-                .andExpect(status().isOk());
+        mockMVC.perform(get(testEndpoint)).andExpect(status().isOk());
     }
 
     @Test
     public void testValidUserAuthentication() throws Exception {
         Assume.assumeFalse(ClusterUtils.isSecurityEnabled(client));
 
-        MockHttpServletResponse response = mockMVC.perform(get(testEndpoint)
-                .header("Authorization", validAuthHeader))
-                .andExpect(status().isOk()).andReturn().getResponse();
+        MockHttpServletResponse response = mockMVC.perform(get(testEndpoint).header("Authorization", validAuthHeader))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
 
         RestClientRecord record = new JSONResponseDeserializer().getResponse(response, RestClientRecord.class);
         Assert.assertEquals((int) record.bins.get("binAuth"), 1);
@@ -95,8 +95,7 @@ public class AuthenticationTest {
     public void testInvalidUserAuthentication() throws Exception {
         Assume.assumeTrue(ClusterUtils.isSecurityEnabled(client));
 
-        mockMVC.perform(get(testEndpoint)
-                .header("Authorization", invalidAuthHeader))
+        mockMVC.perform(get(testEndpoint).header("Authorization", invalidAuthHeader))
                 .andExpect(status().isInternalServerError());
     }
 }

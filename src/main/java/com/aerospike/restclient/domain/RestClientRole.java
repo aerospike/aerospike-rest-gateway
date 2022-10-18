@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -23,7 +23,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @JsonInclude(Include.NON_NULL)
 public class RestClientRole {
@@ -91,8 +90,7 @@ public class RestClientRole {
     public Role toRole() {
         Role role = new Role();
         role.name = name;
-        role.privileges = this.privileges.stream()
-                .map(RestClientPrivilege::toPrivilege).collect(Collectors.toList());
+        role.privileges = this.privileges.stream().map(RestClientPrivilege::toPrivilege).toList();
         role.whitelist = whitelist;
         role.readQuota = readQuota;
         role.writeQuota = writeQuota;
@@ -108,8 +106,7 @@ public class RestClientRole {
      */
     public RestClientRole(Role role) {
         name = role.name;
-        privileges = role.privileges.stream()
-                .map(RestClientPrivilege::new).collect(Collectors.toList());
+        privileges = role.privileges.stream().map(RestClientPrivilege::new).toList();
         whitelist = role.whitelist;
         readQuota = role.readQuota;
         writeQuota = role.writeQuota;

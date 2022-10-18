@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -28,22 +28,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
         {
                 @JsonSubTypes.Type(value = BatchRead.class, name = AerospikeAPIConstants.BATCH_TYPE_READ),
                 @JsonSubTypes.Type(
-                        value = BatchWrite.class,
-                        name = AerospikeAPIConstants.BATCH_TYPE_WRITE
+                        value = BatchWrite.class, name = AerospikeAPIConstants.BATCH_TYPE_WRITE
                 ),
                 @JsonSubTypes.Type(
-                        value = BatchDelete.class,
-                        name = AerospikeAPIConstants.BATCH_TYPE_DELETE
+                        value = BatchDelete.class, name = AerospikeAPIConstants.BATCH_TYPE_DELETE
                 ),
                 @JsonSubTypes.Type(value = BatchUDF.class, name = AerospikeAPIConstants.BATCH_TYPE_UDF),
         }
 )
 @Schema(
         description = "The batch operation base type.", oneOf = {
-        BatchRead.class,
-        BatchWrite.class,
-        BatchDelete.class,
-        BatchUDF.class
+        BatchRead.class, BatchWrite.class, BatchDelete.class, BatchUDF.class
 }
 )
 public abstract class BatchRecord {

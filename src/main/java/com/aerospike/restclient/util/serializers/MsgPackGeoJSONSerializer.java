@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -15,37 +15,36 @@
  * the License.
  */
 package com.aerospike.restclient.util.serializers;
-import java.io.IOException;
-
-import org.msgpack.jackson.dataformat.MessagePackExtensionType;
-import org.msgpack.jackson.dataformat.MessagePackGenerator;
 
 import com.aerospike.client.Value.GeoJSONValue;
 import com.aerospike.client.command.ParticleType;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.msgpack.jackson.dataformat.MessagePackExtensionType;
+import org.msgpack.jackson.dataformat.MessagePackGenerator;
 
+import java.io.IOException;
 
+public class MsgPackGeoJSONSerializer extends StdSerializer<GeoJSONValue> {
 
-public class MsgPackGeoJSONSerializer extends StdSerializer<GeoJSONValue>{
+    private static final long serialVersionUID = 1L;
 
-	private static final long serialVersionUID = 1L;
+    public MsgPackGeoJSONSerializer() {
+        this(null);
+    }
 
-	public MsgPackGeoJSONSerializer() {
-		this(null);
-	}
+    public MsgPackGeoJSONSerializer(Class<GeoJSONValue> t) {
+        super(t);
+    }
 
-	public MsgPackGeoJSONSerializer(Class<GeoJSONValue> t) {
-		super(t);
-	}
-
-	/*
-	We serialize aerospike GeoJSONValue values as a MessagePack extension of type 23.
-	 */
-	@Override
-	public void serialize(GeoJSONValue geoVal, JsonGenerator gen, SerializerProvider provider) throws IOException {
-		MessagePackExtensionType geoExt = new MessagePackExtensionType((byte) ParticleType.GEOJSON, geoVal.toString().getBytes());
-		((MessagePackGenerator)gen).writeExtensionType(geoExt);
-	}
+    /*
+    We serialize aerospike GeoJSONValue values as a MessagePack extension of type 23.
+     */
+    @Override
+    public void serialize(GeoJSONValue geoVal, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        MessagePackExtensionType geoExt = new MessagePackExtensionType((byte) ParticleType.GEOJSON,
+                geoVal.toString().getBytes());
+        ((MessagePackGenerator) gen).writeExtensionType(geoExt);
+    }
 }

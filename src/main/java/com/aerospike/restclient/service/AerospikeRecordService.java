@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -27,13 +27,13 @@ import java.util.Map;
 public interface AerospikeRecordService {
 
     void storeRecord(AuthDetails authDetails, String namespace, String set, String key, Map<String, Object> binMap,
-                RecordKeyType keyType, WritePolicy policy);
+                     RecordKeyType keyType, WritePolicy policy);
 
     RestClientRecord fetchRecord(AuthDetails authDetails, String namespace, String set, String key, String[] bins,
-                RecordKeyType keyType, Policy policy);
+                                 RecordKeyType keyType, Policy policy);
 
-    void deleteRecord(AuthDetails authDetails, String namespace, String set, String key,
-                 RecordKeyType keyType, WritePolicy policy);
+    void deleteRecord(AuthDetails authDetails, String namespace, String set, String key, RecordKeyType keyType,
+                      WritePolicy policy);
 
     boolean recordExists(AuthDetails authDetails, String namespace, String set, String key, RecordKeyType keyType);
 }

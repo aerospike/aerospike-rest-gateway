@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -29,7 +29,6 @@ import java.util.Map;
 
 public class BinConverter {
     private static final ObjectMapper mapper = JSONMessageConverter.getJSONObjectMapper();
-
 
     @SuppressWarnings("unchecked")
     public static Bin[] binsFromMap(Map<String, Object> binMap) {
@@ -95,25 +94,20 @@ public class BinConverter {
     // Only checks keys to determine if is supported geojson.
     private static boolean isGeoJSONGeometry(Map<String, Object> value) {
         // TODO: Make the Bins model more expressive.
-        return (value.size() == 2 &&
-                value.containsKey(AerospikeAPIConstants.GeoJSON.Keys.TYPE) &&
-                value.containsKey(AerospikeAPIConstants.GeoJSON.Keys.COORDINATES)
-        );
+        return (value.size() == 2 && value.containsKey(AerospikeAPIConstants.GeoJSON.Keys.TYPE) && value.containsKey(
+                AerospikeAPIConstants.GeoJSON.Keys.COORDINATES));
     }
 
     // Only checks keys to determine if is supported geojson.
     private static boolean isGeoJSONFeature(Map<String, Object> value) {
-        return (value.size() == 3 &&
-                value.containsKey(AerospikeAPIConstants.GeoJSON.Keys.TYPE) &&
-                value.containsKey(AerospikeAPIConstants.GeoJSON.Keys.GEOMETRY) &&
-                value.containsKey(AerospikeAPIConstants.GeoJSON.Keys.PROPERTIES)
-        );
+        return (value.size() == 3 && value.containsKey(AerospikeAPIConstants.GeoJSON.Keys.TYPE) && value.containsKey(
+                AerospikeAPIConstants.GeoJSON.Keys.GEOMETRY) && value.containsKey(
+                AerospikeAPIConstants.GeoJSON.Keys.PROPERTIES));
     }
 
     private static boolean isBytes(Map<String, Object> value) {
-        return (value.size() == 2 &&
-                value.containsKey(AerospikeAPIConstants.SpecifiedType.Keys.specifiedTypeKey) &&
-                value.containsKey(AerospikeAPIConstants.SpecifiedType.Keys.specifiedValueKey)
-        );
+        return (value.size() == 2 && value.containsKey(
+                AerospikeAPIConstants.SpecifiedType.Keys.specifiedTypeKey) && value.containsKey(
+                AerospikeAPIConstants.SpecifiedType.Keys.specifiedValueKey));
     }
 }

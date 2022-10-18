@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -42,7 +42,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,8 +70,7 @@ public class SindexTestsCorrect {
     }
 
     String endpoint = "/v1/index";
-    /* List of index [ns, name] pairs to delete after each test */
-    List<String[]> createdIndexPairs;
+    /* List of index [ns, name] pairs to delete after each test */ List<String[]> createdIndexPairs;
 
     RestClientIndex createdRCIndex;
     String testNS = "test";
@@ -126,8 +124,7 @@ public class SindexTestsCorrect {
 
         String idxInfos = Info.request(null, client.getNodes()[0], "sindex/" + testNS);
         List<Map<String, String>> idxInfoMaps = InfoResponseParser.getIndexInformation(idxInfos);
-        List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).collect(
-                Collectors.toList());
+        List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).toList();
 
         Assert.assertTrue(indexesContain(existingIndexes, postTestIdx));
     }
@@ -148,8 +145,7 @@ public class SindexTestsCorrect {
 
         String idxInfos = Info.request(null, client.getNodes()[0], "sindex/" + testNS);
         List<Map<String, String>> idxInfoMaps = InfoResponseParser.getIndexInformation(idxInfos);
-        List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).collect(
-                Collectors.toList());
+        List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).toList();
 
         Assert.assertTrue(indexesContain(existingIndexes, postTestIdx));
     }
@@ -169,8 +165,7 @@ public class SindexTestsCorrect {
 
         String idxInfos = Info.request(null, client.getNodes()[0], "sindex/" + testNS);
         List<Map<String, String>> idxInfoMaps = InfoResponseParser.getIndexInformation(idxInfos);
-        List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).collect(
-                Collectors.toList());
+        List<RestClientIndex> existingIndexes = idxInfoMaps.stream().map(RestClientIndex::new).toList();
 
         Assert.assertTrue(indexesContain(existingIndexes, postTestIdx));
     }
@@ -210,8 +205,7 @@ public class SindexTestsCorrect {
     @Test
     public void deleteIndex() throws Exception {
         addIndexForTest("delIndex", "delIndex");
-        mockMVC.perform(delete(endpoint + "/" + testNS + "/" + testIndexName))
-                .andExpect(status().isAccepted());
+        mockMVC.perform(delete(endpoint + "/" + testNS + "/" + testIndexName)).andExpect(status().isAccepted());
 
         /* give some time for the index dropping to occur */
         Thread.sleep(5000);
@@ -263,8 +257,8 @@ public class SindexTestsCorrect {
         createdRCIndex.setCollectionType(testIndexCollectionType);
 
         try {
-            client.createIndex(null, testNS, testIndexSet,
-                    indexName, binName, testIndexType, testIndexCollectionType).waitTillComplete(500, 5000);
+            client.createIndex(null, testNS, testIndexSet, indexName, binName, testIndexType, testIndexCollectionType)
+                    .waitTillComplete(500, 5000);
         } catch (AerospikeException ignore) {
         }
         // Wait for the index to exist.
@@ -301,30 +295,32 @@ class MsgPackIndexHandler implements RestIndexHandler {
     @Override
     public Map<String, String> getIndexStats(MockMvc mockMVC, String endpoint) throws Exception {
         byte[] resBytes = mockMVC.perform(get(endpoint).accept(mediaType))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
 
         return mapper.readValue(resBytes, SindexTestsCorrect.mapStringStringType);
     }
 
     @Override
     public void testIndexNotFound(MockMvc mockMVC, String endpoint) throws Exception {
-        mockMVC.perform(get(endpoint).accept(mediaType))
-                .andExpect(status().isNotFound());
+        mockMVC.perform(get(endpoint).accept(mediaType)).andExpect(status().isNotFound());
     }
 
     @Override
     public void createIndex(MockMvc mockMVC, String endpoint, RestClientIndex idx) throws Exception {
         byte[] indexPayload = mapper.writeValueAsBytes(idx);
-        mockMVC.perform(post(endpoint).
-                        contentType(mediaType)
-                        .content(indexPayload))
-                .andExpect(status().isAccepted());
+        mockMVC.perform(post(endpoint).contentType(mediaType).content(indexPayload)).andExpect(status().isAccepted());
     }
 
     @Override
     public List<RestClientIndex> getIndexes(MockMvc mockMVC, String endpoint) throws Exception {
         byte[] resBytes = mockMVC.perform(get(endpoint).accept(mediaType))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
 
         return mapper.readValue(resBytes, SindexTestsCorrect.listIndexType);
     }
@@ -342,30 +338,32 @@ class JSONIndexHandler implements RestIndexHandler {
     @Override
     public Map<String, String> getIndexStats(MockMvc mockMVC, String endpoint) throws Exception {
         String resJson = mockMVC.perform(get(endpoint).accept(mediaType))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
         return mapper.readValue(resJson, SindexTestsCorrect.mapStringStringType);
     }
 
     @Override
     public void testIndexNotFound(MockMvc mockMVC, String endpoint) throws Exception {
-        mockMVC.perform(get(endpoint).accept(mediaType))
-                .andExpect(status().isNotFound());
+        mockMVC.perform(get(endpoint).accept(mediaType)).andExpect(status().isNotFound());
     }
 
     @Override
     public void createIndex(MockMvc mockMVC, String endpoint, RestClientIndex idx) throws Exception {
         String indexPayload = mapper.writeValueAsString(idx);
-        mockMVC.perform(post(endpoint).
-                        contentType(mediaType)
-                        .content(indexPayload))
-                .andExpect(status().isAccepted());
+        mockMVC.perform(post(endpoint).contentType(mediaType).content(indexPayload)).andExpect(status().isAccepted());
     }
 
     @Override
     public List<RestClientIndex> getIndexes(MockMvc mockMVC, String endpoint) throws Exception {
         String resJson = mockMVC.perform(get(endpoint).accept(mediaType))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
         return mapper.readValue(resJson, SindexTestsCorrect.listIndexType);
     }

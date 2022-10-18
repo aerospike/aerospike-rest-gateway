@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,41 +16,40 @@
  */
 package com.aerospike.restclient.domain;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.aerospike.client.Record;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.aerospike.client.Record;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RestClientRecordTest {
 
-	@Test
-	public void testNoArgConstructor() {
-		new RestClientRecord();
-	}
+    @Test
+    public void testNoArgConstructor() {
+        new RestClientRecord();
+    }
 
-	@Test
-	public void testNullBins() {
-		Record record = new Record(null, 2, 1000);
-		RestClientRecord rcRecord = new RestClientRecord(record);
+    @Test
+    public void testNullBins() {
+        Record record = new Record(null, 2, 1000);
+        RestClientRecord rcRecord = new RestClientRecord(record);
 
-		Assert.assertNull(rcRecord.bins);
-		Assert.assertEquals(rcRecord.generation, 2);
-		Assert.assertEquals(rcRecord.ttl, record.getTimeToLive());
-	}
+        Assert.assertNull(rcRecord.bins);
+        Assert.assertEquals(rcRecord.generation, 2);
+        Assert.assertEquals(rcRecord.ttl, record.getTimeToLive());
+    }
 
-	@Test
-	public void testWithBins() {
-		Map<String, Object>bins = new HashMap<>();
-		bins.put("bin1", 5l);
-		bins.put("bin2", "hello");
-		Record record = new Record(bins, 2, 1000);
-		RestClientRecord rcRecord = new RestClientRecord(record);
+    @Test
+    public void testWithBins() {
+        Map<String, Object> bins = new HashMap<>();
+        bins.put("bin1", 5l);
+        bins.put("bin2", "hello");
+        Record record = new Record(bins, 2, 1000);
+        RestClientRecord rcRecord = new RestClientRecord(record);
 
-		Assert.assertEquals(rcRecord.bins, bins);
-		Assert.assertEquals(rcRecord.generation, 2);
-		Assert.assertEquals(rcRecord.ttl, record.getTimeToLive());
-	}
+        Assert.assertEquals(rcRecord.bins, bins);
+        Assert.assertEquals(rcRecord.generation, 2);
+        Assert.assertEquals(rcRecord.ttl, record.getTimeToLive());
+    }
 }

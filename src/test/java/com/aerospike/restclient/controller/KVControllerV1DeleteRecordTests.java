@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -43,103 +43,75 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest
 public class KVControllerV1DeleteRecordTests {
 
-	@Autowired KeyValueController controller;
-	@MockBean AerospikeRecordService recordService;
-	private final AerospikeException expectedException = new AerospikeException("test exception");
+    @Autowired
+    KeyValueController controller;
+    @MockBean
+    AerospikeRecordService recordService;
+    private final AerospikeException expectedException = new AerospikeException("test exception");
 
-	private final WritePolicyComparator existsActionComparator = (p1, p2) -> p1.recordExistsAction == p2.recordExistsAction;
+    private final WritePolicyComparator existsActionComparator = (p1, p2) -> p1.recordExistsAction == p2.recordExistsAction;
 
-	private final String ns = "test";
-	private final String set = "set";
-	private final String key = "key";
+    private final String ns = "test";
+    private final String set = "set";
+    private final String key = "key";
 
-	private Map<String, String> queryParams;
+    private Map<String, String> queryParams;
 
-	@Before
-	/* Initialize the query params argument */
-	public void setup() {
-		queryParams = new HashMap<>();
-	}
+    @Before
+    /* Initialize the query params argument */ public void setup() {
+        queryParams = new HashMap<>();
+    }
 
-	@Test
-	public void tesNSSetKey() {
-		controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams, null);
-		verify(recordService, Mockito.only()).deleteRecord(
-				isNull(),
-				eq(ns),
-				eq(set),
-				eq(key),
-				isNull(),
-				isA(WritePolicy.class));
-	}
+    @Test
+    public void tesNSSetKey() {
+        controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams, null);
+        verify(recordService, Mockito.only()).deleteRecord(isNull(), eq(ns), eq(set), eq(key), isNull(),
+                isA(WritePolicy.class));
+    }
 
-	@Test
-	public void testNSKey() {
-		controller.deleteRecordNamespaceKey(ns, key, queryParams, null);
-		verify(recordService, Mockito.only()).deleteRecord(
-				isNull(),
-				eq(ns),
-				isNull(),
-				eq(key),
-				isNull(),
-				isA(WritePolicy.class));
-	}
+    @Test
+    public void testNSKey() {
+        controller.deleteRecordNamespaceKey(ns, key, queryParams, null);
+        verify(recordService, Mockito.only()).deleteRecord(isNull(), eq(ns), isNull(), eq(key), isNull(),
+                isA(WritePolicy.class));
+    }
 
-	@Test
-	public void testWritePolicyNSSetKey() {
-		WritePolicy expectedPolicy = new WritePolicy();
-		expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
-		WritePolicyMatcher matcher = new WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		queryParams.put(AerospikeAPIConstants.RECORD_EXISTS_ACTION, RecordExistsAction.CREATE_ONLY.toString());
-		controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams, null);
-		verify(recordService, Mockito.only()).deleteRecord(
-				isNull(),
-				eq(ns),
-				eq(set),
-				eq(key),
-				isNull(),
-				argThat(matcher));
-	}
+    @Test
+    public void testWritePolicyNSSetKey() {
+        WritePolicy expectedPolicy = new WritePolicy();
+        expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
+        WritePolicyMatcher matcher = new WritePolicyMatcher(expectedPolicy, existsActionComparator);
+        queryParams.put(AerospikeAPIConstants.RECORD_EXISTS_ACTION, RecordExistsAction.CREATE_ONLY.toString());
+        controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams, null);
+        verify(recordService, Mockito.only()).deleteRecord(isNull(), eq(ns), eq(set), eq(key), isNull(),
+                argThat(matcher));
+    }
 
-	@Test
-	public void testWritePolicyNSKey() {
-		WritePolicy expectedPolicy = new WritePolicy();
-		expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
-		WritePolicyMatcher matcher = new WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		queryParams.put(AerospikeAPIConstants.RECORD_EXISTS_ACTION, RecordExistsAction.CREATE_ONLY.toString());
+    @Test
+    public void testWritePolicyNSKey() {
+        WritePolicy expectedPolicy = new WritePolicy();
+        expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
+        WritePolicyMatcher matcher = new WritePolicyMatcher(expectedPolicy, existsActionComparator);
+        queryParams.put(AerospikeAPIConstants.RECORD_EXISTS_ACTION, RecordExistsAction.CREATE_ONLY.toString());
 
-		controller.deleteRecordNamespaceKey(ns, key, queryParams, null);
-		verify(recordService, Mockito.only()).deleteRecord(
-				isNull(),
-				eq(ns),
-				isNull(),
-				eq(key),
-				isNull(),
-				argThat(matcher));
-	}
-	@Test(expected=AerospikeException.class)
-	public void testErrorNSSetKey() {
-		Mockito.doThrow(expectedException)
-		.when(recordService).deleteRecord(
-				isNull(),
-				any(String.class),
-				any(String.class),
-				any(String.class),
-				any(),
-				any());
-		controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams, null);
-	}
+        controller.deleteRecordNamespaceKey(ns, key, queryParams, null);
+        verify(recordService, Mockito.only()).deleteRecord(isNull(), eq(ns), isNull(), eq(key), isNull(),
+                argThat(matcher));
+    }
 
-	@Test(expected=AerospikeException.class)
-	public void testErrorNSKey() {
-		Mockito.doThrow(expectedException)
-		.when(recordService).deleteRecord(
-				isNull(),
-				any(String.class),
-				isNull(),
-				any(String.class),
-				any(),
-				any());
-		controller.deleteRecordNamespaceKey(ns, key, queryParams, null);
-	}
+    @Test(expected = AerospikeException.class)
+    public void testErrorNSSetKey() {
+        Mockito.doThrow(expectedException)
+                .when(recordService)
+                .deleteRecord(isNull(), any(String.class), any(String.class), any(String.class), any(), any());
+        controller.deleteRecordNamespaceSetKey(ns, set, key, queryParams, null);
+    }
+
+    @Test(expected = AerospikeException.class)
+    public void testErrorNSKey() {
+        Mockito.doThrow(expectedException)
+                .when(recordService)
+                .deleteRecord(isNull(), any(String.class), isNull(), any(String.class), any(), any());
+        controller.deleteRecordNamespaceKey(ns, key, queryParams, null);
+    }
 }

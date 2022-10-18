@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -72,11 +72,9 @@ public class InfoTests {
     @Parameters
     public static Object[] getParams() {
         return new Object[]{
-                new JSONInfoPerformer(),
-                new MsgPackInfoPerformer()
+                new JSONInfoPerformer(), new MsgPackInfoPerformer()
         };
     }
-
 
     @Before
     public void setup() {
@@ -152,7 +150,6 @@ public class InfoTests {
 
     }
 
-
 }
 
 interface InfoPerformer {
@@ -170,13 +167,9 @@ class JSONInfoPerformer implements InfoPerformer {
     public Map<String, String> performInfoAndReturn(String endpoint, List<String> commands,
                                                     MockMvc mockMVC) throws Exception {
         String jsonCommands = mapper.writeValueAsString(commands);
-        String results = mockMVC.perform(post(endpoint)
-                        .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonCommands))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+        String results = mockMVC.perform(post(endpoint).accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonCommands)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         return mapper.readValue(results, InfoTests.infoResponseType);
     }
 }
@@ -194,9 +187,7 @@ class MsgPackInfoPerformer implements InfoPerformer {
     public Map<String, String> performInfoAndReturn(String endpoint, List<String> commands,
                                                     MockMvc mockMVC) throws Exception {
         byte[] jsonCommands = mapper.writeValueAsBytes(commands);
-        byte[] results = mockMVC.perform(post(endpoint)
-                        .accept(mediaType).contentType(mediaType)
-                        .content(jsonCommands))
+        byte[] results = mockMVC.perform(post(endpoint).accept(mediaType).contentType(mediaType).content(jsonCommands))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()

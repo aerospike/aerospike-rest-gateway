@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -46,31 +46,40 @@ public class ScanController {
     private AerospikeScanService service;
 
     @Operation(summary = "Return multiple records from the server in a scan request.", operationId = "performScan")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Scan multiple records successfully."),
-            @ApiResponse(
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200", description = "Scan multiple records successfully."
+                    ), @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "404",
                     description = "Namespace or set does not exist.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
+            }
+    )
     @DefaultRestClientAPIResponses
     @GetMapping(value = "/{namespace}/{set}", produces = {"application/json", "application/msgpack"})
     @ASRestClientScanPolicyQueryParams
-    public RestClientScanResponse performScan(
-            @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(description = APIParamDescriptors.SET_NOTES, required = true) @PathVariable(value = "set") String set,
-            @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public RestClientScanResponse performScan(@Parameter(
+            description = APIParamDescriptors.NAMESPACE_NOTES,
+            required = true
+    ) @PathVariable(value = "namespace") String namespace, @Parameter(
+            description = APIParamDescriptors.SET_NOTES,
+            required = true
+    ) @PathVariable(value = "set") String set,
+                                              @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
+                                              @RequestHeader(
+                                                      value = "Authorization",
+                                                      required = false
+                                              ) String basicAuth) {
 
         String[] bins = RequestParamHandler.getBinsFromMap(requestParams);
         ScanPolicy policy = RequestParamHandler.getScanPolicy(requestParams.toSingleValueMap());
@@ -80,30 +89,37 @@ public class ScanController {
     }
 
     @Operation(summary = "Return multiple records from the server in a scan request.", operationId = "performScan")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Scan multiple records successfully."),
-            @ApiResponse(
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200", description = "Scan multiple records successfully."
+                    ), @ApiResponse(
                     responseCode = "400",
                     description = "Invalid parameters or request.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "403",
                     description = "Not authorized to access the resource.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class))),
-            @ApiResponse(
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            ), @ApiResponse(
                     responseCode = "404",
                     description = "Namespace or set does not exist.",
-                    content = @Content(schema = @Schema(implementation = RestClientError.class)))
-    })
+                    content = @Content(schema = @Schema(implementation = RestClientError.class))
+            )
+            }
+    )
     @DefaultRestClientAPIResponses
     @GetMapping(value = "/{namespace}", produces = {"application/json", "application/msgpack"})
     @ASRestClientScanPolicyQueryParams
-    public RestClientScanResponse performScan(
-            @Parameter(description = APIParamDescriptors.NAMESPACE_NOTES, required = true) @PathVariable(value = "namespace") String namespace,
-            @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
-            @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public RestClientScanResponse performScan(@Parameter(
+            description = APIParamDescriptors.NAMESPACE_NOTES,
+            required = true
+    ) @PathVariable(value = "namespace") String namespace,
+                                              @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
+                                              @RequestHeader(
+                                                      value = "Authorization",
+                                                      required = false
+                                              ) String basicAuth) {
 
         String[] bins = RequestParamHandler.getBinsFromMap(requestParams);
         ScanPolicy policy = RequestParamHandler.getScanPolicy(requestParams.toSingleValueMap());

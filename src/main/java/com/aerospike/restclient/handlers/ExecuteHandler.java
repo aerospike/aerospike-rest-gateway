@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -22,16 +22,12 @@ import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.client.query.Statement;
 import com.aerospike.client.task.ExecuteTask;
-import com.aerospike.restclient.domain.RestClientExecuteTask;
-import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
-import com.aerospike.restclient.domain.RestClientOperation;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTask;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTaskStatus;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
-import com.aerospike.restclient.util.converters.OperationsConverter;
 import com.aerospike.restclient.util.converters.PolicyValueConverter;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ExecuteHandler {
 
@@ -41,8 +37,8 @@ public class ExecuteHandler {
         this.client = client;
     }
 
-    public RestClientExecuteTask executeScan(String namespace, String set, List<RestClientOperation> opsList,
-                                             WritePolicy policy, Map<String, String> requestParams) {
+    public RestClientExecuteTask executeScan(String namespace, String set, Operation[] opsList, WritePolicy policy,
+                                             Map<String, String> requestParams) {
         Statement stmt = new Statement();
         stmt.setNamespace(namespace);
         stmt.setSetName(set);
@@ -52,17 +48,14 @@ public class ExecuteHandler {
             stmt.setBinNames(binNames);
         }
         if (requestParams.containsKey(AerospikeAPIConstants.RECORDS_PER_SECOND)) {
-            int recordsPerSecond = PolicyValueConverter.getIntValue(requestParams.get(AerospikeAPIConstants.RECORDS_PER_SECOND));
+            int recordsPerSecond = PolicyValueConverter.getIntValue(
+                    requestParams.get(AerospikeAPIConstants.RECORDS_PER_SECOND));
             stmt.setRecordsPerSecond(recordsPerSecond);
         }
 
-        List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap).collect(Collectors.toList());
-        Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
+        ExecuteTask task = client.execute(policy, stmt, opsList);
 
-        ExecuteTask task = client.execute(policy, stmt, operations);
-        RestClientExecuteTask restClientTask = new RestClientExecuteTask(task.getTaskId(), true);
-
-        return restClientTask;
+        return new RestClientExecuteTask(task.getTaskId(), true);
     }
 
     public RestClientExecuteTaskStatus queryScanStatus(String taskId) {
@@ -74,10 +67,7 @@ public class ExecuteHandler {
         ExecuteTask task = new ExecuteTask(client.getCluster(), new Policy(), statement, id);
         int status = task.queryStatus();
 
-        return new RestClientExecuteTaskStatus(
-                new RestClientExecuteTask(id, true),
-                status
-        );
+        return new RestClientExecuteTaskStatus(new RestClientExecuteTask(id, true), status);
     }
 
     public static ExecuteHandler create(AerospikeClient client) {

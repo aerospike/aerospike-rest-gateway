@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -40,12 +40,7 @@ public final class Operator {
     }
 
     public enum Simple {
-        EQUAL("=="),
-        UNEQUAL("!="),
-        GREATER(">"),
-        GREATEREQ(">="),
-        LESS("<"),
-        LESSEQ("<=");
+        EQUAL("=="), UNEQUAL("!="), GREATER(">"), GREATEREQ(">="), LESS("<"), LESSEQ("<=");
 
         private final String name;
 
@@ -68,8 +63,7 @@ public final class Operator {
     }
 
     public enum Logic {
-        AND("and"),
-        OR("or");
+        AND("and"), OR("or");
 
         private final String name;
 
@@ -115,17 +109,6 @@ public final class Operator {
     }
 
     public enum Special {
-        LAST_UPDATE,
-        VOID_TIME,
-        DIGEST_MODULO,
-        STRING_REGEX,
-        GEOJSON_WITHIN,
-        GEOJSON_CONTAINS,
-        LIST_ITERATE_OR,
-        MAPKEY_ITERATE_OR,
-        MAPVAL_ITERATE_OR,
-        LIST_ITERATE_AND,
-        MAPKEY_ITERATE_AND,
-        MAPVAL_ITERATE_AND
+        LAST_UPDATE, VOID_TIME, DIGEST_MODULO, STRING_REGEX, GEOJSON_WITHIN, GEOJSON_CONTAINS, LIST_ITERATE_OR, MAPKEY_ITERATE_OR, MAPVAL_ITERATE_OR, LIST_ITERATE_AND, MAPKEY_ITERATE_AND, MAPVAL_ITERATE_AND
     }
 }
