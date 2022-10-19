@@ -260,7 +260,6 @@ public class RestClientBatchBodyTest {
     public void testObjectMappedBatchWriteConstructionWithPolicy() throws Exception {
         Map<String, Object> keyMap = getKeyMap("key", RecordKeyType.STRING);
         Map<String, Object> batchWritePolicy = new HashMap<>();
-        List<Map<String, Object>> expectedOpsListMap = new ArrayList<>();
         Map<String, Object> expectedBatchMap = getBatchWriteBase();
 
         batchWritePolicy.put("recordExistsAction", "UPDATE");

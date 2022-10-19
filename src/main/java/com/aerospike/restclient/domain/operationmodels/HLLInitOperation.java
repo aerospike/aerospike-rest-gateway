@@ -55,6 +55,7 @@ public class HLLInitOperation extends HLLOperation {
         this.minHashBitCount = minHashBitCount;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         if (minHashBitCount == null) {
             return com.aerospike.client.operation.HLLOperation.init(HLLPolicy.Default, binName, indexBitCount);

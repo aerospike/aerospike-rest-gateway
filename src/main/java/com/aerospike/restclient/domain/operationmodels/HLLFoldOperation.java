@@ -44,6 +44,7 @@ public class HLLFoldOperation extends HLLOperation {
         this.indexBitCount = indexBitCount;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.HLLOperation.fold(binName, indexBitCount);
     }

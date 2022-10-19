@@ -50,6 +50,7 @@ public class BitResizeOperation extends BitOperation {
         this.resizeFlags = resizeFlags;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.BitOperation.resize(BitPolicy.Default, binName, byteSize, resizeFlags);
     }

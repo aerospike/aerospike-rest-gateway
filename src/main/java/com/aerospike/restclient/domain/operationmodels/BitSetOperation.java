@@ -55,6 +55,7 @@ public class BitSetOperation extends BitOperation {
         this.value = value;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.BitOperation.set(BitPolicy.Default, binName, bitOffset, bitSize, value);
     }

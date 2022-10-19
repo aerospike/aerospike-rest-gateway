@@ -1129,8 +1129,6 @@ public class OperateV1MapCorrectTests {
         Map<String, Object> opValues = new HashMap<>();
         String newKey = "new_key";
         String newVal = "new_value";
-        Map<Object, Object> expected = new HashMap<>();
-        expected.put(newKey, newVal);
 
         opValues.put("bin", mapBinName);
         opValues.put("key", newKey);
@@ -1162,8 +1160,6 @@ public class OperateV1MapCorrectTests {
         Map<String, Object> opValues = new HashMap<>();
         String newKey = "new_key";
         String newVal = "new_value";
-        Map<Object, Object> expected = new HashMap<>();
-        expected.put(newKey, newVal);
 
         opValues.put("bin", mapBinName);
         opValues.put("key", newKey);
@@ -1189,8 +1185,6 @@ public class OperateV1MapCorrectTests {
         Map<String, Object> opValues = new HashMap<>();
         String existingKey = "aero";
         String newVal = "new_value";
-        Map<Object, Object> expected = new HashMap<>();
-        expected.put(existingKey, newVal);
 
         opValues.put("bin", mapBinName);
         opValues.put("key", existingKey);
@@ -1223,8 +1217,6 @@ public class OperateV1MapCorrectTests {
         String existingKey = "aero";
         String newKey = "new_key";
         String newVal = "new_value";
-        Map<Object, Object> expected = new HashMap<>();
-        expected.put(existingKey, newVal);
 
         opValues.put("bin", mapBinName);
         opValues.put(OperationConverter.MAP_POLICY_KEY, policyMap);

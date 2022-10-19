@@ -47,6 +47,7 @@ public class HLLGetUnionCountOperation extends HLLOperation {
         this.values = values;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         List<Value.HLLValue> asVals = values.stream().map(Value.HLLValue::new).toList();
         return com.aerospike.client.operation.HLLOperation.getUnionCount(binName, asVals);

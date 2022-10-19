@@ -54,6 +54,7 @@ public class BitRScanOperation extends BitOperation {
         this.value = value;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.BitOperation.rscan(binName, bitOffset, bitSize, value);
     }

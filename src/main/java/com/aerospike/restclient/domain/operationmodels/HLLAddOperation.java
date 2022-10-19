@@ -67,6 +67,7 @@ public class HLLAddOperation extends HLLOperation {
         return minHashBitCount;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         List<Value> asVals = values.stream().map(Value::get).toList();
 

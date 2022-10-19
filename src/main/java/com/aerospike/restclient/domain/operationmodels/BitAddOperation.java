@@ -76,6 +76,7 @@ public class BitAddOperation extends BitOperation {
         this.action = action;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.BitOperation.add(BitPolicy.Default, binName, bitOffset, bitSize, value,
                 signed, action);

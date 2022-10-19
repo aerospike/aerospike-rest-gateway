@@ -50,6 +50,7 @@ public class BitRemoveOperation extends BitOperation {
         this.byteSize = byteSize;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.BitOperation.remove(BitPolicy.Default, binName, byteOffset, byteSize);
     }

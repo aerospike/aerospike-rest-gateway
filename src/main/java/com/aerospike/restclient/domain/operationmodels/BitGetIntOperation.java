@@ -54,6 +54,7 @@ public class BitGetIntOperation extends BitOperation {
         this.signed = signed;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.BitOperation.getInt(binName, bitOffset, bitSize, signed);
     }

@@ -125,7 +125,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapClear() {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_CLEAR);
@@ -143,7 +142,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapIncrement() {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         Map<String, Object> policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteFlags.DEFAULT);
 
@@ -166,7 +164,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapGetByIndex() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put("index", 0);
@@ -185,7 +182,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapGetByIndexRange() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put("index", 1);
@@ -207,7 +203,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapGetByIndexRangeNoCount() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put("index", 1);
@@ -227,7 +222,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapGetByKey() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put("key", "three");
@@ -246,7 +240,7 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapCreate() {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
+
         Map<String, Object> item = new HashMap<>();
         List<Map<String, Object>> ctx = new ArrayList<>();
 
@@ -272,7 +266,6 @@ public class OperateV2MapCorrectTests {
     public void testMapGetByKeyList() throws Exception {
         Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put("keys", Arrays.asList("aero", "two", "three"));
@@ -293,7 +286,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapGetByKeyRange() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
@@ -316,7 +308,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapGetByKeyRangeNoBegin() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         // A value after "ten"
@@ -338,7 +329,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapGetByKeyRangeNoEnd() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
@@ -360,7 +350,6 @@ public class OperateV2MapCorrectTests {
     public void testMapGetByRank() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put("rank", 4);
@@ -379,7 +368,6 @@ public class OperateV2MapCorrectTests {
     public void testMapGetByRankRange() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put("rank", 1);
@@ -400,7 +388,6 @@ public class OperateV2MapCorrectTests {
     public void testMapGetByRankRangeNoCount() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put("rank", 1);
@@ -421,7 +408,6 @@ public class OperateV2MapCorrectTests {
     public void testMapGetByValue() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put("value", 3);
@@ -447,7 +433,6 @@ public class OperateV2MapCorrectTests {
     public void testMapGetByValueRange() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put(OperationConverter.VALUE_BEGIN_KEY, 1);
@@ -470,7 +455,6 @@ public class OperateV2MapCorrectTests {
     public void testMapGetByValueRangeNoBegin() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put(OperationConverter.VALUE_END_KEY, 4);
@@ -493,7 +477,6 @@ public class OperateV2MapCorrectTests {
     public void testMapGetByValueRangeNoEnd() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put(OperationConverter.VALUE_BEGIN_KEY, 1);
@@ -516,7 +499,6 @@ public class OperateV2MapCorrectTests {
         Assume.assumeTrue(ASTestUtils.supportsNewCDT(client));
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put("values", Arrays.asList(0, 2, 10));
@@ -537,7 +519,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapGetByKeyRelIndexRange() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put("value", "one");
@@ -588,7 +569,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapPut() {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         Map<String, Object> policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteFlags.DEFAULT);
 
@@ -612,7 +592,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapPutItems() {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         Map<String, Object> policy = getMapPolicyMap(MapOrder.UNORDERED, MapWriteFlags.DEFAULT);
 
@@ -644,7 +623,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapRemoveByIndex() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put("index", 0);
@@ -666,7 +644,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapRemoveByIndexRange() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put("index", 0);
@@ -694,7 +671,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapRemoveByIndexRangeNoCount() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put("index", 0);
@@ -717,7 +693,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapRemoveByKey() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put("key", "two");
@@ -740,7 +715,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapRemoveByKeyRange() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
@@ -768,7 +742,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapRemoveByKeyRangeNoBegin() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
 
@@ -797,7 +770,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapRemoveByKeyRangeNoEnd() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put(OperationConverter.MAP_KEY_BEGIN_KEY, "one");
@@ -826,7 +798,6 @@ public class OperateV2MapCorrectTests {
     public void testMapRemoveByRank() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put("rank", 2);
@@ -851,7 +822,6 @@ public class OperateV2MapCorrectTests {
     public void testMapRemoveByRankRange() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put("rank", 1);
@@ -884,7 +854,6 @@ public class OperateV2MapCorrectTests {
     public void testMapRemoveByRankRangeNoCount() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put("rank", 1);
@@ -914,7 +883,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapRemoveByKeyRelIndexRange() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put("value", "one");
@@ -941,7 +909,6 @@ public class OperateV2MapCorrectTests {
     public void testMapRemoveByValueRelRankRange() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put("value", 10);
@@ -968,7 +935,6 @@ public class OperateV2MapCorrectTests {
     public void testMapRemoveByValue() throws Exception {
 
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put("value", 3);
@@ -999,9 +965,7 @@ public class OperateV2MapCorrectTests {
     @SuppressWarnings("unchecked")
     @Test
     public void testMapRemoveByValueRange() throws Exception {
-
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put(OperationConverter.VALUE_BEGIN_KEY, 1);
@@ -1029,9 +993,7 @@ public class OperateV2MapCorrectTests {
     @SuppressWarnings("unchecked")
     @Test
     public void testMapRemoveByValueRangeNoBegin() throws Exception {
-
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put(OperationConverter.VALUE_END_KEY, 4);
@@ -1060,9 +1022,7 @@ public class OperateV2MapCorrectTests {
     @SuppressWarnings("unchecked")
     @Test
     public void testMapRemoveByValueRangeNoEnd() throws Exception {
-
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put(OperationConverter.VALUE_BEGIN_KEY, 1);
@@ -1091,9 +1051,7 @@ public class OperateV2MapCorrectTests {
     @SuppressWarnings("unchecked")
     @Test
     public void testMapRemoveByValueList() throws Exception {
-
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinNameInt);
         operation.put("values", Arrays.asList(1, 2, 3));
@@ -1125,11 +1083,9 @@ public class OperateV2MapCorrectTests {
     public void testMapWriteFlagsCreateOnly() throws Exception {
         Map<String, Object> policyMap = getMapPolicyMap(MapOrder.UNORDERED, MapWriteFlags.CREATE_ONLY);
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
+
         String newKey = "new_key";
         String newVal = "new_value";
-        Map<Object, Object> expected = new HashMap<>();
-        expected.put(newKey, newVal);
 
         operation.put("binName", mapBinName);
         operation.put("key", newKey);
@@ -1157,11 +1113,9 @@ public class OperateV2MapCorrectTests {
     public void testMapWriteFlagsUpdateOnlyError() throws Exception {
         Map<String, Object> policyMap = getMapPolicyMap(MapOrder.UNORDERED, MapWriteFlags.UPDATE_ONLY);
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
+
         String newKey = "new_key";
         String newVal = "new_value";
-        Map<Object, Object> expected = new HashMap<>();
-        expected.put(newKey, newVal);
 
         operation.put("binName", mapBinName);
         operation.put("key", newKey);
@@ -1183,11 +1137,9 @@ public class OperateV2MapCorrectTests {
     public void testMapWriteFlagsUpdateOnlyNoError() {
         Map<String, Object> policyMap = getMapPolicyMap(MapOrder.UNORDERED, MapWriteFlags.UPDATE_ONLY);
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
+
         String existingKey = "aero";
         String newVal = "new_value";
-        Map<Object, Object> expected = new HashMap<>();
-        expected.put(existingKey, newVal);
 
         operation.put("binName", mapBinName);
         operation.put("key", existingKey);
@@ -1215,12 +1167,10 @@ public class OperateV2MapCorrectTests {
         Map<String, Object> policyMap = getMapPolicyMap(MapOrder.UNORDERED,
                 MapWriteFlags.UPDATE_ONLY | MapWriteFlags.PARTIAL | MapWriteFlags.NO_FAIL);
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
+
         String existingKey = "aero";
         String newKey = "new_key";
         String newVal = "new_value";
-        Map<Object, Object> expected = new HashMap<>();
-        expected.put(existingKey, newVal);
 
         operation.put("binName", mapBinName);
         operation.put(OperationConverter.MAP_POLICY_KEY, policyMap);
@@ -1244,7 +1194,6 @@ public class OperateV2MapCorrectTests {
     @Test
     public void testMapSize() throws Exception {
         Map<String, Object> operation = new HashMap<>();
-        Map<String, Object> opValues = new HashMap<>();
 
         operation.put("binName", mapBinName);
         operation.put(OPERATION_FIELD_TYPE, OperationTypes.MAP_SIZE);

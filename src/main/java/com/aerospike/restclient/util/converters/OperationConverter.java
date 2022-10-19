@@ -1758,7 +1758,6 @@ public class OperationConverter {
     }
 
     static boolean getInverted(Map<String, Object> map) {
-        boolean inverted;
         if (map.containsKey(INVERTED_KEY)) {
             try {
                 return (boolean) map.get(INVERTED_KEY);

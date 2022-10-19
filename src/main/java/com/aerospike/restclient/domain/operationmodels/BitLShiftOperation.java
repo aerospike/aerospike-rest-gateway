@@ -55,6 +55,7 @@ public class BitLShiftOperation extends BitOperation {
         this.shift = shift;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.BitOperation.lshift(BitPolicy.Default, binName, bitOffset, bitSize,
                 shift);

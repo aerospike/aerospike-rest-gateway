@@ -49,6 +49,7 @@ public class BitGetOperation extends BitOperation {
         this.bitSize = bitSize;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.BitOperation.get(binName, bitOffset, bitSize);
     }

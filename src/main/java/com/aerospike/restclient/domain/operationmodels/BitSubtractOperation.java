@@ -77,6 +77,7 @@ public class BitSubtractOperation extends BitOperation {
         this.action = action;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.BitOperation.subtract(BitPolicy.Default, binName, bitOffset, bitSize,
                 value, signed, action);

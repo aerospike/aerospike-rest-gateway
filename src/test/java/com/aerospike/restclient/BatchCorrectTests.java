@@ -331,13 +331,11 @@ public class BatchCorrectTests {
         List<Map<String, Object>> expectedOpsListMap = new ArrayList<>();
 
         Map<String, Object> op1 = new HashMap<>();
-        Map<String, Object> op1Vals = new HashMap<>();
         op1.put("type", AerospikeOperation.ADD);
         op1.put("binName", "bin1");
         op1.put("incr", 1);
 
         Map<String, Object> op2 = new HashMap<>();
-        Map<String, Object> op2Vals = new HashMap<>();
         op2.put("type", AerospikeOperation.PUT);
         op2.put("binName", "bin2");
         op2.put("value", "new val");
@@ -404,7 +402,6 @@ public class BatchCorrectTests {
         policy.generation = 100;
 
         Map<String, Object> op1 = new HashMap<>();
-        Map<String, Object> op1Vals = new HashMap<>();
         op1.put("type", OperationTypes.ADD);
         op1.put("binName", "bin1");
         op1.put("incr", 1);
@@ -520,13 +517,12 @@ public class BatchCorrectTests {
 
         List<Map<String, Object>> writeOps = new ArrayList<>();
         Map<String, Object> op1 = new HashMap<>();
-        Map<String, Object> op1Vals = new HashMap<>();
+
         op1.put("type", OperationTypes.ADD);
         op1.put("binName", "bin1");
         op1.put("incr", 1);
 
         Map<String, Object> op2 = new HashMap<>();
-        Map<String, Object> op2Vals = new HashMap<>();
         op2.put("type", OperationTypes.PUT);
         op2.put("binName", "bin2");
         op2.put("value", "new val");

@@ -55,6 +55,7 @@ public class BitXOrOperation extends BitOperation {
         this.value = value;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.BitOperation.xor(BitPolicy.Default, binName, bitOffset, bitSize, value);
     }

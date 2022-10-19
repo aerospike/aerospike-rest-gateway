@@ -39,6 +39,7 @@ public class HLLRefreshCountOperation extends HLLOperation {
         super(binName);
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.HLLOperation.refreshCount(binName);
     }

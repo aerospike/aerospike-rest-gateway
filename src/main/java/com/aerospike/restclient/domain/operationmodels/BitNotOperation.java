@@ -50,6 +50,7 @@ public class BitNotOperation extends BitOperation {
         this.bitSize = bitSize;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.BitOperation.not(BitPolicy.Default, binName, bitOffset, bitSize);
     }

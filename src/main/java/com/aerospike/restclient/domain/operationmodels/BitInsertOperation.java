@@ -49,6 +49,7 @@ public class BitInsertOperation extends BitOperation {
         this.value = value;
     }
 
+    @Override
     public com.aerospike.client.Operation toOperation() {
         return com.aerospike.client.operation.BitOperation.insert(BitPolicy.Default, binName, byteOffset, value);
     }
