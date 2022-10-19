@@ -20,14 +20,12 @@ import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.AerospikeException;
 import com.aerospike.client.Host;
 import com.aerospike.client.policy.ClientPolicy;
-import com.aerospike.restclient.util.AerospikeClientPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.Nullable;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 
@@ -46,9 +44,6 @@ public class AerospikeClientConfig {
 
     @Value("${aerospike.restclient.requireAuthentication:false}")
     boolean requireAuthentication;
-
-    @Value("${aerospike.restclient.useBoolBin:false}")
-    boolean useBoolBin;
 
     @Autowired
     ClientPolicy policy;
@@ -76,16 +71,6 @@ public class AerospikeClientConfig {
 
         return client;
     }
-
-    @Value("${aerospike.restclient.pool.size:16}")
-    int poolSize;
-
-    @Autowired
-    @Nullable
-    AerospikeClient defaultClient;
-
-    @Bean
-    public AerospikeClientPool configAerospikeClientPool() {
-        return new AerospikeClientPool(poolSize, policy, port, hostList, hostname, defaultClient, useBoolBin);
-    }
 }
+
+
