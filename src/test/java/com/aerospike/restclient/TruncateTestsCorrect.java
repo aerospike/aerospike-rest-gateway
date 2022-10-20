@@ -105,25 +105,22 @@ public class TruncateTestsCorrect {
 
         mockMVC.perform(delete(testEndpoint + "test/truncate")).andExpect(status().isAccepted());
 
-        Thread.sleep(5000);
+        Thread.sleep(6000);
         boolean stillExists = false;
         for (Key key : preCutoffKeys) {
             Record record = client.get(null, key);
             if (record != null) {
-                stillExists = true;
-                break;
+                Assert.fail(String.format("Record still exists after truncate: %s", record));
             }
         }
 
         for (Key key : postCutoffKeys) {
             Record record = client.get(null, key);
             if (record != null) {
-                stillExists = true;
-                break;
+                Assert.fail(String.format("Record still exists after truncate: %s", record));
             }
         }
 
-        Assert.assertFalse(stillExists);
         Record otherRecord = client.get(null, otherKey);
         Assert.assertNotNull(otherRecord);
     }
