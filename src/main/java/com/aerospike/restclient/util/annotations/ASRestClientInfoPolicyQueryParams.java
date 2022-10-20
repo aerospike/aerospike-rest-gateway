@@ -31,7 +31,7 @@ import java.lang.annotation.RetentionPolicy;
                 @Parameter(
                         name = AerospikeAPIConstants.TIMEOUT,
                         description = APIDescriptors.INFO_POLICY_TIMEOUT,
-                        schema = @Schema(type = "int"),
+                        schema = @Schema(type = "integer"),
                         in = ParameterIn.QUERY
                 )
         }
