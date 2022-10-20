@@ -102,32 +102,7 @@ public class TruncateTestsCorrect {
     }
 
     @Test
-    public void TruncateWithNoCutoff() throws Exception {
-
-        mockMVC.perform(delete(testEndpoint + "test/truncate")).andExpect(status().isAccepted());
-
-        Thread.sleep(7000);
-        boolean stillExists = false;
-        for (Key key : preCutoffKeys) {
-            Record record = client.get(null, key);
-            if (record != null) {
-                Assert.fail(String.format("Record still exists after truncate: %s", record));
-            }
-        }
-
-        for (Key key : postCutoffKeys) {
-            Record record = client.get(null, key);
-            if (record != null) {
-                Assert.fail(String.format("Record still exists after truncate: %s", record));
-            }
-        }
-
-        Record otherRecord = client.get(null, otherKey);
-        Assert.assertNotNull(otherRecord);
-    }
-
-    @Test
-    public void TruncateEntireNS() throws Exception {
+    public void TruncateEntireNSWithNoCutoff() throws Exception {
 
         mockMVC.perform(delete(testEndpoint + "test")).andExpect(status().isAccepted());
 
@@ -152,6 +127,31 @@ public class TruncateTestsCorrect {
         Assert.assertFalse(stillExists);
         Record otherRecord = client.get(null, otherKey);
         Assert.assertNull(otherRecord);
+    }
+
+    @Test
+    public void TruncateSetWithNoCutoff() throws Exception {
+
+        mockMVC.perform(delete(testEndpoint + "test/truncate")).andExpect(status().isAccepted());
+
+        Thread.sleep(7000);
+        boolean stillExists = false;
+        for (Key key : preCutoffKeys) {
+            Record record = client.get(null, key);
+            if (record != null) {
+                Assert.fail(String.format("Record still exists after truncate: %s", record));
+            }
+        }
+
+        for (Key key : postCutoffKeys) {
+            Record record = client.get(null, key);
+            if (record != null) {
+                Assert.fail(String.format("Record still exists after truncate: %s", record));
+            }
+        }
+
+        Record otherRecord = client.get(null, otherKey);
+        Assert.assertNotNull(otherRecord);
     }
 
     @Test
