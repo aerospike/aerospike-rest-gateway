@@ -110,20 +110,17 @@ public class TruncateTestsCorrect {
         for (Key key : preCutoffKeys) {
             Record record = client.get(null, key);
             if (record != null) {
-                stillExists = true;
-                break;
+                Assert.fail(String.format("Record still exists after truncate: %s", record));
             }
         }
 
         for (Key key : postCutoffKeys) {
             Record record = client.get(null, key);
             if (record != null) {
-                stillExists = true;
-                break;
+                Assert.fail(String.format("Record still exists after truncate: %s", record));
             }
         }
 
-        Assert.assertFalse(stillExists);
         Record otherRecord = client.get(null, otherKey);
         Assert.assertNotNull(otherRecord);
     }
