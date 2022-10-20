@@ -161,7 +161,7 @@ public class TruncateTestsCorrect {
 
         Thread.sleep(5000);
         boolean preStillExists = false;
-        boolean postStillExists = false;
+        boolean postStillExists = true;
         for (Key key : preCutoffKeys) {
             Record record = client.get(null, key);
             if (record != null) {
@@ -174,7 +174,7 @@ public class TruncateTestsCorrect {
         for (Key key : postCutoffKeys) {
             Record record = client.get(null, key);
             if (record == null) {
-                postStillExists = true;
+                postStillExists = false;
                 break;
             }
         }
