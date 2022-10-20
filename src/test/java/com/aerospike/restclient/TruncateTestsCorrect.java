@@ -78,6 +78,7 @@ public class TruncateTestsCorrect {
             client.put(null, key, bin);
             postCutoffKeys.add(key);
         }
+        Thread.sleep(2000);
 
         // Store a record in a different set
         client.put(null, otherKey, new Bin("a", "b"));
