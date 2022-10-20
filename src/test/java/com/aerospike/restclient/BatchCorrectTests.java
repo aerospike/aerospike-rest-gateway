@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,10 +16,15 @@
  */
 package com.aerospike.restclient;
 
+import com.aerospike.client.Record;
 import com.aerospike.client.*;
 import com.aerospike.client.Value.BytesValue;
 import com.aerospike.client.policy.*;
 import com.aerospike.client.task.RegisterTask;
+import com.aerospike.restclient.config.JSONMessageConverter;
+import com.aerospike.restclient.config.MsgPackConverter;
+import com.aerospike.restclient.domain.operationmodels.ListReturnType;
+import com.aerospike.restclient.domain.operationmodels.OperationTypes;
 import com.aerospike.restclient.util.AerospikeAPIConstants;
 import com.aerospike.restclient.util.AerospikeOperation;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -28,7 +33,6 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -81,25 +85,34 @@ public class BatchCorrectTests {
     private final static String recordUDFPath = "src/test/java/com/aerospike/restclient/udf/record_example.lua";
     private final static String recordUDFPkg = "record_example";
 
-
     private final String endpoint = "/v1/batch";
 
     @Before
     public void setup() {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+        Map<String, Object> mapCDT = new HashMap<>();
+        Map<String, Object> mapCDT2 = new HashMap<>();
+        List<Integer> listCDT = new ArrayList<>();
+        mapCDT.put("m2", mapCDT2);
+        mapCDT2.put("l1", listCDT);
+        listCDT.add(1);
+        listCDT.add(2);
+        listCDT.add(3);
+
         for (int i = 0; i < keys.length; i++) {
             keys[i] = new Key("test", "junit", Integer.toString(i));
             Bin bin1 = new Bin("bin1", i);
             Bin bin2 = new Bin("bin2", i * 2);
             Bin bin3 = new Bin("bin3", i * 3);
             Bin bin4 = new Bin("bin4", (i * 1.4));
-            client.put(null, keys[i], bin1, bin2, bin3, bin4);
+            Bin bin5 = new Bin("bin5", mapCDT);
+            client.put(null, keys[i], bin1, bin2, bin3, bin4, bin5);
         }
 
         client.put(null, intKey, new Bin("keytype", "integer"));
         client.put(null, bytesKey, new Bin("keytype", "bytes"));
 
-        // TODO: Slows down tests.
+        // Slows down tests.
         RegisterTask task = client.register(null, recordUDFPath, recordUDFPkg + ".lua", Language.LUA);
         task.waitTillComplete();
     }
@@ -149,7 +162,6 @@ public class BatchCorrectTests {
         Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
-    // Making sure the old /batch api is compatible with the new expansion
     @Test
     public void testGetExistingRecordsIsBackwardsCompatible() throws Exception {
 
@@ -275,24 +287,58 @@ public class BatchCorrectTests {
     }
 
     @Test
+    public void testGetRecordCDT() throws Exception {
+        List<Map<String, Object>> batchKeys = new ArrayList<>();
+        Map<String, Object> batchRecReq = new HashMap<>();
+        List<Map<String, Object>> opsList = new ArrayList<>();
+        Map<String, Object> op1 = new HashMap<>();
+        opsList.add(op1);
+        List<Map<String, Object>> ctxList = new ArrayList<>();
+        Map<String, Object> ctx1 = new HashMap<>();
+        Map<String, Object> ctx2 = new HashMap<>();
+        ctxList.add(ctx1);
+        ctxList.add(ctx2);
+
+        op1.put("type", OperationTypes.LIST_GET_BY_INDEX);
+        op1.put("binName", "bin5");
+        op1.put("index", 1);
+        op1.put("listReturnType", ListReturnType.VALUE);
+        op1.put("ctx", ctxList);
+        ctx1.put("type", AerospikeAPIConstants.CTX.MAP_KEY);
+        ctx1.put("key", "m2");
+        ctx2.put("type", AerospikeAPIConstants.CTX.MAP_INDEX);
+        ctx2.put("index", 0);
+
+        batchRecReq.put("type", "READ");
+        batchRecReq.put("key", keyToMap(keys[0], AerospikeAPIConstants.RecordKeyType.STRING));
+        batchRecReq.put("opsList", opsList);
+        batchKeys.add(batchRecReq);
+
+        String payLoad = objectMapper.writeValueAsString(batchKeys);
+        Map<String, Object> batchResponse = batchHandler.perform(mockMVC, endpoint, payLoad);
+        List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
+        Assert.assertEquals(1, returnedRecords.size());
+        Map<String, Object> batchRecord = returnedRecords.get(0);
+        Map<String, Object> record = (Map<String, Object>) batchRecord.get("record");
+        Map<String, Object> bins = (Map<String, Object>) record.get("bins");
+        Assert.assertEquals(2, bins.get("bin5"));
+    }
+
+    @Test
     public void testWriteSingleExistingRecord() throws Exception {
         List<Map<String, Object>> batchKeys = new ArrayList<>();
         List<BatchRecord> batchRecs = new ArrayList<>();
         List<Map<String, Object>> expectedOpsListMap = new ArrayList<>();
 
         Map<String, Object> op1 = new HashMap<>();
-        Map<String, Object> op1Vals = new HashMap<>();
-        op1.put("operation", AerospikeOperation.ADD);
-        op1Vals.put("bin", "bin1");
-        op1Vals.put("incr", 1);
-        op1.put("opValues", op1Vals);
+        op1.put("type", AerospikeOperation.ADD);
+        op1.put("binName", "bin1");
+        op1.put("incr", 1);
 
         Map<String, Object> op2 = new HashMap<>();
-        Map<String, Object> op2Vals = new HashMap<>();
-        op2.put("operation", AerospikeOperation.PUT);
-        op2Vals.put("bin", "bin2");
-        op2Vals.put("value", "new val");
-        op2.put("opValues", op2Vals);
+        op2.put("type", AerospikeOperation.PUT);
+        op2.put("binName", "bin2");
+        op2.put("value", "new val");
 
         expectedOpsListMap.add(op1);
         expectedOpsListMap.add(op2);
@@ -324,11 +370,9 @@ public class BatchCorrectTests {
         policy.recordExistsAction = RecordExistsAction.UPDATE_ONLY;
 
         Map<String, Object> op1 = new HashMap<>();
-        Map<String, Object> op1Vals = new HashMap<>();
-        op1.put("operation", AerospikeOperation.ADD);
-        op1Vals.put("bin", "bin1");
-        op1Vals.put("incr", 1);
-        op1.put("opValues", op1Vals);
+        op1.put("type", OperationTypes.ADD);
+        op1.put("binName", "bin1");
+        op1.put("incr", 1);
 
         expectedOpsListMap.add(op1);
 
@@ -358,11 +402,9 @@ public class BatchCorrectTests {
         policy.generation = 100;
 
         Map<String, Object> op1 = new HashMap<>();
-        Map<String, Object> op1Vals = new HashMap<>();
-        op1.put("operation", AerospikeOperation.ADD);
-        op1Vals.put("bin", "bin1");
-        op1Vals.put("incr", 1);
-        op1.put("opValues", op1Vals);
+        op1.put("type", OperationTypes.ADD);
+        op1.put("binName", "bin1");
+        op1.put("incr", 1);
 
         expectedOpsListMap.add(op1);
 
@@ -475,18 +517,15 @@ public class BatchCorrectTests {
 
         List<Map<String, Object>> writeOps = new ArrayList<>();
         Map<String, Object> op1 = new HashMap<>();
-        Map<String, Object> op1Vals = new HashMap<>();
-        op1.put("operation", AerospikeOperation.ADD);
-        op1Vals.put("bin", "bin1");
-        op1Vals.put("incr", 1);
-        op1.put("opValues", op1Vals);
+
+        op1.put("type", OperationTypes.ADD);
+        op1.put("binName", "bin1");
+        op1.put("incr", 1);
 
         Map<String, Object> op2 = new HashMap<>();
-        Map<String, Object> op2Vals = new HashMap<>();
-        op2.put("operation", AerospikeOperation.PUT);
-        op2Vals.put("bin", "bin2");
-        op2Vals.put("value", "new val");
-        op2.put("opValues", op2Vals);
+        op2.put("type", OperationTypes.PUT);
+        op2.put("binName", "bin2");
+        op2.put("value", "new val");
 
         writeOps.add(op1);
         writeOps.add(op2);
@@ -536,7 +575,7 @@ public class BatchCorrectTests {
 
     private Map<String, Object> keyToBatchWriteObject(BatchWritePolicy policy, Key key,
                                                       AerospikeAPIConstants.RecordKeyType keyType,
-                                                      List<Map<String, Object>> opsList) throws Exception {
+                                                      List<Map<String, Object>> opsList) {
         Map<String, Object> batchObj = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -552,7 +591,7 @@ public class BatchCorrectTests {
 
     private Map<String, Object> keyToBatchUDFObject(BatchUDFPolicy policy, Key key,
                                                     AerospikeAPIConstants.RecordKeyType keyType, String packageName,
-                                                    String functionName, List<Object> functionArgs) throws Exception {
+                                                    String functionName, List<Object> functionArgs) {
         Map<String, Object> batchObj = new HashMap<>();
 
         if (policy != null) {
@@ -568,7 +607,7 @@ public class BatchCorrectTests {
     }
 
     private Map<String, Object> keyToBatchDeleteObject(BatchDeletePolicy policy, Key key,
-                                                       AerospikeAPIConstants.RecordKeyType keyType) throws Exception {
+                                                       AerospikeAPIConstants.RecordKeyType keyType) {
         Map<String, Object> batchObj = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -626,8 +665,7 @@ public class BatchCorrectTests {
             return false;
         }
         for (int i = 0; i < batchReads.size(); i++) {
-            if (!batchComparator.compareRestBatchReadToBatchRead(returnedRecords.get(i),
-                    batchReads.get(i))) {
+            if (!batchComparator.compareRestBatchReadToBatchRead(returnedRecords.get(i), batchReads.get(i))) {
                 return false;
             }
         }
@@ -640,8 +678,7 @@ public class BatchCorrectTests {
             return false;
         }
         for (int i = 0; i < batchRecords.size(); i++) {
-            if (!batchComparator.compareRestBatchRecordToBatchRecord(returnedRecords.get(i),
-                    batchRecords.get(i))) {
+            if (!batchComparator.compareRestBatchRecordToBatchRecord(returnedRecords.get(i), batchRecords.get(i))) {
                 return false;
             }
         }
@@ -747,7 +784,6 @@ class RestBatchComparator {
         return Arrays.equals(restBytes, userKey.digest);
     }
 
-
 }
 
 /*
@@ -755,8 +791,7 @@ class RestBatchComparator {
  * Implementations are provided for specifying JSON and MsgPack as return formats
  */
 interface BatchHandler {
-    Map<String, Object> perform(MockMvc mockMVC, String testEndpoint, String payload)
-            throws Exception;
+    Map<String, Object> perform(MockMvc mockMVC, String testEndpoint, String payload) throws Exception;
 }
 
 class MsgPackBatchHandler implements BatchHandler {
@@ -764,12 +799,12 @@ class MsgPackBatchHandler implements BatchHandler {
     final ObjectMapper msgPackMapper;
 
     public MsgPackBatchHandler() {
-        msgPackMapper = new ObjectMapper(new MessagePackFactory());
+        msgPackMapper = MsgPackConverter.getASMsgPackObjectMapper();
     }
 
     private Map<String, Object> getReturnedBatches(MockHttpServletResponse res) {
         byte[] response = res.getContentAsByteArray();
-        TypeReference<Map<String, Object>> btype = new TypeReference<Map<String, Object>>() {
+        TypeReference<Map<String, Object>> btype = new TypeReference<>() {
         };
         Map<String, Object> batchResponse = null;
         try {
@@ -781,14 +816,11 @@ class MsgPackBatchHandler implements BatchHandler {
     }
 
     @Override
-    public Map<String, Object> perform(MockMvc mockMVC, String testEndpoint, String payload)
-            throws Exception {
+    public Map<String, Object> perform(MockMvc mockMVC, String testEndpoint, String payload) throws Exception {
 
-        MockHttpServletResponse res = mockMVC.perform(post(testEndpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept("application/msgpack")
-                        .content(payload)).andExpect(status().isOk())
-                .andReturn().getResponse();
+        MockHttpServletResponse res = mockMVC.perform(post(testEndpoint).contentType(MediaType.APPLICATION_JSON)
+                .accept("application/msgpack")
+                .content(payload)).andExpect(status().isOk()).andReturn().getResponse();
 
         return getReturnedBatches(res);
     }
@@ -800,7 +832,7 @@ class JSONBatchHandler implements BatchHandler {
     final ObjectMapper msgPackMapper;
 
     public JSONBatchHandler() {
-        msgPackMapper = new ObjectMapper();
+        msgPackMapper = JSONMessageConverter.getJSONObjectMapper();
     }
 
     private Map<String, Object> getReturnedBatches(MockHttpServletResponse res) {
@@ -811,7 +843,7 @@ class JSONBatchHandler implements BatchHandler {
             e1.printStackTrace();
         }
 
-        TypeReference<Map<String, Object>> btype = new TypeReference<Map<String, Object>>() {
+        TypeReference<Map<String, Object>> btype = new TypeReference<>() {
         };
         Map<String, Object> batchResponse = null;
         try {
@@ -822,16 +854,12 @@ class JSONBatchHandler implements BatchHandler {
         return batchResponse;
     }
 
-
     @Override
-    public Map<String, Object> perform(MockMvc mockMVC, String testEndpoint, String payload)
-            throws Exception {
+    public Map<String, Object> perform(MockMvc mockMVC, String testEndpoint, String payload) throws Exception {
 
-        MockHttpServletResponse res = mockMVC.perform(post(testEndpoint)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(payload))
-                .andReturn().getResponse();
+        MockHttpServletResponse res = mockMVC.perform(post(testEndpoint).contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(payload)).andReturn().getResponse();
 
         int status = res.getStatus();
         if (status != 200) {

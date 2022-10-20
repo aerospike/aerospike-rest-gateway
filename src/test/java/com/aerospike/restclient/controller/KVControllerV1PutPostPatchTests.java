@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -47,166 +47,170 @@ import static org.mockito.Mockito.verify;
 /*
  * These methods are almost identical except they end up using a different recordExists action for the actual
  * storage
- */
-public class KVControllerV1PutPostPatchTests {
+ */ public class KVControllerV1PutPostPatchTests {
 
-	private final String ns = "test";
-	private final String set = "set";
-	private final String key = "key";
+    private final String ns = "test";
+    private final String set = "set";
+    private final String key = "key";
 
-	private Map<String, Object> dummyBins;
-	private Map<String, String> queryParams;
-	private final WritePolicy expectedPolicy = new WritePolicy();
+    private Map<String, Object> dummyBins;
+    private Map<String, String> queryParams;
+    private final WritePolicy expectedPolicy = new WritePolicy();
 
-	private byte[] msgpackBins;
-	private final ObjectMapper mpMapper = new ObjectMapper(new MessagePackFactory());
+    private byte[] msgpackBins;
+    private final ObjectMapper mpMapper = new ObjectMapper(new MessagePackFactory());
 
-	private final WritePolicyComparator existsActionComparator = (p1, p2) -> p1.recordExistsAction == p2.recordExistsAction;
+    private final WritePolicyComparator existsActionComparator = (p1, p2) -> p1.recordExistsAction == p2.recordExistsAction;
 
-	@Before
-	public void setup() throws JsonProcessingException {
-		dummyBins = new HashMap<>();
-		dummyBins.put("bin", "a");
-		msgpackBins = mpMapper.writeValueAsBytes(dummyBins);
-		queryParams = new HashMap<>();
-	}
+    @Before
+    public void setup() throws JsonProcessingException {
+        dummyBins = new HashMap<>();
+        dummyBins.put("bin", "a");
+        msgpackBins = mpMapper.writeValueAsBytes(dummyBins);
+        queryParams = new HashMap<>();
+    }
 
-	@Autowired KeyValueController controller;
-	@MockBean AerospikeRecordService recordService;
+    @Autowired
+    KeyValueController controller;
+    @MockBean
+    AerospikeRecordService recordService;
 
-	/* Create/Post */
-	@Test
-	public void testCreateNSSetKey() {
-		expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
-		WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		controller.createRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams, null);
+    /* Create/Post */
+    @Test
+    public void testCreateNSSetKey() {
+        expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
+        WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy,
+                existsActionComparator);
+        controller.createRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams, null);
 
-		verify(recordService, Mockito.only()).storeRecord(
-				isNull(), eq(ns), eq(set), eq(key), eq(dummyBins), isNull(),
-				argThat(createActionMatcher));
-	}
+        verify(recordService, Mockito.only()).storeRecord(isNull(), eq(ns), eq(set), eq(key), eq(dummyBins), isNull(),
+                argThat(createActionMatcher));
+    }
 
-	@Test
-	public void testCreateNSKey() {
-		expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
-		WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		controller.createRecordNamespaceKey(ns, key, dummyBins, queryParams, null);
+    @Test
+    public void testCreateNSKey() {
+        expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
+        WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy,
+                existsActionComparator);
+        controller.createRecordNamespaceKey(ns, key, dummyBins, queryParams, null);
 
-		verify(recordService, Mockito.only()).storeRecord(
-				isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins), isNull(),
-				argThat(createActionMatcher));
-	}
+        verify(recordService, Mockito.only()).storeRecord(isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins),
+                isNull(), argThat(createActionMatcher));
+    }
 
-	@Test
-	public void testCreateNSSetKeyMP() {
-		expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
-		WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		controller.createRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
+    @Test
+    public void testCreateNSSetKeyMP() {
+        expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
+        WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy,
+                existsActionComparator);
+        controller.createRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams,
+                null);
 
-		verify(recordService, Mockito.only()).storeRecord(
-				isNull(), eq(ns), eq(set), eq(key), eq(dummyBins), isNull(),
-				argThat(createActionMatcher));
-	}
+        verify(recordService, Mockito.only()).storeRecord(isNull(), eq(ns), eq(set), eq(key), eq(dummyBins), isNull(),
+                argThat(createActionMatcher));
+    }
 
-	@Test
-	public void testCreateNSKeyMP() {
-		expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
-		WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		controller.createRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
+    @Test
+    public void testCreateNSKeyMP() {
+        expectedPolicy.recordExistsAction = RecordExistsAction.CREATE_ONLY;
+        WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy,
+                existsActionComparator);
+        controller.createRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
 
-		verify(recordService, Mockito.only()).storeRecord(
-				isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins), isNull(),
-				argThat(createActionMatcher));
-	}
+        verify(recordService, Mockito.only()).storeRecord(isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins),
+                isNull(), argThat(createActionMatcher));
+    }
 
-	/* Update/Patch */
-	@Test
-	public void testUpdateNSSetKey() {
-		expectedPolicy.recordExistsAction = RecordExistsAction.UPDATE_ONLY;
-		WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		controller.updateRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams, null);
+    /* Update/Patch */
+    @Test
+    public void testUpdateNSSetKey() {
+        expectedPolicy.recordExistsAction = RecordExistsAction.UPDATE_ONLY;
+        WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy,
+                existsActionComparator);
+        controller.updateRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams, null);
 
-		verify(recordService, Mockito.only()).storeRecord(
-				isNull(), eq(ns), eq(set), eq(key), eq(dummyBins), isNull(),
-				argThat(createActionMatcher));
-	}
+        verify(recordService, Mockito.only()).storeRecord(isNull(), eq(ns), eq(set), eq(key), eq(dummyBins), isNull(),
+                argThat(createActionMatcher));
+    }
 
-	@Test
-	public void testUpdateNSKey() {
-		expectedPolicy.recordExistsAction = RecordExistsAction.UPDATE_ONLY;
-		WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		controller.updateRecordNamespaceKey(ns, key, dummyBins, queryParams, null);
+    @Test
+    public void testUpdateNSKey() {
+        expectedPolicy.recordExistsAction = RecordExistsAction.UPDATE_ONLY;
+        WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy,
+                existsActionComparator);
+        controller.updateRecordNamespaceKey(ns, key, dummyBins, queryParams, null);
 
-		verify(recordService, Mockito.only()).storeRecord(
-				isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins), isNull(),
-				argThat(createActionMatcher));
-	}
+        verify(recordService, Mockito.only()).storeRecord(isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins),
+                isNull(), argThat(createActionMatcher));
+    }
 
-	@Test
-	public void testUpdateNSSetKeyMP() {
-		expectedPolicy.recordExistsAction = RecordExistsAction.UPDATE_ONLY;
-		WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		controller.updateRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
+    @Test
+    public void testUpdateNSSetKeyMP() {
+        expectedPolicy.recordExistsAction = RecordExistsAction.UPDATE_ONLY;
+        WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy,
+                existsActionComparator);
+        controller.updateRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams,
+                null);
 
-		verify(recordService, Mockito.only()).storeRecord(
-				isNull(), eq(ns), eq(set), eq(key), eq(dummyBins), isNull(),
-				argThat(createActionMatcher));
-	}
+        verify(recordService, Mockito.only()).storeRecord(isNull(), eq(ns), eq(set), eq(key), eq(dummyBins), isNull(),
+                argThat(createActionMatcher));
+    }
 
-	@Test
-	public void testUpdateNSKeyMP() {
-		expectedPolicy.recordExistsAction = RecordExistsAction.UPDATE_ONLY;
-		WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		controller.updateRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
+    @Test
+    public void testUpdateNSKeyMP() {
+        expectedPolicy.recordExistsAction = RecordExistsAction.UPDATE_ONLY;
+        WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy,
+                existsActionComparator);
+        controller.updateRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
 
-		verify(recordService, Mockito.only()).storeRecord(
-				isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins), isNull(),
-				argThat(createActionMatcher));
-	}
+        verify(recordService, Mockito.only()).storeRecord(isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins),
+                isNull(), argThat(createActionMatcher));
+    }
 
-	/* Replace/Put */
-	@Test
-	public void testReplaceNSSetKey() {
-		expectedPolicy.recordExistsAction = RecordExistsAction.REPLACE_ONLY;
-		WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		controller.replaceRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams, null);
+    /* Replace/Put */
+    @Test
+    public void testReplaceNSSetKey() {
+        expectedPolicy.recordExistsAction = RecordExistsAction.REPLACE_ONLY;
+        WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy,
+                existsActionComparator);
+        controller.replaceRecordNamespaceSetKey(ns, set, key, dummyBins, queryParams, null);
 
-		verify(recordService, Mockito.only()).storeRecord(
-				isNull(), eq(ns), eq(set), eq(key), eq(dummyBins), isNull(),
-				argThat(createActionMatcher));
-	}
+        verify(recordService, Mockito.only()).storeRecord(isNull(), eq(ns), eq(set), eq(key), eq(dummyBins), isNull(),
+                argThat(createActionMatcher));
+    }
 
-	@Test
-	public void testReplaceNSKey() {
-		expectedPolicy.recordExistsAction = RecordExistsAction.REPLACE_ONLY;
-		WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		controller.replaceRecordNamespaceKey(ns, key, dummyBins, queryParams, null);
+    @Test
+    public void testReplaceNSKey() {
+        expectedPolicy.recordExistsAction = RecordExistsAction.REPLACE_ONLY;
+        WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy,
+                existsActionComparator);
+        controller.replaceRecordNamespaceKey(ns, key, dummyBins, queryParams, null);
 
-		verify(recordService, Mockito.only()).storeRecord(
-				isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins), isNull(),
-				argThat(createActionMatcher));
-	}
+        verify(recordService, Mockito.only()).storeRecord(isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins),
+                isNull(), argThat(createActionMatcher));
+    }
 
-	@Test
-	public void testReplaceNSSetKeyMP() {
-		expectedPolicy.recordExistsAction = RecordExistsAction.REPLACE_ONLY;
-		WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		controller.replaceRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
+    @Test
+    public void testReplaceNSSetKeyMP() {
+        expectedPolicy.recordExistsAction = RecordExistsAction.REPLACE_ONLY;
+        WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy,
+                existsActionComparator);
+        controller.replaceRecordNamespaceSetKeyMP(ns, set, key, new ByteArrayInputStream(msgpackBins), queryParams,
+                null);
 
-		verify(recordService, Mockito.only()).storeRecord(
-				isNull(), eq(ns), eq(set), eq(key), eq(dummyBins), isNull(),
-				argThat(createActionMatcher));
-	}
+        verify(recordService, Mockito.only()).storeRecord(isNull(), eq(ns), eq(set), eq(key), eq(dummyBins), isNull(),
+                argThat(createActionMatcher));
+    }
 
-	@Test
-	public void testReplaceNSKeyMP() {
-		expectedPolicy.recordExistsAction = RecordExistsAction.REPLACE_ONLY;
-		WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy, existsActionComparator);
-		controller.replaceRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
+    @Test
+    public void testReplaceNSKeyMP() {
+        expectedPolicy.recordExistsAction = RecordExistsAction.REPLACE_ONLY;
+        WritePolicyMatcher createActionMatcher = new ASTestUtils.WritePolicyMatcher(expectedPolicy,
+                existsActionComparator);
+        controller.replaceRecordNamespaceKeyMP(ns, key, new ByteArrayInputStream(msgpackBins), queryParams, null);
 
-		verify(recordService, Mockito.only()).storeRecord(
-				isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins), isNull(),
-				argThat(createActionMatcher));
-	}
+        verify(recordService, Mockito.only()).storeRecord(isNull(), eq(ns), isNull(), eq((key)), eq(dummyBins),
+                isNull(), argThat(createActionMatcher));
+    }
 
 }

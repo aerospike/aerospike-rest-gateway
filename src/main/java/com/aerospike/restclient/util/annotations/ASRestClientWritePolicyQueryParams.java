@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -34,43 +34,46 @@ import java.lang.annotation.Target;
 /*
  * Annotations used by Swagger to report correct query parameters for the given API method.
  */
-@Parameters(value = {
-        @Parameter(
-                name = AerospikeAPIConstants.EXPIRATION,
-                description = APIDescriptors.WRITE_POLICY_EXPIRATION_NOTES,
-                schema = @Schema(type = "integer"),
-                in = ParameterIn.QUERY),
-        @Parameter(
+@Parameters(
+        value = {
+                @Parameter(
+                        name = AerospikeAPIConstants.EXPIRATION,
+                        description = APIDescriptors.WRITE_POLICY_EXPIRATION_NOTES,
+                        schema = @Schema(type = "integer"),
+                        in = ParameterIn.QUERY
+                ), @Parameter(
                 name = AerospikeAPIConstants.GENERATION,
                 description = APIDescriptors.WRITE_POLICY_GEN_NOTES,
                 schema = @Schema(type = "integer"),
-                in = ParameterIn.QUERY),
-        @Parameter(
+                in = ParameterIn.QUERY
+        ), @Parameter(
                 name = AerospikeAPIConstants.DURABLE_DELETE,
                 description = APIDescriptors.WRITE_POLICY_DURABLE_DELETE_NOTES,
                 schema = @Schema(type = "boolean"),
-                in = ParameterIn.QUERY),
-        @Parameter(
+                in = ParameterIn.QUERY
+        ), @Parameter(
                 name = AerospikeAPIConstants.RESPOND_ALL_OPS,
                 description = APIDescriptors.WRITE_POLICY_RESPOND_ALL_OPS_NOTES,
                 schema = @Schema(type = "boolean"),
-                in = ParameterIn.QUERY),
-        @Parameter(
+                in = ParameterIn.QUERY
+        ), @Parameter(
                 name = AerospikeAPIConstants.COMMIT_LEVEL,
                 description = APIDescriptors.WRITE_POLICY_COMMIT_LEVEL_NOTES,
                 schema = @Schema(implementation = CommitLevel.class),
-                in = ParameterIn.QUERY),
-        @Parameter(
+                in = ParameterIn.QUERY
+        ), @Parameter(
                 name = AerospikeAPIConstants.GENERATION_POLICY,
                 description = APIDescriptors.WRITE_POLICY_GEN_POLICY_NOTES,
                 schema = @Schema(implementation = GenerationPolicy.class),
-                in = ParameterIn.QUERY),
-        @Parameter(
+                in = ParameterIn.QUERY
+        ), @Parameter(
                 name = AerospikeAPIConstants.RECORD_EXISTS_ACTION,
                 description = APIDescriptors.WRITE_POLICY_RECORD_EXISTS_NOTES,
                 schema = @Schema(implementation = RecordExistsAction.class),
-                in = ParameterIn.QUERY)
-})
+                in = ParameterIn.QUERY
+        )
+        }
+)
 @ASRestClientPolicyQueryParams
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

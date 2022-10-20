@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,6 +16,7 @@
  */
 package com.aerospike.restclient;
 
+import com.aerospike.client.Record;
 import com.aerospike.client.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.*;
@@ -87,18 +88,13 @@ public class RecordPostCorrectTests {
     public static Object[] getParams() {
         return new Object[][]{
                 {
-                        new JSONPostPerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()),
-                        true
-                },
-                {
+                        new JSONPostPerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), true
+                }, {
                         new MsgPackPostPerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())),
                         true
-                },
-                {
-                        new JSONPostPerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()),
-                        false
-                },
-                {
+                }, {
+                        new JSONPostPerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), false
+                }, {
                         new MsgPackPostPerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())),
                         false
                 }
@@ -107,31 +103,31 @@ public class RecordPostCorrectTests {
 
     public RecordPostCorrectTests(PostPerformer performer, boolean useSet) {
         if (useSet) {
-            this.testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "getput");
+            this.testEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", "getput");
             this.testKey = new Key("test", "junit", "getput");
             this.intKey = new Key("test", "junit", 1);
             this.bytesKey = new Key("test", "junit", new byte[]{1, 127, 127, 1});
 
             String urlDigest = Base64.getUrlEncoder().encodeToString(testKey.digest);
-            digestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", urlDigest) + "?keytype=DIGEST";
+            digestEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", urlDigest) + "?keytype=DIGEST";
 
             String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
-            bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", urlBytes) + "?keytype=BYTES";
+            bytesEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", urlBytes) + "?keytype=BYTES";
 
-            intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "junit", "1") + "?keytype=INTEGER";
+            intEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "junit", "1") + "?keytype=INTEGER";
         } else {
-            this.testEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "getput");
+            this.testEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "getput");
             this.testKey = new Key("test", null, "getput");
             this.intKey = new Key("test", null, 1);
             this.bytesKey = new Key("test", null, new byte[]{1, 127, 127, 1});
 
             String urlDigest = Base64.getUrlEncoder().encodeToString(testKey.digest);
-            digestEndpoint = ASTestUtils.buildEndpoint("kvs", "test", urlDigest) + "?keytype=DIGEST";
+            digestEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", urlDigest) + "?keytype=DIGEST";
 
             String urlBytes = Base64.getUrlEncoder().encodeToString((byte[]) bytesKey.userKey.getObject());
-            bytesEndpoint = ASTestUtils.buildEndpoint("kvs", "test", urlBytes) + "?keytype=BYTES";
+            bytesEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", urlBytes) + "?keytype=BYTES";
 
-            intEndpoint = ASTestUtils.buildEndpoint("kvs", "test", "1") + "?keytype=INTEGER";
+            intEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "1") + "?keytype=INTEGER";
         }
         this.postPerformer = performer;
     }
@@ -288,8 +284,7 @@ public class RecordPostCorrectTests {
 }
 
 interface PostPerformer {
-    void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
-            throws Exception;
+    void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap) throws Exception;
 }
 
 class JSONPostPerformer implements PostPerformer {
@@ -302,10 +297,8 @@ class JSONPostPerformer implements PostPerformer {
     }
 
     @Override
-    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
-            throws Exception {
-        mockMVC.perform(post(testEndpoint).contentType(mediaType)
-                        .content(mapper.writeValueAsString(binMap)))
+    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap) throws Exception {
+        mockMVC.perform(post(testEndpoint).contentType(mediaType).content(mapper.writeValueAsString(binMap)))
                 .andExpect(status().isCreated());
     }
 
@@ -321,10 +314,8 @@ class MsgPackPostPerformer implements PostPerformer {
     }
 
     @Override
-    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap)
-            throws Exception {
-        mockMVC.perform(post(testEndpoint).contentType(mediaType)
-                        .content(mapper.writeValueAsBytes(binMap)))
+    public void perform(MockMvc mockMVC, String testEndpoint, Map<String, Object> binMap) throws Exception {
+        mockMVC.perform(post(testEndpoint).contentType(mediaType).content(mapper.writeValueAsBytes(binMap)))
                 .andExpect(status().isCreated());
     }
 

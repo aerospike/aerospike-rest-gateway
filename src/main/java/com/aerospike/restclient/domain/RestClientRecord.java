@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,31 +16,35 @@
  */
 package com.aerospike.restclient.domain;
 
-import java.util.Map;
-
 import com.aerospike.client.Record;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.Map;
+
 /* Record describing what we return as a record in JSON */
 public class RestClientRecord {
 
-	public RestClientRecord() {}
+    public RestClientRecord() {
+    }
 
-	public RestClientRecord(Record rec) {
-		generation = rec.generation;
-		ttl = rec.getTimeToLive();
-		bins = rec.bins;
-	}
+    public RestClientRecord(Record rec) {
+        generation = rec.generation;
+        ttl = rec.getTimeToLive();
+        bins = rec.bins;
+    }
 
-	@Schema(name = "generation", description = "The generation of the record.", example = "2")
-	public int generation;
+    @Schema(name = "generation", description = "The generation of the record.", example = "2")
+    public int generation;
 
-	@Schema(name = "ttl", description = "The time to live for the record, in seconds from now.", example = "1000")
-	public int ttl;
+    @Schema(name = "ttl", description = "The time to live for the record, in seconds from now.", example = "1000")
+    public int ttl;
 
-	@JsonInclude(JsonInclude.Include.ALWAYS)
-	@Schema(name = "bins", description = "A mapping from binName to binValue",
-			example = "{\"bin1\": \"val1\", \"pi\": \"3.14\"}")
-	public Map<String, Object> bins;
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    @Schema(
+            name = "bins",
+            description = "A mapping from binName to binValue",
+            example = "{\"bin1\": \"val1\", \"pi\": \"3.14\"}"
+    )
+    public Map<String, Object> bins;
 }

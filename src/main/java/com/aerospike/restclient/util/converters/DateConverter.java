@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -25,21 +25,21 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class DateConverter {
-	public static Calendar iso8601StringToCalendar(String dateString) {
-		Calendar calendar = null;
-		if (dateString != null && !dateString.isEmpty()) {
-			ZonedDateTime zdt;
-			/* Parse a date like 2000 12 31 T 23 59 59 Z  With the spaces omitted*/
-			DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-			try {
-				zdt = ZonedDateTime.parse(dateString, formatter);
-			} catch (DateTimeParseException d) {
-				throw new InvalidDateFormat(dateString);
-			}
-			calendar = GregorianCalendar.from(zdt);
-		}
+    public static Calendar iso8601StringToCalendar(String dateString) {
+        Calendar calendar = null;
+        if (dateString != null && !dateString.isEmpty()) {
+            ZonedDateTime zdt;
+            /* Parse a date like 2000 12 31 T 23 59 59 Z  With the spaces omitted*/
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+            try {
+                zdt = ZonedDateTime.parse(dateString, formatter);
+            } catch (DateTimeParseException d) {
+                throw new InvalidDateFormat(dateString);
+            }
+            calendar = GregorianCalendar.from(zdt);
+        }
 
-		return calendar;
-	}
+        return calendar;
+    }
 
 }

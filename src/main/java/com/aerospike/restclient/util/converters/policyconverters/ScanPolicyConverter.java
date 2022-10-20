@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -30,8 +30,7 @@ public class ScanPolicyConverter {
         ScanPolicy scanPolicy = new ScanPolicy(basePolicy);
 
         if (policyMap.containsKey(AerospikeAPIConstants.MAX_RECORDS)) {
-            scanPolicy.maxRecords = PolicyValueConverter.getLongValue(
-                    policyMap.get(AerospikeAPIConstants.MAX_RECORDS));
+            scanPolicy.maxRecords = PolicyValueConverter.getLongValue(policyMap.get(AerospikeAPIConstants.MAX_RECORDS));
         }
         if (policyMap.containsKey(AerospikeAPIConstants.RECORDS_PER_SECOND)) {
             scanPolicy.recordsPerSecond = PolicyValueConverter.getIntValue(

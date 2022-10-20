@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -23,11 +23,9 @@ import com.aerospike.client.policy.ClientPolicy;
 import com.aerospike.restclient.util.AerospikeClientPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.Nullable;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 
@@ -47,17 +45,11 @@ public class AerospikeClientConfig {
     @Value("${aerospike.restclient.requireAuthentication:false}")
     boolean requireAuthentication;
 
-    @Value("${aerospike.restclient.useBoolBin:false}")
-    boolean useBoolBin;
-
-    @Autowired
-    ClientPolicy policy;
-
     @Bean
     @Retryable(
-            value = {AerospikeException.class},
-            backoff = @Backoff(delay = 2000, multiplier = 2))
-    public AerospikeClient configAerospikeClient() {
+            value = {AerospikeException.class}, backoff = @Backoff(delay = 2000, multiplier = 2)
+    )
+    public AerospikeClient configAerospikeClient(ClientPolicy policy) {
         if (requireAuthentication) {
             return null;
         }
@@ -77,23 +69,16 @@ public class AerospikeClientConfig {
         return client;
     }
 
+    @Value("${aerospike.restclient.useBoolBin:false}")
+    boolean useBoolBin;
+
     @Value("${aerospike.restclient.pool.size:16}")
     int poolSize;
 
-    @Autowired
-    @Nullable
-    AerospikeClient defaultClient;
-
     @Bean
-    public AerospikeClientPool configAerospikeClientPool() {
-        return new AerospikeClientPool(
-                poolSize,
-                policy,
-                port,
-                hostList,
-                hostname,
-                defaultClient,
-                useBoolBin
-        );
+    public AerospikeClientPool configAerospikeClientPool(ClientPolicy policy, AerospikeClient defaultClient) {
+        return new AerospikeClientPool(poolSize, policy, port, hostList, hostname, defaultClient, useBoolBin);
     }
 }
+
+

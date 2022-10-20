@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -29,79 +29,80 @@ import java.util.Map;
 
 public class BatchPolicyConverterTests {
 
-	Map<String, String> policyMap;
+    Map<String, String> policyMap;
 
-	@Before
-	public void setup() {
-		policyMap = new HashMap<>();
-	}
+    @Before
+    public void setup() {
+        policyMap = new HashMap<>();
+    }
 
-	@Test
-	public void testReplica() {
-		policyMap.put(AerospikeAPIConstants.REPLICA, Replica.MASTER.toString());
-		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.replica, Replica.MASTER);
-	}
+    @Test
+    public void testReplica() {
+        policyMap.put(AerospikeAPIConstants.REPLICA, Replica.MASTER.toString());
+        BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
+        Assert.assertEquals(policy.replica, Replica.MASTER);
+    }
 
-	@Test
-	public void testTotalTimeout() {
-		policyMap.put(AerospikeAPIConstants.TOTAL_TIMEOUT, "333");
-		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.totalTimeout, 333);
-	}
+    @Test
+    public void testTotalTimeout() {
+        policyMap.put(AerospikeAPIConstants.TOTAL_TIMEOUT, "333");
+        BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
+        Assert.assertEquals(policy.totalTimeout, 333);
+    }
 
-	@Test
-	public void testSocketTimeout() {
-		policyMap.put(AerospikeAPIConstants.SOCKET_TIMEOUT, "332");
-		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.socketTimeout, 332);
-	}
+    @Test
+    public void testSocketTimeout() {
+        policyMap.put(AerospikeAPIConstants.SOCKET_TIMEOUT, "332");
+        BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
+        Assert.assertEquals(policy.socketTimeout, 332);
+    }
 
-	@Test
-	public void testSleepBetweenRetries() {
-		policyMap.put(AerospikeAPIConstants.SLEEP_BETWEEN_RETRIES, "111");
-		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.sleepBetweenRetries, 111);
-	}
+    @Test
+    public void testSleepBetweenRetries() {
+        policyMap.put(AerospikeAPIConstants.SLEEP_BETWEEN_RETRIES, "111");
+        BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
+        Assert.assertEquals(policy.sleepBetweenRetries, 111);
+    }
 
-	@Test
-	public void testMaxRetries() {
-		policyMap.put(AerospikeAPIConstants.MAX_RETRIES, "5");
-		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.maxRetries, 5);
-	}
+    @Test
+    public void testMaxRetries() {
+        policyMap.put(AerospikeAPIConstants.MAX_RETRIES, "5");
+        BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
+        Assert.assertEquals(policy.maxRetries, 5);
+    }
 
-	@Test
-	public void testSendKey() {
-		policyMap.put(AerospikeAPIConstants.SEND_KEY, "true");
-		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertTrue(policy.sendKey);
-	}
-	@Test
-	public void testMaxConcurrentThreads() {
-		policyMap.put(AerospikeAPIConstants.MAX_CONCURRENT_THREADS, "7");
-		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertEquals(policy.maxConcurrentThreads, 7);
-	}
+    @Test
+    public void testSendKey() {
+        policyMap.put(AerospikeAPIConstants.SEND_KEY, "true");
+        BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
+        Assert.assertTrue(policy.sendKey);
+    }
 
-	@Test
-	public void testAllowInline() {
-		policyMap.put(AerospikeAPIConstants.ALLOW_INLINE, "false");
-		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertFalse(policy.allowInline);
-	}
+    @Test
+    public void testMaxConcurrentThreads() {
+        policyMap.put(AerospikeAPIConstants.MAX_CONCURRENT_THREADS, "7");
+        BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
+        Assert.assertEquals(policy.maxConcurrentThreads, 7);
+    }
 
-	@Test
-	public void testAllowInlineSSD() {
-		policyMap.put(AerospikeAPIConstants.ALLOW_INLINE_SSD, "true");
-		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertTrue(policy.allowInline);
-	}
+    @Test
+    public void testAllowInline() {
+        policyMap.put(AerospikeAPIConstants.ALLOW_INLINE, "false");
+        BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
+        Assert.assertFalse(policy.allowInline);
+    }
 
-	@Test
-	public void testRespondAllKeys() {
-		policyMap.put(AerospikeAPIConstants.RESPOND_ALL_KEYS, "false");
-		BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
-		Assert.assertFalse(policy.respondAllKeys);
-	}
+    @Test
+    public void testAllowInlineSSD() {
+        policyMap.put(AerospikeAPIConstants.ALLOW_INLINE_SSD, "true");
+        BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
+        Assert.assertTrue(policy.allowInline);
+    }
+
+    @Test
+    public void testRespondAllKeys() {
+        policyMap.put(AerospikeAPIConstants.RESPOND_ALL_KEYS, "false");
+        BatchPolicy policy = BatchPolicyConverter.batchPolicyFromMap(policyMap);
+        Assert.assertFalse(policy.respondAllKeys);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -17,19 +17,23 @@
 package com.aerospike.restclient.service;
 
 import com.aerospike.client.policy.WritePolicy;
-import com.aerospike.restclient.domain.RestClientExecuteTask;
-import com.aerospike.restclient.domain.RestClientExecuteTaskStatus;
 import com.aerospike.restclient.domain.RestClientOperation;
 import com.aerospike.restclient.domain.auth.AuthDetails;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTask;
+import com.aerospike.restclient.domain.executemodels.RestClientExecuteTaskStatus;
+import com.aerospike.restclient.domain.operationmodels.Operation;
 
 import java.util.List;
 import java.util.Map;
 
 public interface AerospikeExecuteService {
 
-    RestClientExecuteTask executeScan(AuthDetails authDetails, String namespace, String set,
-                                             List<RestClientOperation> opsList, WritePolicy policy,
-                                             Map<String, String> requestParams);
+    RestClientExecuteTask executeV1Scan(AuthDetails authDetails, String namespace, String set,
+                                        List<RestClientOperation> opsList, WritePolicy policy,
+                                        Map<String, String> requestParams);
+
+    RestClientExecuteTask executeV2Scan(AuthDetails authDetails, String namespace, String set, List<Operation> opsList,
+                                        WritePolicy policy, Map<String, String> requestParams);
 
     RestClientExecuteTaskStatus queryScanStatus(AuthDetails authDetails, String taskId);
 }

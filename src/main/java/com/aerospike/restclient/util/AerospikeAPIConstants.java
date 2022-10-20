@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -18,8 +18,7 @@ package com.aerospike.restclient.util;
 
 public final class AerospikeAPIConstants {
 
-    private AerospikeAPIConstants() {
-    }
+    public static final String AS_CLIENT_VERSION = "6.1.2";
 
     // Entries in the JSON representation of a record;
     public static final String RECORD_KEY = "key";
@@ -90,7 +89,6 @@ public final class AerospikeAPIConstants {
     public static final String BATCH_TYPE_UDF = "UDF";
     public static final String BATCH_TYPE_DELETE = "DELETE";
 
-
     // SCAN POLICY KEYS (Merged into Query subsystem in 6.0)
     public static final String MAX_RECORDS = "maxRecords";
     public static final String MAX_RECORDS_DEFAULT = "10000";
@@ -123,7 +121,6 @@ public final class AerospikeAPIConstants {
         public static final String GEOWITHIN_RADIUS = "GEO_WITHIN_RADIUS";
         public static final String GEOCONTAINS_POINT = "GEO_CONTAINS_POINT";
     }
-
 
     // INFO POLICY KEYS
     public static final String TIMEOUT = "timeout";
@@ -164,8 +161,7 @@ public final class AerospikeAPIConstants {
     // SpecifiedType used for representing bytes & geojson (deprecated) in json.  TODO make a model
     public static class SpecifiedType {
         public enum Type {
-            BYTE_ARRAY,
-            GEO_JSON,
+            BYTE_ARRAY, GEO_JSON,
         }
 
         public static class Keys {

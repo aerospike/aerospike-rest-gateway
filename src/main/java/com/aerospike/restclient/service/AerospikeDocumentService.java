@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -33,7 +33,8 @@ public interface AerospikeDocumentService {
                    String jsonPath, Object jsonObject, AerospikeAPIConstants.RecordKeyType keyType, WritePolicy policy);
 
     void appendObject(AuthDetails authDetails, String namespace, String set, String key, List<String> bins,
-                      String jsonPath, Object jsonObject, AerospikeAPIConstants.RecordKeyType keyType, WritePolicy policy);
+                      String jsonPath, Object jsonObject, AerospikeAPIConstants.RecordKeyType keyType,
+                      WritePolicy policy);
 
     void deleteObject(AuthDetails authDetails, String namespace, String set, String key, List<String> bins,
                       String jsonPath, AerospikeAPIConstants.RecordKeyType keyType, WritePolicy policy);

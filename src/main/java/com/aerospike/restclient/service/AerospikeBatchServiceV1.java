@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AerospikeBatchServiceV1 implements AerospikeBatchService {
@@ -36,13 +35,13 @@ public class AerospikeBatchServiceV1 implements AerospikeBatchService {
     private AerospikeClientPool clientPool;
 
     @Override
-    public BatchResponseBody batch(AuthDetails authDetails, List<BatchRecord> batchKeys,
-                                   BatchPolicy policy) {
+    public BatchResponseBody batch(AuthDetails authDetails, List<BatchRecord> batchKeys, BatchPolicy policy) {
         BatchResponseBody resp = new BatchResponseBody();
-        List<com.aerospike.client.BatchRecord> batchRecords = batchKeys.stream().map(BatchRecord::toBatchRecord)
-                .collect(Collectors.toList());
+        List<com.aerospike.client.BatchRecord> batchRecords = batchKeys.stream()
+                .map(BatchRecord::toBatchRecord)
+                .toList();
         BatchHandler.create(clientPool.getClient(authDetails)).batchRecord(policy, batchRecords);
-        resp.batchRecords = batchRecords.stream().map(BatchRecordResponse::new).collect(Collectors.toList());
+        resp.batchRecords = batchRecords.stream().map(BatchRecordResponse::new).toList();
         return resp;
     }
 }

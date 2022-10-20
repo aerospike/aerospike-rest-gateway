@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -16,57 +16,62 @@
  */
 package com.aerospike.restclient.domain;
 
-import javax.validation.constraints.NotNull;
-
 import com.aerospike.client.admin.Privilege;
 import com.aerospike.client.admin.PrivilegeCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import javax.validation.constraints.NotNull;
+
 public class RestClientPrivilege {
 
-	@NotNull
-	@Schema(required = true)
-	PrivilegeCode code;
+    @NotNull
+    @Schema(required = true)
+    PrivilegeCode code;
 
-	@Schema(description = "Namespace Scope", example = "testNS")
-	String namespace;
+    @Schema(description = "Namespace Scope", example = "testNS")
+    String namespace;
 
-	@Schema(description = "setName Scope", example = "testSet")
-	String set;
+    @Schema(description = "setName Scope", example = "testSet")
+    String set;
 
-	public PrivilegeCode getCode() {
-		return this.code;
-	}
-	public String getNamespace() {
-		return this.namespace;
-	}
-	public String getSet() {
-		return this.set;
-	}
-	public void setCode(PrivilegeCode code) {
-		this.code = code;
-	}
-	public void setNamespace(String ns) {
-		this.namespace = ns;
-	}
-	public void setSet(String set) {
-		this.set = set;
-	}
+    public PrivilegeCode getCode() {
+        return this.code;
+    }
 
-	public  Privilege toPrivilege() {
-		Privilege privilege = new Privilege();
-		privilege.code = code;
-		privilege.namespace = namespace;
-		privilege.setName = set;
-		return privilege;
-	}
+    public String getNamespace() {
+        return this.namespace;
+    }
 
-	public RestClientPrivilege() {
-	}
+    public String getSet() {
+        return this.set;
+    }
 
-	public RestClientPrivilege(Privilege priv) {
-		code = priv.code;
-		namespace = priv.namespace;
-		set = priv.setName;
-	}
+    public void setCode(PrivilegeCode code) {
+        this.code = code;
+    }
+
+    public void setNamespace(String ns) {
+        this.namespace = ns;
+    }
+
+    public void setSet(String set) {
+        this.set = set;
+    }
+
+    public Privilege toPrivilege() {
+        Privilege privilege = new Privilege();
+        privilege.code = code;
+        privilege.namespace = namespace;
+        privilege.setName = set;
+        return privilege;
+    }
+
+    public RestClientPrivilege() {
+    }
+
+    public RestClientPrivilege(Privilege priv) {
+        code = priv.code;
+        namespace = priv.namespace;
+        set = priv.setName;
+    }
 }

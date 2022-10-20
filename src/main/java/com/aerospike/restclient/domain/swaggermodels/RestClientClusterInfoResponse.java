@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Aerospike, Inc.
+ * Copyright 2022 Aerospike, Inc.
  *
  * Portions may be licensed to Aerospike, Inc. under one or more contributor
  * license agreements WHICH ARE COMPATIBLE WITH THE APACHE LICENSE, VERSION 2.0.
@@ -22,9 +22,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * A Model describing the return value from requests to the /v1/cluster endpoint.
  */
 public class RestClientClusterInfoResponse {
-	@Schema()
-	public RestClientNodeInfoResponse[] nodes;
+    @Schema()
+    public RestClientNodeInfoResponse[] nodes;
 
-	@Schema()
-	public RestClientNamespaceInfoResponse[] namespaces;
+    @Schema()
+    public RestClientNamespaceInfoResponse[] namespaces;
 }
