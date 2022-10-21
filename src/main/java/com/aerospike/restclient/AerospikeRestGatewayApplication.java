@@ -22,9 +22,9 @@ import org.springframework.retry.annotation.EnableRetry;
 
 @SpringBootApplication
 @EnableRetry
-public class AerospikeRestClientApplication {
+public class AerospikeRestGatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AerospikeRestClientApplication.class, args);
+        SpringApplication.run(AerospikeRestGatewayApplication.class, args);
     }
 }

@@ -37,7 +37,7 @@ public class OpenApiConfiguration {
     }
 
     private Info apiInfo() {
-        return new Info().title("Aerospike REST Client")
+        return new Info().title("Aerospike REST Gateway")
                 .description("REST Interface for Aerospike Database.")
                 .version(buildProperties.getVersion())
                 .contact(apiContact())
