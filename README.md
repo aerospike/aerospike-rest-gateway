@@ -8,7 +8,7 @@ It can be used as a bridge between applications written in languages without an 
 
 ## API Documentation
 
-Swagger UI API documentation for this project can be found here [Aerospike REST Client API Documentation](https://docs.aerospike.com/apidocs/rest).
+Swagger UI API documentation for this project can be found here [Aerospike REST Client API Documentation](https://aerospike.github.io/aerospike-rest-gateway/).
 
 ## Getting Started blog posts
 
