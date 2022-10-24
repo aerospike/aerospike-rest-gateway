@@ -1,4 +1,4 @@
-# Rest Client Data Formats
+# Rest Gateway Data Formats
 
 API Requests which involve sending data can use the `JSON`, or `MessagePack` formats. By default JSON will be assumed.
 To use `MessagePack`, set the `Content-Type` header to ``"application/msgpack"``. Similarly
@@ -44,11 +44,12 @@ Message pack is provided as an option because JSON cannot fully represent certai
 * Aerospike stores a GeoJSON type. Which is returned as a `MessagePack` extension type.
 
 If you are not handling Maps with non string keys, and not using bytes nor GeoJSON, then JSON as an interchange format
-will work for the Rest Client.
+will work for the Rest Gateway.
 
 ## MessagePack Format
 
-The `MessagePack` sent and received by the Rest client is almost completely standard. The one specific detail is that we
+The `MessagePack` sent and received by the REST Gateway is almost completely standard. The one specific detail is that
+we
 represent a `GeoJSON` object using
 the [MessagePack Extension format type](https://github.com/msgpack/msgpack/blob/master/spec.md#extension-types).
 The extension type value is `23` and the payload is the string representation of the `GeoJSON`. This is done to

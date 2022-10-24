@@ -244,7 +244,7 @@ public class SindexTestsCorrect {
     }
 
     /*
-     * Create an index for a test. Used to test whether the rest client finds it.
+     * Create an index for a test. Used to test whether the REST Gateway finds it.
      */
     private void addIndexForTest(String indexName, String binName) {
         testIndexName = indexName;

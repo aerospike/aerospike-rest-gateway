@@ -4,7 +4,7 @@
 
     Operatation documentation is now imbedded in the swagger documentation.
 
-# Rest Client Operations
+# Rest Gateway Operations
 
 * [ADD](#add)
 * [APPEND](#append)

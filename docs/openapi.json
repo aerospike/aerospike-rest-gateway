@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Aerospike REST Client",
+    "title": "Aerospike REST Gateway",
     "description": "REST Interface for Aerospike Database.",
     "contact": {
       "name": "Aerospike, Inc.",
@@ -11,11 +11,11 @@
       "name": "Apache 2.0 License",
       "url": "http://www.apache.org/licenses/LICENSE-2.0"
     },
-    "version": "2.0.0"
+    "version": "2.0.1"
   },
   "servers": [
     {
-      "url": "http://localhost:8081",
+      "url": "http://localhost:8080",
       "description": "Generated server url"
     }
   ],
@@ -237,23 +237,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Metadata and bins for a record returned successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientRecord"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientRecord"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Record not found.",
+          "403": {
+            "description": "Not authorized to access the resource",
             "content": {
               "application/json": {
                 "schema": {
@@ -268,7 +253,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -278,6 +263,21 @@
               "application/msgpack": {
                 "schema": {
                   "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Metadata and bins for a record returned successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientRecord"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientRecord"
                 }
               }
             }
@@ -297,8 +297,8 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to access the resource",
+          "404": {
+            "description": "Record not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -583,8 +583,8 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Record not found.",
+          "403": {
+            "description": "Not authorized to access the resource",
             "content": {
               "application/msgpack": {
                 "schema": {
@@ -599,7 +599,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/msgpack": {
                 "schema": {
@@ -643,8 +643,8 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to access the resource",
+          "404": {
+            "description": "Record not found.",
             "content": {
               "application/msgpack": {
                 "schema": {
@@ -921,23 +921,8 @@
           "required": true
         },
         "responses": {
-          "409": {
-            "description": "Record Already exists.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Namespace does not exist.",
+          "403": {
+            "description": "Not authorized to access the resource",
             "content": {
               "application/json": {
                 "schema": {
@@ -952,7 +937,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -965,9 +950,6 @@
                 }
               }
             }
-          },
-          "201": {
-            "description": "Created a new record successfully."
           },
           "400": {
             "description": "Invalid parameters or request",
@@ -984,8 +966,26 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to access the resource",
+          "201": {
+            "description": "Created a new record successfully."
+          },
+          "404": {
+            "description": "Namespace does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Record Already exists.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1228,8 +1228,8 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Record not found.",
+          "403": {
+            "description": "Not authorized to access the resource",
             "content": {
               "application/json": {
                 "schema": {
@@ -1244,7 +1244,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1257,9 +1257,6 @@
                 }
               }
             }
-          },
-          "204": {
-            "description": "Deleted a record successfully, no content expected."
           },
           "409": {
             "description": "Generation mismatch for operation.",
@@ -1291,8 +1288,11 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to access the resource",
+          "204": {
+            "description": "Deleted a record successfully, no content expected."
+          },
+          "404": {
+            "description": "Record not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1367,11 +1367,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Record exists indication returned successfully."
-          },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1384,6 +1381,9 @@
                 }
               }
             }
+          },
+          "200": {
+            "description": "Record exists indication returned successfully."
           },
           "404": {
             "description": "Record does not exists.",
@@ -1660,8 +1660,23 @@
           "required": true
         },
         "responses": {
+          "403": {
+            "description": "Not authorized to access the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1690,6 +1705,21 @@
               }
             }
           },
+          "404": {
+            "description": "Record does not exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
           "400": {
             "description": "Invalid parameters or request",
             "content": {
@@ -1705,38 +1735,8 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to access the resource",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "204": {
             "description": "Modified record successfully, no content expected."
-          },
-          "404": {
-            "description": "Record does not exists.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
           }
         }
       }
@@ -1899,23 +1899,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Metadata and bins for a record returned successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientRecord"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientRecord"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Record not found.",
+          "403": {
+            "description": "Not authorized to access the resource",
             "content": {
               "application/json": {
                 "schema": {
@@ -1930,7 +1915,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1940,6 +1925,21 @@
               "application/msgpack": {
                 "schema": {
                   "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Metadata and bins for a record returned successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientRecord"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientRecord"
                 }
               }
             }
@@ -1959,8 +1959,8 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to access the resource",
+          "404": {
+            "description": "Record not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2225,8 +2225,8 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Record not found.",
+          "403": {
+            "description": "Not authorized to access the resource",
             "content": {
               "application/json": {
                 "schema": {
@@ -2241,7 +2241,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2285,8 +2285,8 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to access the resource",
+          "404": {
+            "description": "Record not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2554,23 +2554,8 @@
           "required": true
         },
         "responses": {
-          "409": {
-            "description": "Record Already exists.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Namespace does not exist.",
+          "403": {
+            "description": "Not authorized to access the resource",
             "content": {
               "application/json": {
                 "schema": {
@@ -2585,7 +2570,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2598,9 +2583,6 @@
                 }
               }
             }
-          },
-          "201": {
-            "description": "Created a new record successfully."
           },
           "400": {
             "description": "Invalid parameters or request",
@@ -2617,8 +2599,26 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to access the resource",
+          "201": {
+            "description": "Created a new record successfully."
+          },
+          "404": {
+            "description": "Namespace does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Record Already exists.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2852,8 +2852,8 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Record not found.",
+          "403": {
+            "description": "Not authorized to access the resource",
             "content": {
               "application/json": {
                 "schema": {
@@ -2868,7 +2868,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2881,9 +2881,6 @@
                 }
               }
             }
-          },
-          "204": {
-            "description": "Deleted a record successfully, no content expected."
           },
           "409": {
             "description": "Generation mismatch for operation.",
@@ -2915,8 +2912,11 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to access the resource",
+          "204": {
+            "description": "Deleted a record successfully, no content expected."
+          },
+          "404": {
+            "description": "Record not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2982,11 +2982,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Record exists indication returned successfully."
-          },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3000,8 +2997,11 @@
               }
             }
           },
+          "200": {
+            "description": "Record exists indication returned successfully."
+          },
           "404": {
-            "description": "Record does not exists.",
+            "description": "Record does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3266,8 +3266,23 @@
           "required": true
         },
         "responses": {
+          "403": {
+            "description": "Not authorized to access the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3296,6 +3311,21 @@
               }
             }
           },
+          "404": {
+            "description": "Record does not exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
           "400": {
             "description": "Invalid parameters or request",
             "content": {
@@ -3311,38 +3341,8 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to access the resource",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "204": {
             "description": "Modified record successfully, no content expected."
-          },
-          "404": {
-            "description": "Record does not exists.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
           }
         }
       }
@@ -3524,21 +3524,6 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -3554,23 +3539,8 @@
               }
             }
           },
-          "404": {
-            "description": "Record not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3627,6 +3597,36 @@
                       ]
                     }
                   }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Record not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -3898,21 +3898,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -3927,6 +3912,24 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Request to put a document has been accepted."
           },
           "404": {
             "description": "Record not found.",
@@ -3943,8 +3946,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3957,9 +3960,6 @@
                 }
               }
             }
-          },
-          "202": {
-            "description": "Request to put a document has been accepted."
           }
         }
       },
@@ -4228,8 +4228,8 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4243,8 +4243,8 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4273,8 +4273,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4541,8 +4541,8 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4556,8 +4556,8 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4586,8 +4586,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4775,21 +4775,6 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -4805,23 +4790,8 @@
               }
             }
           },
-          "404": {
-            "description": "Record not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4878,6 +4848,36 @@
                       ]
                     }
                   }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Record not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -5140,21 +5140,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -5169,6 +5154,24 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Request to put a document has been accepted."
           },
           "404": {
             "description": "Record not found.",
@@ -5185,8 +5188,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5199,9 +5202,6 @@
                 }
               }
             }
-          },
-          "202": {
-            "description": "Request to put a document has been accepted."
           }
         }
       },
@@ -5461,8 +5461,8 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5476,8 +5476,8 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5506,8 +5506,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5765,8 +5765,8 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5780,8 +5780,8 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5810,8 +5810,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6074,21 +6074,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -6104,8 +6089,23 @@
               }
             }
           },
-          "409": {
-            "description": "Generation conflict.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6134,21 +6134,6 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Multiple operations on a record performed successfully.",
             "content": {
@@ -6160,6 +6145,21 @@
               "application/msgpack": {
                 "schema": {
                   "$ref": "#/components/schemas/OperateResponseRecordBody"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Generation conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -6401,21 +6401,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -6431,8 +6416,23 @@
               }
             }
           },
-          "409": {
-            "description": "Generation conflict.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6461,21 +6461,6 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Multiple operations on a record performed successfully.",
             "content": {
@@ -6487,6 +6472,21 @@
               "application/msgpack": {
                 "schema": {
                   "$ref": "#/components/schemas/OperateResponseRecordBody"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Generation conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -6536,7 +6536,7 @@
           {
             "name": "allowInline",
             "in": "query",
-            "description": "Allow batch to be processed immediately in the server's receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
+            "description": "Allow batch to be processed immediately in the server\u0027s receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
             "schema": {
               "type": "boolean"
             }
@@ -6544,7 +6544,7 @@
           {
             "name": "allowInlineSSD",
             "in": "query",
-            "description": "Allow batch to be processed immediately in the server's receiving thread for SSD namespaces. If false, the batch will always be processed in separate service threads. Server versions < 6.0 ignore this field.\nInline processing can introduce the possibility of unfairness because the server can process the entire batch before moving onto the next command.",
+            "description": "Allow batch to be processed immediately in the server\u0027s receiving thread for SSD namespaces. If false, the batch will always be processed in separate service threads. Server versions \u003c 6.0 ignore this field.\nInline processing can introduce the possibility of unfairness because the server can process the entire batch before moving onto the next command.",
             "schema": {
               "type": "boolean"
             }
@@ -6560,7 +6560,7 @@
           {
             "name": "respondAllKeys",
             "in": "query",
-            "description": "Should all batch keys be attempted regardless of errors. This field is used on both the client and server. The client handles node specific errors and the server handles key specific errors.\nIf true, every batch key is attempted regardless of previous key specific errors. Node specific errors such as timeouts stop keys to that node, but keys directed at other nodes will continue to be processed.\nIf false, the server will stop the batch to its node on most key specific errors. The exceptions are com.aerospike.client.ResultCode.KEY_NOT_FOUND_ERROR and com.aerospike.client.ResultCode.FILTERED_OUT which never stop the batch. The client will stop the entire batch on node specific errors for sync commands that are run in sequence (maxConcurrentThreads == 1). The client will not stop the entire batch for async commands or sync commands run in parallel.\nServer versions < 6.0 do not support this field and treat this value as false for key specific errors.",
+            "description": "Should all batch keys be attempted regardless of errors. This field is used on both the client and server. The client handles node specific errors and the server handles key specific errors.\nIf true, every batch key is attempted regardless of previous key specific errors. Node specific errors such as timeouts stop keys to that node, but keys directed at other nodes will continue to be processed.\nIf false, the server will stop the batch to its node on most key specific errors. The exceptions are com.aerospike.client.ResultCode.KEY_NOT_FOUND_ERROR and com.aerospike.client.ResultCode.FILTERED_OUT which never stop the batch. The client will stop the entire batch on node specific errors for sync commands that are run in sequence (maxConcurrentThreads \u003d\u003d 1). The client will not stop the entire batch for async commands or sync commands run in parallel.\nServer versions \u003c 6.0 do not support this field and treat this value as false for key specific errors.",
             "schema": {
               "type": "boolean"
             }
@@ -6691,8 +6691,8 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6706,8 +6706,23 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6742,21 +6757,6 @@
               }
             }
           },
-          "409": {
-            "description": "Generation conflict.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Namespace or set does not exist.",
             "content": {
@@ -6772,8 +6772,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "409": {
+            "description": "Generation conflict.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6841,7 +6841,7 @@
           {
             "name": "allowInline",
             "in": "query",
-            "description": "Allow batch to be processed immediately in the server's receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
+            "description": "Allow batch to be processed immediately in the server\u0027s receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
             "schema": {
               "type": "boolean"
             }
@@ -6849,7 +6849,7 @@
           {
             "name": "allowInlineSSD",
             "in": "query",
-            "description": "Allow batch to be processed immediately in the server's receiving thread for SSD namespaces. If false, the batch will always be processed in separate service threads. Server versions < 6.0 ignore this field.\nInline processing can introduce the possibility of unfairness because the server can process the entire batch before moving onto the next command.",
+            "description": "Allow batch to be processed immediately in the server\u0027s receiving thread for SSD namespaces. If false, the batch will always be processed in separate service threads. Server versions \u003c 6.0 ignore this field.\nInline processing can introduce the possibility of unfairness because the server can process the entire batch before moving onto the next command.",
             "schema": {
               "type": "boolean"
             }
@@ -6865,7 +6865,7 @@
           {
             "name": "respondAllKeys",
             "in": "query",
-            "description": "Should all batch keys be attempted regardless of errors. This field is used on both the client and server. The client handles node specific errors and the server handles key specific errors.\nIf true, every batch key is attempted regardless of previous key specific errors. Node specific errors such as timeouts stop keys to that node, but keys directed at other nodes will continue to be processed.\nIf false, the server will stop the batch to its node on most key specific errors. The exceptions are com.aerospike.client.ResultCode.KEY_NOT_FOUND_ERROR and com.aerospike.client.ResultCode.FILTERED_OUT which never stop the batch. The client will stop the entire batch on node specific errors for sync commands that are run in sequence (maxConcurrentThreads == 1). The client will not stop the entire batch for async commands or sync commands run in parallel.\nServer versions < 6.0 do not support this field and treat this value as false for key specific errors.",
+            "description": "Should all batch keys be attempted regardless of errors. This field is used on both the client and server. The client handles node specific errors and the server handles key specific errors.\nIf true, every batch key is attempted regardless of previous key specific errors. Node specific errors such as timeouts stop keys to that node, but keys directed at other nodes will continue to be processed.\nIf false, the server will stop the batch to its node on most key specific errors. The exceptions are com.aerospike.client.ResultCode.KEY_NOT_FOUND_ERROR and com.aerospike.client.ResultCode.FILTERED_OUT which never stop the batch. The client will stop the entire batch on node specific errors for sync commands that are run in sequence (maxConcurrentThreads \u003d\u003d 1). The client will not stop the entire batch for async commands or sync commands run in parallel.\nServer versions \u003c 6.0 do not support this field and treat this value as false for key specific errors.",
             "schema": {
               "type": "boolean"
             }
@@ -6996,8 +6996,8 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7011,8 +7011,23 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7047,21 +7062,6 @@
               }
             }
           },
-          "409": {
-            "description": "Generation conflict.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Namespace or set does not exist.",
             "content": {
@@ -7077,8 +7077,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "409": {
+            "description": "Generation conflict.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7306,21 +7306,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -7336,8 +7321,23 @@
               }
             }
           },
-          "409": {
-            "description": "Generation conflict.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7366,21 +7366,6 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Multiple operations in background scan/query run successfully.",
             "content": {
@@ -7392,6 +7377,21 @@
               "application/msgpack": {
                 "schema": {
                   "$ref": "#/components/schemas/RestClientExecuteTask"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Generation conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -7619,21 +7619,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -7649,8 +7634,23 @@
               }
             }
           },
-          "409": {
-            "description": "Generation conflict.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7679,21 +7679,6 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Multiple operations in background scan/query run successfully.",
             "content": {
@@ -7705,6 +7690,21 @@
               "application/msgpack": {
                 "schema": {
                   "$ref": "#/components/schemas/RestClientExecuteTask"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Generation conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -7764,7 +7764,7 @@
           {
             "name": "shortQuery",
             "in": "query",
-            "description": "Is query expected to return less than 100 records. If true, the server will optimize the query for a small record set. This field is ignored for aggregation queries, background queries and server versions < 6.0.",
+            "description": "Is query expected to return less than 100 records. If true, the server will optimize the query for a small record set. This field is ignored for aggregation queries, background queries and server versions \u003c 6.0.",
             "schema": {
               "type": "boolean"
             }
@@ -7919,8 +7919,8 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7934,8 +7934,8 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7964,8 +7964,8 @@
               }
             }
           },
-          "404": {
-            "description": "Namespace or set does not exist.",
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7979,8 +7979,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "404": {
+            "description": "Namespace or set does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8058,7 +8058,7 @@
           {
             "name": "shortQuery",
             "in": "query",
-            "description": "Is query expected to return less than 100 records. If true, the server will optimize the query for a small record set. This field is ignored for aggregation queries, background queries and server versions < 6.0.",
+            "description": "Is query expected to return less than 100 records. If true, the server will optimize the query for a small record set. This field is ignored for aggregation queries, background queries and server versions \u003c 6.0.",
             "schema": {
               "type": "boolean"
             }
@@ -8213,21 +8213,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Query multiple records successfully.",
             "content": {
@@ -8258,8 +8243,8 @@
               }
             }
           },
-          "404": {
-            "description": "Namespace or set does not exist.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8273,8 +8258,23 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "403": {
+            "description": "Not authorized to access the resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Namespace or set does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8372,7 +8372,7 @@
           {
             "name": "shortQuery",
             "in": "query",
-            "description": "Is query expected to return less than 100 records. If true, the server will optimize the query for a small record set. This field is ignored for aggregation queries, background queries and server versions < 6.0.",
+            "description": "Is query expected to return less than 100 records. If true, the server will optimize the query for a small record set. This field is ignored for aggregation queries, background queries and server versions \u003c 6.0.",
             "schema": {
               "type": "boolean"
             }
@@ -8527,21 +8527,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Query multiple records successfully.",
             "content": {
@@ -8572,8 +8557,8 @@
               }
             }
           },
-          "404": {
-            "description": "Namespace or set does not exist.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8587,8 +8572,23 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "403": {
+            "description": "Not authorized to access the resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Namespace or set does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8677,7 +8677,7 @@
           {
             "name": "shortQuery",
             "in": "query",
-            "description": "Is query expected to return less than 100 records. If true, the server will optimize the query for a small record set. This field is ignored for aggregation queries, background queries and server versions < 6.0.",
+            "description": "Is query expected to return less than 100 records. If true, the server will optimize the query for a small record set. This field is ignored for aggregation queries, background queries and server versions \u003c 6.0.",
             "schema": {
               "type": "boolean"
             }
@@ -8832,8 +8832,8 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8847,8 +8847,8 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8877,8 +8877,8 @@
               }
             }
           },
-          "404": {
-            "description": "Namespace or set does not exist.",
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8892,8 +8892,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "404": {
+            "description": "Namespace or set does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9152,21 +9152,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -9182,8 +9167,23 @@
               }
             }
           },
-          "409": {
-            "description": "Generation conflict.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9212,21 +9212,6 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Multiple operations on a record performed successfully.",
             "content": {
@@ -9238,6 +9223,21 @@
               "application/msgpack": {
                 "schema": {
                   "$ref": "#/components/schemas/RestClientRecord"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Generation conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -9479,21 +9479,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -9509,8 +9494,23 @@
               }
             }
           },
-          "409": {
-            "description": "Generation conflict.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9539,21 +9539,6 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Multiple operations on a record performed successfully.",
             "content": {
@@ -9565,6 +9550,21 @@
               "application/msgpack": {
                 "schema": {
                   "$ref": "#/components/schemas/RestClientRecord"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Generation conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -9615,7 +9615,7 @@
           {
             "name": "allowInline",
             "in": "query",
-            "description": "Allow batch to be processed immediately in the server's receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
+            "description": "Allow batch to be processed immediately in the server\u0027s receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
             "schema": {
               "type": "boolean"
             }
@@ -9623,7 +9623,7 @@
           {
             "name": "allowInlineSSD",
             "in": "query",
-            "description": "Allow batch to be processed immediately in the server's receiving thread for SSD namespaces. If false, the batch will always be processed in separate service threads. Server versions < 6.0 ignore this field.\nInline processing can introduce the possibility of unfairness because the server can process the entire batch before moving onto the next command.",
+            "description": "Allow batch to be processed immediately in the server\u0027s receiving thread for SSD namespaces. If false, the batch will always be processed in separate service threads. Server versions \u003c 6.0 ignore this field.\nInline processing can introduce the possibility of unfairness because the server can process the entire batch before moving onto the next command.",
             "schema": {
               "type": "boolean"
             }
@@ -9639,7 +9639,7 @@
           {
             "name": "respondAllKeys",
             "in": "query",
-            "description": "Should all batch keys be attempted regardless of errors. This field is used on both the client and server. The client handles node specific errors and the server handles key specific errors.\nIf true, every batch key is attempted regardless of previous key specific errors. Node specific errors such as timeouts stop keys to that node, but keys directed at other nodes will continue to be processed.\nIf false, the server will stop the batch to its node on most key specific errors. The exceptions are com.aerospike.client.ResultCode.KEY_NOT_FOUND_ERROR and com.aerospike.client.ResultCode.FILTERED_OUT which never stop the batch. The client will stop the entire batch on node specific errors for sync commands that are run in sequence (maxConcurrentThreads == 1). The client will not stop the entire batch for async commands or sync commands run in parallel.\nServer versions < 6.0 do not support this field and treat this value as false for key specific errors.",
+            "description": "Should all batch keys be attempted regardless of errors. This field is used on both the client and server. The client handles node specific errors and the server handles key specific errors.\nIf true, every batch key is attempted regardless of previous key specific errors. Node specific errors such as timeouts stop keys to that node, but keys directed at other nodes will continue to be processed.\nIf false, the server will stop the batch to its node on most key specific errors. The exceptions are com.aerospike.client.ResultCode.KEY_NOT_FOUND_ERROR and com.aerospike.client.ResultCode.FILTERED_OUT which never stop the batch. The client will stop the entire batch on node specific errors for sync commands that are run in sequence (maxConcurrentThreads \u003d\u003d 1). The client will not stop the entire batch for async commands or sync commands run in parallel.\nServer versions \u003c 6.0 do not support this field and treat this value as false for key specific errors.",
             "schema": {
               "type": "boolean"
             }
@@ -9769,8 +9769,8 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9784,8 +9784,23 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9820,21 +9835,6 @@
               }
             }
           },
-          "409": {
-            "description": "Generation conflict.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Namespace or set does not exist.",
             "content": {
@@ -9850,8 +9850,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "409": {
+            "description": "Generation conflict.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9920,7 +9920,7 @@
           {
             "name": "allowInline",
             "in": "query",
-            "description": "Allow batch to be processed immediately in the server's receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
+            "description": "Allow batch to be processed immediately in the server\u0027s receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
             "schema": {
               "type": "boolean"
             }
@@ -9928,7 +9928,7 @@
           {
             "name": "allowInlineSSD",
             "in": "query",
-            "description": "Allow batch to be processed immediately in the server's receiving thread for SSD namespaces. If false, the batch will always be processed in separate service threads. Server versions < 6.0 ignore this field.\nInline processing can introduce the possibility of unfairness because the server can process the entire batch before moving onto the next command.",
+            "description": "Allow batch to be processed immediately in the server\u0027s receiving thread for SSD namespaces. If false, the batch will always be processed in separate service threads. Server versions \u003c 6.0 ignore this field.\nInline processing can introduce the possibility of unfairness because the server can process the entire batch before moving onto the next command.",
             "schema": {
               "type": "boolean"
             }
@@ -9944,7 +9944,7 @@
           {
             "name": "respondAllKeys",
             "in": "query",
-            "description": "Should all batch keys be attempted regardless of errors. This field is used on both the client and server. The client handles node specific errors and the server handles key specific errors.\nIf true, every batch key is attempted regardless of previous key specific errors. Node specific errors such as timeouts stop keys to that node, but keys directed at other nodes will continue to be processed.\nIf false, the server will stop the batch to its node on most key specific errors. The exceptions are com.aerospike.client.ResultCode.KEY_NOT_FOUND_ERROR and com.aerospike.client.ResultCode.FILTERED_OUT which never stop the batch. The client will stop the entire batch on node specific errors for sync commands that are run in sequence (maxConcurrentThreads == 1). The client will not stop the entire batch for async commands or sync commands run in parallel.\nServer versions < 6.0 do not support this field and treat this value as false for key specific errors.",
+            "description": "Should all batch keys be attempted regardless of errors. This field is used on both the client and server. The client handles node specific errors and the server handles key specific errors.\nIf true, every batch key is attempted regardless of previous key specific errors. Node specific errors such as timeouts stop keys to that node, but keys directed at other nodes will continue to be processed.\nIf false, the server will stop the batch to its node on most key specific errors. The exceptions are com.aerospike.client.ResultCode.KEY_NOT_FOUND_ERROR and com.aerospike.client.ResultCode.FILTERED_OUT which never stop the batch. The client will stop the entire batch on node specific errors for sync commands that are run in sequence (maxConcurrentThreads \u003d\u003d 1). The client will not stop the entire batch for async commands or sync commands run in parallel.\nServer versions \u003c 6.0 do not support this field and treat this value as false for key specific errors.",
             "schema": {
               "type": "boolean"
             }
@@ -10074,8 +10074,8 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10089,8 +10089,23 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10125,21 +10140,6 @@
               }
             }
           },
-          "409": {
-            "description": "Generation conflict.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Namespace or set does not exist.",
             "content": {
@@ -10155,8 +10155,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "409": {
+            "description": "Generation conflict.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10241,7 +10241,22 @@
         },
         "responses": {
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to perform the info command.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10278,21 +10293,6 @@
                       "name": "BB9DE9B1B270008"
                     }
                   }
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Not authorized to perform the info command.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -10367,8 +10367,38 @@
           "required": true
         },
         "responses": {
+          "403": {
+            "description": "Not authorized to perform the info command",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The specified Node does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10405,36 +10435,6 @@
                       "name": "BB9DE9B1B270008"
                     }
                   }
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Not authorized to perform the info command",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "The specified Node does not exist.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -10489,23 +10489,8 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10521,6 +10506,21 @@
           },
           "404": {
             "description": "Specified namespace not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10568,24 +10568,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
-          "202": {
-            "description": "Request to create a secondary index has been accepted."
-          },
           "409": {
             "description": "Index with the same name already exists, or equivalent index exists.",
             "content": {
@@ -10602,7 +10584,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10618,6 +10600,24 @@
           },
           "400": {
             "description": "Invalid index creation parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Request to create a secondary index has been accepted."
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10853,21 +10853,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -10883,8 +10868,23 @@
               }
             }
           },
-          "409": {
-            "description": "Generation conflict.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10913,21 +10913,6 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Multiple operations in background scan/query run successfully.",
             "content": {
@@ -10939,6 +10924,21 @@
               "application/msgpack": {
                 "schema": {
                   "$ref": "#/components/schemas/RestClientExecuteTask"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Generation conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -11175,21 +11175,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -11205,8 +11190,23 @@
               }
             }
           },
-          "409": {
-            "description": "Generation conflict.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11235,21 +11235,6 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Multiple operations in background scan/query run successfully.",
             "content": {
@@ -11261,6 +11246,21 @@
               "application/msgpack": {
                 "schema": {
                   "$ref": "#/components/schemas/RestClientExecuteTask"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Generation conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -11288,7 +11288,7 @@
           {
             "name": "allowInline",
             "in": "query",
-            "description": "Allow batch to be processed immediately in the server's receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
+            "description": "Allow batch to be processed immediately in the server\u0027s receiving thread when the server deems it to be appropriate.  If false, the batch will always be processed in separate transaction threads.  This field is only relevant for the new batch index protocol.",
             "schema": {
               "type": "boolean"
             }
@@ -11296,7 +11296,7 @@
           {
             "name": "allowInlineSSD",
             "in": "query",
-            "description": "Allow batch to be processed immediately in the server's receiving thread for SSD namespaces. If false, the batch will always be processed in separate service threads. Server versions < 6.0 ignore this field.\nInline processing can introduce the possibility of unfairness because the server can process the entire batch before moving onto the next command.",
+            "description": "Allow batch to be processed immediately in the server\u0027s receiving thread for SSD namespaces. If false, the batch will always be processed in separate service threads. Server versions \u003c 6.0 ignore this field.\nInline processing can introduce the possibility of unfairness because the server can process the entire batch before moving onto the next command.",
             "schema": {
               "type": "boolean"
             }
@@ -11312,7 +11312,7 @@
           {
             "name": "respondAllKeys",
             "in": "query",
-            "description": "Should all batch keys be attempted regardless of errors. This field is used on both the client and server. The client handles node specific errors and the server handles key specific errors.\nIf true, every batch key is attempted regardless of previous key specific errors. Node specific errors such as timeouts stop keys to that node, but keys directed at other nodes will continue to be processed.\nIf false, the server will stop the batch to its node on most key specific errors. The exceptions are com.aerospike.client.ResultCode.KEY_NOT_FOUND_ERROR and com.aerospike.client.ResultCode.FILTERED_OUT which never stop the batch. The client will stop the entire batch on node specific errors for sync commands that are run in sequence (maxConcurrentThreads == 1). The client will not stop the entire batch for async commands or sync commands run in parallel.\nServer versions < 6.0 do not support this field and treat this value as false for key specific errors.",
+            "description": "Should all batch keys be attempted regardless of errors. This field is used on both the client and server. The client handles node specific errors and the server handles key specific errors.\nIf true, every batch key is attempted regardless of previous key specific errors. Node specific errors such as timeouts stop keys to that node, but keys directed at other nodes will continue to be processed.\nIf false, the server will stop the batch to its node on most key specific errors. The exceptions are com.aerospike.client.ResultCode.KEY_NOT_FOUND_ERROR and com.aerospike.client.ResultCode.FILTERED_OUT which never stop the batch. The client will stop the entire batch on node specific errors for sync commands that are run in sequence (maxConcurrentThreads \u003d\u003d 1). The client will not stop the entire batch for async commands or sync commands run in parallel.\nServer versions \u003c 6.0 do not support this field and treat this value as false for key specific errors.",
             "schema": {
               "type": "boolean"
             }
@@ -11463,8 +11463,8 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11478,8 +11478,8 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11508,8 +11508,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11565,6 +11565,21 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
           "403": {
             "description": "Not authorized to read user information.",
             "content": {
@@ -11640,21 +11655,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
           }
         }
       },
@@ -11693,21 +11693,6 @@
           "202": {
             "description": "Request to create a user has been accepted."
           },
-          "409": {
-            "description": "User already exists.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid user creation parameters.",
             "content": {
@@ -11723,8 +11708,8 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to create users.",
+          "409": {
+            "description": "User already exists.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11739,7 +11724,22 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to create users.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11821,11 +11821,8 @@
           "required": true
         },
         "responses": {
-          "202": {
-            "description": "Request to grant set of roles to a user has been accepted."
-          },
-          "403": {
-            "description": "Not authorized to modify users.",
+          "400": {
+            "description": "Invalid role parameters.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11839,8 +11836,11 @@
               }
             }
           },
+          "202": {
+            "description": "Request to grant set of roles to a user has been accepted."
+          },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11869,8 +11869,8 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid role parameters.",
+          "403": {
+            "description": "Not authorized to modify users.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11926,8 +11926,8 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to read role information.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11941,8 +11941,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "403": {
+            "description": "Not authorized to read role information.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11990,8 +11990,8 @@
           "required": true
         },
         "responses": {
-          "409": {
-            "description": "Role already exists.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12020,8 +12020,23 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "403": {
+            "description": "Not authorized to create roles.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Role already exists.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12037,21 +12052,6 @@
           },
           "202": {
             "description": "Request to create a role has been accepted."
-          },
-          "403": {
-            "description": "Not authorized to create roles.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
           }
         }
       }
@@ -12098,8 +12098,8 @@
           "required": true
         },
         "responses": {
-          "409": {
-            "description": "Role already exists.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12128,8 +12128,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "403": {
+            "description": "Not authorized to create roles.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12146,8 +12146,8 @@
           "202": {
             "description": "Request to modify a role has been accepted."
           },
-          "403": {
-            "description": "Not authorized to create roles.",
+          "409": {
+            "description": "Role already exists.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12212,8 +12212,8 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid privilege parameters.",
+          "403": {
+            "description": "Not authorized to modify roles.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12228,7 +12228,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12242,8 +12242,8 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to modify roles.",
+          "404": {
+            "description": "Specified role not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12260,8 +12260,8 @@
           "202": {
             "description": "Request to modify a role has been accepted."
           },
-          "404": {
-            "description": "Specified role not found.",
+          "400": {
+            "description": "Invalid privilege parameters.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12304,8 +12304,8 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Not authorized to read user information.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12319,8 +12319,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "404": {
+            "description": "Specified user not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12379,8 +12379,8 @@
               }
             }
           },
-          "404": {
-            "description": "Specified user not found.",
+          "403": {
+            "description": "Not authorized to read user information.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12437,7 +12437,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12511,23 +12511,8 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Not authorized to modify users.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12557,7 +12542,22 @@
             }
           },
           "202": {
-            "description": "Request to change user's password has been accepted."
+            "description": "Request to change user\u0027s password has been accepted."
+          },
+          "403": {
+            "description": "Not authorized to modify users.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
           }
         }
       }
@@ -12628,11 +12628,8 @@
           "required": true
         },
         "responses": {
-          "202": {
-            "description": "Request to revoke set of roles from a user has been accepted."
-          },
-          "403": {
-            "description": "Not authorized to modify users.",
+          "400": {
+            "description": "Invalid role parameters.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12647,7 +12644,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12676,8 +12673,11 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid role parameters.",
+          "202": {
+            "description": "Request to revoke set of roles from a user has been accepted."
+          },
+          "403": {
+            "description": "Not authorized to modify users.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12742,8 +12742,8 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Invalid privilege parameters.",
+          "403": {
+            "description": "Not authorized to modify roles.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12758,7 +12758,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12772,8 +12772,8 @@
               }
             }
           },
-          "403": {
-            "description": "Not authorized to modify roles.",
+          "404": {
+            "description": "Specified role not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12790,8 +12790,8 @@
           "202": {
             "description": "Request to modify a role has been accepted."
           },
-          "404": {
-            "description": "Specified role not found.",
+          "400": {
+            "description": "Invalid privilege parameters.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12835,21 +12835,6 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -12866,7 +12851,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12891,6 +12876,21 @@
               "application/msgpack": {
                 "schema": {
                   "$ref": "#/components/schemas/RestClientExecuteTaskStatus"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -13062,8 +13062,8 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -13077,8 +13077,8 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -13107,8 +13107,8 @@
               }
             }
           },
-          "404": {
-            "description": "Namespace or set does not exist.",
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -13122,8 +13122,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "404": {
+            "description": "Namespace or set does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -13313,8 +13313,8 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "400": {
+            "description": "Invalid parameters or request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -13328,8 +13328,8 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid parameters or request.",
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -13358,8 +13358,8 @@
               }
             }
           },
-          "404": {
-            "description": "Namespace or set does not exist.",
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -13373,8 +13373,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "404": {
+            "description": "Namespace or set does not exist.",
             "content": {
               "application/json": {
                 "schema": {
@@ -13435,6 +13435,36 @@
           }
         ],
         "responses": {
+          "404": {
+            "description": "Specified Index does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
           "403": {
             "description": "Not authorized to access the resource.",
             "content": {
@@ -13504,36 +13534,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Specified Index does not exist.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
           }
         }
       },
@@ -13572,8 +13572,23 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
+          "404": {
+            "description": "Specified Index does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -13590,23 +13605,8 @@
           "202": {
             "description": "Request to remove a secondary index has been accepted."
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Specified Index does not exist.",
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -13650,21 +13650,6 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -13681,7 +13666,7 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
             "content": {
               "application/json": {
                 "schema": {
@@ -13709,6 +13694,21 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
           }
         },
         "deprecated": true
@@ -13732,6 +13732,21 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
           "200": {
             "description": "Cluster information read successfully.",
             "content": {
@@ -13842,21 +13857,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
           }
         }
       }
@@ -13888,6 +13888,21 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
           "403": {
             "description": "Not authorized to read role information.",
             "content": {
@@ -13903,8 +13918,8 @@
               }
             }
           },
-          "500": {
-            "description": "REST Client encountered an error while processing the request.",
+          "404": {
+            "description": "Specified role not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -13929,21 +13944,6 @@
               "application/msgpack": {
                 "schema": {
                   "$ref": "#/components/schemas/RestClientRole"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Specified role not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
                 }
               }
             }
@@ -13977,7 +13977,22 @@
         ],
         "responses": {
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Specified role not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -14008,21 +14023,6 @@
           },
           "202": {
             "description": "Request to remove a role has been accepted."
-          },
-          "404": {
-            "description": "Specified role not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
           }
         }
       }
@@ -14064,21 +14064,6 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -14095,7 +14080,22 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -14161,21 +14161,6 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Not authorized to access the resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              },
-              "application/msgpack": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestClientError"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Invalid parameters or request.",
             "content": {
@@ -14192,7 +14177,22 @@
             }
           },
           "500": {
-            "description": "REST Client encountered an error while processing the request.",
+            "description": "REST Gateway encountered an error while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              },
+              "application/msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestClientError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized to access the resource.",
             "content": {
               "application/json": {
                 "schema": {
@@ -14291,7 +14291,7 @@
       },
       "BitAddOperation": {
         "type": "object",
-        "description": "Server adds value to byte[] bin starting at bitOffset for bitSize. BitSize must be <= 64. Signed indicates if bits should be treated as a signed number. If add overflows/underflows, BitOverflowAction is used. Server does not return a value.",
+        "description": "Server adds value to byte[] bin starting at bitOffset for bitSize. BitSize must be \u003c\u003d 64. Signed indicates if bits should be treated as a signed number. If add overflows/underflows, BitOverflowAction is used. Server does not return a value.",
         "externalDocs": {
           "url": "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/operation/BitOperation.html"
         },
@@ -14810,7 +14810,7 @@
       },
       "BitSetIntOperation": {
         "type": "object",
-        "description": "Server sets value to byte[] bin starting at bitOffset for bitSize. Size must be <= 64. Server does not return a value.",
+        "description": "Server sets value to byte[] bin starting at bitOffset for bitSize. Size must be \u003c\u003d 64. Server does not return a value.",
         "externalDocs": {
           "url": "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/operation/BitOperation.html"
         },
@@ -14877,7 +14877,7 @@
       },
       "BitSubtractOperation": {
         "type": "object",
-        "description": "Server subtracts value from byte[] bin starting at bitOffset for bitSize. BitSize must be <= 64. Signed indicates if bits should be treated as a signed number. If add overflows/underflows, BitOverflowAction is used. Server does not return a value.",
+        "description": "Server subtracts value from byte[] bin starting at bitOffset for bitSize. BitSize must be \u003c\u003d 64. Signed indicates if bits should be treated as a signed number. If add overflows/underflows, BitOverflowAction is used. Server does not return a value.",
         "externalDocs": {
           "url": "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/operation/BitOperation.html"
         },
@@ -15956,7 +15956,7 @@
           "type"
         ],
         "type": "object",
-        "description": "Lookup list by base list's index offset. If the list at index offset is not found, create it with the given sort order at that index offset.",
+        "description": "Lookup list by base list\u0027s index offset. If the list at index offset is not found, create it with the given sort order at that index offset.",
         "externalDocs": {
           "url": "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/CTX.html"
         },
@@ -16293,7 +16293,7 @@
               },
               "rank": {
                 "type": "integer",
-                "description": "* 0 = smallest value\n* N = Nth smallest value\n* -1 = largest value",
+                "description": "* 0 \u003d smallest value\n* N \u003d Nth smallest value\n* -1 \u003d largest value",
                 "format": "int32"
               }
             }
@@ -17484,7 +17484,7 @@
           "type"
         ],
         "type": "object",
-        "description": "Lookup map by base map's key. If the map at key is not found, create it with the given sort order at that key.",
+        "description": "Lookup map by base map\u0027s key. If the map at key is not found, create it with the given sort order at that key.",
         "externalDocs": {
           "url": "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/CTX.html"
         },
@@ -17700,7 +17700,7 @@
       },
       "MapPutOperation": {
         "type": "object",
-        "description": "Store the specified value into the map in the specified bin with the specified key. Equivalent to `Map[key] = value`.",
+        "description": "Store the specified value into the map in the specified bin with the specified key. Equivalent to `Map[key] \u003d value`.",
         "externalDocs": {
           "url": "https://javadoc.io/doc/com.aerospike/aerospike-client/6.1.2/com/aerospike/client/cdt/MapOperation.html"
         },
@@ -17752,7 +17752,7 @@
               },
               "rank": {
                 "type": "integer",
-                "description": "* 0 = smallest value\n* N = Nth smallest value\n* -1 = largest value",
+                "description": "* 0 \u003d smallest value\n* N \u003d Nth smallest value\n* -1 \u003d largest value",
                 "format": "int32"
               }
             }
@@ -19153,7 +19153,7 @@
         },
         "description": "Deprecated in favor of more descriptive models.  The documentation for the old models can be found in the external documentation.",
         "externalDocs": {
-          "url": "@Schema(description = \"Deprecated in favor of more descriptive models.  The documentation for the old models can be found in the external documentation.\", externalDocs = @ExternalDocumentation(url= \"\"))\n"
+          "url": "@Schema(description \u003d \"Deprecated in favor of more descriptive models.  The documentation for the old models can be found in the external documentation.\", externalDocs \u003d @ExternalDocumentation(url\u003d \"\"))\n"
         }
       },
       "RestClientIndex": {

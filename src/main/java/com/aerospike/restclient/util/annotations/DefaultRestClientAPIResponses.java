@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
         {
                 @ApiResponse(
                         responseCode = "500",
-                        description = "REST Client encountered an error while processing the request.",
+                        description = "REST Gateway encountered an error while processing the request.",
                         content = @Content(
                                 schema = @Schema(implementation = RestClientError.class)
                         )

@@ -255,7 +255,7 @@ public class RecordGetCorrectTests {
 
     /*
      * Ensure that passing a number of bin names at the end of the URI
-     * causes only the specified bins to be contained in the Rest Client's response
+     * causes only the specified bins to be contained in the Rest Gateway's response
      */
     @Test
     public void GetFilteredByBins() throws Exception {

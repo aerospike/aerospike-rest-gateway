@@ -34,7 +34,7 @@ public class RestClientErrors {
         }
 
         public AerospikeRestClientError() {
-            this("Rest Client error");
+            this("Rest Gateway error");
         }
 
         public String getErrorMessage() {

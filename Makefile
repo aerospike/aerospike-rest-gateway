@@ -1,6 +1,6 @@
 
 VERSION=$(shell grep appVersion gradle.properties | cut -d '=' -f 2)
-ARCHIVEDIR=aerospike-client-rest-$(VERSION)
+ARCHIVEDIR=aerospike-rest-gateway-$(VERSION)
 ARCHIVENAME=$(ARCHIVEDIR).tgz
 
 .PHONY: package
