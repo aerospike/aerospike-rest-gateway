@@ -66,7 +66,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:2.1.4")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.12")
     implementation("javax.inject:javax.inject:1")
-    implementation("com.google.guava:guava:31.0.1-jre")
+    implementation("com.google.guava:guava:31.1-jre")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.apache.httpcomponents:httpclient:${httpclientVersion}")
     implementation('org.springframework.boot:spring-boot-starter-actuator')
