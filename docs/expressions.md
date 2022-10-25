@@ -17,7 +17,7 @@ For a quick overview of the DSL please take a look at our "Dealing with Predicat
 1. [Dealing with Predicate Expression Filters in Aerospike REST Gateway (Part 1)](https://medium.com/aerospike-developer-blog/dealing-with-predicate-expression-filters-in-aerospike-rest-client-part-1-a43e43ac8c7d?source=friends_link&sk=bc0ed64110578ff6f4804753ca6369da)
 2. [Dealing with Predicate Expression Filters in Aerospike REST Gateway (Part 2)](https://medium.com/aerospike-developer-blog/dealing-with-predicate-expression-filters-in-aerospike-rest-client-part-2-b9d9358c8a4e?source=friends_link&sk=35c37b035d12789aae6272704ef95829)
 
-The second method requires that we right a small amount of code to build an Expression object and serialize it to a
+The second method requires that we write a small amount of code to build an Expression object and serialize it to a
 base64 encoded string. Currently, the only languages that support this feature are C, C#, and Java with more to come.
 You can
 either setup a small project in your favorite IDE or you can use Aerospike's
