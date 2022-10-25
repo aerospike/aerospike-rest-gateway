@@ -66,7 +66,8 @@ how to specify the format, and recommended usages of each, see [Data Formats](./
 
 ## Expressions
 
-The Aerospike REST gateway supports filter expressions and the now deprecated predicate expressions.
+The Aerospike REST gateway 1.7.0 and newer supports filter expressions added in server 5.6. The now deprecated predicate
+expressions are supported in REST gateway 1.11.0 and older.
 
 **Note:** The DSL used to define predicate expressions can also be used to define filter expressions.
 
