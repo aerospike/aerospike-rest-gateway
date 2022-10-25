@@ -29,7 +29,7 @@ or `false` if the product of `intBin1` and `intBin2` is greater than `15`.
 You can copy and paste the following code snippet into the [sandbox](https://developer.aerospike.com/tutorials/sandbox)
 to try it out for yourself.
 
-**Note:** The sandbox does not require or allow you to define an entry class.
+**Note:** The sandbox does not require, nor does it allow, you to define an entry class.
 
 ```java
 import com.aerospike.client.exp.Exp;
