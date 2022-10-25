@@ -1,6 +1,7 @@
 # Rest Gateway Expressions
 
-The REST Gateway supports the use of filter expressions to filter records returned from read operations.
+The Aerospike REST gateway 1.7.0 and newer supports filter expressions added in server 5.6. The now deprecated predicate
+expressions are supported in REST gateway 1.11.0 and older.
 
 **Important:** The DSL used to define predicate expressions can also be used to define filter expressions.
 
@@ -31,21 +32,25 @@ to try it out for yourself.
 
 **Note:** The sandbox does not require, nor does it allow, you to define an entry class.
 
+// @formatter:off
+
 ```java
 import com.aerospike.client.exp.Exp;
 import com.aerospike.client.exp.Expression;
 
 Expression exp=Exp.build(
-        Exp.gt(
+    Exp.gt(
         Exp.mul(
-        Exp.intBin("intBin1"),
-        Exp.intBin("intBin2")
+            Exp.intBin("intBin1"),
+            Exp.intBin("intBin2")
         ),
-        Exp.val(15L)
-        )
-        );
-        System.out.println(exp.getBase64());
+    Exp.val(15L)
+    )
+);
+System.out.println(exp.getBase64());
 ```
+
+// @formatter:on
 
 which will print out your base64 encodes expression `kwOTFpNRAqdpbnRCaW4xk1ECp2ludEJpbjIP`. The base64 encoded string
 can now be provided as a `filter_expression` query parameter.
