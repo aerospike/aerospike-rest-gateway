@@ -16,8 +16,6 @@ here [Aerospike REST Gateway API Documentation](https://docs.aerospike.com/apido
 ## Getting Started blog posts
 
 1. [Aerospike REST Gateway Introduction](https://medium.com/aerospike-developer-blog/aerospike-rest-client-cb7e5967f423?source=friends_link&sk=0d6d69703e8a77da13ec0c6c012d1c29)
-2. [Dealing with Predicate Expression Filters in Aerospike REST Gateway (Part 1)](https://medium.com/aerospike-developer-blog/dealing-with-predicate-expression-filters-in-aerospike-rest-client-part-1-a43e43ac8c7d?source=friends_link&sk=bc0ed64110578ff6f4804753ca6369da)
-3. [Dealing with Predicate Expression Filters in Aerospike REST Gateway (Part 2)](https://medium.com/aerospike-developer-blog/dealing-with-predicate-expression-filters-in-aerospike-rest-client-part-2-b9d9358c8a4e?source=friends_link&sk=35c37b035d12789aae6272704ef95829)
 4. [Authentication and Authorization using Aerospike REST Gateway](https://medium.com/aerospike-developer-blog/authentication-and-authorization-using-aerospike-rest-client-ae0837301775?source=friends_link&sk=4be1513a1158a8ecb0b3c0e163ba1c4b)
 
 ## Prerequisites
@@ -65,6 +63,14 @@ the request to make an authenticated query.
 
 The Aerospike REST gateway allows communication utilizing `JSON` and `MessagePack` formats. For more information about
 how to specify the format, and recommended usages of each, see [Data Formats](./docs/data-formats.md).
+
+## Expressions
+
+The Aerospike REST gateway supports filter expressions and the now deprecated predicate expressions.
+
+**Note:** The DSL used to define predicate expressions can also be used to define filter expressions.
+
+See [Expressions](./docs/expressions.md) for more information.
 
 ## Generate Servers/Clients
 
