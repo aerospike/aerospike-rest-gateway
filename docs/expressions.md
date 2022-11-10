@@ -32,8 +32,6 @@ to try it out for yourself.
 
 **Note:** The sandbox does not require, nor does it allow, you to define an entry class.
 
-// @formatter:off
-
 ```java
 import com.aerospike.client.exp.Exp;
 import com.aerospike.client.exp.Expression;
@@ -49,8 +47,6 @@ Expression exp=Exp.build(
 );
 System.out.println(exp.getBase64());
 ```
-
-// @formatter:on
 
 which will print out your base64 encodes expression `kwOTFpNRAqdpbnRCaW4xk1ECp2ludEJpbjIP`. The base64 encoded string
 can now be provided as a `filter_expression` query parameter.
