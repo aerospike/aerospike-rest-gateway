@@ -23,6 +23,7 @@ import com.aerospike.client.policy.ClientPolicy;
 import com.aerospike.restclient.util.AerospikeClientPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -76,8 +77,10 @@ public class AerospikeClientConfig {
     int poolSize;
 
     @Bean
-    public AerospikeClientPool configAerospikeClientPool(ClientPolicy policy, AerospikeClient defaultClient) {
-        return new AerospikeClientPool(poolSize, policy, port, hostList, hostname, defaultClient, useBoolBin);
+    public AerospikeClientPool configAerospikeClientPool(ClientPolicy policy,
+                                                         ObjectProvider<AerospikeClient> defaultClient) {
+        return new AerospikeClientPool(poolSize, policy, port, hostList, hostname, defaultClient.getIfAvailable(),
+                useBoolBin);
     }
 }
 
