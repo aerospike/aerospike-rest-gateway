@@ -22,7 +22,7 @@ here [Aerospike REST Gateway API Documentation](https://docs.aerospike.com/apido
 
 ## Prerequisites
 
-* Java 8 or later
+* Java 17 or later for REST Gateway 2.0 and newer.  Java 8 or later for REST Gateway 1.11 and earlier.
 * Aerospike Server version 4.9+
 
 ## Installation
