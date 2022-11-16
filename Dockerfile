@@ -1,11 +1,11 @@
-FROM openjdk:19-jdk-alpine AS build
+FROM eclipse-temurin:17-jdk AS build
 WORKDIR /workspace/app
 
 COPY . /workspace/app
 RUN ./gradlew clean build -x test
 RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*[^plain].jar)
 
-FROM openjdk:19-jdk-alpine
+FROM eclipse-temurin:17-jre
 VOLUME /tmp
 ARG DEPENDENCY=/workspace/app/build/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
