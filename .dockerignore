@@ -1,7 +1,9 @@
 .git
 .cache
 .github
+.gradle
 build
+target
 
 .idea
 .vscode
