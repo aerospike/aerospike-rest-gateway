@@ -1,6 +1,9 @@
 FROM eclipse-temurin:17-jdk AS build
 WORKDIR /workspace/app
 
+# Needed for arm64 support. Open gradle issue: https://github.com/gradle/gradle/issues/18212
+ENV JAVA_OPTS="-Djdk.lang.Process.launchMechanism=vfork"
+
 COPY . /workspace/app
 RUN ./gradlew clean build -x test
 RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*[^plain].jar)
