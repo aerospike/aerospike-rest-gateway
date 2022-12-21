@@ -13,7 +13,7 @@
 * Build
 
 ```
-./gradlew build
+make build
 ```
 
 * Run Locally during development:

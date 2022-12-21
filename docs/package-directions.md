@@ -1,10 +1,10 @@
-# Aerospike Rest Gateway demo package
+# Aerospike Rest Gateway package
 
 This package contains the following files
 
-* `swagger.json` The swagger specification for the Rest API.
-* `api-doc.html` Generated HTML documentation for the API.
+* `openapi.json` The swagger specification for the Rest API.
 * `as-rest-client##<VERSION>.jar` A `.jar` file to be deployed.
+* `as-rest-client##<VERSION>-plain.jar` A plain `.jar` file.
 
 ## Installing and starting the Rest Gateway
 
