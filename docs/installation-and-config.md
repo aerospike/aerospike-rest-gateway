@@ -38,7 +38,7 @@ More information at the following links:
 #### Complete example of running the REST gateway using a jar
 
 ```
-java -server -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8082 -Dcom.sun.management.jmxremote.rmi.port=8082 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -XX:+UseG1GC -Xms2048m -Xmx2048m -jar ./as-rest-client-X.X.X.jar --aerospike.restclient.hostname=localhost --aerospike.restclient.clientpolicy.user=*** --aerospike.restclient.clientpolicy.password=*** --logging.file.name=/var/log/restclient/asproxy.log
+java -server -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8082 -Dcom.sun.management.jmxremote.rmi.port=8082 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -XX:+UseG1GC -Xms2048m -Xmx2048m -jar ./aerospike-rest-gateway-X.X.X.jar --aerospike.restclient.hostname=localhost --aerospike.restclient.clientpolicy.user=*** --aerospike.restclient.clientpolicy.password=*** --logging.file.name=/var/log/restclient/asproxy.log
 ```
 
 For more JVM command-line options, see
@@ -55,7 +55,7 @@ docker build -t aerospike-rest-gateway .
 * Run the REST Gateway using docker
 
 ```sh
-docker run -itd --rm -p 8080:8080 --name AS_Rest1 -e aerospike_restclient_hostname=172.17.0.3 aerospike-client-rest
+docker run -itd --rm -p 8080:8080 --name AS_Rest1 -e aerospike_restclient_hostname=172.17.0.3 aerospike-rest-gateway
 ```
 
 ### Run on Kubernetes
