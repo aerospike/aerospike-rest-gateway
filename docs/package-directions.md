@@ -1,10 +1,10 @@
-# Aerospike Rest Gateway demo package
+# Aerospike Rest Gateway package
 
 This package contains the following files
 
-* `swagger.json` The swagger specification for the Rest API.
-* `api-doc.html` Generated HTML documentation for the API.
-* `as-rest-client##<VERSION>.jar` A `.jar` file to be deployed.
+* `openapi.json` The swagger specification for the Rest API.
+* `aerospike-rest-gateway##<VERSION>.jar` A `.jar` file to be deployed.
+* `aerospike-rest-gateway##<VERSION>-plain.jar` A plain `.jar` file.
 
 ## Installing and starting the Rest Gateway
 
@@ -13,11 +13,11 @@ client.
 
 ## First steps
 
-**Note** The following directions assume that the Rest Gateway is listening on `http://localhost:8080/as-rest-client`,
+**Note** The following directions assume that the Rest Gateway is listening on `http://localhost:8080/aerospike-rest-gateway`,
 if this is not the case, change the URLS accordingly.
 
 To get a quick introduction to the API and usage of the Rest Gateway we recommend visiting the Interactive Documentation
-which will be located at <http://localhost:8080/as-rest-client/swagger-ui.html> . This Interface shows all of the API
+which will be located at <http://localhost:8080/aerospike-rest-gateway/swagger-ui.html> . This Interface shows all of the API
 endpoints, and allows you to try them out from a browser.
 
 ## Further information

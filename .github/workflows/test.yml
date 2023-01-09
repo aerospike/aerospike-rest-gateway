@@ -1,4 +1,4 @@
-name: Build
+name: Build & Test
 on:
   push:
     branches:
@@ -35,7 +35,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build with Gradle
+      - name: Build & Test with Gradle
         run: ./gradlew clean test --stacktrace --info
 
       - name: Cleanup Gradle Cache
