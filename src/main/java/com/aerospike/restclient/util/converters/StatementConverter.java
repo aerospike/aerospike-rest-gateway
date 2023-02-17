@@ -29,7 +29,10 @@ public class StatementConverter {
     public static Statement statementFromMultiMap(MultiValueMap<String, String> stmtMultiMap) {
         Statement stmt = new Statement();
 
-        if (stmtMultiMap.containsKey(AerospikeAPIConstants.RECORD_BINS)) {
+        boolean hasRecordBinParameters =
+                stmtMultiMap.keySet().stream().anyMatch(key -> key.startsWith(AerospikeAPIConstants.RECORD_BINS));
+
+        if (hasRecordBinParameters) {
             stmt.setBinNames(RequestParamHandler.getBinsFromMap(stmtMultiMap));
         }
 

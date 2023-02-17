@@ -24,8 +24,7 @@ import com.aerospike.restclient.util.converters.StatementConverter;
 import com.aerospike.restclient.util.converters.policyconverters.*;
 import org.springframework.util.MultiValueMap;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class RequestParamHandler {
 
@@ -33,11 +32,24 @@ public final class RequestParamHandler {
     }
 
     public static String[] getBinsFromMap(MultiValueMap<String, String> requestParams) {
-        List<String> binStr = requestParams.get(AerospikeAPIConstants.RECORD_BINS);
-        if (binStr == null) {
-            return new String[0];
+        if (requestParams.containsKey(AerospikeAPIConstants.RECORD_BINS)) {
+            List<String> binStr = requestParams.get(AerospikeAPIConstants.RECORD_BINS);
+            if (binStr == null) {
+                return new String[0];
+            }
+            return binStr.toArray(new String[0]);
         }
-        return binStr.toArray(new String[0]);
+
+        List<String> values = new ArrayList<>();
+        for (String key : requestParams.keySet()) {
+            if (key.startsWith(AerospikeAPIConstants.RECORD_BINS)) {
+                values.add(requestParams.get(key).get(0));
+            }
+        }
+
+        String[] returnValues = new String[values.size()];
+
+        return values.toArray(returnValues);
     }
 
     public static String[] getKeysFromMap(MultiValueMap<String, String> requestParams) {
