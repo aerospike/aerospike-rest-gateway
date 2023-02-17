@@ -42,6 +42,18 @@ public class RequestParamHandlerTests {
     }
 
     @Test
+    public void getIndexedBinsFromMultiMapTest() {
+        String[] expectedBins = {"bin1", "bin2", "bin3"};
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.put(AerospikeAPIConstants.RECORD_BINS + "[0]", Arrays.asList(expectedBins).subList(0,1));
+        params.put(AerospikeAPIConstants.RECORD_BINS + "[1]", Arrays.asList(expectedBins).subList(1,2));
+        params.put(AerospikeAPIConstants.RECORD_BINS + "[2]", Arrays.asList(expectedBins).subList(2,3));
+
+        String[] actualBins = RequestParamHandler.getBinsFromMap(params);
+        Assert.assertArrayEquals(expectedBins, actualBins);
+    }
+
+    @Test
     public void getKeyTypeFromMultiMapTest() {
         RecordKeyType expectedType = RecordKeyType.DIGEST;
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
