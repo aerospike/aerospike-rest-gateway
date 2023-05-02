@@ -22,15 +22,11 @@ import com.aerospike.client.Key;
 import com.aerospike.client.Value;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.client.query.IndexType;
-import com.aerospike.client.task.IndexTask;
 import com.aerospike.restclient.config.JSONMessageConverter;
 import com.aerospike.restclient.config.MsgPackConverter;
 import com.aerospike.restclient.domain.RestClientKeyRecord;
 import com.aerospike.restclient.domain.geojsonmodels.LngLat;
-import com.aerospike.restclient.domain.querymodels.QueryEqualLongFilter;
-import com.aerospike.restclient.domain.querymodels.QueryGeoContainsPointFilter;
-import com.aerospike.restclient.domain.querymodels.QueryRequestBody;
-import com.aerospike.restclient.domain.querymodels.QueryResponseBody;
+import com.aerospike.restclient.domain.querymodels.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -79,8 +75,6 @@ public class QueryCorrectTest {
         WritePolicy writePolicy = new WritePolicy();
         writePolicy.sendKey = true;
         writePolicy.totalTimeout = 0;
-        IndexTask binTask;
-        IndexTask geoTask;
 
         // Need JUnit5 to use Autowired client in @BeforeAll
         if (first) {
@@ -89,43 +83,43 @@ public class QueryCorrectTest {
         }
 
         try {
-            binTask = client.dropIndex(writePolicy, namespace, setName, "binInt-set-index");
-            geoTask = client.dropIndex(writePolicy, namespace, setName, "binGeo-set-index");
-            binTask.waitTillComplete();
-            geoTask.waitTillComplete();
+            client.dropIndex(writePolicy, namespace, setName, "binInt-set-index").waitTillComplete();
+            client.dropIndex(writePolicy, namespace, setName, "binIntMod-set-index").waitTillComplete();
+            client.dropIndex(writePolicy, namespace, setName, "binStr-set-index").waitTillComplete();
+            client.dropIndex(writePolicy, namespace, setName, "binGeo-set-index").waitTillComplete();
+            client.dropIndex(writePolicy, namespace, null, "binInt-index").waitTillComplete();
+            client.dropIndex(writePolicy, namespace, null, "binStr-index").waitTillComplete();
+            client.dropIndex(writePolicy, namespace, null, "binGeo-index").waitTillComplete();
         } catch (Exception ignored) {
-
         }
 
-        try {
-            binTask = client.dropIndex(writePolicy, namespace, null, "binInt-index");
-            geoTask = client.dropIndex(writePolicy, namespace, null, "binGeo-index");
-            binTask.waitTillComplete();
-            geoTask.waitTillComplete();
-        } catch (Exception ignored) {
-
-        }
-
-        binTask = client.createIndex(writePolicy, namespace, setName, "binInt-set-index", "binInt", IndexType.NUMERIC);
-        geoTask = client.createIndex(writePolicy, namespace, setName, "binGeo-set-index", "binGeo",
-                IndexType.GEO2DSPHERE);
-        binTask.waitTillComplete();
-        geoTask.waitTillComplete();
-
-        binTask = client.createIndex(writePolicy, namespace, null, "binInt-index", "binInt", IndexType.NUMERIC);
-        geoTask = client.createIndex(writePolicy, namespace, null, "binGeo-index", "binGeo", IndexType.GEO2DSPHERE);
-        binTask.waitTillComplete();
-        geoTask.waitTillComplete();
+        client.createIndex(writePolicy, namespace, setName, "binInt-set-index", "binInt", IndexType.NUMERIC)
+                .waitTillComplete();
+        client.createIndex(writePolicy, namespace, setName, "binIntMod-set-index", "binIntMod", IndexType.NUMERIC)
+                .waitTillComplete();
+        client.createIndex(writePolicy, namespace, setName, "binStr-set-index", "binStr", IndexType.STRING)
+                .waitTillComplete();
+        client.createIndex(writePolicy, namespace, setName, "binGeo-set-index", "binGeo", IndexType.GEO2DSPHERE)
+                .waitTillComplete();
+        client.createIndex(writePolicy, namespace, null, "binInt-index", "binInt", IndexType.NUMERIC)
+                .waitTillComplete();
+        client.createIndex(writePolicy, namespace, null, "binIntMod-index", "binIntMod", IndexType.NUMERIC)
+                .waitTillComplete();
+        client.createIndex(writePolicy, namespace, null, "binStr-index", "binStr", IndexType.STRING).waitTillComplete();
+        client.createIndex(writePolicy, namespace, null, "binGeo-index", "binGeo", IndexType.GEO2DSPHERE)
+                .waitTillComplete();
 
         for (int i = 0; i < numberOfRecords; i++) {
-            Bin bin = new Bin("binInt", i);
-            client.put(writePolicy, testKeys[i], bin);
+            Bin intBin = new Bin("binInt", i);
+            Bin intModBin = new Bin("binIntMod", i % 3);
+            Bin strBin = new Bin("binStr", Integer.toString(i));
+            client.put(writePolicy, testKeys[i], intBin, intModBin, strBin);
         }
 
         for (int i = 0; i < 5; i++) {
-            Bin bin = new Bin("binGeo", new Value.GeoJSONValue(
+            Bin geoBin = new Bin("binGeo", new Value.GeoJSONValue(
                     "{\"type\": \"Polygon\", \"coordinates\": [[[0,0], [0, 10], [10, 10], [10, 0], [0,0]]]}"));
-            client.put(writePolicy, testKeys[i], bin);
+            client.put(writePolicy, testKeys[i], geoBin);
         }
     }
 
@@ -134,14 +128,14 @@ public class QueryCorrectTest {
         for (int i = 0; i < numberOfRecords; i++) {
             client.delete(null, testKeys[i]);
         }
-        IndexTask binTask = client.dropIndex(null, namespace, setName, "binIntSet-index");
-        IndexTask geoTask = client.dropIndex(null, namespace, setName, "binGeoSet-index");
-        IndexTask binSetTask = client.dropIndex(null, namespace, null, "binInt-index");
-        IndexTask geoSetTask = client.dropIndex(null, namespace, null, "binGeo-index");
-        binTask.waitTillComplete();
-        geoTask.waitTillComplete();
-        binSetTask.waitTillComplete();
-        geoSetTask.waitTillComplete();
+        client.dropIndex(null, namespace, setName, "binInt-set-index").waitTillComplete();
+        client.dropIndex(null, namespace, setName, "binIntMod-set-index").waitTillComplete();
+        client.dropIndex(null, namespace, setName, "binStr-set-index").waitTillComplete();
+        client.dropIndex(null, namespace, setName, "binGeo-set-index").waitTillComplete();
+        client.dropIndex(null, namespace, null, "binInt-index").waitTillComplete();
+        client.dropIndex(null, namespace, null, "binIntMod-index").waitTillComplete();
+        client.dropIndex(null, namespace, null, "binStr-index").waitTillComplete();
+        client.dropIndex(null, namespace, null, "binGeo-index").waitTillComplete();
     }
 
     private final QueryHandler queryHandler;
@@ -249,7 +243,39 @@ public class QueryCorrectTest {
     }
 
     @Test
-    public void testPIQueryAllEqualFiltered() throws Exception {
+    public void testSIQueryAllEqualFilteredPaginated() throws Exception {
+        int pageSize = 100;
+        int queryRequests = 0;
+        int total = 0;
+        QueryResponseBody res;
+        Set<String> keyValues = new HashSet<>();
+        String endpoint = testEndpoint + "?maxRecords=" + pageSize + "&getToken=True";
+        String fromToken = null;
+
+        do {
+            QueryRequestBody requestBody = new QueryRequestBody();
+            QueryEqualLongFilter filter = new QueryEqualLongFilter();
+            filter.binName = "binIntMod";
+            filter.value = 2L;
+            requestBody.filter = filter;
+            requestBody.from = fromToken;
+            res = queryHandler.perform(mockMVC, endpoint, requestBody);
+            for (RestClientKeyRecord r : res.getRecords()) {
+                keyValues.add((String) r.userKey);
+            }
+            total += res.getPagination().getTotalRecords();
+            queryRequests++;
+            fromToken = res.getPagination().getNextToken();
+        } while (fromToken != null);
+
+        Assert.assertEquals((int) Math.ceil((double) numberOfRecords / 3 / pageSize), queryRequests);
+        Assert.assertNull(res.getPagination().getNextToken());
+        Assert.assertEquals((numberOfRecords / 3), total);  // estimate of number of records
+        Assert.assertEquals(total, keyValues.size()); // estimate of number of records
+    }
+
+    @Test
+    public void testSIQueryAllIntEqualFiltered() throws Exception {
         QueryRequestBody queryBody = new QueryRequestBody();
         QueryEqualLongFilter filter = new QueryEqualLongFilter();
         filter.binName = "binInt";
@@ -260,7 +286,18 @@ public class QueryCorrectTest {
     }
 
     @Test
-    public void testPIQueryAllGeoContainsFiltered() throws Exception {
+    public void testSIQueryAllStringEqualFiltered() throws Exception {
+        QueryRequestBody queryBody = new QueryRequestBody();
+        QueryEqualsStringFilter filter = new QueryEqualsStringFilter();
+        filter.binName = "binStr";
+        filter.value = "100";
+        queryBody.filter = filter;
+        QueryResponseBody res = queryHandler.perform(mockMVC, testEndpoint, queryBody);
+        Assert.assertEquals(1, res.getPagination().getTotalRecords());
+    }
+
+    @Test
+    public void testSIQueryAllGeoContainsFiltered() throws Exception {
         QueryRequestBody queryBody = new QueryRequestBody();
         QueryGeoContainsPointFilter filter = new QueryGeoContainsPointFilter();
         filter.binName = "binGeo";
