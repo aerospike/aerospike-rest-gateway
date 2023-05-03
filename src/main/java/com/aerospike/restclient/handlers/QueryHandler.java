@@ -76,7 +76,7 @@ public class QueryHandler {
                 page.setNextToken(tokenStr);
             } catch (IOException e) {
                 throw new RestClientErrors.AerospikeRestClientError(
-                        String.format("Unable to encode partition query filter to token: %s", e));
+                        String.format("Unable to encode partition query filter to token: %s", e.getMessage()));
             }
         }
 
@@ -93,7 +93,7 @@ public class QueryHandler {
                 return decodePartitionFilter(tokenOut);
             } catch (IOException e) {
                 throw new RestClientErrors.AerospikeRestClientError(
-                        String.format("Unable to decode from token: %s", e));
+                        String.format("Unable to decode from token: %s", e.getMessage()));
             }
         }
     }
