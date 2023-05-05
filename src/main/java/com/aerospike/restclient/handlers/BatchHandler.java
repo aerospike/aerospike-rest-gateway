@@ -17,6 +17,7 @@
 package com.aerospike.restclient.handlers;
 
 import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.BatchRead;
 import com.aerospike.client.BatchRecord;
 import com.aerospike.client.policy.BatchPolicy;
 
@@ -31,7 +32,14 @@ public class BatchHandler {
     }
 
     public void batchRecord(BatchPolicy policy, List<BatchRecord> batchRecords) {
-        client.operate(policy, batchRecords);
+        boolean allBatchRead = batchRecords.stream().allMatch(r -> r instanceof BatchRead);
+
+        if (allBatchRead) {
+            // Supported on old servers
+            client.get(policy, batchRecords.stream().map(r -> (BatchRead) r).toList());
+        } else {
+            client.operate(policy, batchRecords);
+        }
     }
 
     public static BatchHandler create(AerospikeClient client) {

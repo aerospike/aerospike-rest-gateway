@@ -158,7 +158,7 @@ public class BatchCorrectTests {
         List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(3, returnedRecords.size());
 
-        client.operate(null, batchRecs);
+        client.get(null, batchRecs.stream().map(r -> (BatchRead) r).toList());
         Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
@@ -204,7 +204,7 @@ public class BatchCorrectTests {
         List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(3, returnedRecords.size());
 
-        client.operate(null, batchRecs);
+        client.get(null, batchRecs.stream().map(r -> (BatchRead) r).toList());
         Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
@@ -227,7 +227,7 @@ public class BatchCorrectTests {
         List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(4, returnedRecords.size());
 
-        client.operate(null, batchRecs);
+        client.get(null, batchRecs.stream().map(r -> (BatchRead) r).toList());
         Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
@@ -250,7 +250,7 @@ public class BatchCorrectTests {
         List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(4, returnedRecords.size());
 
-        client.operate(null, batchRecs);
+        client.get(null, batchRecs.stream().map(r -> (BatchRead) r).toList());
         Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
@@ -266,7 +266,7 @@ public class BatchCorrectTests {
         List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(1, returnedRecords.size());
 
-        client.operate(null, batchRecs);
+        client.get(null, batchRecs.stream().map(r -> (BatchRead) r).toList());
         Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
@@ -282,7 +282,7 @@ public class BatchCorrectTests {
         List<Map<String, Object>> returnedRecords = (List<Map<String, Object>>) batchResponse.get("batchRecords");
         Assert.assertEquals(1, returnedRecords.size());
 
-        client.operate(null, batchRecs);
+        client.get(null, batchRecs.stream().map(r -> (BatchRead) r).toList());
         Assert.assertTrue(compareRestRecordsToBatchRecords(returnedRecords, batchRecs));
     }
 
