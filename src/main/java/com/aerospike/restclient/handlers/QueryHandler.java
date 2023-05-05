@@ -76,7 +76,7 @@ public class QueryHandler {
                 page.setNextToken(tokenStr);
             } catch (IOException e) {
                 throw new RestClientErrors.AerospikeRestClientError(
-                        String.format("Unable to encode partition query filter to token: %s", e.toString()));
+                        String.format("Unable to encode partition query filter to token: %s", e.getMessage()));
             }
         }
 
@@ -93,7 +93,7 @@ public class QueryHandler {
                 return decodePartitionFilter(tokenOut);
             } catch (IOException e) {
                 throw new RestClientErrors.AerospikeRestClientError(
-                        String.format("Unable to decode from token: %s", e.toString()));
+                        String.format("Unable to decode from token: %s", e.getMessage()));
             }
         }
     }
@@ -120,8 +120,9 @@ public class QueryHandler {
         packer.packInt(count);
 
         for (PartitionStatus part : partitionFilter.getPartitions()) {
-            int status = 0;
+            int status;
             byte[] digest = part.digest;
+            long bval = part.bval;
 
             if (part.retry) {
                 if (digest == null) {
@@ -137,6 +138,7 @@ public class QueryHandler {
 
             if (status == PARTITION_STATE_STARTED) {
                 packer.packBinaryHeader(digest.length).writePayload(digest);
+                packer.packLong(bval);
             }
         }
 
@@ -164,6 +166,7 @@ public class QueryHandler {
             if (status == PARTITION_STATE_STARTED) {
                 int digestLen = unpacker.unpackBinaryHeader(); // Investigate removing this since we know it is 20 bytes
                 part.digest = unpacker.readPayload(digestLen);
+                part.bval = unpacker.unpackLong();
             }
 
             if (status == PARTITION_STATE_NONE || status == PARTITION_STATE_FINISHED) {

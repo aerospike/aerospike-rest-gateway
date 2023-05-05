@@ -6,7 +6,7 @@ ENV JAVA_OPTS="-Djdk.lang.Process.launchMechanism=vfork"
 
 COPY . /workspace/app
 RUN ./gradlew clean build -x test
-RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*[^plain].jar)
+RUN mkdir -p build/dependency && cd build/dependency; jar -xf ../libs/*[^p][^l][^a][^i][^n].jar
 
 FROM eclipse-temurin:17-jre
 VOLUME /tmp
