@@ -50,7 +50,8 @@ public class BatchController {
     private AerospikeBatchService service;
 
     @Operation(
-            summary = "Return multiple records from the server in a single request.", operationId = "performBatchGet"
+            summary = "Return multiple records from the server in a single request. Write, Delete, and UDFs are only allowed on aerospike servers 6.0+",
+            operationId = "performBatch"
     )
     @ApiResponses(
             value = {
@@ -60,7 +61,7 @@ public class BatchController {
                             content = @Content(array = @ArraySchema(schema = @Schema(implementation = BatchRecordResponse.class)))
                     ), @ApiResponse(
                     responseCode = "400",
-                    description = "Invalid parameters or request.",
+                    description = "Invalid parameters or request. Write, Delete, and UDFs are only allowed on aerospike servers 6.0+",
                     content = @Content(schema = @Schema(implementation = RestClientError.class))
             ), @ApiResponse(
                     responseCode = "403",

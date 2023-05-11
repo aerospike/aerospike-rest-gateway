@@ -2,7 +2,7 @@ buildscript {
     ext {
         springBootVersion = "2.7.4"
         httpclientVersion = "4.5.14"
-        aerospikeClientVersion = findProperty("aerospikeClientVersion") ?: "6.1.2"
+        aerospikeClientVersion = findProperty("aerospikeClientVersion") ?: "6.1.7"
     }
     if (findProperty("aerospikeUseLocal")) {
         print("using Local repo")
@@ -19,7 +19,8 @@ buildscript {
 }
 
 plugins {
-    id("org.springdoc.openapi-gradle-plugin") version "1.4.0"
+    id("org.springdoc.openapi-gradle-plugin") version "1.6.0"
+    id 'com.palantir.git-version' version "0.15.0"
 }
 
 if (findProperty("aerospikeUseLocal")) {
@@ -40,11 +41,14 @@ apply plugin: "io.spring.dependency-management"
 
 group = "com.aerospike"
 sourceCompatibility = 17
-version = appVersion
+
+def gitVersionDetails = versionDetails()
+def gitVersion = gitVersionDetails.lastTag + "-" + gitVersionDetails.commitDistance + "-" + gitVersionDetails.gitHash
+version = gitVersion
 
 bootJar {
     baseName "${jarBaseName}"
-    version "${appVersion}"
+    version "${gitVersion}"
 }
 test {
     testLogging {
@@ -53,6 +57,12 @@ test {
 }
 springBoot {
     buildInfo()
+}
+
+openApi {
+    customBootRun {
+        args.set(["--aerospike.restclient.requireAuthentication=true"])
+    }
 }
 
 dependencies {

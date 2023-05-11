@@ -17,13 +17,18 @@
 package com.aerospike.restclient.domain.operationmodels;
 
 public enum MapReturnType {
-    COUNT(com.aerospike.client.cdt.MapReturnType.COUNT), INDEX(com.aerospike.client.cdt.MapReturnType.INDEX), KEY(
-            com.aerospike.client.cdt.MapReturnType.KEY), KEY_VALUE(
-            com.aerospike.client.cdt.MapReturnType.KEY_VALUE), NONE(com.aerospike.client.cdt.MapReturnType.NONE), RANK(
-            com.aerospike.client.cdt.MapReturnType.RANK), REVERSE_INDEX(
-            com.aerospike.client.cdt.MapReturnType.REVERSE_INDEX), REVERSE_RANK(
-            com.aerospike.client.cdt.MapReturnType.REVERSE_RANK), VALUE(
-            com.aerospike.client.cdt.MapReturnType.VALUE), EXISTS(com.aerospike.client.cdt.MapReturnType.EXISTS);
+    COUNT(com.aerospike.client.cdt.MapReturnType.COUNT),
+    INDEX(com.aerospike.client.cdt.MapReturnType.INDEX),
+    KEY(com.aerospike.client.cdt.MapReturnType.KEY),
+    KEY_VALUE(com.aerospike.client.cdt.MapReturnType.KEY_VALUE),
+    NONE(com.aerospike.client.cdt.MapReturnType.NONE),
+    RANK(com.aerospike.client.cdt.MapReturnType.RANK),
+    REVERSE_INDEX(com.aerospike.client.cdt.MapReturnType.REVERSE_INDEX),
+    REVERSE_RANK(com.aerospike.client.cdt.MapReturnType.REVERSE_RANK),
+    VALUE(com.aerospike.client.cdt.MapReturnType.VALUE),
+    EXISTS(com.aerospike.client.cdt.MapReturnType.EXISTS),
+    UNORDERED_MAP(com.aerospike.client.cdt.MapReturnType.UNORDERED_MAP),
+    ORDERED_MAP(com.aerospike.client.cdt.MapReturnType.ORDERED_MAP);
 
     private final int returnType;
 
