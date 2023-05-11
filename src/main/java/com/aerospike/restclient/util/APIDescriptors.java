@@ -26,7 +26,7 @@ public class APIDescriptors {
     public static final String RECORD_KEY_NOTES = "Record keys to perform operations on.";
     public static final String KEYTYPE_NOTES = "The Type of the userKey.";
 
-    public static final String BINS_NOTES = "Optionally specify a set of bins to return when fetching a record. If omitted, all bins will be returned.";
+    public static final String BINS_NOTES = "Optionally specify a set of bins to return when fetching a record in the form \"?recordBins=bin1&recordBins=bin2\", or \"?recordBins[0]=bin1&recordBins[1]=bin2\" If omitted, all bins will be returned.";
 
     public static final String POLICY_READMODESC_NOTES = "Read policy for SC (strong consistency) namespaces. Determines SC read consistency options.";
 

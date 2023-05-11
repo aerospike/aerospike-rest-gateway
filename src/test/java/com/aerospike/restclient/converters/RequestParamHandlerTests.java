@@ -27,6 +27,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RequestParamHandlerTests {
@@ -42,10 +43,35 @@ public class RequestParamHandlerTests {
     }
 
     @Test
+    public void getIndexedBinsFromMultiMapTest() {
+        String[] expectedBins = {"bin1", "bin2", "bin3"};
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(AerospikeAPIConstants.RECORD_BINS + "[0]", expectedBins[0]);
+        params.add(AerospikeAPIConstants.RECORD_BINS + "[1]", expectedBins[1]);
+        params.add(AerospikeAPIConstants.RECORD_BINS + "[2]", expectedBins[2]);
+
+        String[] actualBins = RequestParamHandler.getBinsFromMap(params);
+        Assert.assertArrayEquals(expectedBins, actualBins);
+    }
+
+    @Test
+    public void getArrayBinsFromMultiMapTest() {
+        String[] expectedBins = {"bin1", "bin2", "bin3"};
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        String key = AerospikeAPIConstants.RECORD_BINS + "[]";
+        params.add(key, expectedBins[0]);
+        params.add(key, expectedBins[1]);
+        params.add(key, expectedBins[2]);
+
+        String[] actualBins = RequestParamHandler.getBinsFromMap(params);
+        Assert.assertArrayEquals(expectedBins, actualBins);
+    }
+
+    @Test
     public void getKeyTypeFromMultiMapTest() {
         RecordKeyType expectedType = RecordKeyType.DIGEST;
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.put(AerospikeAPIConstants.KEY_TYPE, Arrays.asList(expectedType.toString()));
+        params.put(AerospikeAPIConstants.KEY_TYPE, List.of(expectedType.toString()));
 
         RecordKeyType actualType = RequestParamHandler.getKeyTypeFromMap(params);
         Assert.assertEquals(expectedType, actualType);
@@ -55,7 +81,7 @@ public class RequestParamHandlerTests {
     public void getInvalidKeyTypeFromMultiMapTest() {
         String fakeKeyType = "FAKE_KEY_TYPE";
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.put(AerospikeAPIConstants.KEY_TYPE, Arrays.asList(fakeKeyType));
+        params.put(AerospikeAPIConstants.KEY_TYPE, List.of(fakeKeyType));
         RequestParamHandler.getKeyTypeFromMap(params);
     }
 

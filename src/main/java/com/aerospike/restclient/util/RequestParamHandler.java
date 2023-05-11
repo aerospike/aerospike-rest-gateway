@@ -22,6 +22,7 @@ import com.aerospike.restclient.util.AerospikeAPIConstants.RecordKeyType;
 import com.aerospike.restclient.util.converters.PolicyValueConverter;
 import com.aerospike.restclient.util.converters.StatementConverter;
 import com.aerospike.restclient.util.converters.policyconverters.*;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public final class RequestParamHandler {
     }
 
     public static String[] getBinsFromMap(MultiValueMap<String, String> requestParams) {
-        List<String> binStr = requestParams.get(AerospikeAPIConstants.RECORD_BINS);
+        List<String> binStr = arrayAware(requestParams).get(AerospikeAPIConstants.RECORD_BINS);
         if (binStr == null) {
             return new String[0];
         }
@@ -41,7 +42,7 @@ public final class RequestParamHandler {
     }
 
     public static String[] getKeysFromMap(MultiValueMap<String, String> requestParams) {
-        List<String> keys = requestParams.get(AerospikeAPIConstants.RECORD_KEY);
+        List<String> keys = arrayAware(requestParams).get(AerospikeAPIConstants.RECORD_KEY);
         if (keys == null) {
             return new String[0];
         }
@@ -82,7 +83,7 @@ public final class RequestParamHandler {
 
     public static boolean getGetToken(MultiValueMap<String, String> requestParams) {
         List<String> keys = requestParams.get(AerospikeAPIConstants.GET_TOKEN);
-        if (keys == null || keys.size() == 0) {
+        if (keys == null || keys.isEmpty()) {
             return false;
         }
         return PolicyValueConverter.getBoolValue(keys.get(0));
@@ -117,11 +118,18 @@ public final class RequestParamHandler {
     }
 
     public static Statement getStatement(MultiValueMap<String, String> requestParams) {
-        return StatementConverter.statementFromMultiMap(requestParams);
+        return StatementConverter.statementFromMultiMap(arrayAware(requestParams));
     }
 
     public static InfoPolicy getInfoPolicy(Map<String, String> requestParams) {
         return InfoPolicyConverter.policyFromMap(requestParams);
     }
 
+    private static MultiValueMap<String, String> arrayAware(MultiValueMap<String, String> requestParams) {
+        MultiValueMap<String, String> parsed = new LinkedMultiValueMap<>();
+        for (var e : requestParams.entrySet()) {
+            parsed.addAll(e.getKey().replaceAll("\\[\\d?\\]$", ""), e.getValue());
+        }
+        return parsed;
+    }
 }

@@ -67,75 +67,62 @@ public class QueryCorrectTest {
     private final String setName;
     private final String namespace;
 
-    private boolean first = true;
+    private static boolean first = true;
 
     @Before
     public void setup() throws InterruptedException {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-        WritePolicy writePolicy = new WritePolicy();
-        writePolicy.sendKey = true;
-        writePolicy.totalTimeout = 0;
 
         // Need JUnit5 to use Autowired client in @BeforeAll
         if (first) {
             client.truncate(null, "test", null, null);
             first = false;
-        }
+            WritePolicy writePolicy = new WritePolicy();
+            writePolicy.sendKey = true;
+            writePolicy.totalTimeout = 0;
 
-        try {
-            client.dropIndex(writePolicy, namespace, setName, "binInt-set-index").waitTillComplete();
-            client.dropIndex(writePolicy, namespace, setName, "binIntMod-set-index").waitTillComplete();
-            client.dropIndex(writePolicy, namespace, setName, "binStr-set-index").waitTillComplete();
-            client.dropIndex(writePolicy, namespace, setName, "binGeo-set-index").waitTillComplete();
-            client.dropIndex(writePolicy, namespace, null, "binInt-index").waitTillComplete();
-            client.dropIndex(writePolicy, namespace, null, "binStr-index").waitTillComplete();
-            client.dropIndex(writePolicy, namespace, null, "binGeo-index").waitTillComplete();
-        } catch (Exception ignored) {
-        }
+            try {
+                client.dropIndex(writePolicy, namespace, setName, "binInt-set-index").waitTillComplete();
+                client.dropIndex(writePolicy, namespace, setName, "binIntMod-set-index").waitTillComplete();
+                client.dropIndex(writePolicy, namespace, setName, "binStr-set-index").waitTillComplete();
+                client.dropIndex(writePolicy, namespace, setName, "binGeo-set-index").waitTillComplete();
+                client.dropIndex(writePolicy, namespace, null, "binInt-index").waitTillComplete();
+                client.dropIndex(writePolicy, namespace, null, "binStr-index").waitTillComplete();
+                client.dropIndex(writePolicy, namespace, null, "binIntMod-index").waitTillComplete();
+                client.dropIndex(writePolicy, namespace, null, "binGeo-index").waitTillComplete();
+            } catch (Exception ignored) {
+            }
 
-        client.createIndex(writePolicy, namespace, setName, "binInt-set-index", "binInt", IndexType.NUMERIC)
-                .waitTillComplete();
-        client.createIndex(writePolicy, namespace, setName, "binIntMod-set-index", "binIntMod", IndexType.NUMERIC)
-                .waitTillComplete();
-        client.createIndex(writePolicy, namespace, setName, "binStr-set-index", "binStr", IndexType.STRING)
-                .waitTillComplete();
-        client.createIndex(writePolicy, namespace, setName, "binGeo-set-index", "binGeo", IndexType.GEO2DSPHERE)
-                .waitTillComplete();
-        client.createIndex(writePolicy, namespace, null, "binInt-index", "binInt", IndexType.NUMERIC)
-                .waitTillComplete();
-        client.createIndex(writePolicy, namespace, null, "binIntMod-index", "binIntMod", IndexType.NUMERIC)
-                .waitTillComplete();
-        client.createIndex(writePolicy, namespace, null, "binStr-index", "binStr", IndexType.STRING).waitTillComplete();
-        client.createIndex(writePolicy, namespace, null, "binGeo-index", "binGeo", IndexType.GEO2DSPHERE)
-                .waitTillComplete();
+            client.createIndex(writePolicy, namespace, setName, "binInt-set-index", "binInt", IndexType.NUMERIC)
+                    .waitTillComplete();
+            client.createIndex(writePolicy, namespace, setName, "binIntMod-set-index", "binIntMod", IndexType.NUMERIC)
+                    .waitTillComplete();
+            client.createIndex(writePolicy, namespace, setName, "binStr-set-index", "binStr", IndexType.STRING)
+                    .waitTillComplete();
+            client.createIndex(writePolicy, namespace, setName, "binGeo-set-index", "binGeo", IndexType.GEO2DSPHERE)
+                    .waitTillComplete();
+            client.createIndex(writePolicy, namespace, null, "binInt-index", "binInt", IndexType.NUMERIC)
+                    .waitTillComplete();
+            client.createIndex(writePolicy, namespace, null, "binIntMod-index", "binIntMod", IndexType.NUMERIC)
+                    .waitTillComplete();
+            client.createIndex(writePolicy, namespace, null, "binStr-index", "binStr", IndexType.STRING)
+                    .waitTillComplete();
+            client.createIndex(writePolicy, namespace, null, "binGeo-index", "binGeo", IndexType.GEO2DSPHERE)
+                    .waitTillComplete();
 
-        for (int i = 0; i < numberOfRecords; i++) {
-            Bin intBin = new Bin("binInt", i);
-            Bin intModBin = new Bin("binIntMod", i % 3);
-            Bin strBin = new Bin("binStr", Integer.toString(i));
-            client.put(writePolicy, testKeys[i], intBin, intModBin, strBin);
-        }
+            for (int i = 0; i < numberOfRecords; i++) {
+                Bin intBin = new Bin("binInt", i);
+                Bin intModBin = new Bin("binIntMod", i % 3);
+                Bin strBin = new Bin("binStr", Integer.toString(i));
+                client.put(writePolicy, testKeys[i], intBin, intModBin, strBin);
+            }
 
-        for (int i = 0; i < 5; i++) {
-            Bin geoBin = new Bin("binGeo", new Value.GeoJSONValue(
-                    "{\"type\": \"Polygon\", \"coordinates\": [[[0,0], [0, 10], [10, 10], [10, 0], [0,0]]]}"));
-            client.put(writePolicy, testKeys[i], geoBin);
+            for (int i = 0; i < 5; i++) {
+                Bin geoBin = new Bin("binGeo", new Value.GeoJSONValue(
+                        "{\"type\": \"Polygon\", \"coordinates\": [[[0,0], [0, 10], [10, 10], [10, 0], [0,0]]]}"));
+                client.put(writePolicy, testKeys[i], geoBin);
+            }
         }
-    }
-
-    @After
-    public void clean() throws InterruptedException {
-        for (int i = 0; i < numberOfRecords; i++) {
-            client.delete(null, testKeys[i]);
-        }
-        client.dropIndex(null, namespace, setName, "binInt-set-index").waitTillComplete();
-        client.dropIndex(null, namespace, setName, "binIntMod-set-index").waitTillComplete();
-        client.dropIndex(null, namespace, setName, "binStr-set-index").waitTillComplete();
-        client.dropIndex(null, namespace, setName, "binGeo-set-index").waitTillComplete();
-        client.dropIndex(null, namespace, null, "binInt-index").waitTillComplete();
-        client.dropIndex(null, namespace, null, "binIntMod-index").waitTillComplete();
-        client.dropIndex(null, namespace, null, "binStr-index").waitTillComplete();
-        client.dropIndex(null, namespace, null, "binGeo-index").waitTillComplete();
     }
 
     private final QueryHandler queryHandler;
