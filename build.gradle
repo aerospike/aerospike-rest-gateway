@@ -1,8 +1,8 @@
 buildscript {
     ext {
-        springBootVersion = "2.7.4"
+        springBootVersion = "2.7.11"
         httpclientVersion = "4.5.14"
-        aerospikeClientVersion = findProperty("aerospikeClientVersion") ?: "6.1.7"
+        aerospikeClientVersion = findProperty("aerospikeClientVersion") ?: "6.1.11"
     }
     if (findProperty("aerospikeUseLocal")) {
         print("using Local repo")
@@ -68,6 +68,7 @@ openApi {
 dependencies {
     implementation('org.msgpack:msgpack-core:0.9.3')
     implementation('org.springframework.boot:spring-boot-starter-web:3.0.6')
+    // Separately upgraded to fix vulnerability. Version should be removed after upgrading to spring-boot 3.x
     implementation("com.aerospike:aerospike-client:${aerospikeClientVersion}")
     implementation("com.aerospike:aerospike-document-api:1.2.0")
     implementation("org.msgpack:jackson-dataformat-msgpack:0.9.3")
@@ -79,7 +80,7 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.apache.httpcomponents:httpclient:${httpclientVersion}")
-    implementation('org.springframework.boot:spring-boot-starter-actuator:3.0.6')
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
     implementation('io.github.resilience4j:resilience4j-micrometer:1.7.1')
     implementation('io.micrometer:micrometer-registry-prometheus')
     testImplementation("junit:junit:4.13.2")
