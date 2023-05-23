@@ -51,7 +51,9 @@ version = gitVersion
 
 bootJar {
     baseName "${jarBaseName}"
-    version "${gitVersion}"
+}
+jar {
+    baseName "${jarBaseName}"
 }
 test {
     testLogging {
