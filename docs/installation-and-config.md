@@ -55,7 +55,7 @@ docker build -t aerospike-rest-gateway .
 * Run the REST Gateway using docker
 
 ```sh
-docker run -itd --rm -p 8080:8080 --name AS_Rest1 -e aerospike_restclient_hostname=172.17.0.3 aerospike-rest-gateway
+docker run -itd --rm -p 8080:8080 --name as-rest -e aerospike_restclient_hostname=172.17.0.3 aerospike-rest-gateway
 ```
 
 ### Run on Kubernetes

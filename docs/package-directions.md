@@ -13,11 +13,13 @@ client.
 
 ## First steps
 
-**Note** The following directions assume that the Rest Gateway is listening on `http://localhost:8080/aerospike-rest-gateway`,
+**Note** The following directions assume that the Rest Gateway is listening
+on `http://localhost:8080/`,
 if this is not the case, change the URLS accordingly.
 
 To get a quick introduction to the API and usage of the Rest Gateway we recommend visiting the Interactive Documentation
-which will be located at <http://localhost:8080/aerospike-rest-gateway/swagger-ui.html> . This Interface shows all of the API
+which will be located at <http://localhost:8080/swagger-ui/index.html> . This Interface shows all the
+API
 endpoints, and allows you to try them out from a browser.
 
 ## Further information
