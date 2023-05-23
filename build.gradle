@@ -3,6 +3,7 @@ buildscript {
         springBootVersion = "2.7.11"
         httpclientVersion = "4.5.14"
         aerospikeClientVersion = findProperty("aerospikeClientVersion") ?: "6.1.9"
+        set('snakeyaml.version', '1.32') // Can be removed after upgrading to springboot 3.x
     }
     if (findProperty("aerospikeUseLocal")) {
         print("using Local repo")
@@ -33,7 +34,6 @@ repositories {
     mavenCentral()
 }
 
-
 apply plugin: "java"
 apply plugin: "eclipse"
 apply plugin: "org.springframework.boot"
@@ -43,12 +43,17 @@ group = "com.aerospike"
 sourceCompatibility = 17
 
 def gitVersionDetails = versionDetails()
-def gitVersion = gitVersionDetails.lastTag + "-" + gitVersionDetails.commitDistance + "-" + gitVersionDetails.gitHash
+def gitVersion = gitVersionDetails.lastTag
+if (gitVersionDetails.commitDistance != 0) {
+    gitVersion = gitVersion + "-" + gitVersionDetails.commitDistance + "-" + gitVersionDetails.gitHash
+}
 version = gitVersion
 
 bootJar {
     baseName "${jarBaseName}"
-    version "${gitVersion}"
+}
+jar {
+    baseName "${jarBaseName}"
 }
 test {
     testLogging {
