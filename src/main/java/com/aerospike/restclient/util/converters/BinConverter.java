@@ -25,6 +25,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gnu.crypto.util.Base64;
 
+import java.util.List;
 import java.util.Map;
 
 public class BinConverter {
@@ -40,9 +41,9 @@ public class BinConverter {
         for (Map.Entry<String, Object> entry : binMap.entrySet()) {
             /* Let the user pass null, to delete a bin */
             Object value = entry.getValue();
-            if (entry.getValue() == null) {
+            if (value == null) {
                 binArray[index] = (Bin.asNull(entry.getKey()));
-            } else if (entry.getValue() instanceof Map) {
+            } else if (value instanceof Map) {
                 Map<String, Object> mapVal = (Map<String, Object>) value;
                 Value asVal;
 
@@ -79,8 +80,30 @@ public class BinConverter {
 
                 binArray[index] = new Bin(entry.getKey(), asVal);
 
+            } else if (value instanceof Integer castVal) {
+                binArray[index] = new Bin(entry.getKey(), castVal);
+            } else if (value instanceof Short castVal) {
+                binArray[index] = new Bin(entry.getKey(), castVal);
+            } else if (value instanceof Long castVal) {
+                binArray[index] = new Bin(entry.getKey(), castVal);
+            } else if (value instanceof String castVal) {
+                binArray[index] = new Bin(entry.getKey(), castVal);
+            } else if (value instanceof Boolean castVal) {
+                binArray[index] = new Bin(entry.getKey(), castVal);
+            } else if (value instanceof Float castVal) {
+                binArray[index] = new Bin(entry.getKey(), castVal);
+            } else if (value instanceof Double castVal) {
+                binArray[index] = new Bin(entry.getKey(), castVal);
+            } else if (value instanceof List<?> castVal) {
+                binArray[index] = new Bin(entry.getKey(), castVal);
+            } else if (value instanceof Byte castVal) {
+                binArray[index] = new Bin(entry.getKey(), castVal);
+            } else if (value instanceof byte[] castVal) {
+                binArray[index] = new Bin(entry.getKey(), castVal);
             } else {
-                binArray[index] = new Bin(entry.getKey(), entry.getValue());
+                throw new RestClientErrors.InvalidBinValue(
+                        String.format("Unsupported bin type for key %s : %s", entry.getKey(),
+                                value.getClass().getSimpleName()));
             }
             index++;
         }
