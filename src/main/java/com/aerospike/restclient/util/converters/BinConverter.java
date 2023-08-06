@@ -59,17 +59,13 @@ public class BinConverter {
                                 (String) mapVal.get(AerospikeAPIConstants.SpecifiedType.Keys.specifiedTypeKey));
                         byte[] byteArr = Base64.decode(
                                 (String) mapVal.get(AerospikeAPIConstants.SpecifiedType.Keys.specifiedValueKey));
-                        switch (type) {
-                            case BYTE_ARRAY:
-                                asVal = Value.get(byteArr);
-                                break;
-                            case GEO_JSON:
+                        asVal = switch (type) {
+                            case BYTE_ARRAY -> Value.get(byteArr);
+                            case GEO_JSON ->
                                 // GEO_JSON is deprecated but only documented here https://stackoverflow.com/questions/70945453/how-to-insert-geojson-using-aerospike-rest-client
-                                asVal = Value.getAsGeoJSON(new String(byteArr));
-                                break;
-                            default:
-                                asVal = Value.get(mapVal);
-                        }
+                                    Value.getAsGeoJSON(new String(byteArr));
+                            default -> Value.get(mapVal);
+                        };
                     } catch (Exception e) {
                         throw new RestClientErrors.InvalidBinValue(
                                 String.format("Error parsing typed bin parameter: %s", e));
@@ -80,34 +76,43 @@ public class BinConverter {
 
                 binArray[index] = new Bin(entry.getKey(), asVal);
 
-            } else if (value instanceof Integer castVal) {
-                binArray[index] = new Bin(entry.getKey(), castVal);
-            } else if (value instanceof Short castVal) {
-                binArray[index] = new Bin(entry.getKey(), castVal);
-            } else if (value instanceof Long castVal) {
-                binArray[index] = new Bin(entry.getKey(), castVal);
-            } else if (value instanceof String castVal) {
-                binArray[index] = new Bin(entry.getKey(), castVal);
-            } else if (value instanceof Boolean castVal) {
-                binArray[index] = new Bin(entry.getKey(), castVal);
-            } else if (value instanceof Float castVal) {
-                binArray[index] = new Bin(entry.getKey(), castVal);
-            } else if (value instanceof Double castVal) {
-                binArray[index] = new Bin(entry.getKey(), castVal);
-            } else if (value instanceof List<?> castVal) {
-                binArray[index] = new Bin(entry.getKey(), castVal);
-            } else if (value instanceof Byte castVal) {
-                binArray[index] = new Bin(entry.getKey(), castVal);
-            } else if (value instanceof byte[] castVal) {
-                binArray[index] = new Bin(entry.getKey(), castVal);
             } else {
-                throw new RestClientErrors.InvalidBinValue(
-                        String.format("Unsupported bin type for key %s : %s", entry.getKey(),
-                                value.getClass().getSimpleName()));
+                binArray[index] = binFromObject(entry.getKey(), value);
             }
             index++;
         }
         return binArray;
+    }
+
+    public static Bin binFromObject(String key, Object value) {
+        if (value instanceof Integer castVal) {
+            return new Bin(key, castVal);
+        } else if (value instanceof Short castVal) {
+            return new Bin(key, castVal);
+        } else if (value instanceof Long castVal) {
+            return new Bin(key, castVal);
+        } else if (value instanceof String castVal) {
+            return new Bin(key, castVal);
+        } else if (value instanceof Boolean castVal) {
+            return new Bin(key, castVal);
+        } else if (value instanceof Float castVal) {
+            return new Bin(key, castVal);
+        } else if (value instanceof Double castVal) {
+            return new Bin(key, castVal);
+        } else if (value instanceof List<?> castVal) {
+            return new Bin(key, castVal);
+        } else if (value instanceof Map<?, ?> castVal) {
+            return new Bin(key, castVal);
+        } else if (value instanceof Byte castVal) {
+            return new Bin(key, castVal);
+        } else if (value instanceof byte[] castVal) {
+            return new Bin(key, castVal);
+        } else if (value instanceof Value castVal) {
+            return new Bin(key, castVal);
+        } else {
+            throw new RestClientErrors.InvalidBinValue(
+                    String.format("Unsupported bin type for key %s : %s", key, value.getClass().getSimpleName()));
+        }
     }
 
     private static boolean isGeoJSON(Map<String, Object> value) {

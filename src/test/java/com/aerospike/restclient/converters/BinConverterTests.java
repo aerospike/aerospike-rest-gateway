@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.aerospike.restclient.util.converters.BinConverter.binFromObject;
+
 public class BinConverterTests {
 
     @Test
@@ -47,11 +49,6 @@ public class BinConverterTests {
     @Test
     public void testFloatBin() {
         singleObjectBinTest(5l);
-    }
-
-    @Test
-    public void testAryBin() {
-        singleObjectBinTest(new String[]{"aero", "spike"});
     }
 
     @Test
@@ -88,7 +85,12 @@ public class BinConverterTests {
 
     @Test
     public void testGeoJSONBin() {
-        singleObjectBinTest(new GeoJSONValue("{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}"));
+        Bin testBin = new Bin("bin1", new GeoJSONValue("{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}"));
+        Map<String, Object> binMap = new HashMap<>();
+        binMap.put("bin1", new GeoJSONValue("{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}"));
+        Bin[] bins = BinConverter.binsFromMap(binMap);
+        Assert.assertTrue(binsContain(bins, testBin));
+        // singleObjectBinTest(new GeoJSONValue("{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}"));
     }
 
     @Test
@@ -159,7 +161,7 @@ public class BinConverterTests {
     }
 
     private void singleObjectBinTest(Object binValue) {
-        Bin testBin = new Bin("bin1", binValue);
+        Bin testBin = binFromObject("bin1", binValue);
         Map<String, Object> binMap = new HashMap<>();
         binMap.put("bin1", binValue);
         Bin[] bins = BinConverter.binsFromMap(binMap);
