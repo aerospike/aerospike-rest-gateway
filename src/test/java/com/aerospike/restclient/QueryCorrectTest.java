@@ -122,6 +122,8 @@ public class QueryCorrectTest {
                         "{\"type\": \"Polygon\", \"coordinates\": [[[0,0], [0, 10], [10, 10], [10, 0], [0,0]]]}"));
                 client.put(writePolicy, testKeys[i], geoBin);
             }
+
+            Thread.sleep(500);
         }
     }
 

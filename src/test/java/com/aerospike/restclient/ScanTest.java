@@ -97,7 +97,7 @@ public class ScanTest {
         };
     }
 
-    public ScanTest(ResponseDeserializer deserializer, String mt) {
+    public ScanTest(ResponseDeserializer deserializer, String mt) throws InterruptedException {
         this.responseDeserializer = deserializer;
         this.namespace = "test";
         this.currentMediaType = mt;
@@ -108,6 +108,8 @@ public class ScanTest {
         for (int i = 0; i < numberOfRecords; i++) {
             testKeys[i] = new Key(namespace, setName, "key_" + i);
         }
+
+        Thread.sleep(3000);
     }
 
     @Test

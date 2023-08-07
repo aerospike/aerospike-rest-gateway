@@ -199,7 +199,7 @@ public class UserTestsCorrect {
 
         handler.patchUser(mockMVC, endpoint + "/" + userName, newPassword);
 
-        Thread.sleep(1500);
+        Thread.sleep(3000);
 
         ClientPolicy policy = ASTestUtils.getClientPolicy(tlsPolicy, userName, newPassword);
         policy.user = userName;
