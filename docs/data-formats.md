@@ -1,4 +1,4 @@
-# Rest Gateway Data Formats
+# REST Gateway Data Formats
 
 API Requests which involve sending data can use the `JSON`, or `MessagePack` formats. By default JSON will be assumed.
 To use `MessagePack`, set the `Content-Type` header to ``"application/msgpack"``. Similarly
@@ -11,13 +11,9 @@ For many uses `JSON` is a simpler and completely valid option. It provides simpl
 Key Value operations are being used, and neither Maps with non string keys, Bytes nor GeoJSON are required, then `JSON`
 will work completely with the Aerospike data model.
 
-**Note**: In version 1.0 GeoJSON and ByteArray bin values are supported. A GeoJSON map with the keys "type" and "
-coordinates" will automatically be understood as a GeoJSON type. Similarly, a ByteArray can be provided using a map with
-the keys "type"
-and "value" where the type is "byteArray" and the value is a base64 encoded string. One caveat is GeoJSON and ByteArrays
-can not be nested in CDTs.
+**Note**: GeoJSON and ByteArrays can not be nested in CDTs.
 
-Ex. GeoJSON
+In 2.0.1, a GeoJSON map with the keys "type" and "coordinates" will automatically be understood as a GeoJSON type.
 
 ```javascript
 {
@@ -26,7 +22,21 @@ Ex. GeoJSON
 }
 ```
 
-Ex. ByteArray
+In version prior to 2.0.1, a GeoJSON object can be provided by sending a base64 encoded GeoJSON string.
+Base64 encoding the following string `{"type": "Point", "coordinates": [1.123, 4.156]}` results
+in `eyJ0eXBlIjogIlBvaW50IiwgImNvb3JkaW5hdGVzIjogWzEuMTIzLCA0LjE1Nl19Cg==`.
+To write the GeoJSON object use
+
+```javascript
+{
+    "type": "GEO_JSON",
+    "value": "eyJ0eXBlIjogIlBvaW50IiwgImNvb3JkaW5hdGVzIjogWzEuMTIzLCA0LjE1Nl19Cg=="
+  }
+```
+
+Similarly, starting in 1.0.0 a ByteArray can be provided using a map with
+the keys "type"
+and "value" where the type is "byteArray" and the value is a base64 encoded string.
 
 ```javascript
 {

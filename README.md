@@ -20,7 +20,7 @@ here [Aerospike REST Gateway API Documentation](https://docs.aerospike.com/apido
 
 ## Prerequisites
 
-* Java 17 or later for REST Gateway 2.0 and newer.  Java 8 or later for REST Gateway 1.11 and earlier.
+* Java 17 or later for REST Gateway 2.0 and newer. Java 8 or later for REST Gateway 1.11 and earlier.
 * Aerospike Server version 4.9+
 
 ## Installation
@@ -85,7 +85,7 @@ languages.
 
 1. Go to [Swagger Editor](https://editor.swagger.io/).
 2. Import the Aerospike REST
-   Client [openapi.json](https://github.com/aerospike/aerospike-rest-gateway/blob/master/docs/openapi.json) file.
+   Client [openapi.json](https://aerospike.github.io/aerospike-rest-gateway/openapi.json) file.
 3. Click on Generate Server/Generate Client and choose the desired language/framework.
 4. A .zip file that contains all the necessary files for a server/client will be downloaded.
 

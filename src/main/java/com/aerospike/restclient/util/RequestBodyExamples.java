@@ -32,5 +32,5 @@ public class RequestBodyExamples {
 
     // key value
     public static final String BINS_NAME = "Bins request body example";
-    public static final String BINS_VALUE = "{\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}";
+    public static final String BINS_VALUE = "{\"intBin\":5, \"strBin\":\"hello\", \"listBin\": [1,2,3], \"dictBin\": {\"one\": 1}, \"geoJsonBin\": {\"type\": \"Point\", \"coordinates\": [1.123, 4.156]}, \"byteArrayBin\": {\"type\": \"BYTE_ARRAY\", \"value\": \"YWVyb3NwaWtlCg==\"}}";
 }
