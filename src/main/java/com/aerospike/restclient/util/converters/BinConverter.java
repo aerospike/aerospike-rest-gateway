@@ -116,7 +116,7 @@ public class BinConverter {
     }
 
     private static boolean isGeoJSON(Map<String, Object> value) {
-        return (isGeoJSONGeometry(value) && isGeoJSONFeature(value));
+        return (isGeoJSONGeometry(value) || isGeoJSONFeature(value));
     }
 
     // Only checks keys to determine if is supported geojson.
