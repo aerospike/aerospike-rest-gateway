@@ -13,7 +13,7 @@ will work completely with the Aerospike data model.
 
 **Note**: GeoJSON and ByteArrays can not be nested in CDTs.
 
-In 2.0.1, a GeoJSON map with the keys "type" and "coordinates" will automatically be understood as a GeoJSON type.
+In 2.0.4, a GeoJSON map with the keys "type" and "coordinates" will automatically be understood as a GeoJSON type.
 
 ```javascript
 {
@@ -22,7 +22,7 @@ In 2.0.1, a GeoJSON map with the keys "type" and "coordinates" will automaticall
 }
 ```
 
-In version prior to 2.0.1, a GeoJSON object can be provided by sending a base64 encoded GeoJSON string.
+In version prior to 2.0.4, a GeoJSON object can be provided by sending a base64 encoded GeoJSON string.
 Base64 encoding the following string `{"type": "Point", "coordinates": [1.123, 4.156]}` results
 in `eyJ0eXBlIjogIlBvaW50IiwgImNvb3JkaW5hdGVzIjogWzEuMTIzLCA0LjE1Nl19Cg==`.
 To write the GeoJSON object use
