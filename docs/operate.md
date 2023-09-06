@@ -2,7 +2,7 @@
 
 # DEPRECATED
 
-    Operatation documentation is now imbedded in the swagger documentation.
+# Operation documentation is now embedded in the swagger documentation as of 2.0.1
 
 # Rest Gateway Operations
 

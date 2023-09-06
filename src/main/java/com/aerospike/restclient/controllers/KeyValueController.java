@@ -60,7 +60,7 @@ public class KeyValueController {
     public static final String NAMESPACE_NOTES = "Namespace for the record; equivalent to database name.";
     public static final String SET_NOTES = "Set for the record; equivalent to database table.";
     public static final String USERKEY_NOTES = "Userkey for the record.";
-    public static final String STORE_BINS_NOTES = "Bins to be stored in the record. This is a mapping from a string bin name to a value. " + "Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. Bytearrays and GeoJSON can " + "only be sent using MessagePack\n " + "example: {\"bin1\":5, \"bin2\":\"hello\", \"bin3\": [1,2,3], \"bin4\": {\"one\": 1}}";
+    public static final String STORE_BINS_NOTES = "Bins to be stored in the record. This is a mapping from a string bin name to a value. " + "Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. For more information on data formats, older APIs, and msgpack: https://github.com/aerospike/aerospike-rest-gateway/blob/master/docs/data-formats.md";
     public static final String GET_RECORD_NOTES = "Return the metadata and bins for a record.";
     public static final String UPDATE_RECORD_NOTES = "Merge the provided bins into the record.";
     public static final String CREATE_RECORD_NOTES = "Create a new record with the provided bins into the record.";
@@ -101,19 +101,16 @@ public class KeyValueController {
     @ASRestClientParams.ASRestClientRecordBinsQueryParam
     @ASRestClientPolicyQueryParams
     public RestClientRecord getRecordNamespaceSetKey(@Parameter(
-            description = NAMESPACE_NOTES,
-            required = true
+            description = NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace,
                                                      @Parameter(description = SET_NOTES, required = true) @PathVariable(
                                                              value = "set"
                                                      ) String set, @Parameter(
-            description = USERKEY_NOTES,
-            required = true
+            description = USERKEY_NOTES, required = true
     ) @PathVariable(value = "key") String key,
                                                      @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
                                                      @RequestHeader(
-                                                             value = "Authorization",
-                                                             required = false
+                                                             value = "Authorization", required = false
                                                      ) String basicAuth) {
 
         String[] bins = RequestParamHandler.getBinsFromMap(requestParams);
@@ -150,16 +147,13 @@ public class KeyValueController {
     @ASRestClientParams.ASRestClientRecordBinsQueryParam
     @ASRestClientPolicyQueryParams
     public RestClientRecord getRecordNamespaceKey(@Parameter(
-            description = NAMESPACE_NOTES,
-            required = true
+            description = NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
-            description = USERKEY_NOTES,
-            required = true
+            description = USERKEY_NOTES, required = true
     ) @PathVariable(value = "key") String key,
                                                   @Parameter(hidden = true) @RequestParam MultiValueMap<String, String> requestParams,
                                                   @RequestHeader(
-                                                          value = "Authorization",
-                                                          required = false
+                                                          value = "Authorization", required = false
                                                   ) String basicAuth) {
 
         String[] bins = RequestParamHandler.getBinsFromMap(requestParams);
@@ -205,19 +199,15 @@ public class KeyValueController {
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void deleteRecordNamespaceSetKey(@Parameter(
-            description = NAMESPACE_NOTES,
-            required = true
+            description = NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
-            description = SET_NOTES,
-            required = true
+            description = SET_NOTES, required = true
     ) @PathVariable(value = "set") String set, @Parameter(
-            description = USERKEY_NOTES,
-            required = true
+            description = USERKEY_NOTES, required = true
     ) @PathVariable(value = "key") String key,
                                             @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                             @RequestHeader(
-                                                    value = "Authorization",
-                                                    required = false
+                                                    value = "Authorization", required = false
                                             ) String basicAuth) {
 
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -257,11 +247,9 @@ public class KeyValueController {
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void deleteRecordNamespaceKey(@Parameter(
-            description = NAMESPACE_NOTES,
-            required = true
+            description = NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
-            description = USERKEY_NOTES,
-            required = true
+            description = USERKEY_NOTES, required = true
     ) @PathVariable(value = "key") String key,
                                          @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                          @RequestHeader(value = "Authorization", required = false) String basicAuth) {
@@ -310,26 +298,20 @@ public class KeyValueController {
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void replaceRecordNamespaceSetKey(@Parameter(
-            description = NAMESPACE_NOTES,
-            required = true
+            description = NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
-            description = SET_NOTES,
-            required = true
+            description = SET_NOTES, required = true
     ) @PathVariable(value = "set") String set, @Parameter(description = USERKEY_NOTES, required = true) @PathVariable(
             value = "key"
     ) String key, @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = STORE_BINS_NOTES,
-            required = true,
-            content = @Content(
-                    examples = @ExampleObject(
-                            name = RequestBodyExamples.BINS_NAME,
-                            value = RequestBodyExamples.BINS_VALUE
-                    )
+            description = STORE_BINS_NOTES, required = true, content = @Content(
+            examples = @ExampleObject(
+                    name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE
             )
+    )
     ) @RequestBody Map<String, Object> bins, @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                              @RequestHeader(
-                                                     value = "Authorization",
-                                                     required = false
+                                                     value = "Authorization", required = false
                                              ) String basicAuth) {
 
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -373,10 +355,10 @@ public class KeyValueController {
     public void replaceRecordNamespaceSetKeyMP(@PathVariable(value = "namespace") String namespace,
                                                @PathVariable(value = "set") String set,
                                                @PathVariable(value = "key") String key, InputStream dataStream,
-                                               @RequestParam Map<String, String> requestParams, @RequestHeader(
-            value = "Authorization",
-            required = false
-    ) String basicAuth) {
+                                               @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
+                                               @RequestHeader(
+                                                       value = "Authorization", required = false
+                                               ) String basicAuth) {
 
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
         WritePolicy policy = RequestParamHandler.getWritePolicy(requestParams, RecordExistsAction.REPLACE_ONLY);
@@ -420,20 +402,15 @@ public class KeyValueController {
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void replaceRecordNamespaceKey(@Parameter(
-            description = NAMESPACE_NOTES,
-            required = true
+            description = NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
-            description = USERKEY_NOTES,
-            required = true
+            description = USERKEY_NOTES, required = true
     ) @PathVariable(value = "key") String key, @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = STORE_BINS_NOTES,
-            required = true,
-            content = @Content(
-                    examples = @ExampleObject(
-                            name = RequestBodyExamples.BINS_NAME,
-                            value = RequestBodyExamples.BINS_VALUE
-                    )
+            description = STORE_BINS_NOTES, required = true, content = @Content(
+            examples = @ExampleObject(
+                    name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE
             )
+    )
     ) @RequestBody Map<String, Object> bins, @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                           @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -454,8 +431,7 @@ public class KeyValueController {
     public void replaceRecordNamespaceKeyMP(@PathVariable(value = "namespace") String namespace,
                                             @PathVariable(value = "key") String key, InputStream dataStream,
                                             @RequestParam Map<String, String> requestParams, @RequestHeader(
-            value = "Authorization",
-            required = false
+            value = "Authorization", required = false
     ) String basicAuth) {
 
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -505,27 +481,20 @@ public class KeyValueController {
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void createRecordNamespaceSetKey(@Parameter(
-            description = NAMESPACE_NOTES,
-            required = true
+            description = NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
-            description = SET_NOTES,
-            required = true
+            description = SET_NOTES, required = true
     ) @PathVariable(value = "set") String set, @Parameter(
-            description = USERKEY_NOTES,
-            required = true
+            description = USERKEY_NOTES, required = true
     ) @PathVariable(value = "key") String key, @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = STORE_BINS_NOTES,
-            required = true,
-            content = @Content(
-                    examples = @ExampleObject(
-                            name = RequestBodyExamples.BINS_NAME,
-                            value = RequestBodyExamples.BINS_VALUE
-                    )
+            description = STORE_BINS_NOTES, required = true, content = @Content(
+            examples = @ExampleObject(
+                    name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE
             )
+    )
     ) @RequestBody Map<String, Object> bins, @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                             @RequestHeader(
-                                                    value = "Authorization",
-                                                    required = false
+                                                    value = "Authorization", required = false
                                             ) String basicAuth) {
 
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -546,8 +515,7 @@ public class KeyValueController {
                                               @PathVariable(value = "set") String set,
                                               @PathVariable(value = "key") String key, InputStream dataStream,
                                               @RequestParam Map<String, String> requestParams, @RequestHeader(
-            value = "Authorization",
-            required = false
+            value = "Authorization", required = false
     ) String basicAuth) {
 
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -592,20 +560,15 @@ public class KeyValueController {
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void createRecordNamespaceKey(@Parameter(
-            description = NAMESPACE_NOTES,
-            required = true
+            description = NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
-            description = USERKEY_NOTES,
-            required = true
+            description = USERKEY_NOTES, required = true
     ) @PathVariable(value = "key") String key, @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = STORE_BINS_NOTES,
-            required = true,
-            content = @Content(
-                    examples = @ExampleObject(
-                            name = RequestBodyExamples.BINS_NAME,
-                            value = RequestBodyExamples.BINS_VALUE
-                    )
+            description = STORE_BINS_NOTES, required = true, content = @Content(
+            examples = @ExampleObject(
+                    name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE
             )
+    )
     ) @RequestBody Map<String, Object> bins, @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                          @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -675,27 +638,20 @@ public class KeyValueController {
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void updateRecordNamespaceSetKey(@Parameter(
-            description = NAMESPACE_NOTES,
-            required = true
+            description = NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
-            description = SET_NOTES,
-            required = true
+            description = SET_NOTES, required = true
     ) @PathVariable(value = "set") String set, @Parameter(
-            description = USERKEY_NOTES,
-            required = true
+            description = USERKEY_NOTES, required = true
     ) @PathVariable(value = "key") String key, @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = STORE_BINS_NOTES,
-            required = true,
-            content = @Content(
-                    examples = @ExampleObject(
-                            name = RequestBodyExamples.BINS_NAME,
-                            value = RequestBodyExamples.BINS_VALUE
-                    )
+            description = STORE_BINS_NOTES, required = true, content = @Content(
+            examples = @ExampleObject(
+                    name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE
             )
+    )
     ) @RequestBody Map<String, Object> bins, @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                             @RequestHeader(
-                                                    value = "Authorization",
-                                                    required = false
+                                                    value = "Authorization", required = false
                                             ) String basicAuth) {
 
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -716,8 +672,7 @@ public class KeyValueController {
                                               @PathVariable(value = "set") String set,
                                               @PathVariable(value = "key") String key, InputStream dataStream,
                                               @RequestParam Map<String, String> requestParams, @RequestHeader(
-            value = "Authorization",
-            required = false
+            value = "Authorization", required = false
     ) String basicAuth) {
 
         RecordKeyType keyType = RequestParamHandler.getKeyTypeFromMap(requestParams);
@@ -762,20 +717,15 @@ public class KeyValueController {
     @ASRestClientParams.ASRestClientKeyTypeQueryParam
     @ASRestClientWritePolicyQueryParams
     public void updateRecordNamespaceKey(@Parameter(
-            description = NAMESPACE_NOTES,
-            required = true
+            description = NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
-            description = USERKEY_NOTES,
-            required = true
+            description = USERKEY_NOTES, required = true
     ) @PathVariable(value = "key") String key, @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = STORE_BINS_NOTES,
-            required = true,
-            content = @Content(
-                    examples = @ExampleObject(
-                            name = RequestBodyExamples.BINS_NAME,
-                            value = RequestBodyExamples.BINS_VALUE
-                    )
+            description = STORE_BINS_NOTES, required = true, content = @Content(
+            examples = @ExampleObject(
+                    name = RequestBodyExamples.BINS_NAME, value = RequestBodyExamples.BINS_VALUE
             )
+    )
     ) @RequestBody Map<String, Object> bins, @Parameter(hidden = true) @RequestParam Map<String, String> requestParams,
                                          @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 
@@ -830,20 +780,15 @@ public class KeyValueController {
             produces = {"application/json", "application/msgpack"}
     )
     public void recordExistsNamespaceSetKey(@Parameter(
-            description = NAMESPACE_NOTES,
-            required = true
+            description = NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
-            description = SET_NOTES,
-            required = true
+            description = SET_NOTES, required = true
     ) @PathVariable(value = "set") String set, @Parameter(
-            description = USERKEY_NOTES,
-            required = true
+            description = USERKEY_NOTES, required = true
     ) @PathVariable(value = "key") String key, @Parameter(hidden = true) HttpServletResponse res, @Parameter(
-            name = "keytype",
-            description = APIDescriptors.KEYTYPE_NOTES
+            name = "keytype", description = APIDescriptors.KEYTYPE_NOTES
     ) @RequestParam(value = "keytype", required = false) RecordKeyType keyType, @RequestHeader(
-            value = "Authorization",
-            required = false
+            value = "Authorization", required = false
     ) String basicAuth) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
@@ -882,14 +827,11 @@ public class KeyValueController {
             produces = {"application/json", "application/msgpack"}
     )
     public void recordExistsNamespaceKey(@Parameter(
-            description = NAMESPACE_NOTES,
-            required = true
+            description = NAMESPACE_NOTES, required = true
     ) @PathVariable(value = "namespace") String namespace, @Parameter(
-            description = USERKEY_NOTES,
-            required = true
+            description = USERKEY_NOTES, required = true
     ) @PathVariable(value = "key") String key, @Parameter(hidden = true) HttpServletResponse res, @Parameter(
-            name = "keytype",
-            description = APIDescriptors.KEYTYPE_NOTES
+            name = "keytype", description = APIDescriptors.KEYTYPE_NOTES
     ) @RequestParam(value = "keytype", required = false) RecordKeyType keyType,
                                          @RequestHeader(value = "Authorization", required = false) String basicAuth) {
 

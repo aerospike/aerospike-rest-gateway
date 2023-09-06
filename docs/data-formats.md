@@ -1,4 +1,4 @@
-# Rest Gateway Data Formats
+# REST Gateway Data Formats
 
 API Requests which involve sending data can use the `JSON`, or `MessagePack` formats. By default JSON will be assumed.
 To use `MessagePack`, set the `Content-Type` header to ``"application/msgpack"``. Similarly
@@ -11,13 +11,9 @@ For many uses `JSON` is a simpler and completely valid option. It provides simpl
 Key Value operations are being used, and neither Maps with non string keys, Bytes nor GeoJSON are required, then `JSON`
 will work completely with the Aerospike data model.
 
-**Note**: In version 1.0 GeoJSON and ByteArray bin values are supported. A GeoJSON map with the keys "type" and "
-coordinates" will automatically be understood as a GeoJSON type. Similarly, a ByteArray can be provided using a map with
-the keys "type"
-and "value" where the type is "byteArray" and the value is a base64 encoded string. One caveat is GeoJSON and ByteArrays
-can not be nested in CDTs.
+**Note**: GeoJSON and ByteArrays can not be nested in CDTs.
 
-Ex. GeoJSON
+In 2.0.4, a GeoJSON map with the keys "type" and "coordinates" will automatically be understood as a GeoJSON type.
 
 ```javascript
 {
@@ -26,7 +22,21 @@ Ex. GeoJSON
 }
 ```
 
-Ex. ByteArray
+In version prior to 2.0.4, a GeoJSON object can be provided by sending a base64 encoded GeoJSON string.
+Base64 encoding the following string `{"type": "Point", "coordinates": [1.123, 4.156]}` results
+in `eyJ0eXBlIjogIlBvaW50IiwgImNvb3JkaW5hdGVzIjogWzEuMTIzLCA0LjE1Nl19Cg==`.
+To write the GeoJSON object use
+
+```javascript
+{
+    "type": "GEO_JSON",
+    "value": "eyJ0eXBlIjogIlBvaW50IiwgImNvb3JkaW5hdGVzIjogWzEuMTIzLCA0LjE1Nl19Cg=="
+}
+```
+
+Similarly, starting in 1.0.0 a ByteArray can be provided using a map with
+the keys "type"
+and "value" where the type is "byteArray" and the value is a base64 encoded string.
 
 ```javascript
 {
@@ -57,17 +67,17 @@ differentiate a normal string from GeoJSON.
 For example to write a bin map usable by the API with a GeoJSON value utilizing Python.
 
 ```python
-# Python 2.7
-import msgpack
-packed_geojson = msgpack.ExtType(23, "{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}")
-packed_bins = {u'geo_bin': packed_geojson}
-mp_bins = msgpack.packb(packed_bins)
+    # Python 2.7
+    import msgpack
+    packed_geojson = msgpack.ExtType(23, "{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}")
+    packed_bins = {u'geo_bin': packed_geojson}
+    mp_bins = msgpack.packb(packed_bins)
 ```
 
 Or with Java
 
 ```java
-MessageBufferPacker packer=new MessagePack.PackerConfig().newBufferPacker();
+    MessageBufferPacker packer=new MessagePack.PackerConfig().newBufferPacker();
         String geoString="{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}";
         packer.packMapHeader(1);
         packer.packString("geo_bin");
@@ -78,13 +88,13 @@ MessageBufferPacker packer=new MessagePack.PackerConfig().newBufferPacker();
 Bytes are a standard Message Pack type. Here is an example of creating a Bin Map to be used with the API
 
 ```python
-# Python 2.7
-test_bytes = bytearray([1,2,3])
-mp_bytes_bins = msgpack.packb({u'my_bytes': test_bytes}, use_bin_type=True)
+    # Python 2.7
+    test_bytes = bytearray([1,2,3])
+    mp_bytes_bins = msgpack.packb({u'my_bytes': test_bytes}, use_bin_type=True)
 ```
 
 ```java
-byte[]testBytes={1,2,3};
+    byte[]testBytes={1,2,3};
         MessageBufferPacker packer=new MessagePack.PackerConfig().newBufferPacker();
 
         packer.packMapHeader(1);

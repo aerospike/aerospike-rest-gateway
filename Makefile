@@ -16,6 +16,10 @@ package: clean validatedocs build
 build:
 	./gradlew build -x test
 
+.PHONY: run
+run:
+	./gradlew bootRun
+
 .PHONY: clean
 clean:
 	echo $(VERSION)

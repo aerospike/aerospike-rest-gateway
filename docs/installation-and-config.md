@@ -19,7 +19,7 @@ make build
 * Run Locally during development:
 
 ```sh
-./gradlew bootRun
+make run
 ```
 
 ### Run using a Jar file

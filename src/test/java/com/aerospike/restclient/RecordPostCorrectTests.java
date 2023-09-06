@@ -255,12 +255,31 @@ public class RecordPostCorrectTests {
     }
 
     @Test
-    public void PostGeoJson() throws Exception {
+    public void PostBase64EncodedGeoJson() throws Exception {
         Map<String, Object> binMap = new HashMap<>();
         Map<String, String> geoJson = new HashMap<>();
         String geoStr = "{\"type\": \"Point\", \"coordinates\": [-80.604333, 28.608389]}";
         geoJson.put("type", "GEO_JSON");
         geoJson.put("value", Base64.getEncoder().encodeToString(geoStr.getBytes()));
+
+        binMap.put("geo_json", geoJson);
+
+        postPerformer.perform(mockMVC, testEndpoint, binMap);
+
+        Record record = client.get(null, this.testKey);
+        Assert.assertEquals(((Value.GeoJSONValue) record.bins.get("geo_json")).getObject(), geoStr);
+    }
+
+    @Test
+    public void PostGeoJson() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
+        Map<String, Object> geoJson = new HashMap<>();
+        List<Double> coordinates = new ArrayList<>();
+        coordinates.add(-80.604333);
+        coordinates.add(28.608389);
+        String geoStr = "{\"coordinates\":[-80.604333,28.608389],\"type\":\"Point\"}";
+        geoJson.put("coordinates", coordinates);
+        geoJson.put("type", "Point");
 
         binMap.put("geo_json", geoJson);
 
