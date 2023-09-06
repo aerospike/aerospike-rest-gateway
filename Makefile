@@ -20,8 +20,6 @@ build:
 run:
 	./gradlew bootRun
 
-
-
 .PHONY: clean
 clean:
 	echo $(VERSION)

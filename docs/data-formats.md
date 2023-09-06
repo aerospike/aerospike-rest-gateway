@@ -31,7 +31,7 @@ To write the GeoJSON object use
 {
     "type": "GEO_JSON",
     "value": "eyJ0eXBlIjogIlBvaW50IiwgImNvb3JkaW5hdGVzIjogWzEuMTIzLCA0LjE1Nl19Cg=="
-  }
+}
 ```
 
 Similarly, starting in 1.0.0 a ByteArray can be provided using a map with
