@@ -60,7 +60,7 @@ public class KeyValueController {
     public static final String NAMESPACE_NOTES = "Namespace for the record; equivalent to database name.";
     public static final String SET_NOTES = "Set for the record; equivalent to database table.";
     public static final String USERKEY_NOTES = "Userkey for the record.";
-    public static final String STORE_BINS_NOTES = "Bins to be stored in the record. This is a mapping from a string bin name to a value. " + "Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. For more information on data formats, older APIS, and msgpack: https://github.com/aerospike/aerospike-rest-gateway/blob/master/docs/data-formats.md";
+    public static final String STORE_BINS_NOTES = "Bins to be stored in the record. This is a mapping from a string bin name to a value. " + "Value can be a String, integer, floating point number, list, map, bytearray, or GeoJSON value. For more information on data formats, older APIs, and msgpack: https://github.com/aerospike/aerospike-rest-gateway/blob/master/docs/data-formats.md";
     public static final String GET_RECORD_NOTES = "Return the metadata and bins for a record.";
     public static final String UPDATE_RECORD_NOTES = "Merge the provided bins into the record.";
     public static final String CREATE_RECORD_NOTES = "Create a new record with the provided bins into the record.";
