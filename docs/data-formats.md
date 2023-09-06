@@ -78,11 +78,11 @@ Or with Java
 
 ```java
     MessageBufferPacker packer=new MessagePack.PackerConfig().newBufferPacker();
-        String geoString="{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}";
-        packer.packMapHeader(1);
-        packer.packString("geo_bin");
-        packer.packExtensionTypeHeader((byte)23,geoString.length());
-        packer.addPayload(geoString.getBytes("UTF-8"));
+    String geoString="{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}";
+    packer.packMapHeader(1);
+    packer.packString("geo_bin");
+    packer.packExtensionTypeHeader((byte)23,geoString.length());
+    packer.addPayload(geoString.getBytes("UTF-8"));
 ```
 
 Bytes are a standard Message Pack type. Here is an example of creating a Bin Map to be used with the API
@@ -95,14 +95,10 @@ Bytes are a standard Message Pack type. Here is an example of creating a Bin Map
 
 ```java
     byte[]testBytes={1,2,3};
-        MessageBufferPacker packer=new MessagePack.PackerConfig().newBufferPacker();
-
-        packer.packMapHeader(1);
-
-        packer.packString("my_bytes");
-
-        packer.packBinaryHeader(3);
-        packer.writePayload(testBytes);
-
-        byte[]payload=packer.toByteArray();
+    MessageBufferPacker packer=new MessagePack.PackerConfig().newBufferPacker();
+    packer.packMapHeader(1);
+    packer.packString("my_bytes");
+    packer.packBinaryHeader(3);
+    packer.writePayload(testBytes);
+    byte[]payload=packer.toByteArray();
 ```
