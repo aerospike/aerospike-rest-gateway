@@ -67,17 +67,17 @@ differentiate a normal string from GeoJSON.
 For example to write a bin map usable by the API with a GeoJSON value utilizing Python.
 
 ```python
-# Python 2.7
-import msgpack
-packed_geojson = msgpack.ExtType(23, "{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}")
-packed_bins = {u'geo_bin': packed_geojson}
-mp_bins = msgpack.packb(packed_bins)
+    # Python 2.7
+    import msgpack
+    packed_geojson = msgpack.ExtType(23, "{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}")
+    packed_bins = {u'geo_bin': packed_geojson}
+    mp_bins = msgpack.packb(packed_bins)
 ```
 
 Or with Java
 
 ```java
-MessageBufferPacker packer=new MessagePack.PackerConfig().newBufferPacker();
+    MessageBufferPacker packer=new MessagePack.PackerConfig().newBufferPacker();
         String geoString="{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}";
         packer.packMapHeader(1);
         packer.packString("geo_bin");
@@ -88,13 +88,13 @@ MessageBufferPacker packer=new MessagePack.PackerConfig().newBufferPacker();
 Bytes are a standard Message Pack type. Here is an example of creating a Bin Map to be used with the API
 
 ```python
-# Python 2.7
-test_bytes = bytearray([1,2,3])
-mp_bytes_bins = msgpack.packb({u'my_bytes': test_bytes}, use_bin_type=True)
+    # Python 2.7
+    test_bytes = bytearray([1,2,3])
+    mp_bytes_bins = msgpack.packb({u'my_bytes': test_bytes}, use_bin_type=True)
 ```
 
 ```java
-byte[]testBytes={1,2,3};
+    byte[]testBytes={1,2,3};
         MessageBufferPacker packer=new MessagePack.PackerConfig().newBufferPacker();
 
         packer.packMapHeader(1);
