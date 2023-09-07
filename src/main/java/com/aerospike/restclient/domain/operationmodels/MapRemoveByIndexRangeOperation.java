@@ -31,9 +31,9 @@ public class MapRemoveByIndexRangeOperation extends MapOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_REMOVE_BY_INDEX_RANGE,
             required = true,
-            allowableValues = OperationTypes.MAP_REMOVE_BY_INDEX_RANGE
+            allowableValues = {OperationTypes.MAP_REMOVE_BY_INDEX_RANGE}
     )
-    final public static String type = OperationTypes.MAP_REMOVE_BY_INDEX_RANGE;
+    final public String type = OperationTypes.MAP_REMOVE_BY_INDEX_RANGE;
 
     @Schema(required = true)
     private final int index;
@@ -46,8 +46,11 @@ public class MapRemoveByIndexRangeOperation extends MapOperation {
     private Integer count;
 
     @JsonCreator
-    public MapRemoveByIndexRangeOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                          @JsonProperty(value = "index", required = true) int index, @JsonProperty(
+    public MapRemoveByIndexRangeOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "index") @Schema(
+            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int index, @JsonProperty(
             value = "mapReturnType", required = true
     ) MapReturnType mapReturnType) {
         super(binName);

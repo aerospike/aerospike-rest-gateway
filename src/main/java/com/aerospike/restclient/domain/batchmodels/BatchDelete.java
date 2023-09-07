@@ -32,7 +32,7 @@ import java.util.Optional;
 public class BatchDelete extends BatchRecord {
     @Schema(
             description = "The type of batch request. It is always " + AerospikeAPIConstants.BATCH_TYPE_DELETE,
-            allowableValues = AerospikeAPIConstants.BATCH_TYPE_DELETE,
+            allowableValues = {AerospikeAPIConstants.BATCH_TYPE_DELETE},
             required = true
     )
     public final String type = AerospikeAPIConstants.BATCH_TYPE_DELETE;

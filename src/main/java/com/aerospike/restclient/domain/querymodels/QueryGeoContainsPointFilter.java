@@ -33,9 +33,9 @@ public class QueryGeoContainsPointFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT,
             required = true,
-            allowableValues = AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT
+            allowableValues = {AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT}
     )
-    final public static String type = AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT;
+    final public String type = AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT;
 
     @Schema(description = "Longitude and Latitude of a point", required = true)
     public LngLat point;

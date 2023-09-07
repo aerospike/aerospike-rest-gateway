@@ -32,9 +32,9 @@ public class ListGetByValueRelativeRankRangeOperation extends ListOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE,
             required = true,
-            allowableValues = OperationTypes.LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE
+            allowableValues = {OperationTypes.LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE}
     )
-    final public static String type = OperationTypes.LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE;
+    final public String type = OperationTypes.LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE;
 
     @Schema(required = true)
     private final int rank;

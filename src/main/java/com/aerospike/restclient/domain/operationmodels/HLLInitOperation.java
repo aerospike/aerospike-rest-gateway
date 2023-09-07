@@ -31,9 +31,9 @@ public class HLLInitOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_INIT,
             required = true,
-            allowableValues = OperationTypes.HLL_INIT
+            allowableValues = {OperationTypes.HLL_INIT}
     )
-    final public static String type = OperationTypes.HLL_INIT;
+    final public String type = OperationTypes.HLL_INIT;
 
     @Schema(required = true)
     private final int indexBitCount;
@@ -41,8 +41,11 @@ public class HLLInitOperation extends HLLOperation {
     private Integer minHashBitCount;
 
     @JsonCreator
-    public HLLInitOperation(@JsonProperty(value = "binName", required = true) String binName,
-                            @JsonProperty(value = "indexBitCount", required = true) int indexBitCount) {
+    public HLLInitOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @Schema(
+            name = "indexBitCount", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int indexBitCount) {
         super(binName);
         this.indexBitCount = indexBitCount;
     }

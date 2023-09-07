@@ -31,12 +31,14 @@ public class MapSizeOperation extends MapOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_SIZE,
             required = true,
-            allowableValues = OperationTypes.MAP_SIZE
+            allowableValues = {OperationTypes.MAP_SIZE}
     )
-    final public static String type = OperationTypes.MAP_SIZE;
+    final public String type = OperationTypes.MAP_SIZE;
 
     @JsonCreator
-    public MapSizeOperation(@JsonProperty(value = "binName", required = true) String binName) {
+    public MapSizeOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName) {
         super(binName);
     }
 

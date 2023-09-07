@@ -31,12 +31,14 @@ public class MapClearOperation extends MapOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_CLEAR,
             required = true,
-            allowableValues = OperationTypes.MAP_CLEAR
+            allowableValues = {OperationTypes.MAP_CLEAR}
     )
-    final public static String type = OperationTypes.MAP_CLEAR;
+    final public String type = OperationTypes.MAP_CLEAR;
 
     @JsonCreator
-    public MapClearOperation(@JsonProperty(value = "binName", required = true) String binName) {
+    public MapClearOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName) {
         super(binName);
     }
 

@@ -74,7 +74,9 @@ abstract public class BitOperation extends Operation {
     protected String binName;
 
     @JsonCreator
-    protected BitOperation(@JsonProperty(value = "binName", required = true) String binName) {
+    protected BitOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName) {
         this.binName = binName;
     }
 }

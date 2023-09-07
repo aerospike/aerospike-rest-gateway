@@ -33,9 +33,9 @@ public class HLLGetSimilarityOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_SIMILARITY,
             required = true,
-            allowableValues = OperationTypes.HLL_SIMILARITY
+            allowableValues = {OperationTypes.HLL_SIMILARITY}
     )
-    final public static String type = OperationTypes.HLL_SIMILARITY;
+    final public String type = OperationTypes.HLL_SIMILARITY;
 
     @Schema(required = true)
     private final List<byte[]> values;

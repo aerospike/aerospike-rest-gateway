@@ -32,9 +32,9 @@ public class ListSetOperation extends ListOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_SET,
             required = true,
-            allowableValues = OperationTypes.LIST_SET
+            allowableValues = {OperationTypes.LIST_SET}
     )
-    final public static String type = OperationTypes.LIST_SET;
+    final public String type = OperationTypes.LIST_SET;
 
     @Schema(required = true)
     private final int index;
@@ -45,9 +45,13 @@ public class ListSetOperation extends ListOperation {
     private ListPolicy listPolicy;
 
     @JsonCreator
-    public ListSetOperation(@JsonProperty(value = "binName", required = true) String binName,
-                            @JsonProperty(value = "index", required = true) int index,
-                            @JsonProperty(value = "value", required = true) Object value) {
+    public ListSetOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "index") @Schema(
+            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int index, @JsonProperty(value = "value") @Schema(
+            name = "value", requiredMode = Schema.RequiredMode.REQUIRED
+    ) Object value) {
         super(binName);
         this.index = index;
         this.value = value;

@@ -31,9 +31,9 @@ public class ListRemoveByIndexOperation extends ListOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_REMOVE_BY_INDEX,
             required = true,
-            allowableValues = OperationTypes.LIST_REMOVE_BY_INDEX
+            allowableValues = {OperationTypes.LIST_REMOVE_BY_INDEX}
     )
-    final public static String type = OperationTypes.LIST_REMOVE_BY_INDEX;
+    final public String type = OperationTypes.LIST_REMOVE_BY_INDEX;
 
     @Schema(required = true)
     private final int index;
@@ -44,8 +44,11 @@ public class ListRemoveByIndexOperation extends ListOperation {
     private boolean inverted;
 
     @JsonCreator
-    public ListRemoveByIndexOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                      @JsonProperty(value = "index", required = true) int index, @JsonProperty(
+    public ListRemoveByIndexOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "index") @Schema(
+            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int index, @JsonProperty(
             value = "listReturnType", required = true
     ) ListReturnType listReturnType) {
         super(binName);

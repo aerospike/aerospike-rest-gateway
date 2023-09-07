@@ -34,9 +34,9 @@ public class ListGetByValueListOperation extends ListOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_GET_BY_VALUE_LIST,
             required = true,
-            allowableValues = OperationTypes.LIST_GET_BY_VALUE_LIST
+            allowableValues = {OperationTypes.LIST_GET_BY_VALUE_LIST}
     )
-    final public static String type = OperationTypes.LIST_GET_BY_VALUE_LIST;
+    final public String type = OperationTypes.LIST_GET_BY_VALUE_LIST;
 
     @Schema(required = true)
     private final ListReturnType listReturnType;

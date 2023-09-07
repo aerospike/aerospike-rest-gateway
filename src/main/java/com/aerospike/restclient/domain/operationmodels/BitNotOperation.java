@@ -31,9 +31,9 @@ public class BitNotOperation extends BitOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.BIT_NOT,
             required = true,
-            allowableValues = OperationTypes.BIT_NOT
+            allowableValues = {OperationTypes.BIT_NOT}
     )
-    final public static String type = OperationTypes.BIT_NOT;
+    final public String type = OperationTypes.BIT_NOT;
 
     @Schema(required = true)
     private final int bitOffset;
@@ -42,9 +42,13 @@ public class BitNotOperation extends BitOperation {
     private final int bitSize;
 
     @JsonCreator
-    public BitNotOperation(@JsonProperty(value = "binName", required = true) String binName,
-                           @JsonProperty(value = "bitOffset", required = true) int bitOffset,
-                           @JsonProperty(value = "bitSize", required = true) int bitSize) {
+    public BitNotOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "bitOffset") @Schema(
+            name = "bitOffset", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int bitOffset, @JsonProperty(value = "bitSize") @Schema(
+            name = "bitSize", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int bitSize) {
         super(binName);
         this.bitOffset = bitOffset;
         this.bitSize = bitSize;

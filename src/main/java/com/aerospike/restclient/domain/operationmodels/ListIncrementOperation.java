@@ -32,9 +32,9 @@ public class ListIncrementOperation extends ListOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_INCREMENT,
             required = true,
-            allowableValues = OperationTypes.LIST_INCREMENT
+            allowableValues = {OperationTypes.LIST_INCREMENT}
     )
-    final public static String type = OperationTypes.LIST_INCREMENT;
+    final public String type = OperationTypes.LIST_INCREMENT;
 
     @Schema(required = true)
     private final int index;
@@ -45,9 +45,13 @@ public class ListIncrementOperation extends ListOperation {
     private ListPolicy listPolicy;
 
     @JsonCreator
-    public ListIncrementOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                  @JsonProperty(value = "index", required = true) int index,
-                                  @JsonProperty(value = "incr", required = true) Number incr) {
+    public ListIncrementOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "index") @Schema(
+            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int index, @JsonProperty(value = "incr") @Schema(
+            name = "incr", requiredMode = Schema.RequiredMode.REQUIRED
+    ) Number incr) {
         super(binName);
         this.index = index;
         this.incr = incr;

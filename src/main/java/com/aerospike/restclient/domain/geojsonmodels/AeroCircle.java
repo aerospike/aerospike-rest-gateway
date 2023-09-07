@@ -32,7 +32,7 @@ public class AeroCircle extends GeoJSON {
             allowableValues = {AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE},
             required = true
     )
-    public final String type = AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE;
+    public String type = AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE;
 
     public LngLatRad coordinates;
 

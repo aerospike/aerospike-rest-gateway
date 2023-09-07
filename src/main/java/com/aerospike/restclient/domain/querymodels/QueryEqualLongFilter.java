@@ -31,9 +31,9 @@ public class QueryEqualLongFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG,
             required = true,
-            allowableValues = AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG
+            allowableValues = {AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG}
     )
-    final public static String type = AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG;
+    final public String type = AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG;
 
     @Schema(required = true)
     public Long value;

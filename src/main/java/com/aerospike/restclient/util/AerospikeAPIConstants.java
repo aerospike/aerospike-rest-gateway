@@ -122,6 +122,8 @@ public final class AerospikeAPIConstants {
         public static final String GEOCONTAINS_POINT = "GEO_CONTAINS_POINT";
     }
 
+    public static final String[] test = new String[]{QueryFilterTypes.RANGE};
+
     // INFO POLICY KEYS
     public static final String TIMEOUT = "timeout";
 

@@ -56,7 +56,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
         description = "The base type for describing all operations. Should not be used directly."
 )
 abstract public class Operation {
-        abstract public com.aerospike.client.Operation toOperation();
+    abstract public com.aerospike.client.Operation toOperation();
 }
 
 

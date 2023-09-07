@@ -30,12 +30,14 @@ public class HLLGetCountOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_COUNT,
             required = true,
-            allowableValues = OperationTypes.HLL_COUNT
+            allowableValues = {OperationTypes.HLL_COUNT}
     )
-    final public static String type = OperationTypes.HLL_COUNT;
+    final public String type = OperationTypes.HLL_COUNT;
 
     @JsonCreator
-    public HLLGetCountOperation(@JsonProperty(value = "binName", required = true) String binName) {
+    public HLLGetCountOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName) {
         super(binName);
     }
 

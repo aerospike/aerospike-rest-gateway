@@ -149,7 +149,9 @@ abstract public class ListOperation extends Operation {
     protected List<CTX> ctx;
 
     @JsonCreator
-    protected ListOperation(@JsonProperty(value = "binName", required = true) String binName) {
+    protected ListOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName) {
         this.binName = binName;
     }
 

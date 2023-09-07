@@ -32,9 +32,9 @@ public class MapRemoveByValueRelativeRankRange extends MapOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE,
             required = true,
-            allowableValues = OperationTypes.MAP_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE
+            allowableValues = {OperationTypes.MAP_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE}
     )
-    final public static String type = OperationTypes.MAP_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE;
+    final public String type = OperationTypes.MAP_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE;
 
     @Schema(required = true)
     private final int rank;
@@ -50,12 +50,15 @@ public class MapRemoveByValueRelativeRankRange extends MapOperation {
     private Integer count;
 
     @JsonCreator
-    public MapRemoveByValueRelativeRankRange(@JsonProperty(value = "binName", required = true) String binName,
-                                             @JsonProperty(value = "rank", required = true) int rank,
-                                             @JsonProperty(value = "value", required = true) Object value,
-                                             @JsonProperty(
-                                                     value = "mapReturnType", required = true
-                                             ) MapReturnType mapReturnType) {
+    public MapRemoveByValueRelativeRankRange(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "rank") @Schema(
+            name = "rank", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int rank, @JsonProperty(value = "value") @Schema(
+            name = "value", requiredMode = Schema.RequiredMode.REQUIRED
+    ) Object value, @JsonProperty(
+            value = "mapReturnType", required = true
+    ) MapReturnType mapReturnType) {
         super(binName);
         this.rank = rank;
         this.value = value;

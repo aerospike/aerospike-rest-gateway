@@ -31,9 +31,9 @@ public class GetOperation extends Operation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.GET,
             required = true,
-            allowableValues = OperationTypes.GET
+            allowableValues = {OperationTypes.GET}
     )
-    final public static String type = OperationTypes.GET;
+    final public String type = OperationTypes.GET;
 
     private final String binName;
 

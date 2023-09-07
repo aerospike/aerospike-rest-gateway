@@ -34,9 +34,9 @@ public class HLLAddOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_ADD,
             required = true,
-            allowableValues = OperationTypes.HLL_ADD
+            allowableValues = {OperationTypes.HLL_ADD}
     )
-    final public static String type = OperationTypes.HLL_ADD;
+    final public String type = OperationTypes.HLL_ADD;
 
     @Schema(required = true)
     private final List<Object> values;

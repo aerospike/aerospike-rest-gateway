@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class ListRankCTX extends CTX {
     @Schema(
             description = "The type of context this object represents. It is always " + AerospikeAPIConstants.CTX.LIST_RANK,
-            allowableValues = AerospikeAPIConstants.CTX.LIST_RANK,
+            allowableValues = {AerospikeAPIConstants.CTX.LIST_RANK},
             required = true
     )
     public final String type = AerospikeAPIConstants.CTX.LIST_RANK;

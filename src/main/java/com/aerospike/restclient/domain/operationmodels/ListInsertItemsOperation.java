@@ -34,9 +34,9 @@ public class ListInsertItemsOperation extends ListOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_INSERT_ITEMS,
             required = true,
-            allowableValues = OperationTypes.LIST_INSERT_ITEMS
+            allowableValues = {OperationTypes.LIST_INSERT_ITEMS}
     )
-    final public static String type = OperationTypes.LIST_INSERT_ITEMS;
+    final public String type = OperationTypes.LIST_INSERT_ITEMS;
 
     @Schema(required = true)
     private final int index;

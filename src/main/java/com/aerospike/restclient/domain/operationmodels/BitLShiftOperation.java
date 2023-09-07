@@ -31,9 +31,9 @@ public class BitLShiftOperation extends BitOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.BIT_LSHIFT,
             required = true,
-            allowableValues = OperationTypes.BIT_LSHIFT
+            allowableValues = {OperationTypes.BIT_LSHIFT}
     )
-    final public static String type = OperationTypes.BIT_LSHIFT;
+    final public String type = OperationTypes.BIT_LSHIFT;
 
     @Schema(required = true)
     private final int bitOffset;
@@ -45,10 +45,15 @@ public class BitLShiftOperation extends BitOperation {
     private final int shift;
 
     @JsonCreator
-    public BitLShiftOperation(@JsonProperty(value = "binName", required = true) String binName,
-                              @JsonProperty(value = "bitOffset", required = true) int bitOffset,
-                              @JsonProperty(value = "bitSize", required = true) int bitSize,
-                              @JsonProperty(value = "shift", required = true) int shift) {
+    public BitLShiftOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "bitOffset") @Schema(
+            name = "bitOffset", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int bitOffset, @JsonProperty(value = "bitSize") @Schema(
+            name = "bitSize", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int bitSize, @JsonProperty(value = "shift") @Schema(
+            name = "shift", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int shift) {
         super(binName);
         this.bitOffset = bitOffset;
         this.bitSize = bitSize;

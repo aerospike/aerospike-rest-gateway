@@ -31,9 +31,9 @@ public class MapRemoveByRankRangeOperation extends MapOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_REMOVE_BY_RANK_RANGE,
             required = true,
-            allowableValues = OperationTypes.MAP_REMOVE_BY_RANK_RANGE
+            allowableValues = {OperationTypes.MAP_REMOVE_BY_RANK_RANGE}
     )
-    final public static String type = OperationTypes.MAP_REMOVE_BY_RANK_RANGE;
+    final public String type = OperationTypes.MAP_REMOVE_BY_RANK_RANGE;
 
     @Schema(required = true)
     private final int rank;
@@ -46,8 +46,11 @@ public class MapRemoveByRankRangeOperation extends MapOperation {
     private Integer count;
 
     @JsonCreator
-    public MapRemoveByRankRangeOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                         @JsonProperty(value = "rank", required = true) int rank, @JsonProperty(
+    public MapRemoveByRankRangeOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "rank") @Schema(
+            name = "rank", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int rank, @JsonProperty(
             value = "mapReturnType", required = true
     ) MapReturnType mapReturnType) {
         super(binName);

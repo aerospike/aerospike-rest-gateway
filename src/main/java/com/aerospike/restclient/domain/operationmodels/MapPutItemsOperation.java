@@ -35,9 +35,9 @@ public class MapPutItemsOperation extends MapOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_PUT_ITEMS,
             required = true,
-            allowableValues = OperationTypes.MAP_PUT_ITEMS
+            allowableValues = {OperationTypes.MAP_PUT_ITEMS}
     )
-    final public static String type = OperationTypes.MAP_PUT_ITEMS;
+    final public String type = OperationTypes.MAP_PUT_ITEMS;
 
     @Schema(required = true)
     private final Map<Object, Object> map;

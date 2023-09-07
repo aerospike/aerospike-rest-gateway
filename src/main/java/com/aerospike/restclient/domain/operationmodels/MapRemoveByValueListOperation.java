@@ -34,9 +34,9 @@ public class MapRemoveByValueListOperation extends MapOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_REMOVE_BY_VALUE_LIST,
             required = true,
-            allowableValues = OperationTypes.MAP_REMOVE_BY_VALUE_LIST
+            allowableValues = {OperationTypes.MAP_REMOVE_BY_VALUE_LIST}
     )
-    final public static String type = OperationTypes.MAP_REMOVE_BY_VALUE_LIST;
+    final public String type = OperationTypes.MAP_REMOVE_BY_VALUE_LIST;
 
     @Schema(required = true)
     private final List<Object> values;

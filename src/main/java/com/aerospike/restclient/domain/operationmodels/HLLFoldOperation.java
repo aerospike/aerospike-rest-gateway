@@ -30,16 +30,19 @@ public class HLLFoldOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_FOLD,
             required = true,
-            allowableValues = OperationTypes.HLL_FOLD
+            allowableValues = {OperationTypes.HLL_FOLD}
     )
-    final public static String type = OperationTypes.HLL_FOLD;
+    final public String type = OperationTypes.HLL_FOLD;
 
     @Schema(required = true)
     private final int indexBitCount;
 
     @JsonCreator
-    public HLLFoldOperation(@JsonProperty(value = "binName", required = true) String binName,
-                            @JsonProperty(value = "indexBitCount", required = true) int indexBitCount) {
+    public HLLFoldOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @Schema(
+            name = "indexBitCount", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int indexBitCount) {
         super(binName);
         this.indexBitCount = indexBitCount;
     }

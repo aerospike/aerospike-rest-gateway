@@ -132,13 +132,15 @@ import java.util.Optional;
 )
 abstract public class MapOperation extends Operation {
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     protected String binName;
 
     protected List<CTX> ctx;
 
     @JsonCreator
-    protected MapOperation(@JsonProperty(value = "binName", required = true) String binName) {
+    protected MapOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName) {
         this.binName = binName;
     }
 

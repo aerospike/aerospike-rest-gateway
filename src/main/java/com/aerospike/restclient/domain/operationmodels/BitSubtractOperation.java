@@ -32,9 +32,9 @@ public class BitSubtractOperation extends BitOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.BIT_SUBTRACT,
             required = true,
-            allowableValues = OperationTypes.BIT_SUBTRACT
+            allowableValues = {OperationTypes.BIT_SUBTRACT}
     )
-    final public static String type = OperationTypes.BIT_SUBTRACT;
+    final public String type = OperationTypes.BIT_SUBTRACT;
 
     @Schema(required = true)
     private final int bitOffset;
@@ -51,10 +51,15 @@ public class BitSubtractOperation extends BitOperation {
     private BitOverflowAction action = BitOverflowAction.FAIL;
 
     @JsonCreator
-    public BitSubtractOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                @JsonProperty(value = "bitOffset", required = true) int bitOffset,
-                                @JsonProperty(value = "bitSize", required = true) int bitSize,
-                                @JsonProperty(value = "value", required = true) long value) {
+    public BitSubtractOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "bitOffset") @Schema(
+            name = "bitOffset", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int bitOffset, @JsonProperty(value = "bitSize") @Schema(
+            name = "bitSize", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int bitSize, @JsonProperty(value = "value") @Schema(
+            name = "value", requiredMode = Schema.RequiredMode.REQUIRED
+    ) long value) {
         super(binName);
         this.bitOffset = bitOffset;
         this.bitSize = bitSize;

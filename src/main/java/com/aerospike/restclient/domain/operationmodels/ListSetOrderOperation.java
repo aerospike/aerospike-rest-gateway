@@ -32,16 +32,19 @@ public class ListSetOrderOperation extends ListOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_SET_ORDER,
             required = true,
-            allowableValues = OperationTypes.LIST_SET_ORDER
+            allowableValues = {OperationTypes.LIST_SET_ORDER}
     )
-    final public static String type = OperationTypes.LIST_SET_ORDER;
+    final public String type = OperationTypes.LIST_SET_ORDER;
 
     @Schema(required = true)
     private final ListOrder listOrder;
 
     @JsonCreator
-    public ListSetOrderOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                 @JsonProperty(value = "listOrder", required = true) ListOrder listOrder) {
+    public ListSetOrderOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @Schema(
+            name = "listOrder", requiredMode = Schema.RequiredMode.REQUIRED
+    ) ListOrder listOrder) {
         super(binName);
         this.listOrder = listOrder;
     }

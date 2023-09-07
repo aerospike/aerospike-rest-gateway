@@ -34,9 +34,9 @@ public class MapGetByKeyListOperation extends MapOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_GET_BY_KEY_LIST,
             required = true,
-            allowableValues = OperationTypes.MAP_GET_BY_KEY_LIST
+            allowableValues = {OperationTypes.MAP_GET_BY_KEY_LIST}
     )
-    final public static String type = OperationTypes.MAP_GET_BY_KEY_LIST;
+    final public String type = OperationTypes.MAP_GET_BY_KEY_LIST;
 
     @Schema(required = true)
     private final List<Object> keys;

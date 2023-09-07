@@ -31,9 +31,9 @@ public class MapGetByIndexOperation extends MapOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_GET_BY_INDEX,
             required = true,
-            allowableValues = OperationTypes.MAP_GET_BY_INDEX
+            allowableValues = {OperationTypes.MAP_GET_BY_INDEX}
     )
-    final public static String type = OperationTypes.MAP_GET_BY_INDEX;
+    final public String type = OperationTypes.MAP_GET_BY_INDEX;
 
     @Schema(required = true)
     private final int index;
@@ -44,9 +44,13 @@ public class MapGetByIndexOperation extends MapOperation {
     private boolean inverted;
 
     @JsonCreator
-    public MapGetByIndexOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                  @JsonProperty(value = "index", required = true) int index,
-                                  @JsonProperty(value = "mapReturnType", required = true) MapReturnType mapReturnType) {
+    public MapGetByIndexOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "index") @Schema(
+            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int index, @Schema(
+            name = "mapReturnType", requiredMode = Schema.RequiredMode.REQUIRED
+    ) MapReturnType mapReturnType) {
         super(binName);
         this.index = index;
         this.mapReturnType = mapReturnType;

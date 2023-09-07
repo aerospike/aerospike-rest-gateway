@@ -33,9 +33,9 @@ public class HLLGetUnionOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_UNION,
             required = true,
-            allowableValues = OperationTypes.HLL_UNION
+            allowableValues = {OperationTypes.HLL_UNION}
     )
-    final public static String type = OperationTypes.HLL_UNION;
+    final public String type = OperationTypes.HLL_UNION;
 
     @Schema(required = true)
     private final List<byte[]> values;

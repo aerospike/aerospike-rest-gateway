@@ -29,9 +29,9 @@ public class DeleteOperation extends Operation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.DELETE,
             required = true,
-            allowableValues = OperationTypes.DELETE
+            allowableValues = {OperationTypes.DELETE}
     )
-    final public static String type = OperationTypes.DELETE;
+    final public String type = OperationTypes.DELETE;
 
     @Override
     public com.aerospike.client.Operation toOperation() {

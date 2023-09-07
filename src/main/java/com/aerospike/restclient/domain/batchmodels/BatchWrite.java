@@ -36,7 +36,7 @@ public class BatchWrite extends BatchRecord {
 
     @Schema(
             description = "List of bins to limit the record response to.",
-            allowableValues = AerospikeAPIConstants.BATCH_TYPE_WRITE,
+            allowableValues = {AerospikeAPIConstants.BATCH_TYPE_WRITE},
             required = true
     )
     @JsonProperty(required = true)

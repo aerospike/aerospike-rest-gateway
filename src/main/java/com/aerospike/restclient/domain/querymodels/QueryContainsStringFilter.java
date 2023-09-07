@@ -32,9 +32,9 @@ public class QueryContainsStringFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING,
             required = true,
-            allowableValues = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING
+            allowableValues = {AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING}
     )
-    final public static String type = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING;
+    final public String type = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING;
 
     @Schema(required = true)
     public String value;

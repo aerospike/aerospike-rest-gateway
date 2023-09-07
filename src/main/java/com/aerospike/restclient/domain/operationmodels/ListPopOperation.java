@@ -31,16 +31,19 @@ public class ListPopOperation extends ListOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_POP,
             required = true,
-            allowableValues = OperationTypes.LIST_POP
+            allowableValues = {OperationTypes.LIST_POP}
     )
-    final public static String type = OperationTypes.LIST_POP;
+    final public String type = OperationTypes.LIST_POP;
 
     @Schema(required = true)
     private final int index;
 
     @JsonCreator
-    public ListPopOperation(@JsonProperty(value = "binName", required = true) String binName,
-                            @JsonProperty(value = "index", required = true) int index) {
+    public ListPopOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "index") @Schema(
+            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int index) {
         super(binName);
         this.index = index;
     }

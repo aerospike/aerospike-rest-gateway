@@ -29,9 +29,9 @@ public class GetHeaderOperation extends Operation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.GET_HEADER,
             required = true,
-            allowableValues = OperationTypes.GET_HEADER
+            allowableValues = {OperationTypes.GET_HEADER}
     )
-    final public static String type = OperationTypes.GET_HEADER;
+    final public String type = OperationTypes.GET_HEADER;
 
     @Override
     public com.aerospike.client.Operation toOperation() {

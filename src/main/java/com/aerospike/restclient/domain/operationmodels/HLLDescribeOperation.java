@@ -31,12 +31,14 @@ public class HLLDescribeOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_DESCRIBE,
             required = true,
-            allowableValues = OperationTypes.HLL_DESCRIBE
+            allowableValues = {OperationTypes.HLL_DESCRIBE}
     )
-    final public static String type = OperationTypes.HLL_DESCRIBE;
+    final public String type = OperationTypes.HLL_DESCRIBE;
 
     @JsonCreator
-    public HLLDescribeOperation(@JsonProperty(value = "binName", required = true) String binName) {
+    public HLLDescribeOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName) {
         super(binName);
     }
 

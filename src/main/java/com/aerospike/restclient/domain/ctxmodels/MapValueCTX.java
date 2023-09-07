@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class MapValueCTX extends CTX {
     @Schema(
             description = "The type of context this object represents. It is always " + AerospikeAPIConstants.CTX.MAP_VALUE,
-            allowableValues = AerospikeAPIConstants.CTX.MAP_VALUE,
+            allowableValues = {AerospikeAPIConstants.CTX.MAP_VALUE},
             required = true
     )
     @JsonProperty(required = true)

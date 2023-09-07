@@ -31,10 +31,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class QueryRangeFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.RANGE,
-            required = true,
-            allowableValues = AerospikeAPIConstants.QueryFilterTypes.RANGE
+            allowableValues = {AerospikeAPIConstants.QueryFilterTypes.RANGE}
+
     )
-    final public static String type = AerospikeAPIConstants.QueryFilterTypes.RANGE;
+    public String type = AerospikeAPIConstants.QueryFilterTypes.RANGE;
+
     @Schema(description = "Filter begin value inclusive.", required = true)
     public long begin;
 

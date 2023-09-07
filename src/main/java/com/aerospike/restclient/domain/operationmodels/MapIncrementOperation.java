@@ -32,9 +32,9 @@ public class MapIncrementOperation extends MapOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_INCREMENT,
             required = true,
-            allowableValues = OperationTypes.MAP_INCREMENT
+            allowableValues = {OperationTypes.MAP_INCREMENT}
     )
-    final public static String type = OperationTypes.MAP_INCREMENT;
+    final public String type = OperationTypes.MAP_INCREMENT;
 
     @Schema(required = true)
     private final Number incr;
@@ -45,9 +45,13 @@ public class MapIncrementOperation extends MapOperation {
     private MapPolicy mapPolicy;
 
     @JsonCreator
-    public MapIncrementOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                 @JsonProperty(value = "incr", required = true) Number incr,
-                                 @JsonProperty(value = "key", required = true) Object key) {
+    public MapIncrementOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "incr") @Schema(
+            name = "incr", requiredMode = Schema.RequiredMode.REQUIRED
+    ) Number incr, @JsonProperty(value = "key") @Schema(
+            name = "key", requiredMode = Schema.RequiredMode.REQUIRED
+    ) Object key) {
         super(binName);
         this.incr = incr;
         this.key = key;

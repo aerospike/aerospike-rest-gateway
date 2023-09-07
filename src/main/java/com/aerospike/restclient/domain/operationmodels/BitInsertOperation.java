@@ -31,9 +31,9 @@ public class BitInsertOperation extends BitOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.BIT_INSERT,
             required = true,
-            allowableValues = OperationTypes.BIT_INSERT
+            allowableValues = {OperationTypes.BIT_INSERT}
     )
-    final public static String type = OperationTypes.BIT_INSERT;
+    final public String type = OperationTypes.BIT_INSERT;
 
     @Schema(required = true)
     private final int byteOffset;

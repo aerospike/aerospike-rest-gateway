@@ -31,12 +31,14 @@ public class ListClearOperation extends ListOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_CLEAR,
             required = true,
-            allowableValues = OperationTypes.LIST_CLEAR
+            allowableValues = {OperationTypes.LIST_CLEAR}
     )
-    final public static String type = OperationTypes.LIST_CLEAR;
+    final public String type = OperationTypes.LIST_CLEAR;
 
     @JsonCreator
-    public ListClearOperation(@JsonProperty(value = "binName", required = true) String binName) {
+    public ListClearOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName) {
         super(binName);
     }
 

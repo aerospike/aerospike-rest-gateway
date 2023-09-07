@@ -38,7 +38,7 @@ public class BatchUDF extends BatchRecord {
 
     @Schema(
             description = "List of bins to limit the record response to.",
-            allowableValues = AerospikeAPIConstants.BATCH_TYPE_UDF,
+            allowableValues = {AerospikeAPIConstants.BATCH_TYPE_UDF},
             required = true
     )
     @JsonProperty(required = true)

@@ -31,10 +31,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class QueryGeoWithinRadiusFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS,
-            required = true,
-            allowableValues = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS
+            allowableValues = {AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS}
     )
-    final public static String type = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS;
+    public String type = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS;
 
     @Schema(description = "Array of longitude, latitude, and radius describing a circle.", required = true)
     public LngLatRad circle;

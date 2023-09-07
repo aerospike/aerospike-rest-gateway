@@ -32,9 +32,9 @@ public class MapGetByValueRelativeRankRangeOperation extends MapOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE,
             required = true,
-            allowableValues = OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE
+            allowableValues = {OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE}
     )
-    final public static String type = OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE;
+    final public String type = OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE;
 
     @Schema(required = true)
     private final int rank;

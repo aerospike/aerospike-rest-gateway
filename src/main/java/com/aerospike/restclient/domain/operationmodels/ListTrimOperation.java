@@ -31,9 +31,9 @@ public class ListTrimOperation extends ListOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_TRIM,
             required = true,
-            allowableValues = OperationTypes.LIST_TRIM
+            allowableValues = {OperationTypes.LIST_TRIM}
     )
-    final public static String type = OperationTypes.LIST_TRIM;
+    final public String type = OperationTypes.LIST_TRIM;
 
     @Schema(required = true)
     private final int index;
@@ -42,9 +42,13 @@ public class ListTrimOperation extends ListOperation {
     private final int count;
 
     @JsonCreator
-    public ListTrimOperation(@JsonProperty(value = "binName", required = true) String binName,
-                             @JsonProperty(value = "index", required = true) int index,
-                             @JsonProperty(value = "count", required = true) int count) {
+    public ListTrimOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "index") @Schema(
+            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int index, @JsonProperty(value = "count") @Schema(
+            name = "count", requiredMode = Schema.RequiredMode.REQUIRED
+    ) int count) {
         super(binName);
         this.index = index;
         this.count = count;

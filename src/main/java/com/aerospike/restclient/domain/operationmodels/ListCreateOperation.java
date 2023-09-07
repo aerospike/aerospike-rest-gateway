@@ -32,9 +32,9 @@ public class ListCreateOperation extends ListOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_CREATE,
             required = true,
-            allowableValues = OperationTypes.LIST_CREATE
+            allowableValues = {OperationTypes.LIST_CREATE}
     )
-    final public static String type = OperationTypes.LIST_CREATE;
+    final public String type = OperationTypes.LIST_CREATE;
 
     @Schema(required = true)
     private final ListOrder order;
@@ -42,8 +42,11 @@ public class ListCreateOperation extends ListOperation {
     private boolean pad;
 
     @JsonCreator
-    public ListCreateOperation(@JsonProperty(value = "binName", required = true) String binName,
-                               @JsonProperty(value = "order", required = true) ListOrder order) {
+    public ListCreateOperation(@JsonProperty(value = "binName") @Schema(
+            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
+    ) String binName, @JsonProperty(value = "order") @Schema(
+            name = "order", requiredMode = Schema.RequiredMode.REQUIRED
+    ) ListOrder order) {
         super(binName);
         this.order = order;
     }
