@@ -80,7 +80,7 @@ dependencies {
     implementation('org.springframework.retry:spring-retry:2.0.1')
     implementation('org.springframework:spring-aspects:6.0.6')
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:2.1.7")
-    implementation('org.springdoc:springdoc-openapi-ui:1.6.14')
+    implementation('org.springdoc:springdoc-openapi-ui:1.7.0')
     implementation("javax.inject:javax.inject:1")
     implementation("com.google.guava:guava:31.1-jre")
     implementation("org.springframework.boot:spring-boot-starter-validation")
