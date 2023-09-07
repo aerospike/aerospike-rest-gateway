@@ -30,15 +30,15 @@ public class ListRemoveByRankOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_REMOVE_BY_RANK,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_REMOVE_BY_RANK}
     )
     final public String type = OperationTypes.LIST_REMOVE_BY_RANK;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
 
     private boolean inverted;
@@ -49,7 +49,9 @@ public class ListRemoveByRankOperation extends ListOperation {
     ) String binName, @JsonProperty(value = "rank") @Schema(
             name = "rank", requiredMode = Schema.RequiredMode.REQUIRED
     ) int rank, @JsonProperty(
-            value = "listReturnType", required = true
+            value = "listReturnType"
+    ) @Schema(
+            name = "listReturnType", requiredMode = Schema.RequiredMode.REQUIRED
     ) ListReturnType listReturnType) {
         super(binName);
         this.rank = rank;

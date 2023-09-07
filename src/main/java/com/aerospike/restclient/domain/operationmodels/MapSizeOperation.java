@@ -30,7 +30,7 @@ public class MapSizeOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_SIZE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_SIZE}
     )
     final public String type = OperationTypes.MAP_SIZE;

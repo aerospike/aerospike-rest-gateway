@@ -30,15 +30,15 @@ public class ListTrimOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_TRIM,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_TRIM}
     )
     final public String type = OperationTypes.LIST_TRIM;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int count;
 
     @JsonCreator

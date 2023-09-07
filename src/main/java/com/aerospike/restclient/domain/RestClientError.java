@@ -29,7 +29,7 @@ public class RestClientError {
 
     @Schema(
             description = "A boolean specifying whether it was possible that the operation succeeded. This is only included if true.",
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             example = "false"
     )
     private final Boolean inDoubt;

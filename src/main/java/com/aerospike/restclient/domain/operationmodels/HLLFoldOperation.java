@@ -29,12 +29,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class HLLFoldOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_FOLD,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.HLL_FOLD}
     )
     final public String type = OperationTypes.HLL_FOLD;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int indexBitCount;
 
     @JsonCreator

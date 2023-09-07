@@ -30,15 +30,15 @@ public class MapGetByRankRangeOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_GET_BY_RANK_RANGE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_GET_BY_RANK_RANGE}
     )
     final public String type = OperationTypes.MAP_GET_BY_RANK_RANGE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final MapReturnType mapReturnType;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
 
     private Integer count;
@@ -49,7 +49,9 @@ public class MapGetByRankRangeOperation extends MapOperation {
     public MapGetByRankRangeOperation(@JsonProperty(value = "binName") @Schema(
             name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
     ) String binName, @JsonProperty(
-            value = "mapReturnType", required = true
+            value = "mapReturnType"
+    ) @Schema(
+            name = "mapReturnType", requiredMode = Schema.RequiredMode.REQUIRED
     ) MapReturnType mapReturnType, @JsonProperty(value = "rank") @Schema(
             name = "rank", requiredMode = Schema.RequiredMode.REQUIRED
     ) int rank) {

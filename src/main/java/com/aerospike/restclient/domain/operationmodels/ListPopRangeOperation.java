@@ -30,12 +30,12 @@ public class ListPopRangeOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_POP_RANGE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_POP_RANGE}
     )
     final public String type = OperationTypes.LIST_POP_RANGE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
     private Integer count;

@@ -30,18 +30,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class BitLShiftOperation extends BitOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.BIT_LSHIFT,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.BIT_LSHIFT}
     )
     final public String type = OperationTypes.BIT_LSHIFT;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int bitOffset;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int bitSize;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int shift;
 
     @JsonCreator

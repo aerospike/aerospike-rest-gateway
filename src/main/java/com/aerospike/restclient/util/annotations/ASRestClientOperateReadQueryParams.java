@@ -54,7 +54,7 @@ import java.lang.annotation.Target;
         ), @Parameter(
                 name = AerospikeAPIConstants.RECORD_KEY,
                 description = APIDescriptors.RECORD_KEY_NOTES,
-                array = @ArraySchema(schema = @Schema(type = "string", required = true)),
+                array = @ArraySchema(schema = @Schema(type = "string", requiredMode = Schema.RequiredMode.REQUIRED)),
                 required = true,
                 in = ParameterIn.QUERY
         )

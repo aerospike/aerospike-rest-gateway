@@ -30,12 +30,12 @@ public class ListGetOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_GET,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_GET}
     )
     final public String type = OperationTypes.LIST_GET;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
     @JsonCreator

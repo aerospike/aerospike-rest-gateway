@@ -31,18 +31,18 @@ public class ListGetByValueRelativeRankRangeOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE}
     )
     final public String type = OperationTypes.LIST_GET_BY_VALUE_RELATIVE_RANK_RANGE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object value;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
 
     private boolean inverted;

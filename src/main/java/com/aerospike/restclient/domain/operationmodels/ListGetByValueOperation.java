@@ -31,15 +31,15 @@ public class ListGetByValueOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_GET_BY_VALUE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_GET_BY_VALUE}
     )
     final public String type = OperationTypes.LIST_GET_BY_VALUE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object value;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
 
     private boolean inverted;

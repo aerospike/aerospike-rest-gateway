@@ -30,12 +30,12 @@ public class ListGetRangeOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_GET_RANGE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_GET_RANGE}
     )
     final public String type = OperationTypes.LIST_GET_RANGE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
     private Integer count;

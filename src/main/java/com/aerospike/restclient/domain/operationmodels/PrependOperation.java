@@ -31,15 +31,15 @@ public class PrependOperation extends Operation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.PREPEND,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.PREPEND}
     )
     final public String type = OperationTypes.PREPEND;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final String binName;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final String value;
 
     @JsonCreator

@@ -30,15 +30,15 @@ public class ListGetByIndexOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_GET_BY_INDEX,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_GET_BY_INDEX}
     )
     final public String type = OperationTypes.LIST_GET_BY_INDEX;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
 
     private boolean inverted;
@@ -49,7 +49,9 @@ public class ListGetByIndexOperation extends ListOperation {
     ) String binName, @JsonProperty(value = "index") @Schema(
             name = "index", requiredMode = Schema.RequiredMode.REQUIRED
     ) int index, @JsonProperty(
-            value = "listReturnType", required = true
+            value = "listReturnType"
+    ) @Schema(
+            name = "listReturnType", requiredMode = Schema.RequiredMode.REQUIRED
     ) ListReturnType listReturnType) {
         super(binName);
         this.index = index;

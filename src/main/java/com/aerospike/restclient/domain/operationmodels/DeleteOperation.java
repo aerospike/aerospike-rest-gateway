@@ -28,7 +28,7 @@ public class DeleteOperation extends Operation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.DELETE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.DELETE}
     )
     final public String type = OperationTypes.DELETE;
