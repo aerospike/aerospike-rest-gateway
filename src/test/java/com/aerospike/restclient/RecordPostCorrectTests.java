@@ -18,12 +18,13 @@ package com.aerospike.restclient;
 
 import com.aerospike.client.Record;
 import com.aerospike.client.*;
+import com.aerospike.restclient.config.JSONMessageConverter;
+import com.aerospike.restclient.config.MsgPackConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -88,14 +89,16 @@ public class RecordPostCorrectTests {
     public static Object[] getParams() {
         return new Object[][]{
                 {
-                        new JSONPostPerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), true
+                        new JSONPostPerformer(MediaType.APPLICATION_JSON.toString(),
+                                JSONMessageConverter.getJSONObjectMapper()), true
                 }, {
-                        new MsgPackPostPerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())),
+                        new MsgPackPostPerformer("application/msgpack", MsgPackConverter.getASMsgPackObjectMapper()),
                         true
                 }, {
-                        new JSONPostPerformer(MediaType.APPLICATION_JSON.toString(), new ObjectMapper()), false
+                        new JSONPostPerformer(MediaType.APPLICATION_JSON.toString(),
+                                JSONMessageConverter.getJSONObjectMapper()), false
                 }, {
-                        new MsgPackPostPerformer("application/msgpack", new ObjectMapper(new MessagePackFactory())),
+                        new MsgPackPostPerformer("application/msgpack", MsgPackConverter.getASMsgPackObjectMapper()),
                         false
                 }
         };
@@ -287,6 +290,29 @@ public class RecordPostCorrectTests {
 
         Record record = client.get(null, this.testKey);
         Assert.assertEquals(((Value.GeoJSONValue) record.bins.get("geo_json")).getObject(), geoStr);
+    }
+
+    @Ignore("Fails because GeoJSON can't be nested in a CDT for JSON. Only MSGPack")
+    @Test
+    public void PostNestedGeoJson() throws Exception {
+        Map<String, Object> binMap = new HashMap<>();
+        Map<String, Object> geoJson = new HashMap<>();
+        List<Double> coordinates = new ArrayList<>();
+        coordinates.add(-80.604333);
+        coordinates.add(28.608389);
+        String geoStr = "{\"coordinates\":[-80.604333,28.608389],\"type\":\"Point\"}";
+        geoJson.put("coordinates", coordinates);
+        geoJson.put("type", "Point");
+        List<Object> geoJsonList = new ArrayList<>();
+        geoJsonList.add(geoJson);
+
+        binMap.put("geo_json_list", geoJsonList);
+
+        postPerformer.perform(mockMVC, testEndpoint, binMap);
+
+        Record record = client.get(null, this.testKey);
+        List<Object> actualGeoJsonList = (List<Object>) record.bins.get("geo_json_list");
+        Assert.assertEquals(((Value.GeoJSONValue) actualGeoJsonList.get(0)).getObject(), geoStr);
     }
 
     @Test
