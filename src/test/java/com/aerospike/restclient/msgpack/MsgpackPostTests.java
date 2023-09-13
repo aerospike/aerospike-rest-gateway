@@ -53,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class MsgpackPost {
+public class MsgpackPostTests {
 
     private MockMvc mockMVC;
 
@@ -68,7 +68,7 @@ public class MsgpackPost {
     private final Key testKey = new Key("test", "msgpack", "post");
 
     private final String testEndpoint = ASTestUtils.buildEndpointV1("kvs", "test", "msgpack", "post");
-    private final TypeReference<Map<String, Object>> sOMapType = new TypeReference<Map<String, Object>>() {
+    private final TypeReference<Map<String, Object>> sOMapType = new TypeReference<>() {
     };
 
     @Before
@@ -176,6 +176,56 @@ public class MsgpackPost {
     }
 
     @Test
+    public void testStoringNestedGeoJson() throws Exception {
+        String geoString = "{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}";
+        MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
+
+        // Store a {map:{map={geo=GEOJSON_OBJECT}}}
+        packer.packMapHeader(1);
+        packer.packString("map");
+        packer.packMapHeader(1);
+        packer.packString("geo");
+        packer.packExtensionTypeHeader((byte) 23, geoString.length());
+        packer.addPayload(geoString.getBytes(StandardCharsets.UTF_8));
+
+        mockMVC.perform(post(testEndpoint).contentType(mtString).content(packer.toByteArray()))
+                .andExpect(status().isCreated());
+
+        Record rec = client.get(null, testKey);
+        @SuppressWarnings("unchecked") Map<String, Object> retMap = (Map<String, Object>) rec.bins.get("map");
+
+        Assert.assertEquals(retMap.size(), 1);
+        GeoJSONValue geoV = (GeoJSONValue) retMap.get("geo");
+        Assert.assertEquals(ParticleType.GEOJSON, geoV.getType());
+        Assert.assertEquals(geoString, geoV.toString());
+    }
+
+    @Test
+    public void testGettingNestedGeoJson() throws Exception {
+        Map<String, Object> mapBin = new HashMap<>();
+        String geoString = "{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}";
+        GeoJSONValue geoV = new GeoJSONValue(geoString);
+        mapBin.put("geo", geoV);
+
+        client.put(null, testKey, new Bin("map", mapBin));
+
+        byte[] resContent = mockMVC.perform(get(testEndpoint).accept(mtString))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray();
+
+        Map<String, Object> retRec = mapper.readValue(resContent, sOMapType);
+
+        @SuppressWarnings("unchecked") Map<String, Object> bins = (Map<String, Object>) retRec.get("bins");
+        Map<String, Object> map = (Map<String, Object>) bins.get("map");
+        MessagePackExtensionType etype = (MessagePackExtensionType) map.get("geo");
+
+        Assert.assertEquals(etype.getType(), ParticleType.GEOJSON);
+        Assert.assertEquals(new String(etype.getData(), StandardCharsets.UTF_8), geoString);
+    }
+
+    @Test
     public void testStoringMapWithIntkeys() throws Exception {
         MessageBufferPacker packer = new MessagePack.PackerConfig().newBufferPacker();
         // Store a map {map={1L=2L}}
@@ -192,14 +242,14 @@ public class MsgpackPost {
         @SuppressWarnings("unchecked") Map<Long, Long> retMap = (Map<Long, Long>) rec.bins.get("map");
 
         Assert.assertEquals(retMap.size(), 1);
-        Assert.assertEquals(retMap.get(1L), (Long) 2l);
+        Assert.assertEquals(retMap.get(1L), (Long) 2L);
     }
 
     @Test
     public void testGettingMapWithIntKey() throws Exception {
 
         Map<Long, Long> iMap = new HashMap<>();
-        iMap.put(1l, 2l);
+        iMap.put(1L, 2L);
 
         client.put(null, testKey, new Bin("map", iMap));
 
@@ -218,7 +268,7 @@ public class MsgpackPost {
         @SuppressWarnings("unchecked") Map<Object, Object> lMap = (Map<Object, Object>) bins.get("map");
 
         Assert.assertEquals(lMap.size(), 1);
-        Assert.assertEquals(lMap.get(1L), 2l);
+        Assert.assertEquals(lMap.get(1L), 2L);
 
     }
 

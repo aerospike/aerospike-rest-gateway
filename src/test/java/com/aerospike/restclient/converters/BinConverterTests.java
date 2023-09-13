@@ -24,6 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gnu.crypto.util.Base64;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -43,12 +44,12 @@ public class BinConverterTests {
 
     @Test
     public void testLongBin() {
-        singleObjectBinTest(5l);
+        singleObjectBinTest(5L);
     }
 
     @Test
     public void testFloatBin() {
-        singleObjectBinTest(5l);
+        singleObjectBinTest(5L);
     }
 
     @Test
@@ -56,7 +57,7 @@ public class BinConverterTests {
         Map<String, Object> testMap = new HashMap<>();
         testMap.put("str", "hello");
         testMap.put("float", 3.14);
-        testMap.put("float", 5l);
+        testMap.put("long", 5L);
         singleObjectBinTest(testMap);
     }
 
@@ -66,13 +67,13 @@ public class BinConverterTests {
         Map<String, Object> nestedMap = new HashMap<>();
         nestedMap.put("str", "world");
         nestedMap.put("int", 10);
-        nestedMap.put("float", 5l);
+        nestedMap.put("long", 5L);
         List<Object> nestedList = new ArrayList<>();
         nestedList.add(1);
         nestedList.add("str");
         testMap.put("str", "hello");
         testMap.put("float", 3.14);
-        testMap.put("float", 5l);
+        testMap.put("long", 5L);
         testMap.put("nestedMap", nestedMap);
         testMap.put("nestedList", nestedList);
         singleObjectBinTest(testMap);
@@ -83,6 +84,7 @@ public class BinConverterTests {
         singleObjectBinTest(new byte[]{1, 2, 3});
     }
 
+    // Really only tests whether the GeoJSONValue is passed through the BinConverter untouched.
     @Test
     public void testGeoJSONBin() {
         Bin testBin = new Bin("bin1", new GeoJSONValue("{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}"));
@@ -90,7 +92,6 @@ public class BinConverterTests {
         binMap.put("bin1", new GeoJSONValue("{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}"));
         Bin[] bins = BinConverter.binsFromMap(binMap);
         Assert.assertTrue(binsContain(bins, testBin));
-        // singleObjectBinTest(new GeoJSONValue("{\"coordinates\": [-122.0, 37.5], \"type\": \"Point\"}"));
     }
 
     @Test
@@ -105,7 +106,7 @@ public class BinConverterTests {
     @Test
     public void testMultipleBins() {
         Bin bin1 = new Bin("bin1", "str");
-        Bin bin2 = new Bin("bin2", 3l);
+        Bin bin2 = new Bin("bin2", 3L);
 
         Map<String, Object> binMap = new HashMap<>();
         binMap.put(bin1.name, bin1.value.getObject());
@@ -127,7 +128,26 @@ public class BinConverterTests {
         testMap.put("coordinates", new double[]{-122.0, 37.5});
         Bin testBin = new Bin("bin1", Value.getAsGeoJSON(mapper.writeValueAsString(testMap)));
         Map<String, Object> binMap = new HashMap<>();
-        binMap.put("bin1", Value.getAsGeoJSON(mapper.writeValueAsString(testMap)));
+        binMap.put("bin1", testMap);
+        Bin[] bins = BinConverter.binsFromMap(binMap);
+        Assert.assertTrue(binsContain(bins, testBin));
+    }
+
+    @Ignore("Fails. Will pass if we ever support geojson nested in CDTs with json. Currently, only supported using msgpack.")
+    @Test
+    public void testNestedGeoJSON() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> geoVal = new HashMap<>();
+        geoVal.put("type", "Point");
+        geoVal.put("coordinates", new double[]{-122.0, 37.5});
+        Map<String, Object> mapBin = new HashMap<>();
+        mapBin.put("map", geoVal);
+
+        Map<String, Object> testMapBin = new HashMap<>();
+        testMapBin.put("map", Value.getAsGeoJSON(mapper.writeValueAsString(geoVal)));
+        Bin testBin = new Bin("bin1", testMapBin);
+        Map<String, Object> binMap = new HashMap<>();
+        binMap.put("bin1", mapBin);
         Bin[] bins = BinConverter.binsFromMap(binMap);
         Assert.assertTrue(binsContain(bins, testBin));
     }
