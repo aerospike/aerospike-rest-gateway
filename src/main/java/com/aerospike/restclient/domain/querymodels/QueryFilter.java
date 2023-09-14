@@ -75,7 +75,7 @@ import java.util.List;
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/" + AerospikeAPIConstants.AS_CLIENT_VERSION + "/com/aerospike/client/query/Filter.html")
 )
 abstract public class QueryFilter {
-    @Schema(description = "The bin for which a secondary-index is defined.", required = true)
+    @Schema(description = "The bin for which a secondary-index is defined.", requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonProperty(required = true)
     public String binName;
 

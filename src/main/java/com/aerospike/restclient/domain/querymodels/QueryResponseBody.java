@@ -27,7 +27,7 @@ import java.util.List;
 
 @Schema(description = "Body of query response.")
 public class QueryResponseBody {
-    @Schema(description = "Records returned from query.", required = true)
+    @Schema(description = "Records returned from query.", requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonProperty(required = true)
     private final List<RestClientKeyRecord> records;
 

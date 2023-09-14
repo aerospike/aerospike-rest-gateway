@@ -32,12 +32,12 @@ public class ListValueCTX extends CTX {
     @Schema(
             description = "The type of context this object represents. It is always " + AerospikeAPIConstants.CTX.LIST_VALUE,
             allowableValues = {AerospikeAPIConstants.CTX.LIST_VALUE},
-            required = true
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
     @JsonProperty(required = true)
     public final String type = AerospikeAPIConstants.CTX.LIST_VALUE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonDeserialize(using = ObjectDeserializer.class)
     public Object value;
 

@@ -25,7 +25,7 @@ import java.util.Objects;
 @JsonFormat(shape = JsonFormat.Shape.ARRAY)
 @JsonPropertyOrder({"longitude", "latitude"})
 @Schema(
-        required = true,
+        requiredMode = Schema.RequiredMode.REQUIRED,
         description = "A 2 element array describing a position of the form [longitude, latitude]",
         example = "[37.421331, -122.098820]"
 )

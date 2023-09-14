@@ -31,15 +31,15 @@ public class MapIncrementOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_INCREMENT,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_INCREMENT}
     )
     final public String type = OperationTypes.MAP_INCREMENT;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Number incr;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object key;
 
     private MapPolicy mapPolicy;

@@ -29,13 +29,13 @@ public class ListIndexCTX extends CTX {
     @Schema(
             description = "The type of context this object represents. It is always " + AerospikeAPIConstants.CTX.LIST_INDEX,
             allowableValues = {AerospikeAPIConstants.CTX.LIST_INDEX},
-            required = true
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
     public final String type = AerospikeAPIConstants.CTX.LIST_INDEX;
 
     @Schema(
             description = "If the index is negative, the resolved index starts backwards from end of list. If an index is out of bounds, a parameter error will be returned. Examples:\n" + "* 0: First item.\n" + "* 4: Fifth item.\n" + "* -1: Last item.\n" + "* -3: Third to last item.",
-            required = true
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
     public Integer index;
 

@@ -28,7 +28,7 @@ public class TouchOperation extends Operation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.TOUCH,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.TOUCH}
     )
     final public String type = OperationTypes.TOUCH;

@@ -33,7 +33,7 @@ public class ListSortOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_SORT,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_SORT}
     )
     final public String type = OperationTypes.LIST_SORT;

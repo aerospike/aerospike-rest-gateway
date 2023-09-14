@@ -31,12 +31,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class QueryContainsStringFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING}
     )
     final public String type = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     public String value;
 
     @ASRestClientSchemas.IndexCollectionType

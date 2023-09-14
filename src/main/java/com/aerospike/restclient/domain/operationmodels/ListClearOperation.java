@@ -30,7 +30,7 @@ public class ListClearOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_CLEAR,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_CLEAR}
     )
     final public String type = OperationTypes.LIST_CLEAR;

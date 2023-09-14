@@ -33,12 +33,12 @@ import java.util.List;
 public class HLLSetUnionOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_SET_UNION,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.HLL_SET_UNION}
     )
     final public String type = OperationTypes.HLL_SET_UNION;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<byte[]> values;
 
     @JsonCreator

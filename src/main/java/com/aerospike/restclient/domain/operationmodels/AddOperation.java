@@ -32,15 +32,15 @@ public class AddOperation extends Operation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.ADD,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.ADD}
     )
     final public String type = OperationTypes.ADD;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final String binName;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Number incr;
 
     @JsonCreator

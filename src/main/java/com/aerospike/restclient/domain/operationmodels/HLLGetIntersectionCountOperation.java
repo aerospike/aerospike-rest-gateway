@@ -32,12 +32,12 @@ import java.util.List;
 public class HLLGetIntersectionCountOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_INTERSECT_COUNT,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.HLL_INTERSECT_COUNT}
     )
     final public String type = OperationTypes.HLL_INTERSECT_COUNT;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<byte[]> values;
 
     @JsonCreator

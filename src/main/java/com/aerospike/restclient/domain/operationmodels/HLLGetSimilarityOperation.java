@@ -32,12 +32,12 @@ import java.util.List;
 public class HLLGetSimilarityOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_SIMILARITY,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.HLL_SIMILARITY}
     )
     final public String type = OperationTypes.HLL_SIMILARITY;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<byte[]> values;
 
     @JsonCreator

@@ -70,7 +70,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 }
 )
 abstract public class BitOperation extends Operation {
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     protected String binName;
 
     @JsonCreator

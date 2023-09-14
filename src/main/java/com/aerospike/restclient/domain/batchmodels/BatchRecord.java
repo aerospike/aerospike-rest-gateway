@@ -42,7 +42,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 }
 )
 public abstract class BatchRecord {
-    @Schema(description = "Key to a record.", required = true)
+    @Schema(description = "Key to a record.", requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonProperty(required = true)
     public RestClientKey key;
 

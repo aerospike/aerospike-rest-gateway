@@ -29,7 +29,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class HLLGetCountOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_COUNT,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.HLL_COUNT}
     )
     final public String type = OperationTypes.HLL_COUNT;

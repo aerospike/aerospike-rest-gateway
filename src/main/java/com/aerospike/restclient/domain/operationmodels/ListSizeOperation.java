@@ -30,7 +30,7 @@ public class ListSizeOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_SIZE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_SIZE}
     )
     final public String type = OperationTypes.LIST_SIZE;

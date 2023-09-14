@@ -30,9 +30,9 @@ public class AeroCircle extends GeoJSON {
     @Schema(
             description = "The type of geoJSON geometry this object represents. It is always " + AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE,
             allowableValues = {AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE},
-            required = true
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
-    public String type = AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE;
+    final public String type = AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE;
 
     public LngLatRad coordinates;
 

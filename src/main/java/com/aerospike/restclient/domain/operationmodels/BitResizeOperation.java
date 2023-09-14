@@ -30,15 +30,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class BitResizeOperation extends BitOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.BIT_RESIZE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.BIT_RESIZE}
     )
     final public String type = OperationTypes.BIT_RESIZE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int byteSize;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int resizeFlags;
 
     @JsonCreator

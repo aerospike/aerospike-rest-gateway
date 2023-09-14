@@ -30,7 +30,7 @@ public class Point extends GeoJSON {
     @Schema(
             description = "The type of geoJSON geometry this object represents. It is always " + AerospikeAPIConstants.GeoJSON.Types.POINT,
             allowableValues = {AerospikeAPIConstants.GeoJSON.Types.POINT},
-            required = true
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
     public final String type = AerospikeAPIConstants.GeoJSON.Types.POINT;
 

@@ -143,7 +143,7 @@ import java.util.Optional;
 }
 )
 abstract public class ListOperation extends Operation {
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     protected String binName;
 
     protected List<CTX> ctx;

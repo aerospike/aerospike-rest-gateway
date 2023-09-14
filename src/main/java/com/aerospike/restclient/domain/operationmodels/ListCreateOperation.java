@@ -31,12 +31,12 @@ public class ListCreateOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_CREATE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_CREATE}
     )
     final public String type = OperationTypes.LIST_CREATE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListOrder order;
 
     private boolean pad;

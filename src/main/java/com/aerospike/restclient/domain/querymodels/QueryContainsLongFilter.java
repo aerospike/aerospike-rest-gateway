@@ -32,10 +32,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class QueryContainsLongFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG,
-//            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG}
     )
-    public String type = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG;
+    final public String type = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG;
     
     @JsonProperty(required = true)
     public Long value;

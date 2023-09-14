@@ -30,15 +30,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class BitRemoveOperation extends BitOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.BIT_REMOVE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.BIT_REMOVE}
     )
     final public String type = OperationTypes.BIT_REMOVE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int byteOffset;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int byteSize;
 
     @JsonCreator

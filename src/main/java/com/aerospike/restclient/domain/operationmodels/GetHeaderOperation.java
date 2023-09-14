@@ -28,7 +28,7 @@ public class GetHeaderOperation extends Operation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.GET_HEADER,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.GET_HEADER}
     )
     final public String type = OperationTypes.GET_HEADER;

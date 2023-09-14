@@ -31,12 +31,12 @@ public class ListAppendOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_APPEND,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_APPEND}
     )
     final public String type = OperationTypes.LIST_APPEND;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object value;
 
     // TODO, this probably needs an intermediate type

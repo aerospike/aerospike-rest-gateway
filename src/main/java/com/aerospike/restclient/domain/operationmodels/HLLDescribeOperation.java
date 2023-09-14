@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class HLLDescribeOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_DESCRIBE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.HLL_DESCRIBE}
     )
     final public String type = OperationTypes.HLL_DESCRIBE;

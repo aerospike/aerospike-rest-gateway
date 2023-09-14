@@ -34,12 +34,12 @@ public class MapPutItemsOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_PUT_ITEMS,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_PUT_ITEMS}
     )
     final public String type = OperationTypes.MAP_PUT_ITEMS;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Map<Object, Object> map;
 
     private MapPolicy mapPolicy;

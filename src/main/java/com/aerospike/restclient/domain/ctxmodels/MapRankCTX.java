@@ -29,7 +29,7 @@ public class MapRankCTX extends CTX {
     @Schema(
             description = "The type of context this object represents. It is always " + AerospikeAPIConstants.CTX.MAP_RANK,
             allowableValues = {AerospikeAPIConstants.CTX.MAP_RANK},
-            required = true
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
     public final String type = AerospikeAPIConstants.CTX.MAP_RANK;
 
@@ -37,7 +37,7 @@ public class MapRankCTX extends CTX {
             description = """
                     * 0 = smallest value
                     * N = Nth smallest value
-                    * -1 = largest value""", required = true
+                    * -1 = largest value""", requiredMode = Schema.RequiredMode.REQUIRED
     )
     public Integer rank;
 

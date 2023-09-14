@@ -30,7 +30,7 @@ public class MapClearOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_CLEAR,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_CLEAR}
     )
     final public String type = OperationTypes.MAP_CLEAR;

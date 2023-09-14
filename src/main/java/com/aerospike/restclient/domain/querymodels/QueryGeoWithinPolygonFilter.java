@@ -34,12 +34,12 @@ import java.util.List;
 public class QueryGeoWithinPolygonFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION}
     )
     final public String type = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION;
 
-    @Schema(description = "Array of longitude and latitude describing a region.", required = true)
+    @Schema(description = "Array of longitude and latitude describing a region.", requiredMode = Schema.RequiredMode.REQUIRED)
     public List<LngLat> polygon;
 
     @ASRestClientSchemas.IndexCollectionType

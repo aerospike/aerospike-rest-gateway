@@ -33,15 +33,15 @@ public class ListInsertItemsOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_INSERT_ITEMS,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_INSERT_ITEMS}
     )
     final public String type = OperationTypes.LIST_INSERT_ITEMS;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<Object> values;
 
     private ListPolicy listPolicy;

@@ -29,12 +29,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class QueryEqualsStringFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING}
     )
     final public String type = AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     public String value;
 
     public QueryEqualsStringFilter() {

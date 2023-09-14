@@ -32,15 +32,15 @@ public class PutOperation extends Operation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.PUT,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.PUT}
     )
     final public String type = OperationTypes.PUT;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final String binName;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object value;
 
     @JsonCreator

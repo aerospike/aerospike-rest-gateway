@@ -31,12 +31,12 @@ public class MapCreateOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_CREATE,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_CREATE}
     )
     final public String type = OperationTypes.MAP_CREATE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final MapOrder mapOrder;
 
     @JsonCreator

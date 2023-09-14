@@ -33,12 +33,12 @@ import java.util.List;
 public class HLLAddOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_ADD,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.HLL_ADD}
     )
     final public String type = OperationTypes.HLL_ADD;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<Object> values;
 
     private Integer indexBitCount;

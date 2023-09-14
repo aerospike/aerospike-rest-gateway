@@ -54,7 +54,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 }
 )
 abstract public class HLLOperation extends Operation {
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     protected String binName;
 
     protected HLLOperation(String binName) {

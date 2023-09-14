@@ -30,12 +30,12 @@ public class MapSetPolicyOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_SET_POLICY,
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_SET_POLICY}
     )
     final public String type = OperationTypes.MAP_SET_POLICY;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final MapPolicy mapPolicy;
 
     @JsonCreator
