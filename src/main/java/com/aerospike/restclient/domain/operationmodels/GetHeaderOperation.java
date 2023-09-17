@@ -31,7 +31,7 @@ public class GetHeaderOperation extends Operation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.GET_HEADER}
     )
-    final public String type = OperationTypes.GET_HEADER;
+    public final String type = OperationTypes.GET_HEADER;
 
     @Override
     public com.aerospike.client.Operation toOperation() {

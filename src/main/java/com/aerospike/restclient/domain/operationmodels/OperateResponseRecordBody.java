@@ -17,4 +17,3 @@ public class OperateResponseRecordBody {
         this.record = record;
     }
 }
-

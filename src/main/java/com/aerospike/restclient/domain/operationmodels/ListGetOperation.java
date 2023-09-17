@@ -33,17 +33,18 @@ public class ListGetOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_GET}
     )
-    final public String type = OperationTypes.LIST_GET;
+    public final String type = OperationTypes.LIST_GET;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
     @JsonCreator
-    public ListGetOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "index") @Schema(
-            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int index) {
+    public ListGetOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "index")
+            @Schema(name = "index", requiredMode = Schema.RequiredMode.REQUIRED) int index
+    ) {
         super(binName);
         this.index = index;
     }

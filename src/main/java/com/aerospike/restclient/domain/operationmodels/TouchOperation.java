@@ -31,7 +31,7 @@ public class TouchOperation extends Operation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.TOUCH}
     )
-    final public String type = OperationTypes.TOUCH;
+    public final String type = OperationTypes.TOUCH;
 
     @Override
     public com.aerospike.client.Operation toOperation() {

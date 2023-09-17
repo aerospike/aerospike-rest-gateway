@@ -32,7 +32,7 @@ public class BitGetOperation extends BitOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.BIT_GET}
     )
-    final public String type = OperationTypes.BIT_GET;
+    public final String type = OperationTypes.BIT_GET;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int bitOffset;
@@ -41,13 +41,14 @@ public class BitGetOperation extends BitOperation {
     private final int bitSize;
 
     @JsonCreator
-    public BitGetOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "bitOffset") @Schema(
-            name = "bitOffset", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int bitOffset, @JsonProperty(value = "bitSize") @Schema(
-            name = "bitSize", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int bitSize) {
+    public BitGetOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "bitOffset")
+            @Schema(name = "bitOffset", requiredMode = Schema.RequiredMode.REQUIRED) int bitOffset,
+            @JsonProperty(value = "bitSize")
+            @Schema(name = "bitSize", requiredMode = Schema.RequiredMode.REQUIRED) int bitSize
+    ) {
         super(binName);
         this.bitOffset = bitOffset;
         this.bitSize = bitSize;

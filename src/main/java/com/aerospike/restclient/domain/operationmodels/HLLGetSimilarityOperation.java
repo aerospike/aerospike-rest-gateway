@@ -35,14 +35,16 @@ public class HLLGetSimilarityOperation extends HLLOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.HLL_SIMILARITY}
     )
-    final public String type = OperationTypes.HLL_SIMILARITY;
+    public final String type = OperationTypes.HLL_SIMILARITY;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<byte[]> values;
 
     @JsonCreator
-    public HLLGetSimilarityOperation(@JsonProperty("binName") String binName,
-                                     @JsonProperty("values") List<byte[]> values) {
+    public HLLGetSimilarityOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("values") List<byte[]> values
+    ) {
         super(binName);
         this.values = values;
     }

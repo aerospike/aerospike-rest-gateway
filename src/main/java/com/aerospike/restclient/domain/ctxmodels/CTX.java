@@ -39,21 +39,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
         }
 )
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes(
-        {
-                @JsonSubTypes.Type(value = ListIndexCTX.class, name = AerospikeAPIConstants.CTX.LIST_INDEX),
-                @JsonSubTypes.Type(value = ListRankCTX.class, name = AerospikeAPIConstants.CTX.LIST_RANK),
-                @JsonSubTypes.Type(value = ListValueCTX.class, name = AerospikeAPIConstants.CTX.LIST_VALUE),
-                @JsonSubTypes.Type(value = MapIndexCTX.class, name = AerospikeAPIConstants.CTX.MAP_INDEX),
-                @JsonSubTypes.Type(value = MapRankCTX.class, name = AerospikeAPIConstants.CTX.MAP_RANK),
-                @JsonSubTypes.Type(value = MapKeyCTX.class, name = AerospikeAPIConstants.CTX.MAP_KEY),
-                @JsonSubTypes.Type(value = MapValueCTX.class, name = AerospikeAPIConstants.CTX.MAP_VALUE),
-                @JsonSubTypes.Type(value = MapKeyCreateCTX.class, name = AerospikeAPIConstants.CTX.MAP_KEY_CREATE),
-                @JsonSubTypes.Type(
-                        value = ListIndexCreateCTX.class, name = AerospikeAPIConstants.CTX.LIST_INDEX_CREATE
-                ),
-        }
-)
-abstract public class CTX {
-    abstract public com.aerospike.client.cdt.CTX toCTX();
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ListIndexCTX.class, name = AerospikeAPIConstants.CTX.LIST_INDEX),
+        @JsonSubTypes.Type(value = ListRankCTX.class, name = AerospikeAPIConstants.CTX.LIST_RANK),
+        @JsonSubTypes.Type(value = ListValueCTX.class, name = AerospikeAPIConstants.CTX.LIST_VALUE),
+        @JsonSubTypes.Type(value = MapIndexCTX.class, name = AerospikeAPIConstants.CTX.MAP_INDEX),
+        @JsonSubTypes.Type(value = MapRankCTX.class, name = AerospikeAPIConstants.CTX.MAP_RANK),
+        @JsonSubTypes.Type(value = MapKeyCTX.class, name = AerospikeAPIConstants.CTX.MAP_KEY),
+        @JsonSubTypes.Type(value = MapValueCTX.class, name = AerospikeAPIConstants.CTX.MAP_VALUE),
+        @JsonSubTypes.Type(value = MapKeyCreateCTX.class, name = AerospikeAPIConstants.CTX.MAP_KEY_CREATE),
+        @JsonSubTypes.Type(value = ListIndexCreateCTX.class, name = AerospikeAPIConstants.CTX.LIST_INDEX_CREATE),
+})
+public abstract class CTX {
+    public abstract com.aerospike.client.cdt.CTX toCTX();
 }

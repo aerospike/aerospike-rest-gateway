@@ -33,7 +33,7 @@ public class ListGetByRankRangeOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_GET_BY_RANK_RANGE}
     )
-    final public String type = OperationTypes.LIST_GET_BY_RANK_RANGE;
+    public final String type = OperationTypes.LIST_GET_BY_RANK_RANGE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
@@ -45,13 +45,13 @@ public class ListGetByRankRangeOperation extends ListOperation {
     private Integer count;
 
     @JsonCreator
-    public ListGetByRankRangeOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "rank") @Schema(
-            name = "rank", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int rank, @JsonProperty(
-            value = "listReturnType", required = true
-    ) ListReturnType listReturnType) {
+    public ListGetByRankRangeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "rank")
+            @Schema(name = "rank", requiredMode = Schema.RequiredMode.REQUIRED) int rank,
+            @JsonProperty(value = "listReturnType", required = true) ListReturnType listReturnType
+    ) {
         super(binName);
         this.rank = rank;
         this.listReturnType = listReturnType;

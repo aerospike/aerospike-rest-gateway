@@ -31,7 +31,7 @@ public class DeleteOperation extends Operation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.DELETE}
     )
-    final public String type = OperationTypes.DELETE;
+    public final String type = OperationTypes.DELETE;
 
     @Override
     public com.aerospike.client.Operation toOperation() {

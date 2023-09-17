@@ -36,7 +36,7 @@ public class HLLAddOperation extends HLLOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.HLL_ADD}
     )
-    final public String type = OperationTypes.HLL_ADD;
+    public final String type = OperationTypes.HLL_ADD;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<Object> values;

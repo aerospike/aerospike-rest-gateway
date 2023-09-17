@@ -63,4 +63,3 @@ public class Polygon extends GeoJSON {
         return Objects.hash(coordinates);
     }
 }
-

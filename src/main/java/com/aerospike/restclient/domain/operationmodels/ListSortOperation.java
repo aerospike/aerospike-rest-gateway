@@ -36,14 +36,15 @@ public class ListSortOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_SORT}
     )
-    final public String type = OperationTypes.LIST_SORT;
+    public final String type = OperationTypes.LIST_SORT;
 
     private List<ListSortFlag> sortFlags;
 
     @JsonCreator
-    public ListSortOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName) {
+    public ListSortOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName
+    ) {
         super(binName);
     }
 

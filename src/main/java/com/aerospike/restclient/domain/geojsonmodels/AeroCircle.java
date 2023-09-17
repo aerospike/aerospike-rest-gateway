@@ -32,7 +32,7 @@ public class AeroCircle extends GeoJSON {
             allowableValues = {AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE},
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    final public String type = AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE;
+    public final String type = AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE;
 
     public LngLatRad coordinates;
 
@@ -52,4 +52,3 @@ public class AeroCircle extends GeoJSON {
         return Objects.hash(coordinates);
     }
 }
-

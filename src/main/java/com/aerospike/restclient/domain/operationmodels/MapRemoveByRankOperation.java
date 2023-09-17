@@ -33,7 +33,7 @@ public class MapRemoveByRankOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_REMOVE_BY_RANK}
     )
-    final public String type = OperationTypes.MAP_REMOVE_BY_RANK;
+    public final String type = OperationTypes.MAP_REMOVE_BY_RANK;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
@@ -44,13 +44,13 @@ public class MapRemoveByRankOperation extends MapOperation {
     private boolean inverted;
 
     @JsonCreator
-    public MapRemoveByRankOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "rank") @Schema(
-            name = "rank", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int rank, @JsonProperty(
-            value = "mapReturnType", required = true
-    ) MapReturnType mapReturnType) {
+    public MapRemoveByRankOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "rank")
+            @Schema(name = "rank", requiredMode = Schema.RequiredMode.REQUIRED) int rank,
+            @JsonProperty(value = "mapReturnType", required = true) MapReturnType mapReturnType
+    ) {
         super(binName);
         this.rank = rank;
         this.mapReturnType = mapReturnType;

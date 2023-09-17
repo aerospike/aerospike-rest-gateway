@@ -34,7 +34,7 @@ public class QueryContainsStringFilter extends QueryFilter {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING}
     )
-    final public String type = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING;
+    public final String type = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     public String value;
@@ -51,6 +51,3 @@ public class QueryContainsStringFilter extends QueryFilter {
         return Filter.contains(binName, collectionType, value, asCTX);
     }
 }
-
-
-

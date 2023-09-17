@@ -34,7 +34,7 @@ public class ListGetByValueOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_GET_BY_VALUE}
     )
-    final public String type = OperationTypes.LIST_GET_BY_VALUE;
+    public final String type = OperationTypes.LIST_GET_BY_VALUE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object value;
@@ -45,13 +45,13 @@ public class ListGetByValueOperation extends ListOperation {
     private boolean inverted;
 
     @JsonCreator
-    public ListGetByValueOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "value") @Schema(
-            name = "value", requiredMode = Schema.RequiredMode.REQUIRED
-    ) Object value, @JsonProperty(
-            value = "listReturnType", required = true
-    ) ListReturnType listReturnType) {
+    public ListGetByValueOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "value")
+            @Schema(name = "value", requiredMode = Schema.RequiredMode.REQUIRED) Object value,
+            @JsonProperty(value = "listReturnType", required = true) ListReturnType listReturnType
+    ) {
         super(binName);
         this.value = value;
         this.listReturnType = listReturnType;

@@ -36,7 +36,7 @@ public class ListRemoveByValueListOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_REMOVE_BY_VALUE_LIST}
     )
-    final public String type = OperationTypes.LIST_REMOVE_BY_VALUE_LIST;
+    public final String type = OperationTypes.LIST_REMOVE_BY_VALUE_LIST;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<Object> values;
@@ -47,9 +47,11 @@ public class ListRemoveByValueListOperation extends ListOperation {
     private boolean inverted;
 
     @JsonCreator
-    public ListRemoveByValueListOperation(@JsonProperty("binName") String binName,
-                                          @JsonProperty("values") List<Object> values,
-                                          @JsonProperty("listReturnType") ListReturnType listReturnType) {
+    public ListRemoveByValueListOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("values") List<Object> values,
+            @JsonProperty("listReturnType") ListReturnType listReturnType
+    ) {
         super(binName);
         this.values = values;
         this.listReturnType = listReturnType;

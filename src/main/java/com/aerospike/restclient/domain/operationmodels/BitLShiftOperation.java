@@ -33,7 +33,7 @@ public class BitLShiftOperation extends BitOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.BIT_LSHIFT}
     )
-    final public String type = OperationTypes.BIT_LSHIFT;
+    public final String type = OperationTypes.BIT_LSHIFT;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int bitOffset;
@@ -45,15 +45,16 @@ public class BitLShiftOperation extends BitOperation {
     private final int shift;
 
     @JsonCreator
-    public BitLShiftOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "bitOffset") @Schema(
-            name = "bitOffset", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int bitOffset, @JsonProperty(value = "bitSize") @Schema(
-            name = "bitSize", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int bitSize, @JsonProperty(value = "shift") @Schema(
-            name = "shift", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int shift) {
+    public BitLShiftOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "bitOffset")
+            @Schema(name = "bitOffset", requiredMode = Schema.RequiredMode.REQUIRED) int bitOffset,
+            @JsonProperty(value = "bitSize")
+            @Schema(name = "bitSize", requiredMode = Schema.RequiredMode.REQUIRED) int bitSize,
+            @JsonProperty(value = "shift")
+            @Schema(name = "shift", requiredMode = Schema.RequiredMode.REQUIRED) int shift
+    ) {
         super(binName);
         this.bitOffset = bitOffset;
         this.bitSize = bitSize;

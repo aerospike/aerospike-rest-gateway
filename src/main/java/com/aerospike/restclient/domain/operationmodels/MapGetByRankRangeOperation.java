@@ -33,7 +33,7 @@ public class MapGetByRankRangeOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_GET_BY_RANK_RANGE}
     )
-    final public String type = OperationTypes.MAP_GET_BY_RANK_RANGE;
+    public final String type = OperationTypes.MAP_GET_BY_RANK_RANGE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final MapReturnType mapReturnType;
@@ -46,15 +46,14 @@ public class MapGetByRankRangeOperation extends MapOperation {
     private boolean inverted;
 
     @JsonCreator
-    public MapGetByRankRangeOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(
-            value = "mapReturnType"
-    ) @Schema(
-            name = "mapReturnType", requiredMode = Schema.RequiredMode.REQUIRED
-    ) MapReturnType mapReturnType, @JsonProperty(value = "rank") @Schema(
-            name = "rank", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int rank) {
+    public MapGetByRankRangeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "mapReturnType")
+            @Schema(name = "mapReturnType", requiredMode = Schema.RequiredMode.REQUIRED) MapReturnType mapReturnType,
+            @JsonProperty(value = "rank")
+            @Schema(name = "rank", requiredMode = Schema.RequiredMode.REQUIRED) int rank
+    ) {
         super(binName);
         this.mapReturnType = mapReturnType;
         this.rank = rank;
@@ -72,12 +71,12 @@ public class MapGetByRankRangeOperation extends MapOperation {
         return inverted;
     }
 
-    public void setInverted(boolean inverted) {
-        this.inverted = inverted;
-    }
-
     public boolean isInverted() {
         return inverted;
+    }
+
+    public void setInverted(boolean inverted) {
+        this.inverted = inverted;
     }
 
     @Override

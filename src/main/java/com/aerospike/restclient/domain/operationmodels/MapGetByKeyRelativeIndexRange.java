@@ -34,7 +34,7 @@ public class MapGetByKeyRelativeIndexRange extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_GET_BY_KEY_RELATIVE_INDEX_RANGE}
     )
-    final public String type = OperationTypes.MAP_GET_BY_KEY_RELATIVE_INDEX_RANGE;
+    public final String type = OperationTypes.MAP_GET_BY_KEY_RELATIVE_INDEX_RANGE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
@@ -50,15 +50,15 @@ public class MapGetByKeyRelativeIndexRange extends MapOperation {
     private Integer count;
 
     @JsonCreator
-    public MapGetByKeyRelativeIndexRange(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "index") @Schema(
-            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int index, @JsonProperty(value = "value") @Schema(
-            name = "value", requiredMode = Schema.RequiredMode.REQUIRED
-    ) Object value, @JsonProperty(
-            value = "mapReturnType", required = true
-    ) MapReturnType mapReturnType) {
+    public MapGetByKeyRelativeIndexRange(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "index")
+            @Schema(name = "index", requiredMode = Schema.RequiredMode.REQUIRED) int index,
+            @JsonProperty(value = "value")
+            @Schema(name = "value", requiredMode = Schema.RequiredMode.REQUIRED) Object value,
+            @JsonProperty(value = "mapReturnType", required = true) MapReturnType mapReturnType
+    ) {
         super(binName);
         this.index = index;
         this.value = value;
@@ -95,4 +95,3 @@ public class MapGetByKeyRelativeIndexRange extends MapOperation {
                 intMapReturnType, asCTX);
     }
 }
-

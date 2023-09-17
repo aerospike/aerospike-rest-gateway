@@ -33,7 +33,7 @@ public class MapRemoveByIndexOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_REMOVE_BY_INDEX}
     )
-    final public String type = OperationTypes.MAP_REMOVE_BY_INDEX;
+    public final String type = OperationTypes.MAP_REMOVE_BY_INDEX;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
@@ -44,13 +44,13 @@ public class MapRemoveByIndexOperation extends MapOperation {
     private boolean inverted;
 
     @JsonCreator
-    public MapRemoveByIndexOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "index") @Schema(
-            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int index, @JsonProperty(
-            value = "mapReturnType", required = true
-    ) MapReturnType mapReturnType) {
+    public MapRemoveByIndexOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "index")
+            @Schema(name = "index", requiredMode = Schema.RequiredMode.REQUIRED) int index,
+            @JsonProperty(value = "mapReturnType", required = true) MapReturnType mapReturnType
+    ) {
         super(binName);
         this.index = index;
         this.mapReturnType = mapReturnType;

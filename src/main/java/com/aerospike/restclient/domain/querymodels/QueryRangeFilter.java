@@ -32,9 +32,8 @@ public class QueryRangeFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.RANGE,
             allowableValues = {AerospikeAPIConstants.QueryFilterTypes.RANGE}
-
     )
-    final public String type = AerospikeAPIConstants.QueryFilterTypes.RANGE;
+    public final String type = AerospikeAPIConstants.QueryFilterTypes.RANGE;
 
     @Schema(description = "Filter begin value inclusive.", requiredMode = Schema.RequiredMode.REQUIRED)
     public long begin;
@@ -54,4 +53,3 @@ public class QueryRangeFilter extends QueryFilter {
         return Filter.range(binName, collectionType, begin, end, getCTXArray());
     }
 }
-

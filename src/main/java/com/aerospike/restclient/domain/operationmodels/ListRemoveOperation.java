@@ -33,17 +33,18 @@ public class ListRemoveOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_REMOVE}
     )
-    final public String type = OperationTypes.LIST_REMOVE;
+    public final String type = OperationTypes.LIST_REMOVE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
     @JsonCreator
-    public ListRemoveOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "index") @Schema(
-            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int index) {
+    public ListRemoveOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "index")
+            @Schema(name = "index", requiredMode = Schema.RequiredMode.REQUIRED) int index
+    ) {
         super(binName);
         this.index = index;
     }

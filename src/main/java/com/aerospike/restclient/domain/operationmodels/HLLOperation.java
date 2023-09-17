@@ -21,39 +21,36 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes(
-        {
-                @JsonSubTypes.Type(value = HLLInitOperation.class, name = OperationTypes.HLL_INIT),
-                @JsonSubTypes.Type(value = HLLAddOperation.class, name = OperationTypes.HLL_ADD),
-                @JsonSubTypes.Type(value = HLLSetUnionOperation.class, name = OperationTypes.HLL_SET_UNION),
-                @JsonSubTypes.Type(value = HLLRefreshCountOperation.class, name = OperationTypes.HLL_SET_COUNT),
-                @JsonSubTypes.Type(value = HLLFoldOperation.class, name = OperationTypes.HLL_FOLD),
-                @JsonSubTypes.Type(value = HLLGetCountOperation.class, name = OperationTypes.HLL_COUNT),
-                @JsonSubTypes.Type(value = HLLGetUnionOperation.class, name = OperationTypes.HLL_UNION),
-                @JsonSubTypes.Type(value = HLLGetUnionCountOperation.class, name = OperationTypes.HLL_UNION_COUNT),
-                @JsonSubTypes.Type(
-                        value = HLLGetIntersectionCountOperation.class, name = OperationTypes.HLL_INTERSECT_COUNT
-                ),
-                @JsonSubTypes.Type(value = HLLGetSimilarityOperation.class, name = OperationTypes.HLL_SIMILARITY),
-                @JsonSubTypes.Type(value = HLLDescribeOperation.class, name = OperationTypes.HLL_DESCRIBE),
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = HLLInitOperation.class, name = OperationTypes.HLL_INIT),
+        @JsonSubTypes.Type(value = HLLAddOperation.class, name = OperationTypes.HLL_ADD),
+        @JsonSubTypes.Type(value = HLLSetUnionOperation.class, name = OperationTypes.HLL_SET_UNION),
+        @JsonSubTypes.Type(value = HLLRefreshCountOperation.class, name = OperationTypes.HLL_SET_COUNT),
+        @JsonSubTypes.Type(value = HLLFoldOperation.class, name = OperationTypes.HLL_FOLD),
+        @JsonSubTypes.Type(value = HLLGetCountOperation.class, name = OperationTypes.HLL_COUNT),
+        @JsonSubTypes.Type(value = HLLGetUnionOperation.class, name = OperationTypes.HLL_UNION),
+        @JsonSubTypes.Type(value = HLLGetUnionCountOperation.class, name = OperationTypes.HLL_UNION_COUNT),
+        @JsonSubTypes.Type(value = HLLGetIntersectionCountOperation.class, name = OperationTypes.HLL_INTERSECT_COUNT),
+        @JsonSubTypes.Type(value = HLLGetSimilarityOperation.class, name = OperationTypes.HLL_SIMILARITY),
+        @JsonSubTypes.Type(value = HLLDescribeOperation.class, name = OperationTypes.HLL_DESCRIBE),
+})
+@Schema(
+        description = "The base type for describing all HLL operations. Should not be used directly.",
+        oneOf = {
+                HLLInitOperation.class,
+                HLLAddOperation.class,
+                HLLSetUnionOperation.class,
+                HLLRefreshCountOperation.class,
+                HLLFoldOperation.class,
+                HLLGetCountOperation.class,
+                HLLGetUnionOperation.class,
+                HLLGetUnionCountOperation.class,
+                HLLGetIntersectionCountOperation.class,
+                HLLGetSimilarityOperation.class,
+                HLLDescribeOperation.class
         }
 )
-@Schema(
-        description = "The base type for describing all HLL operations. Should not be used directly.", oneOf = {
-        HLLInitOperation.class,
-        HLLAddOperation.class,
-        HLLSetUnionOperation.class,
-        HLLRefreshCountOperation.class,
-        HLLFoldOperation.class,
-        HLLGetCountOperation.class,
-        HLLGetUnionOperation.class,
-        HLLGetUnionCountOperation.class,
-        HLLGetIntersectionCountOperation.class,
-        HLLGetSimilarityOperation.class,
-        HLLDescribeOperation.class
-}
-)
-abstract public class HLLOperation extends Operation {
+public abstract class HLLOperation extends Operation {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     protected String binName;
 
@@ -61,4 +58,3 @@ abstract public class HLLOperation extends Operation {
         this.binName = binName;
     }
 }
-

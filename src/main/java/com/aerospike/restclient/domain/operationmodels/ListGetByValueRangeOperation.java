@@ -36,7 +36,7 @@ public class ListGetByValueRangeOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_GET_BY_VALUE_RANGE}
     )
-    final public String type = OperationTypes.LIST_GET_BY_VALUE_RANGE;
+    public final String type = OperationTypes.LIST_GET_BY_VALUE_RANGE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
@@ -48,11 +48,11 @@ public class ListGetByValueRangeOperation extends ListOperation {
     private Object valueEnd;
 
     @JsonCreator
-    public ListGetByValueRangeOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(
-            value = "listReturnType", required = true
-    ) ListReturnType listReturnType) {
+    public ListGetByValueRangeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "listReturnType", required = true) ListReturnType listReturnType
+    ) {
         super(binName);
         this.listReturnType = listReturnType;
         inverted = false;

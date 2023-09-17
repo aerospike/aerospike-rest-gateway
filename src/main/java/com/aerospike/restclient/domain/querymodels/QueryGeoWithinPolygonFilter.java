@@ -37,7 +37,7 @@ public class QueryGeoWithinPolygonFilter extends QueryFilter {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION}
     )
-    final public String type = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION;
+    public final String type = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION;
 
     @Schema(description = "Array of longitude and latitude describing a region.", requiredMode = Schema.RequiredMode.REQUIRED)
     public List<LngLat> polygon;
@@ -54,5 +54,3 @@ public class QueryGeoWithinPolygonFilter extends QueryFilter {
                 getCTXArray());
     }
 }
-
-

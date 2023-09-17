@@ -34,7 +34,7 @@ public class ListAppendOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_APPEND}
     )
-    final public String type = OperationTypes.LIST_APPEND;
+    public final String type = OperationTypes.LIST_APPEND;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object value;
@@ -43,11 +43,12 @@ public class ListAppendOperation extends ListOperation {
     private ListPolicy listPolicy;
 
     @JsonCreator
-    public ListAppendOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "value") @Schema(
-            name = "value", requiredMode = Schema.RequiredMode.REQUIRED
-    ) Object value) {
+    public ListAppendOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "value")
+            @Schema(name = "value", requiredMode = Schema.RequiredMode.REQUIRED) Object value
+    ) {
         super(binName);
         this.value = value;
     }

@@ -32,7 +32,7 @@ public class QueryEqualsStringFilter extends QueryFilter {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING}
     )
-    final public String type = AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING;
+    public final String type = AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     public String value;
@@ -46,4 +46,3 @@ public class QueryEqualsStringFilter extends QueryFilter {
         return Filter.equal(binName, value, asCTX);
     }
 }
-

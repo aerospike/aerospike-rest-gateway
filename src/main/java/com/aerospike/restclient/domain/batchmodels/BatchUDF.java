@@ -81,4 +81,3 @@ public class BatchUDF extends BatchRecord {
         return new com.aerospike.client.BatchUDF(batchUDFPolicy, key.toKey(), packageName, functionName, values);
     }
 }
-

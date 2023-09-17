@@ -33,7 +33,7 @@ public class BitResizeOperation extends BitOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.BIT_RESIZE}
     )
-    final public String type = OperationTypes.BIT_RESIZE;
+    public final String type = OperationTypes.BIT_RESIZE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int byteSize;
@@ -42,13 +42,13 @@ public class BitResizeOperation extends BitOperation {
     private final int resizeFlags;
 
     @JsonCreator
-    public BitResizeOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "byteSize") @Schema(
-            name = "byteSize", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int byteSize, @Schema(
-            name = "resizeFlags", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int resizeFlags) {
+    public BitResizeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "byteSize")
+            @Schema(name = "byteSize", requiredMode = Schema.RequiredMode.REQUIRED) int byteSize,
+            @Schema(name = "resizeFlags", requiredMode = Schema.RequiredMode.REQUIRED) int resizeFlags
+    ) {
         super(binName);
         this.byteSize = byteSize;
         this.resizeFlags = resizeFlags;

@@ -36,7 +36,7 @@ public class MapRemoveByValueListOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_REMOVE_BY_VALUE_LIST}
     )
-    final public String type = OperationTypes.MAP_REMOVE_BY_VALUE_LIST;
+    public final String type = OperationTypes.MAP_REMOVE_BY_VALUE_LIST;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<Object> values;
@@ -47,9 +47,11 @@ public class MapRemoveByValueListOperation extends MapOperation {
     private boolean inverted;
 
     @JsonCreator
-    public MapRemoveByValueListOperation(@JsonProperty("binName") String binName,
-                                         @JsonProperty("values") List<Object> values,
-                                         @JsonProperty("mapReturnType") MapReturnType mapReturnType) {
+    public MapRemoveByValueListOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("values") List<Object> values,
+            @JsonProperty("mapReturnType") MapReturnType mapReturnType
+    ) {
         super(binName);
         this.values = values;
         this.mapReturnType = mapReturnType;

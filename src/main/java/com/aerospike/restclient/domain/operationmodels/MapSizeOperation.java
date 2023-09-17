@@ -33,12 +33,13 @@ public class MapSizeOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_SIZE}
     )
-    final public String type = OperationTypes.MAP_SIZE;
+    public final String type = OperationTypes.MAP_SIZE;
 
     @JsonCreator
-    public MapSizeOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName) {
+    public MapSizeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName
+    ) {
         super(binName);
     }
 

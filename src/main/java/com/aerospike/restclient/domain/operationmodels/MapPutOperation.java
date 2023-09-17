@@ -34,7 +34,7 @@ public class MapPutOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_PUT}
     )
-    final public String type = OperationTypes.MAP_PUT;
+    public final String type = OperationTypes.MAP_PUT;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object key;
@@ -45,13 +45,14 @@ public class MapPutOperation extends MapOperation {
     private MapPolicy mapPolicy;
 
     @JsonCreator
-    public MapPutOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "key") @Schema(
-            name = "key", requiredMode = Schema.RequiredMode.REQUIRED
-    ) Object key, @JsonProperty(value = "value") @Schema(
-            name = "value", requiredMode = Schema.RequiredMode.REQUIRED
-    ) Object value) {
+    public MapPutOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "key")
+            @Schema(name = "key", requiredMode = Schema.RequiredMode.REQUIRED) Object key,
+            @JsonProperty(value = "value")
+            @Schema(name = "value", requiredMode = Schema.RequiredMode.REQUIRED) Object value
+    ) {
         super(binName);
         this.key = key;
         this.value = value;
@@ -76,6 +77,7 @@ public class MapPutOperation extends MapOperation {
             asMapPolicy = mapPolicy.toMapPolicy();
         }
 
-        return com.aerospike.client.cdt.MapOperation.put(asMapPolicy, binName, Value.get(key), Value.get(value), asCTX);
+        return com.aerospike.client.cdt.MapOperation.put(asMapPolicy, binName,
+                Value.get(key), Value.get(value), asCTX);
     }
 }

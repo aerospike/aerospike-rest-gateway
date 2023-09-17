@@ -34,7 +34,7 @@ public class QueryGeoWithinRadiusFilter extends QueryFilter {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS}
     )
-    final public String type = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS;
+    public final String type = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS;
 
     @Schema(description = "Array of longitude, latitude, and radius describing a circle.", requiredMode = Schema.RequiredMode.REQUIRED)
     public LngLatRad circle;
@@ -51,4 +51,3 @@ public class QueryGeoWithinRadiusFilter extends QueryFilter {
                 circle.radius, getCTXArray());
     }
 }
-

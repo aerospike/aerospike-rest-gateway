@@ -33,7 +33,7 @@ public class BitInsertOperation extends BitOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.BIT_INSERT}
     )
-    final public String type = OperationTypes.BIT_INSERT;
+    public final String type = OperationTypes.BIT_INSERT;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int byteOffset;
@@ -42,8 +42,11 @@ public class BitInsertOperation extends BitOperation {
     private final byte[] value;
 
     @JsonCreator
-    public BitInsertOperation(@JsonProperty("binName") String binName, @JsonProperty("byteOffset") int byteOffset,
-                              @JsonProperty("value") byte[] value) {
+    public BitInsertOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("byteOffset") int byteOffset,
+            @JsonProperty("value") byte[] value
+    ) {
         super(binName);
         this.byteOffset = byteOffset;
         this.value = value;

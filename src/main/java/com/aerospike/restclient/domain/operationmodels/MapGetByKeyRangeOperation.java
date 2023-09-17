@@ -34,7 +34,7 @@ public class MapGetByKeyRangeOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_GET_BY_KEY_RANGE}
     )
-    final public String type = OperationTypes.MAP_GET_BY_KEY_RANGE;
+    public final String type = OperationTypes.MAP_GET_BY_KEY_RANGE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final MapReturnType mapReturnType;
@@ -45,11 +45,11 @@ public class MapGetByKeyRangeOperation extends MapOperation {
     private Object keyEnd;
 
     @JsonCreator
-    public MapGetByKeyRangeOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(
-            value = "mapReturnType", required = true
-    ) MapReturnType mapReturnType) {
+    public MapGetByKeyRangeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "mapReturnType", required = true) MapReturnType mapReturnType
+    ) {
         super(binName);
         this.mapReturnType = mapReturnType;
         inverted = false;

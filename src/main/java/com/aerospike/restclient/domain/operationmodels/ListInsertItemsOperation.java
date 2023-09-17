@@ -36,7 +36,7 @@ public class ListInsertItemsOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_INSERT_ITEMS}
     )
-    final public String type = OperationTypes.LIST_INSERT_ITEMS;
+    public final String type = OperationTypes.LIST_INSERT_ITEMS;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
@@ -47,8 +47,11 @@ public class ListInsertItemsOperation extends ListOperation {
     private ListPolicy listPolicy;
 
     @JsonCreator
-    public ListInsertItemsOperation(@JsonProperty("binName") String binName, @JsonProperty("index") int index,
-                                    @JsonProperty("values") List<Object> values) {
+    public ListInsertItemsOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("index") int index,
+            @JsonProperty("values") List<Object> values
+    ) {
         super(binName);
         this.index = index;
         this.values = values;

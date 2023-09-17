@@ -36,7 +36,7 @@ public class MapGetByKeyListOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_GET_BY_KEY_LIST}
     )
-    final public String type = OperationTypes.MAP_GET_BY_KEY_LIST;
+    public final String type = OperationTypes.MAP_GET_BY_KEY_LIST;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<Object> keys;
@@ -47,8 +47,11 @@ public class MapGetByKeyListOperation extends MapOperation {
     private boolean inverted;
 
     @JsonCreator
-    public MapGetByKeyListOperation(@JsonProperty("binName") String binName, @JsonProperty("keys") List<Object> keys,
-                                    @JsonProperty("mapReturnType") MapReturnType mapReturnType) {
+    public MapGetByKeyListOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("keys") List<Object> keys,
+            @JsonProperty("mapReturnType") MapReturnType mapReturnType
+    ) {
         super(binName);
         this.keys = keys;
         this.mapReturnType = mapReturnType;

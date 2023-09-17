@@ -32,12 +32,13 @@ public class HLLRefreshCountOperation extends HLLOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.HLL_SET_UNION}
     )
-    final public String type = OperationTypes.HLL_SET_UNION;
+    public final String type = OperationTypes.HLL_SET_UNION;
 
     @JsonCreator
-    public HLLRefreshCountOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName) {
+    public HLLRefreshCountOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName
+    ) {
         super(binName);
     }
 

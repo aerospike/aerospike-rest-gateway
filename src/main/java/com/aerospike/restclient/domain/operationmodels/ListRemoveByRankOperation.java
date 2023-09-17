@@ -33,7 +33,7 @@ public class ListRemoveByRankOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_REMOVE_BY_RANK}
     )
-    final public String type = OperationTypes.LIST_REMOVE_BY_RANK;
+    public final String type = OperationTypes.LIST_REMOVE_BY_RANK;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
@@ -44,15 +44,14 @@ public class ListRemoveByRankOperation extends ListOperation {
     private boolean inverted;
 
     @JsonCreator
-    public ListRemoveByRankOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "rank") @Schema(
-            name = "rank", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int rank, @JsonProperty(
-            value = "listReturnType"
-    ) @Schema(
-            name = "listReturnType", requiredMode = Schema.RequiredMode.REQUIRED
-    ) ListReturnType listReturnType) {
+    public ListRemoveByRankOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "rank")
+            @Schema(name = "rank", requiredMode = Schema.RequiredMode.REQUIRED) int rank,
+            @JsonProperty(value = "listReturnType")
+            @Schema(name = "listReturnType", requiredMode = Schema.RequiredMode.REQUIRED) ListReturnType listReturnType
+    ) {
         super(binName);
         this.rank = rank;
         this.listReturnType = listReturnType;

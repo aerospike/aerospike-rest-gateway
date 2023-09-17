@@ -34,7 +34,7 @@ public class MapGetByKeyOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_GET_BY_KEY}
     )
-    final public String type = OperationTypes.MAP_GET_BY_KEY;
+    public final String type = OperationTypes.MAP_GET_BY_KEY;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object key;
@@ -45,13 +45,13 @@ public class MapGetByKeyOperation extends MapOperation {
     private boolean inverted;
 
     @JsonCreator
-    public MapGetByKeyOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "key") @Schema(
-            name = "key", requiredMode = Schema.RequiredMode.REQUIRED
-    ) Object key, @Schema(
-            name = "mapReturnType", requiredMode = Schema.RequiredMode.REQUIRED
-    ) MapReturnType mapReturnType) {
+    public MapGetByKeyOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "key")
+            @Schema(name = "key", requiredMode = Schema.RequiredMode.REQUIRED) Object key,
+            @Schema(name = "mapReturnType", requiredMode = Schema.RequiredMode.REQUIRED) MapReturnType mapReturnType
+    ) {
         super(binName);
         this.key = key;
         this.mapReturnType = mapReturnType;

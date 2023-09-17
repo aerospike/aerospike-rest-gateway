@@ -35,7 +35,7 @@ public class PutOperation extends Operation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.PUT}
     )
-    final public String type = OperationTypes.PUT;
+    public final String type = OperationTypes.PUT;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final String binName;
@@ -44,11 +44,12 @@ public class PutOperation extends Operation {
     private final Object value;
 
     @JsonCreator
-    public PutOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "value") @Schema(
-            name = "value", requiredMode = Schema.RequiredMode.REQUIRED
-    ) Object value) {
+    public PutOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "value")
+            @Schema(name = "value", requiredMode = Schema.RequiredMode.REQUIRED) Object value
+    ) {
         this.binName = binName;
         this.value = value;
     }

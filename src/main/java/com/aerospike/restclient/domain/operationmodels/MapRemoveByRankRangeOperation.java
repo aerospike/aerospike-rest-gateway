@@ -33,7 +33,7 @@ public class MapRemoveByRankRangeOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_REMOVE_BY_RANK_RANGE}
     )
-    final public String type = OperationTypes.MAP_REMOVE_BY_RANK_RANGE;
+    public final String type = OperationTypes.MAP_REMOVE_BY_RANK_RANGE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
@@ -46,13 +46,13 @@ public class MapRemoveByRankRangeOperation extends MapOperation {
     private Integer count;
 
     @JsonCreator
-    public MapRemoveByRankRangeOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "rank") @Schema(
-            name = "rank", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int rank, @JsonProperty(
-            value = "mapReturnType", required = true
-    ) MapReturnType mapReturnType) {
+    public MapRemoveByRankRangeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "rank")
+            @Schema(name = "rank", requiredMode = Schema.RequiredMode.REQUIRED) int rank,
+            @JsonProperty(value = "mapReturnType", required = true) MapReturnType mapReturnType
+    ) {
         super(binName);
         this.rank = rank;
         this.mapReturnType = mapReturnType;
@@ -80,9 +80,11 @@ public class MapRemoveByRankRangeOperation extends MapOperation {
         int inMapReturnType = mapReturnType.toMapReturnType(inverted);
 
         if (count == null) {
-            return com.aerospike.client.cdt.MapOperation.removeByRankRange(binName, rank, inMapReturnType, asCTX);
+            return com.aerospike.client.cdt.MapOperation.removeByRankRange(binName,
+                    rank, inMapReturnType, asCTX);
         }
 
-        return com.aerospike.client.cdt.MapOperation.removeByRankRange(binName, rank, count, inMapReturnType, asCTX);
+        return com.aerospike.client.cdt.MapOperation.removeByRankRange(binName,
+                rank, count, inMapReturnType, asCTX);
     }
 }

@@ -34,7 +34,7 @@ public class MapRemoveByKeyRangeOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_REMOVE_BY_KEY_RANGE}
     )
-    final public String type = OperationTypes.MAP_REMOVE_BY_KEY_RANGE;
+    public final String type = OperationTypes.MAP_REMOVE_BY_KEY_RANGE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final MapReturnType mapReturnType;
@@ -46,11 +46,11 @@ public class MapRemoveByKeyRangeOperation extends MapOperation {
     private Object keyEnd;
 
     @JsonCreator
-    public MapRemoveByKeyRangeOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(
-            value = "mapReturnType", required = true
-    ) MapReturnType mapReturnType) {
+    public MapRemoveByKeyRangeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "mapReturnType", required = true) MapReturnType mapReturnType
+    ) {
         super(binName);
         this.mapReturnType = mapReturnType;
         inverted = false;

@@ -33,7 +33,7 @@ public class GetOperation extends Operation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.GET}
     )
-    final public String type = OperationTypes.GET;
+    public final String type = OperationTypes.GET;
 
     private final String binName;
 

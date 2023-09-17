@@ -33,7 +33,7 @@ public class MapRemoveByIndexRangeOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_REMOVE_BY_INDEX_RANGE}
     )
-    final public String type = OperationTypes.MAP_REMOVE_BY_INDEX_RANGE;
+    public final String type = OperationTypes.MAP_REMOVE_BY_INDEX_RANGE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
@@ -46,15 +46,14 @@ public class MapRemoveByIndexRangeOperation extends MapOperation {
     private Integer count;
 
     @JsonCreator
-    public MapRemoveByIndexRangeOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "index") @Schema(
-            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int index, @JsonProperty(
-            value = "mapReturnType"
-    ) @Schema(
-            name = "mapReturnType", requiredMode = Schema.RequiredMode.REQUIRED
-    ) MapReturnType mapReturnType) {
+    public MapRemoveByIndexRangeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "index")
+            @Schema(name = "index", requiredMode = Schema.RequiredMode.REQUIRED) int index,
+            @JsonProperty(value = "mapReturnType")
+            @Schema(name = "mapReturnType", requiredMode = Schema.RequiredMode.REQUIRED) MapReturnType mapReturnType
+    ) {
         super(binName);
         this.index = index;
         this.mapReturnType = mapReturnType;
@@ -82,9 +81,11 @@ public class MapRemoveByIndexRangeOperation extends MapOperation {
         int intMapReturnType = mapReturnType.toMapReturnType(inverted);
 
         if (count == null) {
-            return com.aerospike.client.cdt.MapOperation.removeByIndexRange(binName, index, intMapReturnType, asCTX);
+            return com.aerospike.client.cdt.MapOperation.removeByIndexRange(binName,
+                    index, intMapReturnType, asCTX);
         }
 
-        return com.aerospike.client.cdt.MapOperation.removeByIndexRange(binName, index, count, intMapReturnType, asCTX);
+        return com.aerospike.client.cdt.MapOperation.removeByIndexRange(binName,
+                index, count, intMapReturnType, asCTX);
     }
 }

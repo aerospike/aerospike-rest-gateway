@@ -34,7 +34,7 @@ public class MapGetByValueRelativeRankRangeOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE}
     )
-    final public String type = OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE;
+    public final String type = OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
@@ -50,9 +50,12 @@ public class MapGetByValueRelativeRankRangeOperation extends MapOperation {
     private Integer count;
 
     @JsonCreator
-    public MapGetByValueRelativeRankRangeOperation(@JsonProperty("binName") String binName,
-                                                   @JsonProperty("rank") int rank, @JsonProperty("value") Object value,
-                                                   @JsonProperty("mapReturnType") MapReturnType mapReturnType) {
+    public MapGetByValueRelativeRankRangeOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("rank") int rank,
+            @JsonProperty("value") Object value,
+            @JsonProperty("mapReturnType") MapReturnType mapReturnType
+    ) {
         super(binName);
         this.rank = rank;
         this.value = value;
@@ -89,4 +92,3 @@ public class MapGetByValueRelativeRankRangeOperation extends MapOperation {
                 intMapReturnType, asCTX);
     }
 }
-

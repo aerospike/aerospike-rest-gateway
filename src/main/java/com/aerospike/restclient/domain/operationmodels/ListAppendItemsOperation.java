@@ -39,7 +39,7 @@ public class ListAppendItemsOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_APPEND_ITEMS}
     )
-    final public String type = OperationTypes.LIST_APPEND_ITEMS;
+    public final String type = OperationTypes.LIST_APPEND_ITEMS;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<Object> values;
@@ -48,8 +48,10 @@ public class ListAppendItemsOperation extends ListOperation {
     private ListPolicy listPolicy;
 
     @JsonCreator
-    public ListAppendItemsOperation(@JsonProperty("binName") String binName,
-                                    @JsonProperty("values") List<Object> values) {
+    public ListAppendItemsOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("values") List<Object> values
+    ) {
         super(binName);
         this.values = values;
     }

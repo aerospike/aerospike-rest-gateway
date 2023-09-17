@@ -33,7 +33,7 @@ public class BitRemoveOperation extends BitOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.BIT_REMOVE}
     )
-    final public String type = OperationTypes.BIT_REMOVE;
+    public final String type = OperationTypes.BIT_REMOVE;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int byteOffset;
@@ -42,13 +42,14 @@ public class BitRemoveOperation extends BitOperation {
     private final int byteSize;
 
     @JsonCreator
-    public BitRemoveOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "byteOffset") @Schema(
-            name = "byteOffset", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int byteOffset, @JsonProperty(value = "byteSize") @Schema(
-            name = "byteSize", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int byteSize) {
+    public BitRemoveOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "byteOffset")
+            @Schema(name = "byteOffset", requiredMode = Schema.RequiredMode.REQUIRED) int byteOffset,
+            @JsonProperty(value = "byteSize")
+            @Schema(name = "byteSize", requiredMode = Schema.RequiredMode.REQUIRED) int byteSize
+    ) {
         super(binName);
         this.byteOffset = byteOffset;
         this.byteSize = byteSize;

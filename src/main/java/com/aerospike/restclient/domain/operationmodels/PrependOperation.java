@@ -34,7 +34,7 @@ public class PrependOperation extends Operation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.PREPEND}
     )
-    final public String type = OperationTypes.PREPEND;
+    public final String type = OperationTypes.PREPEND;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final String binName;
@@ -43,11 +43,12 @@ public class PrependOperation extends Operation {
     private final String value;
 
     @JsonCreator
-    public PrependOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "value") @Schema(
-            name = "value", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String value) {
+    public PrependOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "value")
+            @Schema(name = "value", requiredMode = Schema.RequiredMode.REQUIRED) String value
+    ) {
         this.binName = binName;
         this.value = value;
     }

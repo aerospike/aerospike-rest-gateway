@@ -33,12 +33,13 @@ public class MapClearOperation extends MapOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.MAP_CLEAR}
     )
-    final public String type = OperationTypes.MAP_CLEAR;
+    public final String type = OperationTypes.MAP_CLEAR;
 
     @JsonCreator
-    public MapClearOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName) {
+    public MapClearOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName
+    ) {
         super(binName);
     }
 

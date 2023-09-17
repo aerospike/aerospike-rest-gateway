@@ -56,4 +56,3 @@ public enum MapWriteFlag {
         this.flag = flag;
     }
 }
-

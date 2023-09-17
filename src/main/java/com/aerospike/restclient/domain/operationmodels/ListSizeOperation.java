@@ -33,12 +33,13 @@ public class ListSizeOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_SIZE}
     )
-    final public String type = OperationTypes.LIST_SIZE;
+    public final String type = OperationTypes.LIST_SIZE;
 
     @JsonCreator
-    public ListSizeOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName) {
+    public ListSizeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName
+    ) {
         super(binName);
     }
 

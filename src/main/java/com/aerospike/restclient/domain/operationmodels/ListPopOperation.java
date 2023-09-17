@@ -33,17 +33,18 @@ public class ListPopOperation extends ListOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.LIST_POP}
     )
-    final public String type = OperationTypes.LIST_POP;
+    public final String type = OperationTypes.LIST_POP;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
     @JsonCreator
-    public ListPopOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @JsonProperty(value = "index") @Schema(
-            name = "index", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int index) {
+    public ListPopOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "index")
+            @Schema(name = "index", requiredMode = Schema.RequiredMode.REQUIRED) int index
+    ) {
         super(binName);
         this.index = index;
     }

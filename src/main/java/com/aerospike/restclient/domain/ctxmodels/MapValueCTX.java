@@ -54,4 +54,3 @@ public class MapValueCTX extends CTX {
         return com.aerospike.client.cdt.CTX.mapValue(asVal);
     }
 }
-

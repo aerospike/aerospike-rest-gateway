@@ -24,9 +24,8 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
-        description = "Append a `value` to the item in the specified `binName`", externalDocs = @ExternalDocumentation(
-        url = "https://javadoc.io/doc/com.aerospike/aerospike-client/" + AerospikeAPIConstants.AS_CLIENT_VERSION + "/com/aerospike/client/Operation.html"
-)
+        description = "Append a `value` to the item in the specified `binName`",
+        externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/" + AerospikeAPIConstants.AS_CLIENT_VERSION + "/com/aerospike/client/Operation.html")
 )
 public class AppendOperation extends Operation {
 
@@ -35,7 +34,7 @@ public class AppendOperation extends Operation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.APPEND}
     )
-    final public String type = OperationTypes.APPEND;
+    public final String type = OperationTypes.APPEND;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final String binName;
@@ -45,11 +44,10 @@ public class AppendOperation extends Operation {
 
     @JsonCreator
     public AppendOperation(
-            @JsonProperty(value = "binName") @Schema(
-                    name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-            ) String binName, @JsonProperty(value = "value") @Schema(
-            name = "value"
-    ) String value
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "value")
+            @Schema(name = "value") String value
     ) {
         this.binName = binName;
         this.value = value;

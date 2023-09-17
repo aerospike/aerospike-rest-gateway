@@ -35,14 +35,16 @@ public class HLLGetUnionCountOperation extends HLLOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.HLL_UNION_COUNT}
     )
-    final public String type = OperationTypes.HLL_UNION_COUNT;
+    public final String type = OperationTypes.HLL_UNION_COUNT;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<byte[]> values;
 
     @JsonCreator
-    public HLLGetUnionCountOperation(@JsonProperty("binName") String binName,
-                                     @JsonProperty("values") List<byte[]> values) {
+    public HLLGetUnionCountOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("values") List<byte[]> values
+    ) {
         super(binName);
         this.values = values;
     }

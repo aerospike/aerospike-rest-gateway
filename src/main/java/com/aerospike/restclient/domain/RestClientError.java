@@ -37,18 +37,6 @@ public class RestClientError {
     @Schema(description = "An internal error code for diagnostic purposes. This may be null", example = "-3")
     private final Integer internalErrorCode;
 
-    public String getMessage() {
-        return message;
-    }
-
-    public Boolean getInDoubt() {
-        return inDoubt;
-    }
-
-    public Integer getInternalErrorCode() {
-        return internalErrorCode;
-    }
-
     public RestClientError(AerospikeException ex) {
         this.message = ex.getMessage();
         this.inDoubt = ex.getInDoubt();
@@ -68,10 +56,25 @@ public class RestClientError {
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public RestClientError(@JsonProperty("message") String message, @JsonProperty("inDoubt") boolean inDoubt,
-                           @JsonProperty("internalErrorCode") int internalErrorCode) {
+    public RestClientError(
+            @JsonProperty("message") String message,
+            @JsonProperty("inDoubt") boolean inDoubt,
+            @JsonProperty("internalErrorCode") int internalErrorCode
+    ) {
         this.message = message;
         this.inDoubt = inDoubt;
         this.internalErrorCode = internalErrorCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Boolean getInDoubt() {
+        return inDoubt;
+    }
+
+    public Integer getInternalErrorCode() {
+        return internalErrorCode;
     }
 }

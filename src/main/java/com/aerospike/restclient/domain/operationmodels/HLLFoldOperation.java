@@ -32,17 +32,17 @@ public class HLLFoldOperation extends HLLOperation {
             requiredMode = Schema.RequiredMode.REQUIRED,
             allowableValues = {OperationTypes.HLL_FOLD}
     )
-    final public String type = OperationTypes.HLL_FOLD;
+    public final String type = OperationTypes.HLL_FOLD;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int indexBitCount;
 
     @JsonCreator
-    public HLLFoldOperation(@JsonProperty(value = "binName") @Schema(
-            name = "binName", requiredMode = Schema.RequiredMode.REQUIRED
-    ) String binName, @Schema(
-            name = "indexBitCount", requiredMode = Schema.RequiredMode.REQUIRED
-    ) int indexBitCount) {
+    public HLLFoldOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @Schema(name = "indexBitCount", requiredMode = Schema.RequiredMode.REQUIRED) int indexBitCount
+    ) {
         super(binName);
         this.indexBitCount = indexBitCount;
     }
