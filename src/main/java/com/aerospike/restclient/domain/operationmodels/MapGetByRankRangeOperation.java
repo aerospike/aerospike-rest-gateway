@@ -30,15 +30,15 @@ public class MapGetByRankRangeOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_GET_BY_RANK_RANGE,
-            required = true,
-            allowableValues = OperationTypes.MAP_GET_BY_RANK_RANGE
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.MAP_GET_BY_RANK_RANGE}
     )
-    final public static String type = OperationTypes.MAP_GET_BY_RANK_RANGE;
+    public final String type = OperationTypes.MAP_GET_BY_RANK_RANGE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final MapReturnType mapReturnType;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
 
     private Integer count;
@@ -46,9 +46,14 @@ public class MapGetByRankRangeOperation extends MapOperation {
     private boolean inverted;
 
     @JsonCreator
-    public MapGetByRankRangeOperation(@JsonProperty(value = "binName", required = true) String binName, @JsonProperty(
-            value = "mapReturnType", required = true
-    ) MapReturnType mapReturnType, @JsonProperty(value = "rank", required = true) int rank) {
+    public MapGetByRankRangeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "mapReturnType")
+            @Schema(name = "mapReturnType", requiredMode = Schema.RequiredMode.REQUIRED) MapReturnType mapReturnType,
+            @JsonProperty(value = "rank")
+            @Schema(name = "rank", requiredMode = Schema.RequiredMode.REQUIRED) int rank
+    ) {
         super(binName);
         this.mapReturnType = mapReturnType;
         this.rank = rank;
@@ -66,12 +71,12 @@ public class MapGetByRankRangeOperation extends MapOperation {
         return inverted;
     }
 
-    public void setInverted(boolean inverted) {
-        this.inverted = inverted;
-    }
-
     public boolean isInverted() {
         return inverted;
+    }
+
+    public void setInverted(boolean inverted) {
+        this.inverted = inverted;
     }
 
     @Override

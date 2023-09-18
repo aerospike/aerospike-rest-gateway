@@ -30,24 +30,28 @@ public class ListRemoveByRankOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_REMOVE_BY_RANK,
-            required = true,
-            allowableValues = OperationTypes.LIST_REMOVE_BY_RANK
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.LIST_REMOVE_BY_RANK}
     )
-    final public static String type = OperationTypes.LIST_REMOVE_BY_RANK;
+    public final String type = OperationTypes.LIST_REMOVE_BY_RANK;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
 
     private boolean inverted;
 
     @JsonCreator
-    public ListRemoveByRankOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                     @JsonProperty(value = "rank", required = true) int rank, @JsonProperty(
-            value = "listReturnType", required = true
-    ) ListReturnType listReturnType) {
+    public ListRemoveByRankOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "rank")
+            @Schema(name = "rank", requiredMode = Schema.RequiredMode.REQUIRED) int rank,
+            @JsonProperty(value = "listReturnType")
+            @Schema(name = "listReturnType", requiredMode = Schema.RequiredMode.REQUIRED) ListReturnType listReturnType
+    ) {
         super(binName);
         this.rank = rank;
         this.listReturnType = listReturnType;
@@ -65,6 +69,7 @@ public class ListRemoveByRankOperation extends ListOperation {
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
 
-        return com.aerospike.client.cdt.ListOperation.removeByRank(binName, rank, listReturnType.toListReturnType(inverted), asCTX);
+        return com.aerospike.client.cdt.ListOperation.removeByRank(binName, rank,
+                listReturnType.toListReturnType(inverted), asCTX);
     }
 }

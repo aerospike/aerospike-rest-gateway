@@ -21,42 +21,24 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes(
-        {
-                @JsonSubTypes.Type(
-                        value = AddOperation.class, name = OperationTypes.ADD
-                ), @JsonSubTypes.Type(
-                value = PrependOperation.class, name = OperationTypes.PREPEND
-        ), @JsonSubTypes.Type(
-                value = AppendOperation.class, name = OperationTypes.APPEND
-        ), @JsonSubTypes.Type(
-                value = GetOperation.class, name = OperationTypes.GET
-        ), @JsonSubTypes.Type(
-                value = ReadOperation.class, name = OperationTypes.READ
-        ), @JsonSubTypes.Type(
-                value = GetHeaderOperation.class, name = OperationTypes.GET_HEADER
-        ), @JsonSubTypes.Type(
-                value = TouchOperation.class, name = OperationTypes.TOUCH
-        ), @JsonSubTypes.Type(
-                value = PutOperation.class, name = OperationTypes.PUT
-        ), @JsonSubTypes.Type(
-                value = DeleteOperation.class, name = OperationTypes.DELETE
-        ), @JsonSubTypes.Type(
-                value = ListOperation.class
-        ), @JsonSubTypes.Type(
-                value = MapOperation.class
-        ), @JsonSubTypes.Type(
-                value = BitOperation.class
-        ), @JsonSubTypes.Type(
-                value = HLLOperation.class
-        ),
-        }
-)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = AddOperation.class, name = OperationTypes.ADD),
+        @JsonSubTypes.Type(value = PrependOperation.class, name = OperationTypes.PREPEND),
+        @JsonSubTypes.Type(value = AppendOperation.class, name = OperationTypes.APPEND),
+        @JsonSubTypes.Type(value = GetOperation.class, name = OperationTypes.GET),
+        @JsonSubTypes.Type(value = ReadOperation.class, name = OperationTypes.READ),
+        @JsonSubTypes.Type(value = GetHeaderOperation.class, name = OperationTypes.GET_HEADER),
+        @JsonSubTypes.Type(value = TouchOperation.class, name = OperationTypes.TOUCH),
+        @JsonSubTypes.Type(value = PutOperation.class, name = OperationTypes.PUT),
+        @JsonSubTypes.Type(value = DeleteOperation.class, name = OperationTypes.DELETE),
+        @JsonSubTypes.Type(value = ListOperation.class),
+        @JsonSubTypes.Type(value = MapOperation.class),
+        @JsonSubTypes.Type(value = BitOperation.class),
+        @JsonSubTypes.Type(value = HLLOperation.class),
+})
 @Schema(
         description = "The base type for describing all operations. Should not be used directly."
 )
-abstract public class Operation {
-        abstract public com.aerospike.client.Operation toOperation();
+public abstract class Operation {
+    public abstract com.aerospike.client.Operation toOperation();
 }
-
-

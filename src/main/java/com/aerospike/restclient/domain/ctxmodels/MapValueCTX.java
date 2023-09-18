@@ -31,13 +31,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class MapValueCTX extends CTX {
     @Schema(
             description = "The type of context this object represents. It is always " + AerospikeAPIConstants.CTX.MAP_VALUE,
-            allowableValues = AerospikeAPIConstants.CTX.MAP_VALUE,
-            required = true
+            allowableValues = {AerospikeAPIConstants.CTX.MAP_VALUE},
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
     @JsonProperty(required = true)
     public final String type = AerospikeAPIConstants.CTX.MAP_VALUE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonDeserialize(using = ObjectDeserializer.class)
     public Object value;
 
@@ -54,4 +54,3 @@ public class MapValueCTX extends CTX {
         return com.aerospike.client.cdt.CTX.mapValue(asVal);
     }
 }
-

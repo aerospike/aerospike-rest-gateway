@@ -30,10 +30,10 @@ public class GetOperation extends Operation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.GET,
-            required = true,
-            allowableValues = OperationTypes.GET
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.GET}
     )
-    final public static String type = OperationTypes.GET;
+    public final String type = OperationTypes.GET;
 
     private final String binName;
 

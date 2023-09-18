@@ -37,9 +37,11 @@ public class RestClientKeyRecord {
         bins = rec.bins;
     }
 
-    @Schema(required = true,
+    @Schema(
+            requiredMode = Schema.RequiredMode.REQUIRED,
             description = "The user key, it may be a string, integer, or URL safe Base64 encoded bytes.",
-            example = "userKey")
+            example = "userKey"
+    )
     public Object userKey;
 
     @Schema(name = "generation", description = "The generation of the record.", example = "2")
@@ -48,7 +50,10 @@ public class RestClientKeyRecord {
     @Schema(name = "ttl", description = "The time to live for the record, in seconds from now.", example = "1000")
     public int ttl;
 
-    @Schema(name = "bins", description = "A mapping from binName to binValue",
-            example = "{\"bin1\": \"val1\", \"pi\": \"3.14\"}")
+    @Schema(
+            name = "bins",
+            description = "A mapping from binName to binValue",
+            example = "{\"bin1\": \"val1\", \"pi\": \"3.14\"}"
+    )
     public Map<String, Object> bins;
 }

@@ -30,23 +30,27 @@ public class MapGetByRankOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_GET_BY_RANK,
-            required = true,
-            allowableValues = OperationTypes.MAP_GET_BY_RANK
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.MAP_GET_BY_RANK}
     )
-    final public static String type = OperationTypes.MAP_GET_BY_RANK;
+    public final String type = OperationTypes.MAP_GET_BY_RANK;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final MapReturnType mapReturnType;
 
     private boolean inverted;
 
     @JsonCreator
-    public MapGetByRankOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                 @JsonProperty(value = "rank", required = true) int rank,
-                                 @JsonProperty(value = "mapReturnType", required = true) MapReturnType mapReturnType) {
+    public MapGetByRankOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "rank")
+            @Schema(name = "rank", requiredMode = Schema.RequiredMode.REQUIRED) int rank,
+            @Schema(name = "mapReturnType", requiredMode = Schema.RequiredMode.REQUIRED) MapReturnType mapReturnType
+    ) {
         super(binName);
         this.rank = rank;
         this.mapReturnType = mapReturnType;

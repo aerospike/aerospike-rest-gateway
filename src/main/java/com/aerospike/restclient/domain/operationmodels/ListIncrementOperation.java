@@ -31,23 +31,28 @@ public class ListIncrementOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_INCREMENT,
-            required = true,
-            allowableValues = OperationTypes.LIST_INCREMENT
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.LIST_INCREMENT}
     )
-    final public static String type = OperationTypes.LIST_INCREMENT;
+    public final String type = OperationTypes.LIST_INCREMENT;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Number incr;
 
     private ListPolicy listPolicy;
 
     @JsonCreator
-    public ListIncrementOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                  @JsonProperty(value = "index", required = true) int index,
-                                  @JsonProperty(value = "incr", required = true) Number incr) {
+    public ListIncrementOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "index")
+            @Schema(name = "index", requiredMode = Schema.RequiredMode.REQUIRED) int index,
+            @JsonProperty(value = "incr")
+            @Schema(name = "incr", requiredMode = Schema.RequiredMode.REQUIRED) Number incr
+    ) {
         super(binName);
         this.index = index;
         this.incr = incr;

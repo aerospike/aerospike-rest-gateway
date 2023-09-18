@@ -45,7 +45,7 @@ public class ListPolicy {
     }
 
     public com.aerospike.client.cdt.ListPolicy toListPolicy() {
-        if (order == null && (writeFlags == null || writeFlags.size() == 0)) {
+        if (order == null && (writeFlags == null || writeFlags.isEmpty())) {
             return com.aerospike.client.cdt.ListPolicy.Default;
         }
 

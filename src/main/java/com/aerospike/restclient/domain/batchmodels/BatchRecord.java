@@ -24,28 +24,20 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes(
-        {
-                @JsonSubTypes.Type(value = BatchRead.class, name = AerospikeAPIConstants.BATCH_TYPE_READ),
-                @JsonSubTypes.Type(
-                        value = BatchWrite.class, name = AerospikeAPIConstants.BATCH_TYPE_WRITE
-                ),
-                @JsonSubTypes.Type(
-                        value = BatchDelete.class, name = AerospikeAPIConstants.BATCH_TYPE_DELETE
-                ),
-                @JsonSubTypes.Type(value = BatchUDF.class, name = AerospikeAPIConstants.BATCH_TYPE_UDF),
-        }
-)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = BatchRead.class, name = AerospikeAPIConstants.BATCH_TYPE_READ),
+        @JsonSubTypes.Type(value = BatchWrite.class, name = AerospikeAPIConstants.BATCH_TYPE_WRITE),
+        @JsonSubTypes.Type(value = BatchDelete.class, name = AerospikeAPIConstants.BATCH_TYPE_DELETE),
+        @JsonSubTypes.Type(value = BatchUDF.class, name = AerospikeAPIConstants.BATCH_TYPE_UDF),
+})
 @Schema(
-        description = "The batch operation base type.", oneOf = {
-        BatchRead.class, BatchWrite.class, BatchDelete.class, BatchUDF.class
-}
+        description = "The batch operation base type.",
+        oneOf = {BatchRead.class, BatchWrite.class, BatchDelete.class, BatchUDF.class}
 )
 public abstract class BatchRecord {
-    @Schema(description = "Key to a record.", required = true)
+    @Schema(description = "Key to a record.", requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonProperty(required = true)
     public RestClientKey key;
 
-    abstract public com.aerospike.client.BatchRecord toBatchRecord();
+    public abstract com.aerospike.client.BatchRecord toBatchRecord();
 }
-

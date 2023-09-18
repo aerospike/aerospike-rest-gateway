@@ -30,24 +30,27 @@ public class ListRemoveByIndexOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_REMOVE_BY_INDEX,
-            required = true,
-            allowableValues = OperationTypes.LIST_REMOVE_BY_INDEX
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.LIST_REMOVE_BY_INDEX}
     )
-    final public static String type = OperationTypes.LIST_REMOVE_BY_INDEX;
+    public final String type = OperationTypes.LIST_REMOVE_BY_INDEX;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
 
     private boolean inverted;
 
     @JsonCreator
-    public ListRemoveByIndexOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                      @JsonProperty(value = "index", required = true) int index, @JsonProperty(
-            value = "listReturnType", required = true
-    ) ListReturnType listReturnType) {
+    public ListRemoveByIndexOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "index")
+            @Schema(name = "index", requiredMode = Schema.RequiredMode.REQUIRED) int index,
+            @JsonProperty(value = "listReturnType", required = true) ListReturnType listReturnType
+    ) {
         super(binName);
         this.index = index;
         this.listReturnType = listReturnType;

@@ -31,7 +31,7 @@ import java.util.Base64.Encoder;
 
 public class RestClientKey {
 
-    @Schema(required = true, example = "testNS")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "testNS")
     public String namespace;
 
     @JsonProperty(value = "setName")
@@ -46,7 +46,7 @@ public class RestClientKey {
     public RecordKeyType keyType;
 
     @Schema(
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             description = "The user key, it may be a string, integer, or URL safe Base64 encoded bytes.",
             example = "userKey"
     )

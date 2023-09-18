@@ -30,15 +30,15 @@ public class ListGetByIndexRangeOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_GET_BY_INDEX_RANGE,
-            required = true,
-            allowableValues = OperationTypes.LIST_GET_BY_INDEX_RANGE
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.LIST_GET_BY_INDEX_RANGE}
     )
-    final public static String type = OperationTypes.LIST_GET_BY_INDEX_RANGE;
+    public final String type = OperationTypes.LIST_GET_BY_INDEX_RANGE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
 
     private boolean inverted;
@@ -46,10 +46,13 @@ public class ListGetByIndexRangeOperation extends ListOperation {
     private Integer count;
 
     @JsonCreator
-    public ListGetByIndexRangeOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                        @JsonProperty(value = "index", required = true) int index, @JsonProperty(
-            value = "listReturnType", required = true
-    ) ListReturnType listReturnType) {
+    public ListGetByIndexRangeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "index")
+            @Schema(name = "index", requiredMode = Schema.RequiredMode.REQUIRED) int index,
+            @JsonProperty(value = "listReturnType", required = true) ListReturnType listReturnType
+    ) {
         super(binName);
         this.index = index;
         this.listReturnType = listReturnType;

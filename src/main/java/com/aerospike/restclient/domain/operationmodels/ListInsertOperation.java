@@ -31,23 +31,28 @@ public class ListInsertOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_INSERT,
-            required = true,
-            allowableValues = OperationTypes.LIST_INSERT
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.LIST_INSERT}
     )
-    final public static String type = OperationTypes.LIST_INSERT;
+    public final String type = OperationTypes.LIST_INSERT;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object value;
 
     private ListPolicy listPolicy;
 
     @JsonCreator
-    public ListInsertOperation(@JsonProperty(value = "binName", required = true) String binName,
-                               @JsonProperty(value = "index", required = true) int index,
-                               @JsonProperty(value = "value", required = true) Object value) {
+    public ListInsertOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "index")
+            @Schema(name = "index", requiredMode = Schema.RequiredMode.REQUIRED) int index,
+            @JsonProperty(value = "value")
+            @Schema(name = "value", requiredMode = Schema.RequiredMode.REQUIRED) Object value
+    ) {
         super(binName);
         this.index = index;
         this.value = value;

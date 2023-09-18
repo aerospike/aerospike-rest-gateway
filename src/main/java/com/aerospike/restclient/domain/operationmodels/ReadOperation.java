@@ -29,15 +29,18 @@ public class ReadOperation extends Operation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.READ,
-            required = true,
-            allowableValues = OperationTypes.READ
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.READ}
     )
-    final public static String type = OperationTypes.READ;
+    public final String type = OperationTypes.READ;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final String binName;
 
-    public ReadOperation(@JsonProperty(value = "binName", required = true) String binName) {
+    public ReadOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName
+    ) {
         this.binName = binName;
     }
 

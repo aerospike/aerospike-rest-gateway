@@ -33,23 +33,25 @@ public class ListRemoveByValueListOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_REMOVE_BY_VALUE_LIST,
-            required = true,
-            allowableValues = OperationTypes.LIST_REMOVE_BY_VALUE_LIST
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.LIST_REMOVE_BY_VALUE_LIST}
     )
-    final public static String type = OperationTypes.LIST_REMOVE_BY_VALUE_LIST;
+    public final String type = OperationTypes.LIST_REMOVE_BY_VALUE_LIST;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<Object> values;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
 
     private boolean inverted;
 
     @JsonCreator
-    public ListRemoveByValueListOperation(@JsonProperty("binName") String binName,
-                                          @JsonProperty("values") List<Object> values,
-                                          @JsonProperty("listReturnType") ListReturnType listReturnType) {
+    public ListRemoveByValueListOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("values") List<Object> values,
+            @JsonProperty("listReturnType") ListReturnType listReturnType
+    ) {
         super(binName);
         this.values = values;
         this.listReturnType = listReturnType;
@@ -68,6 +70,7 @@ public class ListRemoveByValueListOperation extends ListOperation {
         List<Value> asVals = values.stream().map(Value::get).toList();
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
 
-        return com.aerospike.client.cdt.ListOperation.removeByValueList(binName, asVals, listReturnType.toListReturnType(inverted), asCTX);
+        return com.aerospike.client.cdt.ListOperation.removeByValueList(binName, asVals,
+                listReturnType.toListReturnType(inverted), asCTX);
     }
 }

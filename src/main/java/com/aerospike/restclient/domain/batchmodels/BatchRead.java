@@ -34,8 +34,8 @@ import java.util.Optional;
 public class BatchRead extends BatchRecord {
     @Schema(
             description = "The type of batch request. It is always " + AerospikeAPIConstants.BATCH_TYPE_READ,
-            allowableValues = AerospikeAPIConstants.BATCH_TYPE_READ,
-            required = true
+            allowableValues = {AerospikeAPIConstants.BATCH_TYPE_READ},
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
     public final String type = AerospikeAPIConstants.BATCH_TYPE_READ;
 

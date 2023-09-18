@@ -31,17 +31,20 @@ public class MapCreateOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_CREATE,
-            required = true,
-            allowableValues = OperationTypes.MAP_CREATE
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.MAP_CREATE}
     )
-    final public static String type = OperationTypes.MAP_CREATE;
+    public final String type = OperationTypes.MAP_CREATE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final MapOrder mapOrder;
 
     @JsonCreator
-    public MapCreateOperation(@JsonProperty(value = "binName", required = true) String binName,
-                              @JsonProperty(value = "mapOrder", required = true) MapOrder mapOrder) {
+    public MapCreateOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @Schema(name = "mapOrder", requiredMode = Schema.RequiredMode.REQUIRED) MapOrder mapOrder
+    ) {
         super(binName);
         this.mapOrder = mapOrder;
     }

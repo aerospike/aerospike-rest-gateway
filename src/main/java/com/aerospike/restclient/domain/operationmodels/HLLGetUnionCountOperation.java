@@ -32,17 +32,19 @@ import java.util.List;
 public class HLLGetUnionCountOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_UNION_COUNT,
-            required = true,
-            allowableValues = OperationTypes.HLL_UNION_COUNT
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.HLL_UNION_COUNT}
     )
-    final public static String type = OperationTypes.HLL_UNION_COUNT;
+    public final String type = OperationTypes.HLL_UNION_COUNT;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<byte[]> values;
 
     @JsonCreator
-    public HLLGetUnionCountOperation(@JsonProperty("binName") String binName,
-                                     @JsonProperty("values") List<byte[]> values) {
+    public HLLGetUnionCountOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("values") List<byte[]> values
+    ) {
         super(binName);
         this.values = values;
     }

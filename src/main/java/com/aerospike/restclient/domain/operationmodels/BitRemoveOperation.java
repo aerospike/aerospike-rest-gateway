@@ -30,21 +30,26 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class BitRemoveOperation extends BitOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.BIT_REMOVE,
-            required = true,
-            allowableValues = OperationTypes.BIT_REMOVE
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.BIT_REMOVE}
     )
-    final public static String type = OperationTypes.BIT_REMOVE;
+    public final String type = OperationTypes.BIT_REMOVE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int byteOffset;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int byteSize;
 
     @JsonCreator
-    public BitRemoveOperation(@JsonProperty(value = "binName", required = true) String binName,
-                              @JsonProperty(value = "byteOffset", required = true) int byteOffset,
-                              @JsonProperty(value = "byteSize", required = true) int byteSize) {
+    public BitRemoveOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "byteOffset")
+            @Schema(name = "byteOffset", requiredMode = Schema.RequiredMode.REQUIRED) int byteOffset,
+            @JsonProperty(value = "byteSize")
+            @Schema(name = "byteSize", requiredMode = Schema.RequiredMode.REQUIRED) int byteSize
+    ) {
         super(binName);
         this.byteOffset = byteOffset;
         this.byteSize = byteSize;

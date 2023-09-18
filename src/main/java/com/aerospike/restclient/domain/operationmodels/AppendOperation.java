@@ -31,20 +31,24 @@ public class AppendOperation extends Operation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.APPEND,
-            required = true,
-            allowableValues = OperationTypes.APPEND
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.APPEND}
     )
-    final public static String type = OperationTypes.APPEND;
+    public final String type = OperationTypes.APPEND;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final String binName;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final String value;
 
     @JsonCreator
-    public AppendOperation(@JsonProperty(value = "binName", required = true) String binName,
-                           @JsonProperty(value = "value", required = true) String value) {
+    public AppendOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "value")
+            @Schema(name = "value") String value
+    ) {
         this.binName = binName;
         this.value = value;
     }

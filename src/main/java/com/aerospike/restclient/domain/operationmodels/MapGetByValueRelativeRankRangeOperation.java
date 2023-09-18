@@ -31,18 +31,18 @@ public class MapGetByValueRelativeRankRangeOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE,
-            required = true,
-            allowableValues = OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE}
     )
-    final public static String type = OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE;
+    public final String type = OperationTypes.MAP_GET_BY_VALUE_RELATIVE_RANK_RANGE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object value;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final MapReturnType mapReturnType;
 
     private boolean inverted;
@@ -50,9 +50,12 @@ public class MapGetByValueRelativeRankRangeOperation extends MapOperation {
     private Integer count;
 
     @JsonCreator
-    public MapGetByValueRelativeRankRangeOperation(@JsonProperty("binName") String binName,
-                                                   @JsonProperty("rank") int rank, @JsonProperty("value") Object value,
-                                                   @JsonProperty("mapReturnType") MapReturnType mapReturnType) {
+    public MapGetByValueRelativeRankRangeOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("rank") int rank,
+            @JsonProperty("value") Object value,
+            @JsonProperty("mapReturnType") MapReturnType mapReturnType
+    ) {
         super(binName);
         this.rank = rank;
         this.value = value;
@@ -89,4 +92,3 @@ public class MapGetByValueRelativeRankRangeOperation extends MapOperation {
                 intMapReturnType, asCTX);
     }
 }
-

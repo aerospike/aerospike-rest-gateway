@@ -38,13 +38,13 @@ import java.lang.annotation.Target;
                 @Parameter(
                         name = AerospikeAPIConstants.JSON_PATH,
                         description = APIDescriptors.JSON_PATH_NOTES,
-                        schema = @Schema(type = "string", required = true),
+                        schema = @Schema(type = "string", requiredMode = Schema.RequiredMode.REQUIRED),
                         required = true,
                         in = ParameterIn.QUERY
                 ), @Parameter(
                 name = AerospikeAPIConstants.RECORD_BINS,
                 description = APIDescriptors.JSON_PATH_BINS_NOTES,
-                array = @ArraySchema(schema = @Schema(type = "string", required = true)),
+                array = @ArraySchema(schema = @Schema(type = "string", requiredMode = Schema.RequiredMode.REQUIRED)),
                 required = true,
                 in = ParameterIn.QUERY
         ),

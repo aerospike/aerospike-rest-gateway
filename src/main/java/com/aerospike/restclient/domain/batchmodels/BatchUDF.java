@@ -38,8 +38,8 @@ public class BatchUDF extends BatchRecord {
 
     @Schema(
             description = "List of bins to limit the record response to.",
-            allowableValues = AerospikeAPIConstants.BATCH_TYPE_UDF,
-            required = true
+            allowableValues = {AerospikeAPIConstants.BATCH_TYPE_UDF},
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
     @JsonProperty(required = true)
     public final String type = AerospikeAPIConstants.BATCH_TYPE_UDF;
@@ -81,4 +81,3 @@ public class BatchUDF extends BatchRecord {
         return new com.aerospike.client.BatchUDF(batchUDFPolicy, key.toKey(), packageName, functionName, values);
     }
 }
-

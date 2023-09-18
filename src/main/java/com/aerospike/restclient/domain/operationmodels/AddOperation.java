@@ -32,20 +32,23 @@ public class AddOperation extends Operation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.ADD,
-            required = true,
-            allowableValues = OperationTypes.ADD
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.ADD}
     )
-    final public static String type = OperationTypes.ADD;
+    public final String type = OperationTypes.ADD;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final String binName;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Number incr;
 
     @JsonCreator
-    public AddOperation(@JsonProperty(value = "binName", required = true) String binName,
-                        @JsonProperty(value = "incr", required = true) Number incr) {
+    public AddOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "incr")
+            @Schema(name = "incr", requiredMode = Schema.RequiredMode.REQUIRED) Number incr) {
         this.binName = binName;
         this.incr = incr;
     }

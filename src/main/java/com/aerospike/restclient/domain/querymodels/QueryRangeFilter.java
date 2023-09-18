@@ -31,14 +31,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class QueryRangeFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.RANGE,
-            required = true,
-            allowableValues = AerospikeAPIConstants.QueryFilterTypes.RANGE
+            allowableValues = {AerospikeAPIConstants.QueryFilterTypes.RANGE}
     )
-    final public static String type = AerospikeAPIConstants.QueryFilterTypes.RANGE;
-    @Schema(description = "Filter begin value inclusive.", required = true)
+    public final String type = AerospikeAPIConstants.QueryFilterTypes.RANGE;
+
+    @Schema(description = "Filter begin value inclusive.", requiredMode = Schema.RequiredMode.REQUIRED)
     public long begin;
 
-    @Schema(description = "Filter end value inclusive.", required = true)
+    @Schema(description = "Filter end value inclusive.", requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonProperty(required = true)
     public long end;
 
@@ -53,4 +53,3 @@ public class QueryRangeFilter extends QueryFilter {
         return Filter.range(binName, collectionType, begin, end, getCTXArray());
     }
 }
-

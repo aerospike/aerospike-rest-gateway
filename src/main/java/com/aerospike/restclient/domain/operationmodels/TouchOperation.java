@@ -28,10 +28,10 @@ public class TouchOperation extends Operation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.TOUCH,
-            required = true,
-            allowableValues = OperationTypes.TOUCH
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.TOUCH}
     )
-    final public static String type = OperationTypes.TOUCH;
+    public final String type = OperationTypes.TOUCH;
 
     @Override
     public com.aerospike.client.Operation toOperation() {

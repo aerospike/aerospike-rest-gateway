@@ -30,21 +30,25 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class BitResizeOperation extends BitOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.BIT_RESIZE,
-            required = true,
-            allowableValues = OperationTypes.BIT_RESIZE
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.BIT_RESIZE}
     )
-    final public static String type = OperationTypes.BIT_RESIZE;
+    public final String type = OperationTypes.BIT_RESIZE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int byteSize;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int resizeFlags;
 
     @JsonCreator
-    public BitResizeOperation(@JsonProperty(value = "binName", required = true) String binName,
-                              @JsonProperty(value = "byteSize", required = true) int byteSize,
-                              @JsonProperty(value = "resizeFlags", required = true) int resizeFlags) {
+    public BitResizeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "byteSize")
+            @Schema(name = "byteSize", requiredMode = Schema.RequiredMode.REQUIRED) int byteSize,
+            @Schema(name = "resizeFlags", requiredMode = Schema.RequiredMode.REQUIRED) int resizeFlags
+    ) {
         super(binName);
         this.byteSize = byteSize;
         this.resizeFlags = resizeFlags;

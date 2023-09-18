@@ -28,11 +28,11 @@ import java.util.List;
 public class RestClientRole {
 
     @NotNull
-    @Schema(required = true, description = "Role name.", example = "customRole")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Role name.", example = "customRole")
     private String name;
 
     @NotNull
-    @Schema(required = true, description = "List of assigned privileges.")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "List of assigned privileges.")
     private List<RestClientPrivilege> privileges;
 
     @Schema(description = "List of allowable IP addresses.")

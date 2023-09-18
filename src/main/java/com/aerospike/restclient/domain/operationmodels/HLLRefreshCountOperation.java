@@ -29,13 +29,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class HLLRefreshCountOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_SET_COUNT,
-            required = true,
-            allowableValues = OperationTypes.HLL_SET_UNION
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.HLL_SET_UNION}
     )
-    final public static String type = OperationTypes.HLL_SET_UNION;
+    public final String type = OperationTypes.HLL_SET_UNION;
 
     @JsonCreator
-    public HLLRefreshCountOperation(@JsonProperty(value = "binName", required = true) String binName) {
+    public HLLRefreshCountOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName
+    ) {
         super(binName);
     }
 

@@ -34,18 +34,21 @@ public class MapPutItemsOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_PUT_ITEMS,
-            required = true,
-            allowableValues = OperationTypes.MAP_PUT_ITEMS
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.MAP_PUT_ITEMS}
     )
-    final public static String type = OperationTypes.MAP_PUT_ITEMS;
+    public final String type = OperationTypes.MAP_PUT_ITEMS;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Map<Object, Object> map;
 
     private MapPolicy mapPolicy;
 
     @JsonCreator
-    public MapPutItemsOperation(@JsonProperty("binName") String binName, @JsonProperty("map") Map<Object, Object> map) {
+    public MapPutItemsOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("map") Map<Object, Object> map
+    ) {
         super(binName);
         this.map = map;
     }

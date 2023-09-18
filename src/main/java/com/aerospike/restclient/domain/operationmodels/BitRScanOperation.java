@@ -29,25 +29,30 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class BitRScanOperation extends BitOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.BIT_RSCAN,
-            required = true,
-            allowableValues = OperationTypes.BIT_RSCAN
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.BIT_RSCAN}
     )
-    final public static String type = OperationTypes.BIT_RSCAN;
+    public final String type = OperationTypes.BIT_RSCAN;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int bitOffset;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int bitSize;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final boolean value;
 
     @JsonCreator
-    public BitRScanOperation(@JsonProperty(value = "binName", required = true) String binName,
-                             @JsonProperty(value = "bitOffset", required = true) int bitOffset,
-                             @JsonProperty(value = "bitSize", required = true) int bitSize,
-                             @JsonProperty(value = "value", defaultValue = "false") boolean value) {
+    public BitRScanOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "bitOffset")
+            @Schema(name = "bitOffset", requiredMode = Schema.RequiredMode.REQUIRED) int bitOffset,
+            @JsonProperty(value = "bitSize")
+            @Schema(name = "bitSize", requiredMode = Schema.RequiredMode.REQUIRED) int bitSize,
+            @JsonProperty(value = "value", defaultValue = "false") boolean value
+    ) {
         super(binName);
         this.bitOffset = bitOffset;
         this.bitSize = bitSize;

@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
 public class RestClientPrivilege {
 
     @NotNull
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     PrivilegeCode code;
 
     @Schema(description = "Namespace Scope", example = "testNS")

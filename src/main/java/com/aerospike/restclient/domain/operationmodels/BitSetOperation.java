@@ -30,25 +30,31 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class BitSetOperation extends BitOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.BIT_SET,
-            required = true,
-            allowableValues = OperationTypes.BIT_SET
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.BIT_SET}
     )
-    final public static String type = OperationTypes.BIT_SET;
+    public final String type = OperationTypes.BIT_SET;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int bitOffset;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int bitSize;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final byte[] value;
 
     @JsonCreator
-    public BitSetOperation(@JsonProperty(value = "binName", required = true) String binName,
-                           @JsonProperty(value = "bitOffset", required = true) int bitOffset,
-                           @JsonProperty(value = "bitSize", required = true) int bitSize,
-                           @JsonProperty(value = "value", required = true) byte[] value) {
+    public BitSetOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "bitOffset")
+            @Schema(name = "bitOffset", requiredMode = Schema.RequiredMode.REQUIRED) int bitOffset,
+            @JsonProperty(value = "bitSize")
+            @Schema(name = "bitSize", requiredMode = Schema.RequiredMode.REQUIRED) int bitSize,
+            @JsonProperty(value = "value")
+            @Schema(name = "value", requiredMode = Schema.RequiredMode.REQUIRED) byte[] value
+    ) {
         super(binName);
         this.bitOffset = bitOffset;
         this.bitSize = bitSize;

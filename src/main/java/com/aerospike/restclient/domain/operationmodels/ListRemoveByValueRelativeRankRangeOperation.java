@@ -31,18 +31,18 @@ public class ListRemoveByValueRelativeRankRangeOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE,
-            required = true,
-            allowableValues = OperationTypes.LIST_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.LIST_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE}
     )
-    final public static String type = OperationTypes.LIST_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE;
+    public final String type = OperationTypes.LIST_REMOVE_BY_VALUE_RELATIVE_RANK_RANGE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int rank;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object value;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
 
     private boolean inverted;
@@ -50,10 +50,12 @@ public class ListRemoveByValueRelativeRankRangeOperation extends ListOperation {
     private Integer count;
 
     @JsonCreator
-    public ListRemoveByValueRelativeRankRangeOperation(@JsonProperty("binName") String binName,
-                                                       @JsonProperty("rank") int rank,
-                                                       @JsonProperty("value") Object value,
-                                                       @JsonProperty("listReturnType") ListReturnType listReturnType) {
+    public ListRemoveByValueRelativeRankRangeOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("rank") int rank,
+            @JsonProperty("value") Object value,
+            @JsonProperty("listReturnType") ListReturnType listReturnType
+    ) {
         super(binName);
         this.rank = rank;
         this.value = value;

@@ -46,7 +46,7 @@ public class MapPolicy {
     }
 
     public com.aerospike.client.cdt.MapPolicy toMapPolicy() {
-        if (order == null && (writeFlags == null || writeFlags.size() == 0)) {
+        if (order == null && (writeFlags == null || writeFlags.isEmpty())) {
             return com.aerospike.client.cdt.MapPolicy.Default;
         }
 

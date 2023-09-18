@@ -31,6 +31,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 )
 public class BatchRecordResponse {
 
+    @Schema(description = "Result code for this returned record.")
+    public int resultCode;
+    @Schema(description = "Message associated with resultCode.")
+    public String resultCodeString;
+    @Schema(description = "Record associated with the key. Null if the record was not found.")
+    public RestClientRecord record;
+    @Schema(description = "Key to retrieve a record.")
+    public RestClientKey key;
+    @Schema(description = "Is it possible that the write transaction may have completed even though an error occurred for this record.")
+    public boolean inDoubt;
+
     public BatchRecordResponse() {
     }
 
@@ -41,19 +52,4 @@ public class BatchRecordResponse {
         key = new RestClientKey(batchRecord.key);
         inDoubt = batchRecord.inDoubt;
     }
-
-    @Schema(description = "Result code for this returned record.")
-    public int resultCode;
-
-    @Schema(description = "Message associated with resultCode.")
-    public String resultCodeString;
-
-    @Schema(description = "Record associated with the key. Null if the record was not found.")
-    public RestClientRecord record;
-
-    @Schema(description = "Key to retrieve a record.")
-    public RestClientKey key;
-
-    @Schema(description = "Is it possible that the write transaction may have completed even though an error occurred for this record.")
-    public boolean inDoubt;
 }

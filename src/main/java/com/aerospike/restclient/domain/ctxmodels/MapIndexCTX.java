@@ -28,15 +28,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class MapIndexCTX extends CTX {
     @Schema(
             description = "The type of context this object represents. It is always " + AerospikeAPIConstants.CTX.MAP_INDEX,
-            allowableValues = AerospikeAPIConstants.CTX.MAP_INDEX,
-            required = true
+            allowableValues = {AerospikeAPIConstants.CTX.MAP_INDEX},
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
     @JsonProperty(required = true)
     public final String type = AerospikeAPIConstants.CTX.MAP_INDEX;
 
     @Schema(
             description = "If the index is negative, the resolved index starts backwards from end of list. If an index is out of bounds, a parameter error will be returned. Examples:\n" + "\n" + "* 0: First item.\n" + "* 4: Fifth item.\n" + "* -1: Last item.\n" + "* -3: Third to last item.",
-            required = true
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
     @JsonProperty(required = true)
     public Integer index;

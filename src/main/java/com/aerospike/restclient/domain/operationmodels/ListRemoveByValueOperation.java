@@ -35,24 +35,27 @@ public class ListRemoveByValueOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_REMOVE_BY_VALUE,
-            required = true,
-            allowableValues = OperationTypes.LIST_REMOVE_BY_VALUE
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.LIST_REMOVE_BY_VALUE}
     )
-    final public static String type = OperationTypes.LIST_REMOVE_BY_VALUE;
+    public final String type = OperationTypes.LIST_REMOVE_BY_VALUE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final Object value;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
 
     private boolean inverted;
 
     @JsonCreator
-    public ListRemoveByValueOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                      @JsonProperty(value = "value", required = true) Object value, @JsonProperty(
-            value = "listReturnType", required = true
-    ) ListReturnType listReturnType) {
+    public ListRemoveByValueOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "value")
+            @Schema(name = "value", requiredMode = Schema.RequiredMode.REQUIRED) Object value,
+            @JsonProperty(value = "listReturnType", required = true) ListReturnType listReturnType
+    ) {
         super(binName);
         this.value = value;
         this.listReturnType = listReturnType;

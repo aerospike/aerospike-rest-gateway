@@ -32,17 +32,19 @@ import java.util.List;
 public class HLLGetSimilarityOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_SIMILARITY,
-            required = true,
-            allowableValues = OperationTypes.HLL_SIMILARITY
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.HLL_SIMILARITY}
     )
-    final public static String type = OperationTypes.HLL_SIMILARITY;
+    public final String type = OperationTypes.HLL_SIMILARITY;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<byte[]> values;
 
     @JsonCreator
-    public HLLGetSimilarityOperation(@JsonProperty("binName") String binName,
-                                     @JsonProperty("values") List<byte[]> values) {
+    public HLLGetSimilarityOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("values") List<byte[]> values
+    ) {
         super(binName);
         this.values = values;
     }

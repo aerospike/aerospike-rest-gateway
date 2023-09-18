@@ -31,12 +31,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class QueryGeoWithinRadiusFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS,
-            required = true,
-            allowableValues = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS}
     )
-    final public static String type = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS;
+    public final String type = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS;
 
-    @Schema(description = "Array of longitude, latitude, and radius describing a circle.", required = true)
+    @Schema(description = "Array of longitude, latitude, and radius describing a circle.", requiredMode = Schema.RequiredMode.REQUIRED)
     public LngLatRad circle;
 
     @ASRestClientSchemas.IndexCollectionType
@@ -51,4 +51,3 @@ public class QueryGeoWithinRadiusFilter extends QueryFilter {
                 circle.radius, getCTXArray());
     }
 }
-

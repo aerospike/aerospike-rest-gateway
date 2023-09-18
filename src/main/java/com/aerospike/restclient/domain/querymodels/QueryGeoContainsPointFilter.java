@@ -32,12 +32,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class QueryGeoContainsPointFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT,
-            required = true,
-            allowableValues = AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT}
     )
-    final public static String type = AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT;
+    public final String type = AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT;
 
-    @Schema(description = "Longitude and Latitude of a point", required = true)
+    @Schema(description = "Longitude and Latitude of a point", requiredMode = Schema.RequiredMode.REQUIRED)
     public LngLat point;
 
     @ASRestClientSchemas.IndexCollectionType

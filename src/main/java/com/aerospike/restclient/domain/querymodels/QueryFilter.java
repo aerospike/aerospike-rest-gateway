@@ -28,38 +28,36 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes(
-        {
-                @JsonSubTypes.Type(
-                        value = QueryEqualsStringFilter.class,
-                        name = AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING
-                ),
-                @JsonSubTypes.Type(
-                        value = QueryEqualLongFilter.class, name = AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG
-                ),
-                @JsonSubTypes.Type(value = QueryRangeFilter.class, name = AerospikeAPIConstants.QueryFilterTypes.RANGE),
-                @JsonSubTypes.Type(
-                        value = QueryContainsStringFilter.class,
-                        name = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING
-                ),
-                @JsonSubTypes.Type(
-                        value = QueryContainsLongFilter.class,
-                        name = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG
-                ),
-                @JsonSubTypes.Type(
-                        value = QueryGeoWithinPolygonFilter.class,
-                        name = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION
-                ),
-                @JsonSubTypes.Type(
-                        value = QueryGeoWithinRadiusFilter.class,
-                        name = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS
-                ),
-                @JsonSubTypes.Type(
-                        value = QueryGeoContainsPointFilter.class,
-                        name = AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT
-                ),
-        }
-)
+@JsonSubTypes({
+        @JsonSubTypes.Type(
+                value = QueryEqualsStringFilter.class,
+                name = AerospikeAPIConstants.QueryFilterTypes.EQUAL_STRING
+        ),
+        @JsonSubTypes.Type(
+                value = QueryEqualLongFilter.class, name = AerospikeAPIConstants.QueryFilterTypes.EQUAL_LONG
+        ),
+        @JsonSubTypes.Type(value = QueryRangeFilter.class, name = AerospikeAPIConstants.QueryFilterTypes.RANGE),
+        @JsonSubTypes.Type(
+                value = QueryContainsStringFilter.class,
+                name = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING
+        ),
+        @JsonSubTypes.Type(
+                value = QueryContainsLongFilter.class,
+                name = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_LONG
+        ),
+        @JsonSubTypes.Type(
+                value = QueryGeoWithinPolygonFilter.class,
+                name = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_REGION
+        ),
+        @JsonSubTypes.Type(
+                value = QueryGeoWithinRadiusFilter.class,
+                name = AerospikeAPIConstants.QueryFilterTypes.GEOWITHIN_RADIUS
+        ),
+        @JsonSubTypes.Type(
+                value = QueryGeoContainsPointFilter.class,
+                name = AerospikeAPIConstants.QueryFilterTypes.GEOCONTAINS_POINT
+        ),
+})
 @Schema(
         description = "QueryFilter base type. Only allowed on bin which has a secondary index defined.",
         oneOf = {
@@ -74,8 +72,8 @@ import java.util.List;
         },
         externalDocs = @ExternalDocumentation(url = "https://javadoc.io/doc/com.aerospike/aerospike-client/" + AerospikeAPIConstants.AS_CLIENT_VERSION + "/com/aerospike/client/query/Filter.html")
 )
-abstract public class QueryFilter {
-    @Schema(description = "The bin for which a secondary-index is defined.", required = true)
+public abstract class QueryFilter {
+    @Schema(description = "The bin for which a secondary-index is defined.", requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonProperty(required = true)
     public String binName;
 
@@ -85,7 +83,7 @@ abstract public class QueryFilter {
     )
     public List<CTX> ctx;
 
-    abstract public Filter toFilter();
+    public abstract Filter toFilter();
 
     protected com.aerospike.client.cdt.CTX[] getCTXArray() {
         com.aerospike.client.cdt.CTX[] asCTX = null;
@@ -97,4 +95,3 @@ abstract public class QueryFilter {
         return asCTX;
     }
 }
-

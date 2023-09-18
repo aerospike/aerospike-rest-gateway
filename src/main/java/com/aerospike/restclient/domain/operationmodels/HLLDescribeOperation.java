@@ -30,13 +30,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class HLLDescribeOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_DESCRIBE,
-            required = true,
-            allowableValues = OperationTypes.HLL_DESCRIBE
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.HLL_DESCRIBE}
     )
-    final public static String type = OperationTypes.HLL_DESCRIBE;
+    public final String type = OperationTypes.HLL_DESCRIBE;
 
     @JsonCreator
-    public HLLDescribeOperation(@JsonProperty(value = "binName", required = true) String binName) {
+    public HLLDescribeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName
+    ) {
         super(binName);
     }
 

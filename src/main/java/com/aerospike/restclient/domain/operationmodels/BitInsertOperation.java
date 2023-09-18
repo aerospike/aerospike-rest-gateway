@@ -30,20 +30,23 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class BitInsertOperation extends BitOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.BIT_INSERT,
-            required = true,
-            allowableValues = OperationTypes.BIT_INSERT
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.BIT_INSERT}
     )
-    final public static String type = OperationTypes.BIT_INSERT;
+    public final String type = OperationTypes.BIT_INSERT;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int byteOffset;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final byte[] value;
 
     @JsonCreator
-    public BitInsertOperation(@JsonProperty("binName") String binName, @JsonProperty("byteOffset") int byteOffset,
-                              @JsonProperty("value") byte[] value) {
+    public BitInsertOperation(
+            @JsonProperty("binName") String binName,
+            @JsonProperty("byteOffset") int byteOffset,
+            @JsonProperty("value") byte[] value
+    ) {
         super(binName);
         this.byteOffset = byteOffset;
         this.value = value;

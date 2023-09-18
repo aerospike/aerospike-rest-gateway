@@ -28,22 +28,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 // This is only a subset of the GeoJSON object supported by aerospike. More will be required
 // if this model is implemented in the Bin parser. Currently, it is only being used by QueryFilters.
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes(
-        {
-                @JsonSubTypes.Type(value = AeroCircle.class, name = AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE),
-                @JsonSubTypes.Type(value = Point.class, name = AerospikeAPIConstants.GeoJSON.Types.POINT),
-                @JsonSubTypes.Type(value = Polygon.class, name = AerospikeAPIConstants.GeoJSON.Types.POLYGON),
-        }
-)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = AeroCircle.class, name = AerospikeAPIConstants.GeoJSON.Types.AERO_CIRCLE),
+        @JsonSubTypes.Type(value = Point.class, name = AerospikeAPIConstants.GeoJSON.Types.POINT),
+        @JsonSubTypes.Type(value = Polygon.class, name = AerospikeAPIConstants.GeoJSON.Types.POLYGON),
+})
 @Schema(
         name = "GeoJSON",
         description = "A geoJSON AeroCirlce, Point, or Polygon object.",
         externalDocs = @ExternalDocumentation(url = "https://docs.aerospike.com/server/guide/data-types/geospatial"),
-        oneOf = {
-                AeroCircle.class, Point.class, Polygon.class,
-        }
+        oneOf = {AeroCircle.class, Point.class, Polygon.class,}
 )
-abstract public class GeoJSON {
+public abstract class GeoJSON {
 
     private final ObjectMapper mapper = new ObjectMapper();
 

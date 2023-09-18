@@ -31,12 +31,12 @@ public class ListRemoveByValueRangeOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_REMOVE_BY_VALUE_RANGE,
-            required = true,
-            allowableValues = OperationTypes.LIST_REMOVE_BY_VALUE_RANGE
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.LIST_REMOVE_BY_VALUE_RANGE}
     )
-    final public static String type = OperationTypes.LIST_REMOVE_BY_VALUE_RANGE;
+    public final String type = OperationTypes.LIST_REMOVE_BY_VALUE_RANGE;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
 
     private boolean inverted;
@@ -46,10 +46,11 @@ public class ListRemoveByValueRangeOperation extends ListOperation {
     private Object valueEnd;
 
     @JsonCreator
-    public ListRemoveByValueRangeOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                           @JsonProperty(
-                                                   value = "listReturnType", required = true
-                                           ) ListReturnType listReturnType) {
+    public ListRemoveByValueRangeOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "listReturnType", required = true) ListReturnType listReturnType
+    ) {
         super(binName);
         this.listReturnType = listReturnType;
     }
@@ -92,6 +93,7 @@ public class ListRemoveByValueRangeOperation extends ListOperation {
             end = Value.get(valueEnd);
         }
 
-        return com.aerospike.client.cdt.ListOperation.removeByValueRange(binName, begin, end, listReturnType.toListReturnType(inverted), asCTX);
+        return com.aerospike.client.cdt.ListOperation.removeByValueRange(binName, begin, end,
+                listReturnType.toListReturnType(inverted), asCTX);
     }
 }

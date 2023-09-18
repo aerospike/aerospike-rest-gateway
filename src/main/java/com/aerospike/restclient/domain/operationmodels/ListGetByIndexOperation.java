@@ -30,24 +30,28 @@ public class ListGetByIndexOperation extends ListOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.LIST_GET_BY_INDEX,
-            required = true,
-            allowableValues = OperationTypes.LIST_GET_BY_INDEX
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.LIST_GET_BY_INDEX}
     )
-    final public static String type = OperationTypes.LIST_GET_BY_INDEX;
+    public final String type = OperationTypes.LIST_GET_BY_INDEX;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int index;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final ListReturnType listReturnType;
 
     private boolean inverted;
 
     @JsonCreator
-    public ListGetByIndexOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                   @JsonProperty(value = "index", required = true) int index, @JsonProperty(
-            value = "listReturnType", required = true
-    ) ListReturnType listReturnType) {
+    public ListGetByIndexOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @JsonProperty(value = "index")
+            @Schema(name = "index", requiredMode = Schema.RequiredMode.REQUIRED) int index,
+            @JsonProperty(value = "listReturnType")
+            @Schema(name = "listReturnType", requiredMode = Schema.RequiredMode.REQUIRED) ListReturnType listReturnType
+    ) {
         super(binName);
         this.index = index;
         this.listReturnType = listReturnType;
@@ -64,6 +68,7 @@ public class ListGetByIndexOperation extends ListOperation {
     @Override
     public com.aerospike.client.Operation toOperation() {
         com.aerospike.client.cdt.CTX[] asCTX = getASCTX();
-        return com.aerospike.client.cdt.ListOperation.getByIndex(binName, index, listReturnType.toListReturnType(inverted), asCTX);
+        return com.aerospike.client.cdt.ListOperation.getByIndex(binName, index,
+                listReturnType.toListReturnType(inverted), asCTX);
     }
 }

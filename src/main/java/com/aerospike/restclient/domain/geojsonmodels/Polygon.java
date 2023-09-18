@@ -32,11 +32,11 @@ public class Polygon extends GeoJSON {
     @Schema(
             description = "The type of geoJSON geometry this object represents. It is always " + AerospikeAPIConstants.GeoJSON.Types.POLYGON,
             allowableValues = {AerospikeAPIConstants.GeoJSON.Types.POLYGON},
-            required = true
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
     public final String type = AerospikeAPIConstants.GeoJSON.Types.POLYGON;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     public List<LngLat> coordinates;
 
     public Polygon() {
@@ -63,4 +63,3 @@ public class Polygon extends GeoJSON {
         return Objects.hash(coordinates);
     }
 }
-

@@ -31,12 +31,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class QueryContainsStringFilter extends QueryFilter {
     @Schema(
             description = "The type of query filter this object represents. It is always " + AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING,
-            required = true,
-            allowableValues = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING}
     )
-    final public static String type = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING;
+    public final String type = AerospikeAPIConstants.QueryFilterTypes.CONTAINS_STRING;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     public String value;
 
     @ASRestClientSchemas.IndexCollectionType
@@ -51,6 +51,3 @@ public class QueryContainsStringFilter extends QueryFilter {
         return Filter.contains(binName, collectionType, value, asCTX);
     }
 }
-
-
-

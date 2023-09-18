@@ -30,19 +30,22 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class HLLInitOperation extends HLLOperation {
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.HLL_INIT,
-            required = true,
-            allowableValues = OperationTypes.HLL_INIT
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.HLL_INIT}
     )
-    final public static String type = OperationTypes.HLL_INIT;
+    public final String type = OperationTypes.HLL_INIT;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final int indexBitCount;
 
     private Integer minHashBitCount;
 
     @JsonCreator
-    public HLLInitOperation(@JsonProperty(value = "binName", required = true) String binName,
-                            @JsonProperty(value = "indexBitCount", required = true) int indexBitCount) {
+    public HLLInitOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @Schema(name = "indexBitCount", requiredMode = Schema.RequiredMode.REQUIRED) int indexBitCount
+    ) {
         super(binName);
         this.indexBitCount = indexBitCount;
     }

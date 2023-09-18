@@ -30,17 +30,20 @@ public class MapSetPolicyOperation extends MapOperation {
 
     @Schema(
             description = "The type of operation. It is always " + OperationTypes.MAP_SET_POLICY,
-            required = true,
-            allowableValues = OperationTypes.MAP_SET_POLICY
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            allowableValues = {OperationTypes.MAP_SET_POLICY}
     )
-    final public static String type = OperationTypes.MAP_SET_POLICY;
+    public final String type = OperationTypes.MAP_SET_POLICY;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private final MapPolicy mapPolicy;
 
     @JsonCreator
-    public MapSetPolicyOperation(@JsonProperty(value = "binName", required = true) String binName,
-                                 @JsonProperty(value = "mapPolicy", required = true) MapPolicy mapPolicy) {
+    public MapSetPolicyOperation(
+            @JsonProperty(value = "binName")
+            @Schema(name = "binName", requiredMode = Schema.RequiredMode.REQUIRED) String binName,
+            @Schema(name = "mapPolicy", requiredMode = Schema.RequiredMode.REQUIRED) MapPolicy mapPolicy
+    ) {
         super(binName);
         this.mapPolicy = mapPolicy;
     }
