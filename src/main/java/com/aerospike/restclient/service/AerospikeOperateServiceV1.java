@@ -48,12 +48,14 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
     private AerospikeClientPool clientPool;
 
     @Autowired
-    private CircuitBreakerFactory circuitBreakerFactory;
+    private CircuitBreakerFactory<?, ?> circuitBreakerFactory;
 
     @Deprecated
     @Override
-    public RestClientRecord operateV1(AuthDetails authDetails, String namespace, String set, String key,
-                                      List<RestClientOperation> opsList, RecordKeyType keyType, WritePolicy policy) {
+    public RestClientRecord operateV1(
+            AuthDetails authDetails, String namespace, String set, String key, List<RestClientOperation> opsList,
+            RecordKeyType keyType, WritePolicy policy
+    ) {
         List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap).toList();
         com.aerospike.client.Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
         return operate(authDetails, namespace, set, key, operations, keyType, policy);
@@ -61,16 +63,20 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
 
     @Deprecated
     @Override
-    public RestClientRecord[] operateV1(AuthDetails authDetails, String namespace, String set, String[] keys,
-                                        List<RestClientOperation> opsList, RecordKeyType keyType, BatchPolicy policy) {
+    public RestClientRecord[] operateV1(
+            AuthDetails authDetails, String namespace, String set, String[] keys, List<RestClientOperation> opsList,
+            RecordKeyType keyType, BatchPolicy policy
+    ) {
         List<Map<String, Object>> opsMapsList = opsList.stream().map(RestClientOperation::toMap).toList();
         com.aerospike.client.Operation[] operations = OperationsConverter.mapListToOperationsArray(opsMapsList);
         return operate(authDetails, namespace, set, keys, operations, keyType, policy);
     }
 
     @Override
-    public OperateResponseRecordBody operateV2(AuthDetails authDetails, String namespace, String set, String key,
-                                               List<Operation> opsList, RecordKeyType keyType, WritePolicy policy) {
+    public OperateResponseRecordBody operateV2(
+            AuthDetails authDetails, String namespace, String set, String key, List<Operation> opsList,
+            RecordKeyType keyType, WritePolicy policy
+    ) {
         com.aerospike.client.Operation[] operations = opsList.stream()
                 .map(Operation::toOperation)
                 .toArray(com.aerospike.client.Operation[]::new);
@@ -78,17 +84,20 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
     }
 
     @Override
-    public OperateResponseRecordsBody operateV2(AuthDetails authDetails, String namespace, String set, String[] keys,
-                                                List<Operation> opsList, RecordKeyType keyType, BatchPolicy policy) {
+    public OperateResponseRecordsBody operateV2(
+            AuthDetails authDetails, String namespace, String set, String[] keys, List<Operation> opsList,
+            RecordKeyType keyType, BatchPolicy policy
+    ) {
         com.aerospike.client.Operation[] operations = opsList.stream()
                 .map(Operation::toOperation)
                 .toArray(com.aerospike.client.Operation[]::new);
         return new OperateResponseRecordsBody(operate(authDetails, namespace, set, keys, operations, keyType, policy));
     }
 
-    public RestClientRecord operate(AuthDetails authDetails, String namespace, String set, String key,
-                                    com.aerospike.client.Operation[] opsList, RecordKeyType keyType,
-                                    WritePolicy policy) {
+    public RestClientRecord operate(
+            AuthDetails authDetails, String namespace, String set, String key, com.aerospike.client.Operation[] opsList,
+            RecordKeyType keyType, WritePolicy policy
+    ) {
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("rest-client");
 
         Key opKey = KeyBuilder.buildKey(namespace, set, key, keyType);
@@ -101,9 +110,10 @@ public class AerospikeOperateServiceV1 implements AerospikeOperateService {
         return new RestClientRecord(fetchedRecord);
     }
 
-    public RestClientRecord[] operate(AuthDetails authDetails, String namespace, String set, String[] keys,
-                                      com.aerospike.client.Operation[] opsList, RecordKeyType keyType,
-                                      BatchPolicy policy) {
+    public RestClientRecord[] operate(
+            AuthDetails authDetails, String namespace, String set, String[] keys,
+            com.aerospike.client.Operation[] opsList, RecordKeyType keyType, BatchPolicy policy
+    ) {
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("rest-client");
 
         Key[] opKeys = Arrays.stream(keys)
