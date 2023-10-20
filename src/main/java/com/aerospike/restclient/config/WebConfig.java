@@ -34,6 +34,7 @@
 package com.aerospike.restclient.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -53,12 +54,12 @@ public class WebConfig implements WebMvcConfigurer {
         converters.add(0, new MsgPackConverter());
         converters.add(0, new JSONMessageConverter());
         converters.add(0, new StringHttpMessageConverter());
+        converters.add(0, new ByteArrayHttpMessageConverter());
     }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("*");
-        //.allowCredentials(Boolean.TRUE);
     }
 }
 
