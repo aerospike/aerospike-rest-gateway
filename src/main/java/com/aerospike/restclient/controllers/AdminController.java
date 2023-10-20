@@ -33,11 +33,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Tag(name = "Admin Operations", description = "Manage users and privileges.")
@@ -101,12 +101,12 @@ public class AdminController {
     )
     @DefaultRestClientAPIResponses
     @RequestMapping(
-            method = RequestMethod.GET,
-            value = "/user/{user}",
-            produces = {"application/json", "application/msgpack"}
+            method = RequestMethod.GET, value = "/user/{user}", produces = {"application/json", "application/msgpack"}
     )
-    public User getUser(@Parameter(required = true) @PathVariable(value = "user") String user,
-                        @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public User getUser(
+            @Parameter(required = true) @PathVariable(value = "user") String user,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth
+    ) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         return adminService.getUser(authDetails, user);
@@ -131,8 +131,10 @@ public class AdminController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @DeleteMapping(value = "/user/{user}", produces = {"application/json", "application/msgpack"})
-    public void dropUser(@Parameter(required = true) @PathVariable(value = "user") String user,
-                         @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void dropUser(
+            @Parameter(required = true) @PathVariable(value = "user") String user,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth
+    ) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         adminService.dropUser(authDetails, user);
@@ -161,9 +163,11 @@ public class AdminController {
             consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"}
     )
-    public void changePassword(@Parameter(required = true) @PathVariable(value = "user") String user,
-                               @Parameter(required = true) @RequestBody String password,
-                               @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void changePassword(
+            @Parameter(required = true) @PathVariable(value = "user") String user,
+            @Parameter(required = true) @RequestBody String password,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth
+    ) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         adminService.changePassword(authDetails, user, password);
@@ -196,8 +200,10 @@ public class AdminController {
             consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"}
     )
-    public void createUser(@Parameter(required = true) @Valid @RequestBody RestClientUserModel userInfo,
-                           @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void createUser(
+            @Parameter(required = true) @Valid @RequestBody RestClientUserModel userInfo,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth
+    ) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         adminService.createUser(authDetails, userInfo);
@@ -231,17 +237,17 @@ public class AdminController {
             consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"}
     )
-    public void grantRoles(@Parameter(required = true) @PathVariable(value = "user") String user,
-                           @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                                   required = true,
-                                   content = @Content(
-                                           examples = @ExampleObject(
-                                                   name = RequestBodyExamples.ROLES_NAME,
-                                                   value = RequestBodyExamples.ROLES_VALUE
-                                           )
-                                   )
-                           ) @RequestBody List<String> roles,
-                           @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void grantRoles(
+            @Parameter(required = true) @PathVariable(value = "user") String user,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true, content = @Content(
+                    examples = @ExampleObject(
+                            name = RequestBodyExamples.ROLES_NAME, value = RequestBodyExamples.ROLES_VALUE
+                    )
+            )
+            ) @RequestBody List<String> roles,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth
+    ) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         adminService.grantRoles(authDetails, user, roles);
@@ -275,18 +281,17 @@ public class AdminController {
             consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"}
     )
-    public void revokeRoles(@PathVariable(value = "user") @Parameter(
-            description = "The user from which to revoke roles",
-            required = true
-    ) String user, @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            required = true,
-            content = @Content(
-                    examples = @ExampleObject(
-                            name = RequestBodyExamples.ROLES_NAME,
-                            value = RequestBodyExamples.ROLES_VALUE
-                    )
+    public void revokeRoles(
+            @PathVariable(value = "user") @Parameter(
+                    description = "The user from which to revoke roles", required = true
+            ) String user, @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            required = true, content = @Content(
+            examples = @ExampleObject(
+                    name = RequestBodyExamples.ROLES_NAME, value = RequestBodyExamples.ROLES_VALUE
             )
-    ) @RequestBody List<String> roles, @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    )
+    ) @RequestBody List<String> roles, @RequestHeader(value = "Authorization", required = false) String basicAuth
+    ) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         adminService.revokeRoles(authDetails, user, roles);
@@ -339,8 +344,10 @@ public class AdminController {
             consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"}
     )
-    public void createRole(@Parameter(required = true) @RequestBody RestClientRole rcRole,
-                           @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void createRole(
+            @Parameter(required = true) @RequestBody RestClientRole rcRole,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth
+    ) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         adminService.createRole(authDetails, rcRole);
@@ -364,11 +371,12 @@ public class AdminController {
     )
     @DefaultRestClientAPIResponses
     @GetMapping(value = "/role/{name}", produces = {"application/json", "application/msgpack"})
-    public RestClientRole getRole(@Parameter(
-            description = "The name of the role whose information should be retrieved.",
-            required = true
-    ) @PathVariable(value = "name") String role,
-                                  @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public RestClientRole getRole(
+            @Parameter(
+                    description = "The name of the role whose information should be retrieved.", required = true
+            ) @PathVariable(value = "name") String role,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth
+    ) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         return adminService.getRole(authDetails, role);
@@ -401,11 +409,13 @@ public class AdminController {
             consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"}
     )
-    public void setRoleQuotas(@Parameter(
-            description = "The name of the role to which quotas will be set.",
-            required = true
-    ) @PathVariable(value = "name") String name, @Parameter(required = true) @RequestBody RestClientRoleQuota roleQuota,
-                              @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void setRoleQuotas(
+            @Parameter(
+                    description = "The name of the role to which quotas will be set.", required = true
+            ) @PathVariable(value = "name") String name,
+            @Parameter(required = true) @RequestBody RestClientRoleQuota roleQuota,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth
+    ) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         adminService.setRoleQuotas(authDetails, name, roleQuota);
@@ -430,11 +440,12 @@ public class AdminController {
     @DefaultRestClientAPIResponses
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @DeleteMapping(value = "/role/{name}", produces = {"application/json", "application/msgpack"})
-    public void dropRole(@Parameter(
-            description = "The name of the role to remove.",
-            required = true
-    ) @PathVariable(value = "name") String role,
-                         @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void dropRole(
+            @Parameter(
+                    description = "The name of the role to remove.", required = true
+            ) @PathVariable(value = "name") String role,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth
+    ) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         adminService.dropRole(authDetails, role);
@@ -467,12 +478,13 @@ public class AdminController {
             consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"}
     )
-    public void grantPrivileges(@Parameter(
-            description = "The name of the role to which privileges will be granted.",
-            required = true
-    ) @PathVariable(value = "name") String name,
-                                @Parameter(required = true) @RequestBody List<RestClientPrivilege> privileges,
-                                @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void grantPrivileges(
+            @Parameter(
+                    description = "The name of the role to which privileges will be granted.", required = true
+            ) @PathVariable(value = "name") String name,
+            @Parameter(required = true) @RequestBody List<RestClientPrivilege> privileges,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth
+    ) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         adminService.grantPrivileges(authDetails, name, privileges);
@@ -505,12 +517,13 @@ public class AdminController {
             consumes = {"application/json", "application/msgpack"},
             produces = {"application/json", "application/msgpack"}
     )
-    public void revokePrivileges(@Parameter(
-            description = "The name of the role from which privileges will be removed.",
-            required = true
-    ) @PathVariable(value = "name") String name,
-                                 @Parameter(required = true) @RequestBody List<RestClientPrivilege> privileges,
-                                 @RequestHeader(value = "Authorization", required = false) String basicAuth) {
+    public void revokePrivileges(
+            @Parameter(
+                    description = "The name of the role from which privileges will be removed.", required = true
+            ) @PathVariable(value = "name") String name,
+            @Parameter(required = true) @RequestBody List<RestClientPrivilege> privileges,
+            @RequestHeader(value = "Authorization", required = false) String basicAuth
+    ) {
 
         AuthDetails authDetails = HeaderHandler.extractAuthDetails(basicAuth);
         adminService.revokePrivileges(authDetails, name, privileges);

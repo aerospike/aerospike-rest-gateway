@@ -40,13 +40,13 @@ public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new RestClientError(ex), getStatusCodeFromException(ex));
     }
 
-    @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
-                                                                  HttpHeaders headers, HttpStatus status,
-                                                                  WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request
+    ) {
         logger.warn(ex.getMessage());
         return new ResponseEntity<>(new RestClientError(ex.getMostSpecificCause().getMessage()),
-                HttpStatus.BAD_REQUEST);
+                HttpStatus.BAD_REQUEST
+        );
     }
 
     @ExceptionHandler({RestClientErrors.AerospikeRestClientError.class})
