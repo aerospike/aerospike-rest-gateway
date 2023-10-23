@@ -23,6 +23,7 @@ import com.aerospike.restclient.util.RestClientErrors;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -40,8 +41,9 @@ public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new RestClientError(ex), getStatusCodeFromException(ex));
     }
 
+    @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
-            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request
+            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request
     ) {
         logger.warn(ex.getMessage());
         return new ResponseEntity<>(new RestClientError(ex.getMostSpecificCause().getMessage()),

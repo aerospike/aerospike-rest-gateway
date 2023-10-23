@@ -57,8 +57,7 @@ public class RestClientError {
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public RestClientError(
-            @JsonProperty("message") String message,
-            @JsonProperty("inDoubt") boolean inDoubt,
+            @JsonProperty("message") String message, @JsonProperty("inDoubt") boolean inDoubt,
             @JsonProperty("internalErrorCode") int internalErrorCode
     ) {
         this.message = message;
