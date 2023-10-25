@@ -5,6 +5,7 @@ WORKDIR /workspace/app
 ENV JAVA_OPTS="-Djdk.lang.Process.launchMechanism=vfork"
 
 COPY . /workspace/app
+RUN apt-get -y update && apt-get -y install git
 RUN ./gradlew clean build -x test
 RUN mkdir -p build/dependency && cd build/dependency; jar -xf ../libs/*[^p][^l][^a][^i][^n].jar
 
