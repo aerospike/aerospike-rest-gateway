@@ -16,6 +16,10 @@ package: clean validatedocs build
 build:
 	./gradlew build -x test
 
+.PHONY: image
+image:
+	docker build -t aerospike-rest-gateway .
+
 .PHONY: run
 run:
 	./gradlew bootRun
