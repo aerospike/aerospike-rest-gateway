@@ -75,7 +75,7 @@ dependencies {
     implementation('org.msgpack:msgpack-core:0.9.3')
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     implementation("com.aerospike:aerospike-client:${aerospikeClientVersion}")
-    implementation("com.aerospike:aerospike-document-api:1.2.0")
+    implementation("com.aerospike:aerospike-document-api:2.0.2")
     implementation("org.msgpack:jackson-dataformat-msgpack:0.9.3")
     implementation('org.springframework.retry:spring-retry:2.0.1')
     implementation('org.springframework:spring-aspects:6.0.13')
