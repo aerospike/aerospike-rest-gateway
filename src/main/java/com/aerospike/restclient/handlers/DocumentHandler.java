@@ -21,6 +21,7 @@ import com.aerospike.client.Key;
 import com.aerospike.client.policy.Policy;
 import com.aerospike.client.policy.WritePolicy;
 import com.aerospike.documentapi.AerospikeDocumentClient;
+import com.aerospike.documentapi.policy.DocumentPolicy;
 import com.aerospike.restclient.util.RestClientErrors;
 
 import java.util.List;
@@ -28,15 +29,18 @@ import java.util.Map;
 
 public class DocumentHandler {
 
-    private final AerospikeDocumentClient client;
+    private final AerospikeClient client;
 
     public DocumentHandler(AerospikeClient client) {
-        this.client = new AerospikeDocumentClient(client);
+        this.client = client;
     }
 
     public Map<String, Object> getObject(Key key, List<String> bins, String jsonPath, Policy policy) {
         try {
-            return client.get(policy, key, bins, jsonPath);
+
+            AerospikeDocumentClient docClient = new AerospikeDocumentClient(
+                    this.client, DocumentPolicy.builder().readPolicy(policy).build());
+            return docClient.get(key, bins, jsonPath);
         } catch (Exception e) {
             throw new RestClientErrors.InvalidOperationError(e.getMessage());
         }
@@ -44,7 +48,9 @@ public class DocumentHandler {
 
     public void putObject(Key key, List<String> bins, String jsonPath, Object jsonObject, WritePolicy policy) {
         try {
-            client.put(policy, key, bins, jsonPath, jsonObject);
+            AerospikeDocumentClient docClient = new AerospikeDocumentClient(
+                    this.client, DocumentPolicy.builder().writePolicy(policy).build());
+            docClient.put(key, bins, jsonPath, jsonObject);
         } catch (Exception e) {
             throw new RestClientErrors.InvalidOperationError(e.getMessage());
         }
@@ -52,7 +58,9 @@ public class DocumentHandler {
 
     public void appendObject(Key key, List<String> bins, String jsonPath, Object jsonObject, WritePolicy policy) {
         try {
-            client.append(policy, key, bins, jsonPath, jsonObject);
+            AerospikeDocumentClient docClient = new AerospikeDocumentClient(
+                    this.client, DocumentPolicy.builder().writePolicy(policy).build());
+            docClient.append(key, bins, jsonPath, jsonObject);
         } catch (Exception e) {
             throw new RestClientErrors.InvalidOperationError(e.getMessage());
         }
@@ -60,7 +68,9 @@ public class DocumentHandler {
 
     public void deleteObject(Key key, List<String> bins, String jsonPath, WritePolicy policy) {
         try {
-            client.delete(policy, key, bins, jsonPath);
+            AerospikeDocumentClient docClient = new AerospikeDocumentClient(
+                    this.client, DocumentPolicy.builder().writePolicy(policy).build());
+            docClient.delete(key, bins, jsonPath);
         } catch (Exception e) {
             throw new RestClientErrors.InvalidOperationError(e.getMessage());
         }
