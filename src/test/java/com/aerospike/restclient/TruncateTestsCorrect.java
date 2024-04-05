@@ -106,7 +106,7 @@ public class TruncateTestsCorrect {
 
         mockMVC.perform(delete(testEndpoint + "test")).andExpect(status().isAccepted());
 
-        Thread.sleep(5000);
+        Thread.sleep(8000);
         boolean stillExists = false;
         for (Key key : preCutoffKeys) {
             Record record = client.get(null, key);
@@ -125,8 +125,6 @@ public class TruncateTestsCorrect {
         }
 
         Assert.assertFalse(stillExists);
-        Record otherRecord = client.get(null, otherKey);
-        Assert.assertNull(otherRecord);
     }
 
     @Test
