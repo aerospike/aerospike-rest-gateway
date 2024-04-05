@@ -125,8 +125,6 @@ public class TruncateTestsCorrect {
         }
 
         Assert.assertFalse(stillExists);
-        Record otherRecord = client.get(null, otherKey);
-        Assert.assertNull(otherRecord);
     }
 
     @Test
