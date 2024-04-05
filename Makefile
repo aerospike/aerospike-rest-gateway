@@ -11,6 +11,8 @@ package: clean validatedocs build
 	cp build/libs/*.jar $(ARCHIVEDIR)
 	cp $(OPENAPI_SPEC) $(ARCHIVEDIR)
 	tar -czvf target/$(ARCHIVENAME) $(ARCHIVEDIR)
+	sha256sum target/$(ARCHIVENAME) > target/$(ARCHIVENAME).sha256
+
 
 .PHONY: build
 build:
