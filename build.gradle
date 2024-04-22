@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = "3.2.4"
+        springBootVersion = "3.2.5"
         httpclientVersion = "4.5.14"
         aerospikeClientVersion = findProperty("aerospikeClientVersion") ?: "7.1.0"
     }
