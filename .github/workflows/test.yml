@@ -21,7 +21,7 @@ jobs:
       - name: Set up Aerospike Database
         uses: reugn/github-action-aerospike@v1
         with:
-          server-version: 7.2.0.4
+          server-version: 7.0.0.9
 
       - name: Cache Gradle packages
         uses: actions/cache@v3
