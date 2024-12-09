@@ -1,6 +1,6 @@
 # Aerospike REST Gateway
 
-[![Build](https://github.com/aerospike/aerospike-rest-gateway/actions/workflows/build.yml/badge.svg)](https://github.com/aerospike/aerospike-rest-gateway/actions/workflows/build.yml)
+[![Test](https://github.com/aerospike/aerospike-rest-gateway/actions/workflows/test.yml/badge.svg)](https://github.com/aerospike/aerospike-rest-gateway/actions/workflows/test.yml)
 
 The Aerospike REST gateway provides a server which translates Restful API requests into messages to an Aerospike
 Cluster.
@@ -16,7 +16,7 @@ here [Aerospike REST Gateway API Documentation](https://docs.aerospike.com/apido
 ## Getting Started blog posts
 
 1. [Aerospike REST Gateway Introduction](https://medium.com/aerospike-developer-blog/aerospike-rest-client-cb7e5967f423?source=friends_link&sk=0d6d69703e8a77da13ec0c6c012d1c29)
-4. [Authentication and Authorization using Aerospike REST Gateway](https://medium.com/aerospike-developer-blog/authentication-and-authorization-using-aerospike-rest-client-ae0837301775?source=friends_link&sk=4be1513a1158a8ecb0b3c0e163ba1c4b)
+2. [Authentication and Authorization using Aerospike REST Gateway](https://medium.com/aerospike-developer-blog/authentication-and-authorization-using-aerospike-rest-client-ae0837301775?source=friends_link&sk=4be1513a1158a8ecb0b3c0e163ba1c4b)
 
 ## Prerequisites
 
