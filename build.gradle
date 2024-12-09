@@ -22,7 +22,7 @@ buildscript {
 plugins {
     id("application")
     id('com.palantir.git-version') version "3.0.0"
-    id("org.springdoc.openapi-gradle-plugin") version "1.8.0"
+    id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
 }
 
 if (findProperty("aerospikeUseLocal")) {
