@@ -51,10 +51,10 @@ if (gitVersionDetails.commitDistance != 0) {
 version = gitVersion
 
 bootJar {
-    baseName "${jarBaseName}"
+    archiveBaseName = "${jarBaseName}"
 }
 jar {
-    baseName "${jarBaseName}"
+    archiveBaseName = "${jarBaseName}"
 }
 test {
     testLogging {
