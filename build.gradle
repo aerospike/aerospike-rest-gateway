@@ -86,7 +86,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation:${springBootVersion}")
     implementation("org.apache.httpcomponents:httpclient:${httpclientVersion}")
     implementation("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
-    implementation('io.github.resilience4j:resilience4j-micrometer:2.2.0')
+    implementation('io.github.resilience4j:resilience4j-micrometer:2.3.0')
     implementation('io.micrometer:micrometer-registry-prometheus')
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
