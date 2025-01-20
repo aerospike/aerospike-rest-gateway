@@ -72,7 +72,7 @@ openApi {
 }
 
 dependencies {
-    implementation('org.msgpack:msgpack-core:0.9.8')
+    implementation('org.msgpack:msgpack-core:0.9.9')
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     implementation("com.aerospike:aerospike-client-jdk8:${aerospikeClientVersion}")
     implementation("com.aerospike:aerospike-document-api:2.0.3")
