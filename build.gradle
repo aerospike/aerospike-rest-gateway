@@ -78,7 +78,7 @@ dependencies {
     implementation("com.aerospike:aerospike-document-api:2.0.3")
     implementation("org.msgpack:jackson-dataformat-msgpack:0.9.8")
     implementation('org.springframework.retry:spring-retry:2.0.10')
-    implementation('org.springframework:spring-aspects:6.2.1')
+    implementation('org.springframework:spring-aspects:6.2.5')
     implementation('org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:3.2.0')
     implementation('org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3')
     implementation("javax.inject:javax.inject:1")
