@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = "3.4.6"
+        springBootVersion = "3.5.0"
         httpclientVersion = "4.5.14"
         aerospikeClientVersion = findProperty("aerospikeClientVersion") ?: "9.0.5"
     }
@@ -79,7 +79,7 @@ dependencies {
     implementation("org.msgpack:jackson-dataformat-msgpack:0.9.9")
     implementation('org.springframework.retry:spring-retry:2.0.12')
     implementation('org.springframework:spring-aspects:6.2.7')
-    implementation('org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:3.2.1')
+    implementation('org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:3.3.0')
     implementation('org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8')
     implementation("javax.inject:javax.inject:1")
     implementation("com.google.guava:guava:33.4.8-jre")
