@@ -47,6 +47,8 @@ public class BatchWritePolicy {
     public int expiration;
     @Schema(description = APIDescriptors.BATCH_POLICY_DURABLE_DELETE_NOTES)
     public boolean durableDelete;
+    @Schema(description = APIDescriptors.BATCH_POLICY_ON_LOCKING_ONLY_NOTES)
+    public boolean onLockingOnly;
     @Schema(description = APIDescriptors.BATCH_POLICY_SEND_KEY_NOTES)
     public boolean sendKey;
 
@@ -61,6 +63,7 @@ public class BatchWritePolicy {
         policy.generation = generation;
         policy.expiration = expiration;
         policy.durableDelete = durableDelete;
+        policy.onLockingOnly = onLockingOnly;
         policy.sendKey = sendKey;
         policy.filterExp = PolicyValueConverter.getFilterExp(filterExp);
 

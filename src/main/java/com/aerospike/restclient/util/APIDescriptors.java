@@ -78,6 +78,7 @@ public class APIDescriptors {
     public static final String BATCH_POLICY_GENERATION_NOTES = "Expected generation. Generation is the number of times a record has been modified (including creation) on the server.\n" + "This field is only relevant when generationPolicy is not NONE.";
     public static final String BATCH_POLICY_EXPIRATION_NOTES = "Record expiration. Also known as ttl (time to live). Seconds record will live before being removed by the server.\n" + "Expiration values:\n" + "   1. -2: Do not change ttl when record is updated.\n" + "   2. -1: Never expire.\n" + "   3. 0: Default to namespace configuration variable \"default-ttl\" on the server.\n" + "   4. greater than 0: Actual ttl in seconds.";
     public static final String BATCH_POLICY_DURABLE_DELETE_NOTES = "If the transaction results in a record deletion, leave a tombstone for the record. This prevents deleted records from reappearing after node failures. Valid for Aerospike Server Enterprise Edition only.";
+    public static final String BATCH_POLICY_ON_LOCKING_ONLY_NOTES = "Execute the write command only if the record is not already locked by this transaction.";
     public static final String BATCH_POLICY_SEND_KEY_NOTES = "Send user defined key in addition to hash digest. If true, the key will be stored with the record on the server.";
     public static final String BATCH_POLICY_READMODESC_NOTES = POLICY_READMODESC_NOTES;
     public static final String BATCH_POLICY_READMODEAP_NOTES = POLICY_READMODEAP_NOTES;
