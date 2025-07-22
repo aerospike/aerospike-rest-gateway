@@ -49,17 +49,17 @@ public class TruncateTestsCorrect {
     private final Key otherKey = new Key("test", "otherset", 0);
     private List<Key> preCutoffKeys;
     private List<Key> postCutoffKeys;
+
     @Autowired
     private AerospikeClient client;
-
     @Autowired
     private WebApplicationContext wac;
 
     @Before
     public void setup() throws InterruptedException {
         mockMVC = MockMvcBuilders.webAppContextSetup(wac).build();
-        preCutoffKeys = new ArrayList<Key>();
-        postCutoffKeys = new ArrayList<Key>();
+        preCutoffKeys = new ArrayList<>();
+        postCutoffKeys = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Key key = new Key("test", "truncate", i);
             preCutoffKeys.add(key);
@@ -67,18 +67,18 @@ public class TruncateTestsCorrect {
             client.put(null, key, bin);
         }
 
-        Thread.sleep(2000); //Allow some time to pass
+        Thread.sleep(1000); // Allow some time to pass
         GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
         truncateSplitPoint = formatter.format(cal.toZonedDateTime());
-        /* Truncate is asynchronous, so wait for it to propgate to other servers */
-        Thread.sleep(2000);
+        /* Truncate is asynchronous, so wait for it to propagate to other servers */
+        Thread.sleep(3000);
         for (int i = 10; i < 20; i++) {
             Key key = new Key("test", "truncate", i);
             Bin bin = new Bin("after", "the cutoff");
             client.put(null, key, bin);
             postCutoffKeys.add(key);
         }
-        Thread.sleep(2000);
+        Thread.sleep(1000);
 
         // Store a record in a different set
         client.put(null, otherKey, new Bin("a", "b"));
@@ -89,13 +89,13 @@ public class TruncateTestsCorrect {
         for (Key key : preCutoffKeys) {
             try {
                 client.delete(null, key);
-            } catch (AerospikeException e) {
+            } catch (AerospikeException ignore) {
             }
         }
         for (Key key : postCutoffKeys) {
             try {
                 client.delete(null, key);
-            } catch (AerospikeException e) {
+            } catch (AerospikeException ignore) {
             }
         }
         client.delete(null, otherKey);
@@ -181,5 +181,4 @@ public class TruncateTestsCorrect {
         Record otherRecord = client.get(null, otherKey);
         Assert.assertNotNull(otherRecord);
     }
-
 }
